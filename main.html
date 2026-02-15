@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DOUBLED.LIFE — Hub</title>
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Background layers for crossfade cycling -->
+  <div class="bg-layer bg-layer--mobile-1"></div>
+  <div class="bg-layer bg-layer--mobile-2"></div>
+  <div class="gutter gutter--left">
+    <div class="gutter__layer gutter__layer--1"></div>
+    <div class="gutter__layer gutter__layer--2"></div>
+  </div>
+  <div class="gutter gutter--right">
+    <div class="gutter__layer gutter__layer--1"></div>
+    <div class="gutter__layer gutter__layer--2"></div>
+  </div>
+
+  <div class="page-wrapper">
+    <!-- Header -->
+    <header class="site-header">
+      <a class="brand" href="index.html">DOUBLED.LIFE</a>
+      <nav class="nav-links">
+        <a href="main.html" class="active">Hub</a>
+        <a href="video.html">Video</a>
+      </nav>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+      
+      <!-- YouTube Search & Embedded Results -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fab fa-youtube"></i> YouTube</h2>
+          <div class="search-tabs">
+            <button class="search-tab active" data-type="general">All</button>
+            <button class="search-tab" data-type="music">Music</button>
+            <button class="search-tab" data-type="howto">How-To</button>
+          </div>
+        </div>
+        
+        <!-- YouTube Search Input -->
+        <div class="youtube-search">
+          <div class="search-input-wrapper">
+            <i class="fas fa-search"></i>
+            <input type="text" id="youtubeSearch" placeholder="Search YouTube..." autocomplete="off">
+            <button id="youtubeSearchBtn" class="btn"><i class="fas fa-arrow-right"></i></button>
+          </div>
+        </div>
+        
+        <!-- Embedded Video Results (3 full-width) -->
+        <div id="youtubeResults" class="youtube-results">
+          <!-- Default/placeholder videos -->
+          <div class="video-embed">
+            <div class="video-embed__placeholder">
+              <i class="fab fa-youtube"></i>
+              <p>Search for videos above</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Search History Panels -->
+        <div class="search-history-panels">
+          <div class="history-panel">
+            <h4><i class="fas fa-music"></i> Recent Music Searches</h4>
+            <ul id="musicSearchHistory" class="history-list">
+              <li class="history-empty">No music searches yet</li>
+            </ul>
+          </div>
+          <div class="history-panel">
+            <h4><i class="fas fa-video"></i> Recent Video Searches</h4>
+            <ul id="generalSearchHistory" class="history-list">
+              <li class="history-empty">No searches yet</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Quick Music Links -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fas fa-headphones"></i> Music Services</h2>
+        </div>
+        <div class="media-grid">
+          <a href="https://spotify.com" target="_blank" class="media-card">
+            <div class="media-card__thumb" style="background: linear-gradient(135deg, #1DB954 0%, #191414 100%);">
+              <i class="fab fa-spotify"></i>
+            </div>
+            <div class="media-card__info">
+              <div class="media-card__type">Streaming</div>
+              <h3 class="media-card__title">Spotify</h3>
+              <p class="media-card__meta">Playlists, albums, podcasts</p>
+            </div>
+          </a>
+          <a href="https://soundcloud.com" target="_blank" class="media-card">
+            <div class="media-card__thumb" style="background: linear-gradient(135deg, #ff5500 0%, #ff8800 100%);">
+              <i class="fab fa-soundcloud"></i>
+            </div>
+            <div class="media-card__info">
+              <div class="media-card__type">Independent</div>
+              <h3 class="media-card__title">SoundCloud</h3>
+              <p class="media-card__meta">Underground artists, mixes</p>
+            </div>
+          </a>
+          <a href="https://bandcamp.com" target="_blank" class="media-card">
+            <div class="media-card__thumb" style="background: linear-gradient(135deg, #1da0c3 0%, #629aa9 100%);">
+              <i class="fab fa-bandcamp"></i>
+            </div>
+            <div class="media-card__info">
+              <div class="media-card__type">Support Artists</div>
+              <h3 class="media-card__title">Bandcamp</h3>
+              <p class="media-card__meta">Buy music directly</p>
+            </div>
+          </a>
+        </div>
+      </section>
+      
+      <!-- File Handler Section -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fas fa-file-alt"></i> File Viewer</h2>
+        </div>
+        <div class="file-handler" id="fileHandler">
+          <div class="file-handler__icon">
+            <i class="fas fa-cloud-upload-alt"></i>
+          </div>
+          <p class="file-handler__text">Drop files here or click to browse</p>
+          <p class="file-handler__hint">View and preview common file types</p>
+          <div class="file-handler__formats">
+            <span class="file-handler__format">PDF</span>
+            <span class="file-handler__format">XLSX</span>
+            <span class="file-handler__format">DOCX</span>
+            <span class="file-handler__format">CSV</span>
+            <span class="file-handler__format">TXT</span>
+            <span class="file-handler__format">Images</span>
+          </div>
+          <input type="file" id="fileInput" style="display: none" accept=".pdf,.xlsx,.xls,.docx,.doc,.csv,.txt,.png,.jpg,.jpeg,.gif">
+        </div>
+        <div id="filePreview" class="file-preview" style="display: none;">
+          <div class="file-preview__name" id="fileName"></div>
+          <div class="file-preview__info" id="fileInfo"></div>
+          <div id="fileContent" style="margin-top: 16px;"></div>
+        </div>
+      </section>
+      
+      <!-- Mortgage Calculator Section -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fas fa-calculator"></i> Mortgage Calculator</h2>
+        </div>
+        <div class="calculator">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="homePrice">Home Price ($)</label>
+              <input type="number" id="homePrice" value="400000" min="0" step="1000">
+            </div>
+            <div class="form-group">
+              <label for="downPayment">Down Payment ($)</label>
+              <input type="number" id="downPayment" value="80000" min="0" step="1000">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="interestRate">Interest Rate (%)</label>
+              <input type="number" id="interestRate" value="6.5" min="0" max="20" step="0.125">
+            </div>
+            <div class="form-group">
+              <label for="loanTerm">Loan Term (years)</label>
+              <select id="loanTerm">
+                <option value="30" selected>30 years</option>
+                <option value="20">20 years</option>
+                <option value="15">15 years</option>
+                <option value="10">10 years</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn--block" onclick="calculateMortgage()">
+            <i class="fas fa-calculator"></i> Calculate Payment
+          </button>
+          <div class="calculator__result" id="mortgageResult">
+            <p class="calculator__result-label">Monthly Payment</p>
+            <p class="calculator__result-value" id="monthlyPayment">$2,023</p>
+            <div class="calculator__result-details" id="mortgageDetails">
+              Loan Amount: $320,000 · Total Interest: $408,280
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Travel & Stays -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fas fa-plane"></i> Travel & Stays</h2>
+        </div>
+        <div class="affiliate-grid">
+          <a href="https://www.airbnb.com" target="_blank" class="affiliate-card">
+            <span class="affiliate-card__icon">🏠</span>
+            <h3 class="affiliate-card__name">Airbnb</h3>
+            <p class="affiliate-card__category">Vacation Rentals</p>
+            <p class="affiliate-card__desc">Unique stays, homes, and experiences around the world.</p>
+          </a>
+          <a href="https://www.vrbo.com" target="_blank" class="affiliate-card">
+            <span class="affiliate-card__icon">🏡</span>
+            <h3 class="affiliate-card__name">VRBO</h3>
+            <p class="affiliate-card__category">Vacation Rentals</p>
+            <p class="affiliate-card__desc">Family-friendly vacation homes and beach houses.</p>
+          </a>
+          <a href="https://www.marriott.com" target="_blank" class="affiliate-card">
+            <span class="affiliate-card__icon">🏨</span>
+            <h3 class="affiliate-card__name">Marriott Bonvoy</h3>
+            <p class="affiliate-card__category">Hotel Group</p>
+            <p class="affiliate-card__desc">30+ brands including Ritz-Carlton, W Hotels, St. Regis.</p>
+          </a>
+          <a href="https://www.hilton.com" target="_blank" class="affiliate-card">
+            <span class="affiliate-card__icon">🌟</span>
+            <h3 class="affiliate-card__name">Hilton Honors</h3>
+            <p class="affiliate-card__category">Hotel Group</p>
+            <p class="affiliate-card__desc">Waldorf Astoria, Conrad, DoubleTree, and more.</p>
+          </a>
+          <a href="https://www.hyatt.com" target="_blank" class="affiliate-card">
+            <span class="affiliate-card__icon">✨</span>
+            <h3 class="affiliate-card__name">World of Hyatt</h3>
+            <p class="affiliate-card__category">Hotel Group</p>
+            <p class="affiliate-card__desc">Park Hyatt, Andaz, Thompson Hotels, and more.</p>
+          </a>
+          <a href="https://www.booking.com" target="_blank" class="affiliate-card">
+            <span class="affiliate-card__icon">🔍</span>
+            <h3 class="affiliate-card__name">Booking.com</h3>
+            <p class="affiliate-card__category">Hotel Search</p>
+            <p class="affiliate-card__desc">Compare rates across millions of properties worldwide.</p>
+          </a>
+        </div>
+      </section>
+      
+      <!-- Real Estate -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title"><i class="fas fa-home"></i> Real Estate</h2>
+        </div>
+        <div class="affiliate-grid">
+          <a href="https://www.zillow.com" target="_blank" class="affiliate-card">
+            <span class="affiliate-card__icon">🏠</span>
+            <h3 class="affiliate-card__name">Zillow</h3>
+            <p class="affiliate-card__category">Home Search</p>
+            <p class="affiliate-card__desc">Browse homes for sale, Zestimates, and market data.</p>
+          </a>
+          <a href="https://www.redfin.com" target="_blank" class="affiliate-card">
+            <span class="affiliate-card__icon">🔴</span>
+            <h3 class="affiliate-card__name">Redfin</h3>
+            <p class="affiliate-card__category">Home Search</p>
+            <p class="affiliate-card__desc">Tech-powered real estate with lower fees.</p>
+          </a>
+          <a href="https://www.realtor.com" target="_blank" class="affiliate-card">
+            <span class="affiliate-card__icon">🏡</span>
+            <h3 class="affiliate-card__name">Realtor.com</h3>
+            <p class="affiliate-card__category">Home Search</p>
+            <p class="affiliate-card__desc">Official MLS listings, find agents, and research.</p>
+          </a>
+          <a href="https://www.trulia.com" target="_blank" class="affiliate-card">
+            <span class="affiliate-card__icon">📍</span>
+            <h3 class="affiliate-card__name">Trulia</h3>
+            <p class="affiliate-card__category">Home Search</p>
+            <p class="affiliate-card__desc">Neighborhood insights, crime maps, schools.</p>
+          </a>
+          <a href="https://www.compass.com" target="_blank" class="affiliate-card">
+            <span class="affiliate-card__icon">🧭</span>
+            <h3 class="affiliate-card__name">Compass</h3>
+            <p class="affiliate-card__category">Luxury Real Estate</p>
+            <p class="affiliate-card__desc">Premium listings and tech-forward agents.</p>
+          </a>
+          <a href="https://www.sothebysrealty.com" target="_blank" class="affiliate-card">
+            <span class="affiliate-card__icon">💎</span>
+            <h3 class="affiliate-card__name">Sotheby's Realty</h3>
+            <p class="affiliate-card__category">Luxury Real Estate</p>
+            <p class="affiliate-card__desc">Extraordinary properties worldwide.</p>
+          </a>
+        </div>
+      </section>
+      
+    </main>
+    
+    <!-- Footer -->
+    <footer class="site-footer">
+      <small>© <span id="year"></span> DOUBLED.LIFE · home workspace</small>
+      <p class="footer-tagline" style="margin: 8px 0 0; font-size: 0.8rem; font-style: italic; opacity: 0.6;">
+        "my father had a rolodex at the office. we had an address book at home."
+      </p>
+    </footer>
+  </div>
+  
+  <script>
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+    
+    // ==========================================
+    // Mortgage Calculator
+    // ==========================================
+    function calculateMortgage() {
+      const homePrice = parseFloat(document.getElementById('homePrice').value) || 0;
+      const downPayment = parseFloat(document.getElementById('downPayment').value) || 0;
+      const interestRate = parseFloat(document.getElementById('interestRate').value) || 0;
+      const loanTerm = parseInt(document.getElementById('loanTerm').value) || 30;
+      
+      const loanAmount = homePrice - downPayment;
+      const monthlyRate = (interestRate / 100) / 12;
+      const numberOfPayments = loanTerm * 12;
+      
+      let monthlyPayment;
+      if (monthlyRate === 0) {
+        monthlyPayment = loanAmount / numberOfPayments;
+      } else {
+        monthlyPayment = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / 
+                        (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+      }
+      
+      const totalPaid = monthlyPayment * numberOfPayments;
+      const totalInterest = totalPaid - loanAmount;
+      
+      document.getElementById('monthlyPayment').textContent = '$' + monthlyPayment.toLocaleString('en-US', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      });
+      
+      document.getElementById('mortgageDetails').innerHTML = `
+        Loan Amount: $${loanAmount.toLocaleString()} · 
+        Total Interest: $${totalInterest.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} · 
+        Total Paid: $${totalPaid.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+      `;
+    }
+    
+    // Calculate on load
+    calculateMortgage();
+    
+    // Recalculate on input change
+    ['homePrice', 'downPayment', 'interestRate', 'loanTerm'].forEach(id => {
+      document.getElementById(id).addEventListener('input', calculateMortgage);
+    });
+    
+    // ==========================================
+    // YouTube Search & Embed System
+    // ==========================================
+    
+    // Search history stored in localStorage
+    let musicSearchHistory = JSON.parse(localStorage.getItem('musicSearchHistory') || '[]');
+    let generalSearchHistory = JSON.parse(localStorage.getItem('generalSearchHistory') || '[]');
+    let currentSearchType = 'general';
+    
+    // YouTube API - using oEmbed for basic embeds (no API key needed)
+    // For full search, you'd need YouTube Data API key
+    const YOUTUBE_API_KEY = ''; // Add your API key for full search
+    
+    // DOM elements
+    const youtubeSearch = document.getElementById('youtubeSearch');
+    const youtubeSearchBtn = document.getElementById('youtubeSearchBtn');
+    const youtubeResults = document.getElementById('youtubeResults');
+    const searchTabs = document.querySelectorAll('.search-tab');
+    const musicHistoryList = document.getElementById('musicSearchHistory');
+    const generalHistoryList = document.getElementById('generalSearchHistory');
+    
+    // Tab switching
+    searchTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        searchTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentSearchType = tab.dataset.type;
+        
+        // Update placeholder based on type
+        if (currentSearchType === 'music') {
+          youtubeSearch.placeholder = 'Search for music...';
+        } else if (currentSearchType === 'howto') {
+          youtubeSearch.placeholder = 'Search for tutorials & how-tos...';
+        } else {
+          youtubeSearch.placeholder = 'Search YouTube...';
+        }
+      });
+    });
+    
+    // Search YouTube
+    async function searchYouTube(query) {
+      if (!query.trim()) return;
+      
+      // Add search type prefix for better results
+      let searchQuery = query;
+      if (currentSearchType === 'music') {
+        searchQuery = `${query} music`;
+      } else if (currentSearchType === 'howto') {
+        searchQuery = `${query} tutorial how to`;
+      }
+      
+      // Save to appropriate history
+      saveSearchHistory(query, currentSearchType);
+      
+      // For now, open YouTube search in new window and show embed placeholder
+      // In production, you'd use YouTube Data API for proper search
+      if (YOUTUBE_API_KEY) {
+        // Full API search would go here
+        await fetchYouTubeResults(searchQuery);
+      } else {
+        // Fallback: Show search link and sample embeds based on query
+        showSearchFallback(query, searchQuery);
+      }
+    }
+    
+    // Fallback when no API key
+    function showSearchFallback(originalQuery, searchQuery) {
+      const encodedQuery = encodeURIComponent(searchQuery);
+      const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${encodedQuery}`;
+      
+      youtubeResults.innerHTML = `
+        <div class="video-embed">
+          <div class="video-embed__placeholder" style="aspect-ratio: 16/9; cursor: pointer;" onclick="window.open('${youtubeSearchUrl}', '_blank')">
+            <i class="fab fa-youtube" style="font-size: 4rem; color: #ff0000;"></i>
+            <p style="font-size: 1.2rem; margin: 0;">Click to search "${originalQuery}" on YouTube</p>
+            <p style="font-size: 0.9rem; opacity: 0.7;">Add YouTube API key for embedded results</p>
+          </div>
+        </div>
+        <div style="padding: 16px; background: var(--glass); border-radius: var(--radius); text-align: center;">
+          <p style="margin: 0 0 12px; color: var(--muted);">Or open YouTube directly:</p>
+          <a href="${youtubeSearchUrl}" target="_blank" class="btn">
+            <i class="fab fa-youtube"></i> Search on YouTube
+          </a>
+        </div>
+      `;
+    }
+    
+    // Full YouTube API search (when API key is available)
+    async function fetchYouTubeResults(query) {
+      try {
+        const response = await fetch(
+          `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=3&q=${encodeURIComponent(query)}&type=video&key=${YOUTUBE_API_KEY}`
+        );
+        const data = await response.json();
+        
+        if (data.items && data.items.length > 0) {
+          displayYouTubeEmbeds(data.items);
+        } else {
+          youtubeResults.innerHTML = '<p style="color: var(--muted); text-align: center; padding: 40px;">No results found</p>';
+        }
+      } catch (error) {
+        console.error('YouTube API error:', error);
+        showSearchFallback(query, query);
+      }
+    }
+    
+    // Display 3 full-width embedded videos
+    function displayYouTubeEmbeds(videos) {
+      youtubeResults.innerHTML = videos.map(video => `
+        <div class="video-embed">
+          <iframe 
+            src="https://www.youtube.com/embed/${video.id.videoId}?rel=0" 
+            allowfullscreen
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          ></iframe>
+          <div class="video-embed__info">
+            <h3 class="video-embed__title">${escapeHtml(video.snippet.title)}</h3>
+            <p class="video-embed__meta">${video.snippet.channelTitle}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    // Save search to history
+    function saveSearchHistory(query, type) {
+      const timestamp = new Date().toLocaleString();
+      const entry = { query, timestamp };
+      
+      if (type === 'music') {
+        // Remove duplicates
+        musicSearchHistory = musicSearchHistory.filter(h => h.query.toLowerCase() !== query.toLowerCase());
+        musicSearchHistory.unshift(entry);
+        musicSearchHistory = musicSearchHistory.slice(0, 20); // Keep last 20
+        localStorage.setItem('musicSearchHistory', JSON.stringify(musicSearchHistory));
+      } else {
+        generalSearchHistory = generalSearchHistory.filter(h => h.query.toLowerCase() !== query.toLowerCase());
+        generalSearchHistory.unshift(entry);
+        generalSearchHistory = generalSearchHistory.slice(0, 20);
+        localStorage.setItem('generalSearchHistory', JSON.stringify(generalSearchHistory));
+      }
+      
+      renderSearchHistories();
+    }
+    
+    // Render search histories
+    function renderSearchHistories() {
+      // Music history
+      if (musicSearchHistory.length > 0) {
+        musicHistoryList.innerHTML = musicSearchHistory.slice(0, 10).map(h => `
+          <li onclick="replaySearch('${escapeHtml(h.query)}', 'music')">
+            <i class="fas fa-music" style="color: var(--accent); opacity: 0.6;"></i>
+            ${escapeHtml(h.query)}
+          </li>
+        `).join('');
+      } else {
+        musicHistoryList.innerHTML = '<li class="history-empty">No music searches yet</li>';
+      }
+      
+      // General history
+      if (generalSearchHistory.length > 0) {
+        generalHistoryList.innerHTML = generalSearchHistory.slice(0, 10).map(h => `
+          <li onclick="replaySearch('${escapeHtml(h.query)}', 'general')">
+            <i class="fas fa-search" style="color: var(--accent); opacity: 0.6;"></i>
+            ${escapeHtml(h.query)}
+          </li>
+        `).join('');
+      } else {
+        generalHistoryList.innerHTML = '<li class="history-empty">No searches yet</li>';
+      }
+    }
+    
+    // Replay a search from history
+    function replaySearch(query, type) {
+      youtubeSearch.value = query;
+      currentSearchType = type;
+      
+      // Update tab
+      searchTabs.forEach(t => {
+        t.classList.toggle('active', t.dataset.type === type);
+      });
+      
+      searchYouTube(query);
+    }
+    
+    // Event listeners
+    youtubeSearchBtn.addEventListener('click', () => searchYouTube(youtubeSearch.value));
+    youtubeSearch.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') searchYouTube(youtubeSearch.value);
+    });
+    
+    // Initialize histories on load
+    renderSearchHistories();
+    
+    // ==========================================
+    // File Handler
+    // ==========================================
+    const fileHandler = document.getElementById('fileHandler');
+    const fileInput = document.getElementById('fileInput');
+    const filePreview = document.getElementById('filePreview');
+    const fileName = document.getElementById('fileName');
+    const fileInfo = document.getElementById('fileInfo');
+    const fileContent = document.getElementById('fileContent');
+    
+    fileHandler.addEventListener('click', () => fileInput.click());
+    
+    fileHandler.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      fileHandler.classList.add('dragover');
+    });
+    
+    fileHandler.addEventListener('dragleave', () => {
+      fileHandler.classList.remove('dragover');
+    });
+    
+    fileHandler.addEventListener('drop', (e) => {
+      e.preventDefault();
+      fileHandler.classList.remove('dragover');
+      const files = e.dataTransfer.files;
+      if (files.length > 0) handleFile(files[0]);
+    });
+    
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) handleFile(e.target.files[0]);
+    });
+    
+    function handleFile(file) {
+      fileName.textContent = file.name;
+      fileInfo.textContent = `Size: ${formatFileSize(file.size)} · Type: ${file.type || 'Unknown'}`;
+      filePreview.style.display = 'block';
+      fileContent.innerHTML = '';
+      
+      const ext = file.name.split('.').pop().toLowerCase();
+      
+      // Handle different file types
+      if (['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(ext)) {
+        // Images
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          fileContent.innerHTML = `<img src="${e.target.result}" style="max-width: 100%; border-radius: 8px;">`;
+        };
+        reader.readAsDataURL(file);
+      } else if (ext === 'pdf') {
+        // PDF - show embed or link
+        const url = URL.createObjectURL(file);
+        fileContent.innerHTML = `
+          <p style="color: var(--muted); margin-bottom: 12px;">PDF Preview:</p>
+          <iframe src="${url}" style="width: 100%; height: 500px; border: 1px solid var(--card-border); border-radius: 8px;"></iframe>
+        `;
+      } else if (ext === 'txt' || ext === 'csv') {
+        // Text files
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const text = e.target.result;
+          fileContent.innerHTML = `<pre style="background: rgba(0,0,0,0.3); padding: 16px; border-radius: 8px; overflow-x: auto; max-height: 400px; font-size: 0.85rem;">${escapeHtml(text)}</pre>`;
+        };
+        reader.readAsText(file);
+      } else if (ext === 'xlsx' || ext === 'xls') {
+        // Excel - would need SheetJS library for full support
+        fileContent.innerHTML = `
+          <p style="color: var(--muted);">
+            <i class="fas fa-file-excel" style="color: #1D6F42; margin-right: 8px;"></i>
+            Excel file detected. Full preview requires additional libraries.
+            <br><br>
+            <a href="#" onclick="downloadFile('${file.name}')" class="btn btn--secondary" style="display: inline-flex;">
+              <i class="fas fa-download"></i> Download to View
+            </a>
+          </p>
+        `;
+      } else if (ext === 'docx' || ext === 'doc') {
+        // Word - would need mammoth.js for full support
+        fileContent.innerHTML = `
+          <p style="color: var(--muted);">
+            <i class="fas fa-file-word" style="color: #2B579A; margin-right: 8px;"></i>
+            Word document detected. Full preview requires additional libraries.
+            <br><br>
+            <a href="#" onclick="downloadFile('${file.name}')" class="btn btn--secondary" style="display: inline-flex;">
+              <i class="fas fa-download"></i> Download to View
+            </a>
+          </p>
+        `;
+      } else {
+        fileContent.innerHTML = `<p style="color: var(--muted);">Preview not available for this file type.</p>`;
+      }
+    }
+    
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+    
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>

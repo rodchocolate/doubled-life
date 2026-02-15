@@ -1,0 +1,1744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DOUBLED.LIFE — Video</title>
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Full Chat Layout - No Split */
+    .chat-layout {
+      height: calc(100vh - 60px);
+      display: flex;
+      flex-direction: column;
+      max-width: 800px;
+      margin: 0 auto;
+      background: rgba(0, 0, 0, 0.3);
+    }
+    
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .chat-message {
+      max-width: 100%;
+      animation: fadeIn 0.2s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .chat-message--user {
+      align-self: flex-end;
+      background: var(--accent);
+      color: #000;
+      padding: 12px 18px;
+      border-radius: var(--radius);
+      max-width: 80%;
+    }
+    
+    .chat-message--system {
+      align-self: flex-start;
+      background: var(--glass);
+      border: 1px solid var(--card-border);
+      padding: 12px 18px;
+      border-radius: var(--radius);
+      max-width: 80%;
+    }
+    
+    .chat-message--video {
+      align-self: stretch;
+      background: rgba(0, 0, 0, 0.85);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+    
+    /* Video Results Group */
+    .video-results-group__header {
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    /* ==========================================
+       CURATED CARDS - Individual cards like toxico
+       Can interweave offers between them
+       ========================================== */
+    
+    /* Featured card - 60% width, height scales proportionally */
+    .video-card-featured {
+      width: 60%;
+      background: rgba(30, 33, 34, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s;
+      backdrop-filter: blur(5px);
+    }
+    
+    .video-card-featured:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+    }
+    
+    .video-card-featured__thumb {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #111;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .video-card-featured__thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .video-card-featured__play {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    
+    .video-card-featured__play i {
+      font-size: 3rem;
+      color: white;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+    
+    .video-card-featured:hover .video-card-featured__play {
+      opacity: 1;
+    }
+    
+    .video-card-featured__info {
+      padding: 12px 14px;
+    }
+    
+    .video-card-featured__title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 0 0 4px;
+      color: var(--fg);
+    }
+    
+    .video-card-featured__meta {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin: 0;
+    }
+    
+    /* Row container for 3 cards */
+    .video-cards-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    
+    /* Individual small card */
+    .video-card {
+      background: rgba(30, 33, 34, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s;
+      backdrop-filter: blur(5px);
+    }
+    
+    .video-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+    }
+    
+    .video-card__thumb {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #111;
+      overflow: hidden;
+    }
+    
+    .video-card__thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .video-card__info {
+      padding: 8px 10px;
+    }
+    
+    .video-card__title {
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin: 0;
+      color: var(--fg);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.3;
+    }
+    
+    .video-card__channel {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin: 4px 0 0;
+    }
+    
+    /* Mobile: row becomes vertical list */
+    @media (max-width: 500px) {
+      .video-cards-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      
+      .video-card {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+      
+      .video-card__thumb {
+        width: 120px;
+        flex-shrink: 0;
+        aspect-ratio: 16/9;
+      }
+      
+      .video-card__info {
+        flex: 1;
+        padding: 10px 12px;
+      }
+    }
+    
+    /* Shuffle button */
+    .btn-shuffle {
+      background: rgba(30, 33, 34, 0.6);
+      border: 1px solid var(--card-border);
+      color: var(--muted);
+      padding: 10px 18px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    
+    .btn-shuffle:hover {
+      background: rgba(30, 33, 34, 0.8);
+      color: var(--fg);
+      border-color: var(--accent);
+    }
+    
+    .btn-shuffle i {
+      font-size: 0.9rem;
+    }
+    
+    /* Search Results List (no API key mode) */
+    .search-results-list {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .search-result-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border-bottom: 1px solid var(--card-border);
+    }
+    
+    .search-result-item:last-child {
+      border-bottom: none;
+    }
+    
+    .search-result-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .search-result-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 0, 0, 0.15);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ff4444;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    
+    .search-result-text {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .search-result-query {
+      margin: 0 0 2px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--fg);
+    }
+    
+    .search-result-hint {
+      margin: 0;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    
+    .search-result-arrow {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    
+    /* Featured Video (Full Width) */
+    .video-featured {
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .video-featured:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .video-featured__thumb {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #111;
+      overflow: hidden;
+    }
+    
+    .video-featured__thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .video-featured__play {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    
+    .video-featured__play i {
+      font-size: 3rem;
+      color: white;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+    
+    .video-featured:hover .video-featured__play {
+      opacity: 1;
+    }
+    
+    .video-featured__info {
+      padding: 12px 14px;
+    }
+    
+    .video-featured__title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 0 0 4px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .video-featured__meta {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin: 0;
+    }
+    
+    /* Row of 3 Videos */
+    .video-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      border-top: 1px solid var(--card-border);
+    }
+    
+    .video-row__item {
+      cursor: pointer;
+      padding: 10px;
+      transition: background 0.2s;
+    }
+    
+    .video-row__item:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .video-row__thumb {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #111;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    
+    .video-row__thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .video-row__title {
+      font-size: 0.8rem;
+      margin: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.3;
+    }
+    
+    /* Now Playing (appears when video selected) */
+    .now-playing-bar {
+      background: rgba(0, 0, 0, 0.9);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      margin: 0 16px 16px;
+      overflow: hidden;
+      display: none;
+    }
+    
+    .now-playing-bar.active {
+      display: block;
+    }
+    
+    .now-playing-bar iframe {
+      width: 100%;
+      aspect-ratio: 16/9;
+      border: none;
+      display: block;
+    }
+    
+    .now-playing-bar__info {
+      padding: 12px 14px;
+      border-top: 1px solid var(--card-border);
+    }
+    
+    .now-playing-bar__title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin: 0 0 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .now-playing-bar__channel {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin: 0;
+    }
+    
+    /* Chat Input - 20% height like other sites */
+    .chat-input-area {
+      height: 20vh;
+      min-height: 120px;
+      max-height: 200px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.6);
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      align-items: flex-start;
+    }
+    
+    .chat-input-wrapper {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .chat-input {
+      flex: 1;
+      height: 100%;
+      background: var(--glass);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 16px 20px;
+      color: var(--fg);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+      resize: none;
+      font-family: inherit;
+      line-height: 1.5;
+    }
+    
+    .chat-input:focus {
+      border-color: var(--accent);
+    }
+    
+    .chat-input::placeholder {
+      color: var(--muted);
+    }
+    
+    .chat-send {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      transition: transform 0.1s, background 0.2s;
+      flex-shrink: 0;
+    }
+    
+    .chat-send:hover {
+      background: var(--accent-hover);
+    }
+    
+    .chat-send:active {
+      transform: scale(0.95);
+    }
+    
+    /* Loading indicator */
+    .loading {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+    }
+    
+    .loading-dots {
+      display: flex;
+      gap: 4px;
+    }
+    
+    .loading-dots span {
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: bounce 1.4s ease-in-out infinite;
+    }
+    
+    .loading-dots span:nth-child(1) { animation-delay: 0s; }
+    .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+    
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+    
+    /* Mobile adjustments */
+    @media (max-width: 600px) {
+      .chat-layout {
+        max-width: 100%;
+      }
+      
+      .video-row {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1px;
+      }
+      
+      .video-row__item {
+        padding: 6px;
+      }
+      
+      .video-row__title {
+        font-size: 0.7rem;
+      }
+    }
+    
+    /* Settings Modal */
+    .settings-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .settings-modal.active {
+      display: flex;
+    }
+    
+    .settings-content {
+      background: var(--bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      max-width: 480px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    
+    .settings-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    
+    .settings-header h2 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+    
+    .settings-close {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+    
+    .settings-close:hover {
+      color: var(--fg);
+    }
+    
+    .settings-body {
+      padding: 20px;
+    }
+    
+    .settings-body .form-group {
+      margin-bottom: 16px;
+    }
+    
+    .settings-body label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+      color: var(--fg);
+    }
+    
+    .settings-body input,
+    .settings-body select {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--glass);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      color: var(--fg);
+      font-size: 0.95rem;
+    }
+    
+    .settings-body input:focus,
+    .settings-body select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <!-- Background layers -->
+  <div class="bg-layer bg-layer--mobile-1"></div>
+  <div class="bg-layer bg-layer--mobile-2"></div>
+  <div class="gutter gutter--left">
+    <div class="gutter__layer gutter__layer--1"></div>
+    <div class="gutter__layer gutter__layer--2"></div>
+  </div>
+  <div class="gutter gutter--right">
+    <div class="gutter__layer gutter__layer--1"></div>
+    <div class="gutter__layer gutter__layer--2"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <a class="brand" href="index.html">DOUBLED.LIFE</a>
+    <nav class="nav-links">
+      <a href="main.html">Hub</a>
+      <a href="video.html" class="active">Video</a>
+    </nav>
+  </header>
+
+  <!-- Pure Chat Layout -->
+  <div class="chat-layout">
+    
+    <!-- Now Playing Bar (appears above chat when video selected) -->
+    <div class="now-playing-bar" id="nowPlayingBar">
+      <div id="videoPlayer"></div>
+      <div class="now-playing-bar__info">
+        <p class="now-playing-bar__title" id="nowPlayingTitle">-</p>
+        <p class="now-playing-bar__channel" id="nowPlayingChannel">-</p>
+      </div>
+    </div>
+    
+    <!-- Chat Messages -->
+    <div class="chat-messages" id="chatMessages">
+      <!-- Welcome message added by JS -->
+    </div>
+    
+    <!-- Chat Input -->
+    <div class="chat-input-area">
+      <div class="chat-input-wrapper">
+        <textarea class="chat-input" id="chatInput" placeholder="What do you want to watch?" rows="3"></textarea>
+        <button class="chat-send" id="chatSend">
+          <i class="fas fa-arrow-up"></i>
+        </button>
+      </div>
+    </div>
+    
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="settings-modal" id="settingsModal">
+    <div class="settings-content">
+      <div class="settings-header">
+        <h2>Settings</h2>
+        <button class="settings-close" onclick="closeSettings()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="settings-body">
+        <p style="margin: 0 0 20px; color: var(--muted); font-size: 0.9rem;">
+          AI is powered by Gemini (free). You can also use your own keys.
+        </p>
+        
+        <div class="form-group">
+          <label>AI Provider</label>
+          <select id="llmProvider">
+            <option value="gemini">Gemini (Default - Free)</option>
+            <option value="groq">Groq (Fast)</option>
+            <option value="openai">OpenAI</option>
+            <option value="anthropic">Anthropic</option>
+          </select>
+        </div>
+        
+        <hr style="border: none; border-top: 1px solid var(--card-border); margin: 20px 0;">
+        
+        <p style="margin: 0 0 12px; font-size: 0.85rem; color: var(--muted);">
+          <strong>Optional:</strong> Use your own API keys
+        </p>
+        
+        <div class="form-group">
+          <label>OpenAI API Key</label>
+          <input type="password" id="openaiKey" placeholder="sk-...">
+        </div>
+        
+        <div class="form-group">
+          <label>Anthropic API Key</label>
+          <input type="password" id="anthropicKey" placeholder="sk-ant-...">
+        </div>
+        
+        <button class="btn btn--block" onclick="saveSettings()" style="margin-top: 20px;">
+          Save Settings
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // LLM Configuration - Pre-configured keys
+    // Gemini and Groq keys provided by site owner
+    // ==========================================
+    const LLM_CONFIG = {
+      // Default provider - Gemini (free, provided)
+      provider: localStorage.getItem('llm_provider') || 'gemini',
+      
+      // PRE-CONFIGURED KEYS (site owner provides these)
+      gemini_key: 'AIzaSyD5p0rBs7NY7BNjLlxMT-VBkZZsV7RTqko', // Your Gemini key
+      groq_key: localStorage.getItem('groq_api_key') || 'gsk_xxxxxxxx', // Your Groq key
+      
+      // BYOK options (users can add their own)
+      openai_key: localStorage.getItem('openai_api_key') || '',
+      anthropic_key: localStorage.getItem('anthropic_api_key') || ''
+    };
+    
+    // ==========================================
+    // State
+    // ==========================================
+    let currentVideoId = null;
+    let conversationHistory = [];
+    
+    // DOM Elements
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const chatSend = document.getElementById('chatSend');
+    const videoPlayer = document.getElementById('videoPlayer');
+    const nowPlayingBar = document.getElementById('nowPlayingBar');
+    const nowPlayingTitle = document.getElementById('nowPlayingTitle');
+    const nowPlayingChannel = document.getElementById('nowPlayingChannel');
+    
+    // ==========================================
+    // CURATED LIBRARY - Your Best Picks
+    // Always prefer these over backfill suggestions
+    // ==========================================
+    const CURATED_LIBRARY = [
+      // === YOUR PERSONAL PICKS ===
+      { id: 'dX3k_QDnzHE', title: 'Cercle Live Set', channel: 'Cercle', category: 'live-set' },
+      { id: 'V1bFr2SWP1I', title: 'Scenic DJ Session', channel: 'Cercle', category: 'live-set' },
+      { id: 'LRUYl92_GmQ', title: 'Mountain Sunset Set', channel: 'Cercle', category: 'live-set' },
+      { id: 'lfmxnzJAbl8', title: 'Epic Live Performance', channel: 'Cercle', category: 'live-set' },
+      { id: 'm5u0-t36vZw', title: 'Festival Highlights', channel: 'Various', category: 'live-set' },
+      { id: 'Zy4KtD98S2c', title: 'DJ Mix Session', channel: 'Various', category: 'mix' },
+      { id: 'crZfT5qnFdA', title: 'Electronic Music Set', channel: 'Various', category: 'mix' },
+      
+      // === CERCLE - SCRAPED FROM CHANNEL ===
+      { id: 'KS6KPNusfFQ', title: 'Tame Impala at Parque de Quetzalcóatl, Mexico', channel: 'Cercle', category: 'cercle' },
+      { id: 'VM2dxRnhq7g', title: 'Bonobo Solo live at Cercle Odyssey, Paris', channel: 'Cercle', category: 'cercle' },
+      { id: 'wMrHilUfnCE', title: 'Ben Böhmer live at Cercle Odyssey, Paris', channel: 'Cercle', category: 'cercle' },
+      { id: 'nxuB96ppBLY', title: 'Monolink live at Cercle Odyssey, Paris', channel: 'Cercle', category: 'cercle' },
+      { id: 'aiGBY5DA398', title: 'The Blaze live at Cercle Odyssey, Mexico City', channel: 'Cercle', category: 'cercle' },
+      { id: 'cxvdImFbNyQ', title: 'Kiasmos live at Citadelle de Sisteron, France', channel: 'Cercle', category: 'cercle' },
+      { id: 'X6ko4cklXjs', title: 'Disclosure b2b Mochakk at Cercle Festival 2024', channel: 'Cercle', category: 'cercle' },
+      { id: 'sL16rh73r-M', title: 'Argy at Jungfraujoch - Top of Europe, Switzerland', channel: 'Cercle', category: 'cercle' },
+      { id: 'bMCiAKNUpTY', title: 'Ólafur Arnalds live from Hafursey, Iceland', channel: 'Cercle', category: 'cercle' },
+      { id: 'w4LRUBFy3pc', title: 'Adriatique at Hatshepsut Temple, Luxor, Egypt', channel: 'Cercle', category: 'cercle' },
+      { id: 'J5oZ80Daduc', title: 'Hania Rani live at Invalides, Paris', channel: 'Cercle', category: 'cercle' },
+      { id: '1MobY_vR7-g', title: 'Boris Brejcha at Arènes de Nîmes, France', channel: 'Cercle', category: 'cercle' },
+      { id: 'xQCLf9T_M7Q', title: 'Bedouin live at Petra, Jordan', channel: 'Cercle', category: 'cercle' },
+      { id: 'MEzU1HvBo6Y', title: 'Above & Beyond in Guatape, Colombia', channel: 'Cercle', category: 'cercle' },
+      { id: '_SvwdK_HibQ', title: 'Monolink at Gaatafushi Island, Maldives', channel: 'Cercle', category: 'cercle' },
+      { id: 'RvRhUHTV_8k', title: 'RÜFÜS DU SOL Live at Joshua Tree', channel: 'Cercle', category: 'cercle' },
+      { id: 'sXgpA-IYCdY', title: 'Stephan Bodzin at Ferropolis', channel: 'Cercle', category: 'cercle' },
+      { id: 'bk0eBvTEpxE', title: 'Jan Blomqvist at Burning Man', channel: 'Cercle', category: 'cercle' },
+      { id: 'AWH05eCr1bk', title: 'Nina Kraviz at Château de Fontainebleau', channel: 'Cercle', category: 'cercle' },
+      
+      // === MATCHSTICK PRODUCTIONS - SKI FILMS ===
+      { id: 'DhpdHdkECG0', title: 'Shane McConkey "Seven Sunny Days" James Bond Segment', channel: 'Matchstick', category: 'ski' },
+      { id: 'B4RxgZBKv5s', title: 'Is This the Best Skiing on Earth? | After the Snowfall', channel: 'Matchstick', category: 'ski' },
+      { id: '8Ewv7a36pN0', title: 'Inside the Minds of Skiing Legends | Alaska', channel: 'Matchstick', category: 'ski' },
+      { id: 'F0RpN8DhcUE', title: 'Hoji\'s Best Year? | Ruin and Rose 2016', channel: 'Matchstick', category: 'ski' },
+      { id: 'eVJ1xUfiLsY', title: 'Townsend & Windstedt Charge the Chugach', channel: 'Matchstick', category: 'ski' },
+      { id: 'SkzpKVdQqJ0', title: 'You Won\'t Believe The Last Line | Huck Yeah', channel: 'Matchstick', category: 'ski' },
+      { id: 'hJpjf8gihno', title: 'Shane McConkey Rules', channel: 'Matchstick', category: 'ski' },
+      { id: 'K1NsF2-K_x0', title: 'The Most Intense Experience of My Life - Hoji', channel: 'Matchstick', category: 'ski' },
+      { id: 'w4MC4fDvI0I', title: 'Mark Abma\'s Best POV Clip?', channel: 'Matchstick', category: 'ski' },
+      { id: '1mKvPglAYBU', title: 'Karl Fostvedt Full Send In Alaska', channel: 'Matchstick', category: 'ski' },
+      
+      // === BOILER ROOM - SCRAPED ===
+      { id: 'A59i7lby9KY', title: 'Skream & Benga | Boiler Room: Melbourne', channel: 'Boiler Room', category: 'boiler-room' },
+      { id: 'j8SJ2w5m9oY', title: 'Lee Ann Roberts | Boiler Room: Dallas', channel: 'Boiler Room', category: 'boiler-room' },
+      { id: 'Mn9MdC_mIAc', title: 'Luca Agnelli | Boiler Room: Dallas', channel: 'Boiler Room', category: 'boiler-room' },
+      { id: '2i7FaJJjB34', title: 'Vigro Deep | Boiler Room London: Mzansi Beat', channel: 'Boiler Room', category: 'boiler-room' },
+      { id: 'JlczNryXSvQ', title: 'Oscar Mbo | Boiler Room London: Mzansi Beat', channel: 'Boiler Room', category: 'boiler-room' },
+      { id: '4JvB-kAXyCE', title: 'Jin Dogg | Boiler Room: Osaka', channel: 'Boiler Room', category: 'boiler-room' },
+      { id: '5bgV6B7Tctk', title: 'Tijana T | Boiler Room: Hyderabad', channel: 'Boiler Room', category: 'boiler-room' },
+      
+      // === DEFECTED - HOUSE MUSIC ===
+      { id: 'd0MsDTKV5gs', title: 'Skream Live From The Ditch at Defected Malta 2025', channel: 'Defected', category: 'defected' },
+      { id: 'wmSm_KTKXxc', title: 'Duck Sauce - Can\'t Stop (KiNK Remix)', channel: 'Defected', category: 'defected' },
+      { id: 'O9awGntquG8', title: 'The Martinez Brothers - H2DAIZZO (Josh Baker Remix)', channel: 'Defected', category: 'defected' },
+      
+      // === DRUMCODE / CAMELPHAT ===
+      { id: 'ix1mjSIuHQE', title: 'CAMELPHAT Live from a Yacht in Ibiza 2025', channel: 'Drumcode', category: 'drumcode' },
+      { id: 'h_aESLekNEQ', title: 'CAMELPHAT at Giza Pyramids 2025 (Zamna)', channel: 'Drumcode', category: 'drumcode' },
+      { id: 'suA1_p5559k', title: 'CAMELPHAT Tuesdays At Pacha: Opening Party 2025', channel: 'Drumcode', category: 'drumcode' },
+      { id: '00SZxFmi0Zw', title: 'CAMELPHAT Live From The Warehouse Project 2024', channel: 'Drumcode', category: 'drumcode' },
+      
+      // === PACHA IBIZA ===
+      { id: 'fPMvlqo1zro', title: 'Marco Carola presents MUSIC ON @ PACHA IBIZA', channel: 'Pacha', category: 'pacha' },
+      { id: 'Nhccejyq6mw', title: 'Solomun, Mau P, ANOTR, Purple Disco Machine | Opening Pacha Ibiza 2025', channel: 'Pacha', category: 'pacha' },
+      { id: 'zs8MXlqonIA', title: 'DIPLO Live DJ Set @ Pacha Ibiza 2024', channel: 'Pacha', category: 'pacha' },
+      { id: 'IYEmrL764EI', title: 'Roger Sanchez Live DJ Set @ Pacha Ibiza Closings 2024', channel: 'Pacha', category: 'pacha' },
+      { id: 'BPhONGsvB7Q', title: 'Solomun at Ibiza Port with Pacha Ibiza', channel: 'Pacha', category: 'pacha' },
+      { id: 'epdHOknjnew', title: 'Bedouin SAGA Opening Party 2024 | Seth Troxler b2b DJ Tennis', channel: 'Pacha', category: 'pacha' },
+      { id: 'tOZS2_bdr6Q', title: 'Camelphat @ Pacha Ibiza 2025', channel: 'Pacha', category: 'pacha' },
+      
+      // === MIXMAG LAB ===
+      { id: 'b-VdLJcvslo', title: 'Denis Sulta | Mixmag Lab London', channel: 'Mixmag', category: 'mixmag' },
+      { id: 'W7a1wMFgyCA', title: 'Theo Parrish | Mixmag Lab Bali', channel: 'Mixmag', category: 'mixmag' },
+      { id: 'mMvsWrDI658', title: 'Kelly Lee Owens | Mixmag Lab London', channel: 'Mixmag', category: 'mixmag' },
+      { id: 'hyyn4zkZIr0', title: 'Laurence Guy | Mixmag Lab London', channel: 'Mixmag', category: 'mixmag' },
+      { id: 'SAcHOkk6ce0', title: 'The Trip | Mixmag Lab London', channel: 'Mixmag', category: 'mixmag' },
+      
+      // === LUCA DEA (Festival/Club Sets) ===
+      { id: 'scc1Gb5Yv9g', title: 'MARCO CAROLA B2B LUCIANO @ Panorama Festival Italy 2025', channel: 'Luca Dea', category: 'festival' },
+      { id: 'CD0REhH9Rpg', title: 'SVEN VATH @ Change Your Mind, Italy 2025', channel: 'Luca Dea', category: 'festival' },
+      { id: 'JF4lk9L4Juk', title: 'EAST END DUBS @ Eastenderz Opening Amnesia Ibiza 2025', channel: 'Luca Dea', category: 'festival' },
+      { id: 'pZ2nAE51-30', title: 'NICOLE MOUDABER @ Adriatic Sound Festival Italy 2025', channel: 'Luca Dea', category: 'festival' },
+      { id: '0ndfPnLpZzs', title: 'MARCO CAROLA b2b SETH TROXLER @ Music On Cocoricò 2025', channel: 'Luca Dea', category: 'festival' },
+      { id: 'quETxqZlYZE', title: 'NINA KRAVIZ @ Caprices Festival Switzerland 2025', channel: 'Luca Dea', category: 'festival' },
+      { id: '6qyQf2M9jI0', title: 'RICARDO VILLALOBOS B2B RARESH @ Caprices Festival 2025', channel: 'Luca Dea', category: 'festival' },
+      { id: '0HDjSLYoLqE', title: 'MARCO CAROLA @ Caprices Festival Switzerland 2025', channel: 'Luca Dea', category: 'festival' },
+      { id: 'JGqI-QSsodo', title: 'SETH TROXLER B2B JAMIE JONES @ Caprices Festival 2025', channel: 'Luca Dea', category: 'festival' },
+      { id: '_0TT3NuRxd4', title: 'MARCO CAROLA b2b PACO OSUNA @ Club SPACE Miami 2024', channel: 'Luca Dea', category: 'festival' },
+      
+      // === HUGEL ===
+      { id: 'wstnNlEi1Us', title: 'HUGEL Live @ HÏ Ibiza B2B Bob Sinclar 2025', channel: 'HUGEL', category: 'festival' },
+      { id: '7p_qUXAxB-c', title: 'HUGEL Live @ Tomorrowland 2025 Crystal Garden Stage', channel: 'HUGEL', category: 'festival' },
+      
+      // === CELEBRITY DJ SETS ===
+      { id: '1T2SxFGT1N0', title: 'Idris Elba DJ Set', channel: 'Various', category: 'celebrity' },
+      { id: 't8xLhpVJG_A', title: 'Shaquille O\'Neal (DJ Diesel)', channel: 'Various', category: 'celebrity' },
+      { id: '_5t2C1eWpGQ', title: 'Paris Hilton DJ Set', channel: 'Various', category: 'celebrity' },
+      
+      // === SHAUN BRADLEY / SPORTS ===
+      { id: 'GPUpt1my1eI', title: 'Shaun Bradley Career Highlights', channel: 'NFL', category: 'sports', featured: true },
+      { id: 'g60HMP2X0Uw', title: 'How Well Does Shaun Bradley Know His Fellow Linebackers?', channel: 'Eagles', category: 'sports' },
+      { id: '1Wqqdz2uXmE', title: 'Shaun Bradley Hosts 3rd Annual Free Football Camp', channel: 'Eagles', category: 'sports' },
+      { id: 'U0c0g881YfA', title: 'Shaun Bradley Mic\'d Up 2017', channel: 'Temple', category: 'sports' },
+      { id: '0kTl5fglQ44', title: 'Mic\'d Up: Shaun Bradley', channel: 'Eagles', category: 'sports' },
+      { id: 'jkykElJ38G4', title: 'Shaun Bradley: Camp Has Been an Unbelievable Experience', channel: 'Eagles', category: 'sports' },
+      { id: '7vgFEMMwAKY', title: 'Rod Carey on Shaun Bradley: The Best Leader I\'ve Ever Been Around', channel: 'Eagles', category: 'sports' },
+      { id: 'PHrrogyC2YM', title: 'Shaun Bradley Excited Entering Year 2 in the NFL', channel: 'Eagles', category: 'sports' },
+      { id: 'z1QMmWQXLVU', title: 'How Shaun Bradley\'s Athleticism & Toughness Translates to NFL', channel: 'Eagles', category: 'sports' },
+      { id: 'lRHHNyiloVM', title: 'Shaun Bradley 2021 Football Camp', channel: 'Community', category: 'sports' },
+      { id: 'VqahLz_kyVY', title: 'Davion Taylor & Shaun Bradley Highlights | Welcome to Philly!', channel: 'Eagles', category: 'sports' },
+      { id: 'U9_2SrmL7DE', title: 'Shaun Bradley vs Saints 2020', channel: 'NFL', category: 'sports' },
+      { id: '3fioDwPjV9k', title: 'Shaun Bradley 2020 Tackles', channel: 'NFL', category: 'sports' },
+      
+      // === DEFAULT ROW 3: Human Interest Sports Docs ===
+      { id: '_JDtfhKVWYY', title: 'Sisqo in the Suburbs', channel: 'Documentary', category: 'documentary', defaultRow: true },
+      { id: 'U8pQVJ3ateE', title: 'The Legend of Manute Bol', channel: 'NBA', category: 'documentary', defaultRow: true },
+      { id: 'Dipx3w4RAgE', title: 'Dennis Rodman Interview - Spurs Era 1994', channel: 'NBC Sports', category: 'documentary', defaultRow: true },
+      
+      // === MANUTE BOL - GIVING BACK ===
+      { id: 'neTs8P1XpDw', title: 'Manute Bol Explains Turalei School Project', channel: 'Documentary', category: 'documentary' },
+      { id: 'hkSURsD9OaE', title: 'Manute Bol\'s Dream of 41 Schools', channel: 'Documentary', category: 'documentary' },
+      { id: 'sNAOQ7r0znI', title: 'Manute Bol Feature on Giving Back to Sudan', channel: 'Documentary', category: 'documentary' },
+      { id: 'fPPSXcu8fbI', title: 'Manute Bol 2004 Commencement Speech', channel: 'Documentary', category: 'documentary' },
+      
+      // === DENNIS RODMAN - SPURS ERA ===
+      { id: 't30N1JToj0o', title: 'Rodman Last Spurs Game - Scoring Machine', channel: 'NBA', category: 'sports' },
+      { id: 'vKuU4uTJEGo', title: 'Dennis Rodman Top 10 Plays as a Spur', channel: 'NBA', category: 'sports' },
+      { id: 'STUqz2QxcWk', title: 'The Rodman-Popovich Beef That Could Have Ruined Both', channel: 'Documentary', category: 'documentary' },
+      { id: 'zR-Jk94N8BM', title: 'Karl Malone Battles Dennis Rodman - Jazz @ Spurs 1994', channel: 'NBA on NBC', category: 'sports' },
+      
+      // === SPORTS ILLUSTRATED / 80s-90s CLASSICS ===
+      // TODO: Expand this section - search "sports illustrated" channel, "80s 90s nba documentary", "classic sports interviews"
+      { id: 'gvNaj8TDcvQ', title: 'Sports Illustrated Year In Review 1993', channel: 'Sports Illustrated', category: 'si-classic' },
+      { id: 'H1t6AuYtEwQ', title: 'Top 40 Sports Illustrated Covers of the 1980s (#40-21)', channel: 'Sports Illustrated', category: 'si-classic' },
+      { id: 'GNKhPXKRGPo', title: '1980 The Year in Sports - SI Commercial', channel: 'Sports Illustrated', category: 'si-classic' },
+      { id: 'N62HaaqAf8g', title: 'Men Against Mountains: A Sports Illustrated Featured Film', channel: 'Sports Illustrated', category: 'si-classic' },
+      
+      // === RICKY WILLIAMS - CANNABIS / CANDID INTERVIEWS ===
+      { id: 'h0D2UEzTeaQ', title: 'Ricky Williams Takes The High Road, Leads A Cannabis Revolution', channel: 'SI Films', category: 'candid-interview', featured: true },
+      { id: 'RxCpzU1C3Cw', title: 'Ricky Williams on NFL Suspension for Weed, $7M Stolen (Full Interview)', channel: 'VladTV', category: 'candid-interview' },
+      { id: 'LPfrnW5BBXI', title: 'Ricky Williams: Failed Drug Tests, NFL Exit & Life Now', channel: 'The Pivot', category: 'candid-interview' },
+      { id: 'wm8gB9DNlJM', title: 'Two Bong Hits Changed Ricky Williams\' Life', channel: 'Documentary', category: 'candid-interview' },
+      { id: 'MTEz-OgAN88', title: 'A Football Life: Ricky Williams', channel: 'NFL Films', category: 'candid-interview' },
+      { id: 's3L6evvZWuk', title: 'Ricky Williams: Cannabis Saved My Life', channel: 'Documentary', category: 'candid-interview' },
+      { id: 'pkjSMIYk-y0', title: 'Ricky Williams on Living in a $7 a Night Tent After Quitting Football', channel: 'VladTV', category: 'candid-interview' },
+      
+      // === LEGENDARY CANDID ATHLETE INTERVIEWS ===
+      { id: 'K9ZQhyOZCNE', title: 'Allen Iverson\'s Legendary Practice Rant [FULL]', channel: 'ESPN Archives', category: 'candid-interview' },
+      { id: 'byR3Nda7azA', title: 'PRACTICE: The Story Behind Allen Iverson\'s Press Conference', channel: 'Documentary', category: 'candid-interview' },
+      { id: 'G1kvwXsZtU8', title: 'Marshawn Lynch SuperBowl Media Day - I\'m Just Here So I Won\'t Get Fined', channel: 'NFL', category: 'candid-interview' },
+      { id: 'VwbXkFp25cI', title: 'Best of Marshawn Lynch Interviews Compilation', channel: 'NFL', category: 'candid-interview' },
+      { id: 'MfyjQuNOH_E', title: 'Charles Barkley: Sabotaging My NBA Draft Stock, MJ and Dream Team', channel: 'Documentary', category: 'candid-interview' },
+      { id: 'GT6FdhgXcns', title: 'Charles Barkley on Dream Team, Being Controversial & Retiring', channel: 'The Pivot', category: 'candid-interview' },
+      { id: 'VzocyEJUCVU', title: 'Charles Barkley On His Fallout With Michael Jordan', channel: 'SI Media', category: 'candid-interview' },
+      { id: '5b-ZdQB-zck', title: 'SHOCKING TYSON TIRADE! Controversial Fox Interview 2002', channel: 'Fox Sports', category: 'candid-interview' },
+      { id: 'OOhdx1TLutw', title: 'Mike Tyson DESTROYS Reporter!', channel: 'Documentary', category: 'candid-interview' },
+      { id: 'c3vFmPhJnsM', title: 'Josh Gordon, Ricky Williams and Athletes Who Smoke Cannabis', channel: 'Documentary', category: 'candid-interview' },
+      
+      // === ESPN 30 FOR 30 DOCUMENTARIES ===
+      { id: 'GskmlxtZU-o', title: 'Len Bias Documentary', channel: 'ESPN 30 for 30', category: '30-for-30' },
+      { id: 'TLasaLo8mk8', title: 'Free Spirits: The Wild Untold Story of the ABA', channel: 'ESPN 30 for 30', category: '30-for-30' },
+      { id: 'KNPoRsu8eDs', title: 'The Two Escobars', channel: 'ESPN 30 for 30', category: '30-for-30' },
+      { id: 'neHwHejKApc', title: '30 for 30: Windy City Assassin', channel: 'ESPN 30 for 30', category: '30-for-30' },
+      { id: '157IhCwPcnI', title: 'The Runnin\' Rebels of UNLV', channel: 'HBO Documentary', category: '30-for-30' },
+      
+      // === NFL FILMS - A FOOTBALL LIFE ===
+      { id: 'lEBoiNKtjJw', title: 'A Football Life: Jerry Rice', channel: 'NFL Films', category: 'football-life' },
+      { id: '2sPnrh6GuEs', title: 'A Football Life: John Riggins', channel: 'NFL Films', category: 'football-life' },
+      { id: 'v57NSBJmZAA', title: 'A Football Life: Bill Parcells', channel: 'NFL Films', category: 'football-life' },
+      { id: '7ARepw8RV6Q', title: 'A Football Life: Barry Sanders', channel: 'NFL Films', category: 'football-life' },
+      { id: 'LfftlGaInU0', title: 'A Football Life: Paul Brown', channel: 'NFL Films', category: 'football-life' },
+      { id: 'UyKuJ-4Ir1E', title: 'A Football Life: Terrell Owens', channel: 'NFL Films', category: 'football-life' },
+      { id: 'Cq7BhsKsODw', title: 'A Football Life: Ray Lewis', channel: 'NFL Films', category: 'football-life' },
+      { id: 'lODsFL8BJHs', title: 'A Football Life: Jerome Bettis', channel: 'NFL Films', category: 'football-life' },
+      { id: 'Zc75Vrahc3M', title: 'A Football Life: John Madden', channel: 'NFL Films', category: 'football-life' },
+      { id: 'IUwvNwNIi_w', title: 'A Football Life: Troy Aikman', channel: 'NFL Films', category: 'football-life' },
+      { id: '7rBkhnSIQt8', title: 'A Football Life: Walter Payton', channel: 'NFL Films', category: 'football-life' },
+      { id: '_gD422uuBME', title: 'A Football Life: James Harrison', channel: 'NFL Films', category: 'football-life' },
+      { id: 'l6BmjJpum7s', title: 'A Football Life: Earl Campbell', channel: 'NFL Films', category: 'football-life' },
+      { id: 'sXKT2-353Tg', title: 'A Football Life: Steve Sabol', channel: 'NFL Films', category: 'football-life' },
+      { id: 'bcy6let0L_w', title: 'A Football Life: Warren Moon', channel: 'NFL Films', category: 'football-life' },
+      { id: 'JpgURcZLmKE', title: 'A Football Life: Mike Singletary', channel: 'NFL Films', category: 'football-life' },
+      { id: 'Ar-jRw7rjaU', title: 'A Football Life: Brian Dawkins - Weapon X', channel: 'NFL Films', category: 'football-life' },
+      
+      // === NBA OPEN COURT ===
+      { id: 'tQga_C_Mi48', title: 'NBA Open Court: Complete Season 1', channel: 'NBA TV', category: 'open-court' },
+      { id: 'ZE5N_wb9xwA', title: 'NBA Open Court: Top 10 Episodes [7-Hour Compilation]', channel: 'NBA TV', category: 'open-court' },
+      { id: '4-aXfeF8uA4', title: 'NBA Open Court: The Backcourt', channel: 'NBA TV', category: 'open-court' },
+      { id: '0PNoDKxnXCI', title: 'NBA Open Court: Pressurized Tales Of The NBA', channel: 'NBA TV', category: 'open-court' },
+      { id: 'FvvDofdTz9w', title: 'NBA Open Court: Tallest Tales Of The NBA', channel: 'NBA TV', category: 'open-court' },
+      { id: 'SJcGP0OzcsM', title: 'NBA Open Court: 50 Greatest & the Next 10', channel: 'NBA TV', category: 'open-court' },
+      { id: 'QeKn01wLKk0', title: 'NBA Open Court: Decades', channel: 'NBA TV', category: 'open-court' },
+      { id: 'WFqTI0cVQHw', title: 'NBA Open Court: Curious Tales Of The NBA', channel: 'NBA TV', category: 'open-court' },
+      { id: 'wF3csgyzymc', title: 'NBA Open Court: Head Games And Fame', channel: 'NBA TV', category: 'open-court' },
+      
+      // === NBA HARDWOOD CLASSICS ===
+      { id: 'BUbHBu8Vj5A', title: 'Westbrook & Kobe Duel, KD Hits Clutch Shot', channel: 'NBA Classics', category: 'hardwood-classics' },
+      { id: 'o2TKJPVAw_c', title: 'Kobe\'s 49 PTS Leads Lakers To Game 2 W', channel: 'NBA Classics', category: 'hardwood-classics' },
+      { id: '19kCMpF-86c', title: '2010 NBA Finals Game 7: Celtics vs Lakers', channel: 'NBA Classics', category: 'hardwood-classics' },
+      { id: '45xBoYTLSCA', title: 'Steve Nash vs Jason Kidd 2OT Thriller', channel: 'NBA Classics', category: 'hardwood-classics' },
+      { id: 'yZ5u2sOpiNU', title: 'LeBron James 45-PT Performance Forces Game 7', channel: 'NBA Classics', category: 'hardwood-classics' },
+      { id: 'lO2yOETR2jQ', title: 'Michael Jordan Double-Nickel Game', channel: 'NBA Classics', category: 'hardwood-classics' },
+      
+      // === CLASSIC BOXING ===
+      { id: 'HL2a2-8OHdg', title: 'Marvin Hagler vs Tommy Hearns Round 1 - GREATEST ROUND OF BOXING', channel: 'Boxing', category: 'boxing' },
+      { id: 'OO4E_bQ7R0A', title: 'The Fabulous Four: Hagler, Hearns, Leonard, Duran Documentary', channel: 'Boxing', category: 'boxing' },
+      { id: 'DulmEviQEbU', title: 'Hagler, Leonard, Duran, Hearns: Boxing Legends 70s 80s Highlights', channel: 'Boxing', category: 'boxing' },
+      { id: '55AasOJZzDE', title: 'George Foreman vs Muhammad Ali - Rumble in the Jungle Full Fight', channel: 'Boxing', category: 'boxing' },
+      { id: 'vg5Nxbg7oMs', title: 'Muhammad Ali - The Greatest (Original Career Documentary)', channel: 'Boxing', category: 'boxing' },
+      { id: 'GuPWntYXZIg', title: 'Champions Forever (Ali, Frazier, Foreman, Holmes, Norton)', channel: 'Boxing', category: 'boxing' },
+      { id: 'tH-fvR9fJy0', title: 'Rocky Marciano vs Joe Louis - Film Restoration Colorized', channel: 'Boxing', category: 'boxing' },
+      { id: 'qKNGyEjxFTY', title: 'Mike Tyson vs Michael Spinks Full Fight 1988', channel: 'Boxing', category: 'boxing' },
+      { id: 'zASkGb8OEz8', title: 'Mike Tyson vs Larry Holmes Full Fight 1988', channel: 'Boxing', category: 'boxing' },
+      
+      // === UK MUSIC SCENE DOCS (Bristol, Trip-Hop, Electronic) ===
+      { id: 'pt2e4wv7Q_o', title: 'Unfinished: The Making of Massive Attack', channel: 'Documentary', category: 'uk-music' },
+      { id: 'c-kxNI4Jk5s', title: 'Massive Attack Documentary x4 Complete', channel: 'Documentary', category: 'uk-music' },
+      { id: '8MY71_JMDfo', title: 'Sounds Of The West - Straight Outa Bristol (Wild Bunch/Massive Attack/Tricky/Portishead)', channel: 'Documentary', category: 'uk-music' },
+      { id: '0UcXH6HRwXI', title: 'Massive Attack Interview - Making Of Heligoland (2010)', channel: 'Documentary', category: 'uk-music' },
+      { id: 'Bq8EQlikuFE', title: 'Massive Attack 1994 Interview (Archive Footage)', channel: 'Documentary', category: 'uk-music' },
+      { id: 'rPF0bMWC4WY', title: 'Massive Attack - Mezzanine Interview 1998', channel: 'Documentary', category: 'uk-music' },
+      
+      // === BJORK ===
+      { id: 'IqqBcLcdhJM', title: 'Ultimate Björk - Part 1 (Iceland, Sugarcubes, GlingGlo)', channel: 'Documentary', category: 'uk-music' },
+      { id: '1aBFm0q8Q3w', title: 'Björk Shows Her Home and City', channel: 'Documentary', category: 'uk-music' },
+      { id: 'Dk8mkrpwlcQ', title: 'Bjork 1993 Interview At Home In Iceland (MTV)', channel: 'Documentary', category: 'uk-music' },
+      { id: '4OFBJcU3Kr8', title: 'Björk Starts Her Solo Music Career | Conan O\'Brien', channel: 'Documentary', category: 'uk-music' },
+      
+      // === BANKSY / STREET ART ===
+      { id: 'E8HiOiXQUmg', title: 'Banksy: The Most Famous Anonymous Street Artist | Full Documentary', channel: 'Documentary', category: 'street-art' },
+      { id: 'IqVXThss1z4', title: 'Exit Through the Gift Shop - Banksy Documentary', channel: 'Documentary', category: 'street-art' },
+      { id: 'xrC9IhPUkJg', title: 'Banksy Does New York (2014)', channel: 'Documentary', category: 'street-art' },
+      { id: 'tbGs1xqsAyo', title: 'Extremely Rare Banksy Interview from 2003', channel: 'Documentary', category: 'street-art' },
+      
+      // === MINISTRY OF SOUND / 90s CLUB CULTURE ===
+      { id: 'C5CrWTcCSFw', title: 'The Ministry of Sound Documentary Channel 4 (2001)', channel: 'Documentary', category: 'club-culture' },
+      { id: 'tyntZ2CXs5c', title: 'Clubbing at 1990s Ministry of Sound Nightclub, London', channel: 'Documentary', category: 'club-culture' },
+      { id: 'eP0Jj89nK-Q', title: 'Better Days: The Story of UK Rave | Amazon Documentary', channel: 'Documentary', category: 'club-culture' },
+      { id: 'wmz9eeKxot4', title: '1990s News Report on Ministry of Sound Nightclub', channel: 'Documentary', category: 'club-culture' },
+      { id: 'Ao5fuBflTzE', title: 'Tony Humphries - Ministry of Sound Sessions Vol 1 (1993)', channel: 'Ministry of Sound', category: 'club-culture' },
+      
+      // === DIDO ===
+      { id: 'E2GHedLIl3Y', title: 'Dido | Life For Rent | Baloise Session 2019', channel: 'Live', category: 'live-performance' },
+      { id: 'Gbuk9OHjhQY', title: 'Dido | Life For Rent | BBC Radio 2 in Concert', channel: 'Live', category: 'live-performance' },
+      
+      // === CLASSIC LIVE PERFORMANCES / FULL CONCERTS ===
+      { id: 'oeLDLVImwYA', title: 'The Allman Brothers Band - Full Concert | Live at Fillmore East (1970)', channel: 'Live Concert', category: 'live-performance' },
+      { id: 'OxBdE-GGMOA', title: 'The Allman Brothers Band - Live at the Beacon Theatre (2003)', channel: 'Live Concert', category: 'live-performance' },
+      { id: 'wSc5Ihqeu-s', title: 'Allman Brothers Live At Saratoga 1996 (Full Concert)', channel: 'Live Concert', category: 'live-performance' },
+      { id: 'F78XV6fjxCE', title: 'The Allman Brothers Band - Full Concert | University Of Florida (1982)', channel: 'Live Concert', category: 'live-performance' }
+    ];
+    
+    // Sports Illustrated 80s/90s - TO EXPAND LATER
+    // Channels to scrape: @SportsIllustrated, @NBA, @NFLThrowback
+    // Search terms: "80s nba documentary", "90s sports illustrated", "classic nfl films", "30 for 30"
+    // Good sources: ESPN Films, NFL Films, NBA TV
+    
+    // Fallback suggestions (only used if curated library is exhausted)
+    const BACKFILL_SUGGESTIONS = [
+      'relaxing music for focus',
+      'lo-fi hip hop beats',
+      'nature sounds rain',
+      'jazz cafe music',
+      'ambient electronic',
+      'acoustic guitar instrumental',
+      'piano study music',
+      'chill vibes playlist'
+    ];
+    
+    // Get YouTube thumbnail URL
+    function getYouTubeThumbnail(videoId, quality = 'hqdefault') {
+      return `https://img.youtube.com/vi/${videoId}/${quality}.jpg`;
+    }
+    
+    // Get random curated videos (always prefer curated over backfill)
+    function getRandomCurated(count = 4) {
+      const shuffled = [...CURATED_LIBRARY].sort(() => Math.random() - 0.5);
+      return shuffled.slice(0, count);
+    }
+    
+    // Find curated videos matching a query (your expertise areas)
+    function findMatchingCurated(query) {
+      const q = query.toLowerCase();
+      const matches = [];
+      
+      // Define keyword mappings to categories/terms
+      const keywords = {
+        'cercle': ['cercle', 'scenic', 'beautiful', 'landscape', 'nature', 'outdoor', 'bonobo', 'böhmer', 'monolink', 'blaze', 'kiasmos', 'argy', 'adriatique', 'boris brejcha', 'rufus', 'bodzin', 'blomqvist', 'kraviz', 'bedouin', 'above beyond', 'hania rani', 'olafur'],
+        'ski': ['ski', 'skiing', 'snow', 'powder', 'mountain', 'matchstick', 'mcconkey', 'hoji', 'alaska', 'chugach', 'abma', 'fostvedt'],
+        'boiler-room': ['boiler', 'underground', 'club', 'warehouse', 'skream', 'benga'],
+        'defected': ['defected', 'house music', 'duck sauce', 'martinez brothers', 'kink'],
+        'drumcode': ['drumcode', 'camelphat', 'adam beyer', 'techno', 'warehouse project'],
+        'pacha': ['pacha', 'ibiza', 'solomun', 'marco carola', 'music on', 'diplo', 'roger sanchez'],
+        'mixmag': ['mixmag', 'lab', 'denis sulta', 'theo parrish', 'kelly lee owens'],
+        'festival': ['festival', 'caprices', 'tomorrowland', 'amnesia', 'space miami', 'villalobos', 'seth troxler', 'jamie jones', 'nicole moudaber', 'sven vath', 'luciano', 'paco osuna', 'hugel'],
+        'celebrity': ['celebrity', 'famous', 'actor', 'idris', 'shaq', 'paris', 'hilton', 'diesel'],
+        'live-set': ['live', 'set', 'dj', 'performance', 'festival', 'concert'],
+        'mix': ['mix', 'deep house', 'electronic', 'techno', 'house music'],
+        'sports': ['sports', 'football', 'nfl', 'eagles', 'temple', 'linebacker', 'shaun bradley', 'bradley', 'highlights', 'tackles', 'micd up', 'camp', 'philly', 'philadelphia'],
+        'documentary': ['documentary', 'doc', 'interview', 'behind the scenes', 'story', 'legend', 'giving back', 'school', 'sudan', 'manute', 'bol', 'sisqo', 'suburbs', 'minnesota'],
+        'si-classic': ['sports illustrated', 'si', '80s', '90s', 'classic', 'retro', 'vintage', 'rodman', 'spurs', '1994', '1995', 'nbc sports', 'year in review'],
+        'candid-interview': ['interview', 'candid', 'honest', 'raw', 'controversial', 'ricky williams', 'marijuana', 'cannabis', 'weed', 'drugs', 'iverson', 'practice', 'marshawn', 'lynch', 'fined', 'barkley', 'tyson', 'unfiltered', 'real talk', 'pivot', 'vlad'],
+        '30-for-30': ['30 for 30', 'espn films', 'documentary', 'len bias', 'two escobars', 'fab five', 'the u', 'once brothers', 'broke', 'aba', 'unlv', 'rebels'],
+        'football-life': ['a football life', 'nfl films', 'jerry rice', 'barry sanders', 'walter payton', 'ray lewis', 'john madden', 'parcells', 'aikman', 'bettis', 'singletary', 'dawkins', 'weapon x', 'earl campbell', 'warren moon', 'terrell owens'],
+        'open-court': ['open court', 'nba tv', 'charles barkley', 'kenny smith', 'reggie miller', 'chris webber', 'isiah thomas', 'shaq', 'decades', 'tallest tales', 'curious tales'],
+        'hardwood-classics': ['hardwood classics', 'classic game', 'full game', 'nba classics', 'kobe', 'jordan', 'lebron', 'finals', 'playoffs', 'game 7', 'double nickel', 'nash kidd'],
+        'boxing': ['boxing', 'fight', 'knockout', 'ko', 'hagler', 'hearns', 'leonard', 'duran', 'ali', 'frazier', 'foreman', 'tyson', 'marciano', 'joe louis', 'rumble in the jungle', 'thrilla manila', 'four kings', 'heavyweight'],
+        'uk-music': ['massive attack', 'tricky', 'portishead', 'bristol', 'trip hop', 'trip-hop', 'mezzanine', 'blue lines', 'unkle', 'bjork', 'björk', 'sugarcubes', 'iceland'],
+        'street-art': ['banksy', 'street art', 'graffiti', 'exit through', 'gift shop', 'stencil'],
+        'club-culture': ['ministry of sound', 'rave', 'club culture', '90s club', 'uk rave', 'acid house', 'warehouse party'],
+        'live-performance': ['live', 'concert', 'full concert', 'full show', 'performance', 'set', 'fillmore', 'beacon', 'festival', 'tour', 'show', 'covers', 'cover', 'remix', 'acoustic', 'unplugged', 'session', 'in concert', 'live at', 'allman', 'grateful dead', 'phish', 'jam band', 'dido', 'joshua tree', 'rufus du sol']
+      };
+      
+      // Check each curated video
+      CURATED_LIBRARY.forEach(video => {
+        const titleLower = video.title.toLowerCase();
+        const channelLower = video.channel.toLowerCase();
+        const category = video.category;
+        
+        // Direct title/channel match
+        if (titleLower.includes(q) || channelLower.includes(q)) {
+          matches.push(video);
+          return;
+        }
+        
+        // Category keyword match
+        const categoryKeywords = keywords[category] || [];
+        if (categoryKeywords.some(kw => q.includes(kw))) {
+          matches.push(video);
+          return;
+        }
+        
+        // General music/dj/live terms - expanded for live performances
+        const generalTerms = ['music', 'dj', 'set', 'vibes', 'chill', 'dance', 'electronic', 'house', 'techno', 'live', 'concert', 'show', 'performance', 'full', 'covers', 'acoustic', 'unplugged', 'session', 'jam'];
+        if (generalTerms.some(term => q.includes(term))) {
+          // Higher priority for live/concert/full terms
+          const isLiveQuery = ['live', 'concert', 'full', 'show', 'performance'].some(t => q.includes(t));
+          if (isLiveQuery || Math.random() > 0.3) matches.push(video);
+        }
+      });
+      
+      // Shuffle matches and return unique
+      return [...new Set(matches)].sort(() => Math.random() - 0.5);
+    }
+    
+    // ==========================================
+    // LLM Integration (BYOK)
+    // ==========================================
+    
+    function hasLLMKey() {
+      const provider = LLM_CONFIG.provider;
+      if (provider === 'gemini') return !!LLM_CONFIG.gemini_key;
+      if (provider === 'groq') return !!LLM_CONFIG.groq_key;
+      if (provider === 'openai') return !!LLM_CONFIG.openai_key;
+      if (provider === 'anthropic') return !!LLM_CONFIG.anthropic_key;
+      return false;
+    }
+    
+    async function askLLM(userMessage) {
+      const provider = LLM_CONFIG.provider;
+      
+      // System prompt for video search assistant - returns YouTube search URLs
+      const systemPrompt = `You are a helpful video assistant. The user will describe what they want to watch.
+
+Your job is to:
+1. Understand what they're looking for
+2. Respond conversationally in 1-2 sentences  
+3. Generate 1-2 YouTube SEARCH QUERIES (not video IDs)
+
+ALWAYS respond in this exact JSON format:
+{
+  "response": "Your friendly 1-2 sentence response",
+  "searches": ["youtube search query 1", "youtube search query 2"]
+}
+
+Examples:
+User: "I'm feeling stressed"
+{"response": "Let me find something relaxing for you.", "searches": ["relaxing lo-fi music 2024", "calming nature ambience"]}
+
+User: "how to cook pasta"
+{"response": "Here are some great pasta tutorials!", "searches": ["easy pasta recipe for beginners", "how to cook perfect pasta"]}
+
+User: "something funny"
+{"response": "Time for some laughs!", "searches": ["funny videos compilation 2024"]}
+
+Keep searches specific and likely to find good results.`;
+
+      conversationHistory.push({ role: 'user', content: userMessage });
+      
+      try {
+        let result;
+        
+        if (provider === 'gemini' && LLM_CONFIG.gemini_key) {
+          result = await callGemini(systemPrompt, conversationHistory);
+        } else if (provider === 'groq' && LLM_CONFIG.groq_key) {
+          result = await callGroq(systemPrompt, conversationHistory);
+        } else if (provider === 'openai' && LLM_CONFIG.openai_key) {
+          result = await callOpenAI(systemPrompt, conversationHistory);
+        } else if (provider === 'anthropic' && LLM_CONFIG.anthropic_key) {
+          result = await callAnthropic(systemPrompt, conversationHistory);
+        } else {
+          // No LLM - just use the user message as search query
+          return { response: null, searches: [userMessage] };
+        }
+        
+        conversationHistory.push({ role: 'assistant', content: JSON.stringify(result) });
+        return result;
+        
+      } catch (error) {
+        console.error('LLM error:', error);
+        // Fallback to direct search
+        return { response: null, searches: [userMessage] };
+      }
+    }
+    
+    async function callGemini(systemPrompt, messages) {
+      const lastMessage = messages[messages.length - 1].content;
+      
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${LLM_CONFIG.gemini_key}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{
+              parts: [{ text: `${systemPrompt}\n\nUser: ${lastMessage}` }]
+            }],
+            generationConfig: {
+              temperature: 0.7,
+              maxOutputTokens: 300
+            }
+          })
+        }
+      );
+      
+      const data = await response.json();
+      const content = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      
+      // Parse JSON from response
+      try {
+        // Find JSON in response (may have markdown)
+        const jsonMatch = content.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          return JSON.parse(jsonMatch[0]);
+        }
+        return { response: content, searches: [messages[messages.length - 1].content] };
+      } catch {
+        return { response: content, searches: [messages[messages.length - 1].content] };
+      }
+    }
+    
+    async function callGroq(systemPrompt, messages) {
+      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${LLM_CONFIG.groq_key}`
+        },
+        body: JSON.stringify({
+          model: 'llama-3.1-8b-instant',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            ...messages
+          ],
+          temperature: 0.7,
+          max_tokens: 300
+        })
+      });
+      
+      const data = await response.json();
+      const content = data.choices[0].message.content;
+      
+      // Parse JSON from response
+      try {
+        return JSON.parse(content);
+      } catch {
+        // If not valid JSON, extract what we can
+        return { response: content, searches: [messages[messages.length - 1].content] };
+      }
+    }
+    
+    async function callOpenAI(systemPrompt, messages) {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${LLM_CONFIG.openai_key}`
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            ...messages
+          ],
+          temperature: 0.7,
+          max_tokens: 300
+        })
+      });
+      
+      const data = await response.json();
+      const content = data.choices[0].message.content;
+      
+      try {
+        return JSON.parse(content);
+      } catch {
+        return { response: content, searches: [messages[messages.length - 1].content] };
+      }
+    }
+    
+    async function callAnthropic(systemPrompt, messages) {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': LLM_CONFIG.anthropic_key,
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: 'claude-3-haiku-20240307',
+          system: systemPrompt,
+          messages: messages,
+          max_tokens: 300
+        })
+      });
+      
+      const data = await response.json();
+      const content = data.content[0].text;
+      
+      try {
+        return JSON.parse(content);
+      } catch {
+        return { response: content, searches: [messages[messages.length - 1].content] };
+      }
+    }
+    
+    // ==========================================
+    // Chat Functions
+    // ==========================================
+    
+    function addMessage(content, type = 'system') {
+      const msg = document.createElement('div');
+      msg.className = `chat-message chat-message--${type}`;
+      msg.innerHTML = content;
+      chatMessages.appendChild(msg);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      return msg;
+    }
+    
+    function addVideoResults(videos, query, isStandby = false) {
+      const container = document.createElement('div');
+      container.className = 'chat-message chat-message--video';
+      
+      // First video = featured (full width)
+      const featured = videos[0];
+      const featuredThumb = featured.snippet?.thumbnails?.high?.url || featured.snippet?.thumbnails?.medium?.url || '';
+      const featuredId = featured.id?.videoId || featured.id;
+      
+      // Remaining videos = row of 3
+      const remaining = videos.slice(1, 4);
+      
+      const headerText = isStandby ? `Suggestions: "${escapeHtml(query)}"` : `"${escapeHtml(query)}"`;
+      
+      let html = `
+        <div class="video-results-group">
+          <div class="video-results-group__header">
+            <i class="fab fa-youtube" style="color: #ff0000;"></i>
+            ${headerText}
+          </div>
+          
+          <!-- Featured Video (Full Width) -->
+          <div class="video-featured" onclick="playVideo('${featuredId}', '${escapeHtml(featured.snippet?.title || '').replace(/'/g, "\\'")}', '${escapeHtml(featured.snippet?.channelTitle || '').replace(/'/g, "\\'")}')">
+            <div class="video-featured__thumb">
+              <img src="${featuredThumb}" alt="" loading="lazy">
+              <div class="video-featured__play"><i class="fas fa-play"></i></div>
+            </div>
+            <div class="video-featured__info">
+              <h4 class="video-featured__title">${escapeHtml(featured.snippet?.title || 'Untitled')}</h4>
+              <p class="video-featured__meta">${escapeHtml(featured.snippet?.channelTitle || '')}</p>
+            </div>
+          </div>
+          
+          <!-- Row of 3 -->
+          <div class="video-row">
+      `;
+      
+      remaining.forEach((video) => {
+        const thumbUrl = video.snippet?.thumbnails?.medium?.url || video.snippet?.thumbnails?.default?.url || '';
+        const title = video.snippet?.title || 'Untitled';
+        const channel = video.snippet?.channelTitle || '';
+        const videoId = video.id?.videoId || video.id;
+        
+        html += `
+          <div class="video-row__item" onclick="playVideo('${videoId}', '${escapeHtml(title).replace(/'/g, "\\'")}', '${escapeHtml(channel).replace(/'/g, "\\'")}')">
+            <div class="video-row__thumb">
+              <img src="${thumbUrl}" alt="" loading="lazy">
+            </div>
+            <p class="video-row__title">${escapeHtml(title)}</p>
+          </div>
+        `;
+      });
+      
+      html += `
+          </div>
+        </div>
+      `;
+      
+      container.innerHTML = html;
+      chatMessages.appendChild(container);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    
+    function addLoading() {
+      const msg = addMessage(`
+        <div class="loading">
+          Thinking
+          <div class="loading-dots">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      `, 'system');
+      return msg;
+    }
+    
+    // ==========================================
+    // YouTube Search - No API Key Needed!
+    // Shows clickable search links that open YouTube
+    // ==========================================
+    
+    function addSearchResults(queries, isStandby = false) {
+      const container = document.createElement('div');
+      container.className = 'chat-message chat-message--video';
+      
+      const headerText = isStandby ? 'Suggestions for you' : 'Found videos for you';
+      
+      let html = `
+        <div class="video-results-group">
+          <div class="video-results-group__header">
+            <i class="fab fa-youtube" style="color: #ff0000;"></i>
+            ${headerText}
+          </div>
+          <div class="search-results-list">
+      `;
+      
+      queries.forEach((query, index) => {
+        const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+        const embedSearchUrl = `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(query)}`;
+        
+        html += `
+          <div class="search-result-item" onclick="openYouTubeSearch('${escapeHtml(query).replace(/'/g, "\\'")}')">
+            <div class="search-result-icon">
+              <i class="fas fa-search"></i>
+            </div>
+            <div class="search-result-text">
+              <p class="search-result-query">${escapeHtml(query)}</p>
+              <p class="search-result-hint">Click to search YouTube</p>
+            </div>
+            <div class="search-result-arrow">
+              <i class="fas fa-external-link-alt"></i>
+            </div>
+          </div>
+        `;
+      });
+      
+      html += `
+          </div>
+        </div>
+      `;
+      
+      container.innerHTML = html;
+      chatMessages.appendChild(container);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    
+    function openYouTubeSearch(query) {
+      // Open YouTube search in new tab
+      const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+      window.open(searchUrl, '_blank');
+    }
+    
+    // ==========================================
+    // Display Curated Videos - 4 Separate Objects
+    // 1 featured card, then 1 row of 3 cards
+    // Easy to interweave offers between them
+    // ==========================================
+    
+    function addCuratedVideos(videos, headerText = 'Curated for you') {
+      // First video = featured (full width) - SEPARATE ELEMENT
+      const featured = videos[0];
+      
+      const featuredCard = document.createElement('div');
+      featuredCard.className = 'chat-message';
+      featuredCard.innerHTML = `
+        <div class="video-card-featured" onclick="playVideo('${featured.id}', '${escapeHtml(featured.title).replace(/'/g, "\\'")}', '${escapeHtml(featured.channel).replace(/'/g, "\\'")}')">
+          <div class="video-card-featured__thumb">
+            <img src="${getYouTubeThumbnail(featured.id, 'maxresdefault')}" 
+                 onerror="this.src='${getYouTubeThumbnail(featured.id, 'hqdefault')}'" 
+                 alt="" loading="lazy">
+            <div class="video-card-featured__play"><i class="fas fa-play"></i></div>
+          </div>
+          <div class="video-card-featured__info">
+            <h4 class="video-card-featured__title">${escapeHtml(featured.title)}</h4>
+            <p class="video-card-featured__meta">${escapeHtml(featured.channel)}</p>
+          </div>
+        </div>
+      `;
+      chatMessages.appendChild(featuredCard);
+      
+      // === INSERT OFFERS HERE LATER ===
+      
+      // Remaining 3 videos in a row - SEPARATE ELEMENT
+      const remaining = videos.slice(1, 4);
+      
+      const rowContainer = document.createElement('div');
+      rowContainer.className = 'chat-message';
+      
+      let rowHtml = `<div class="video-cards-row">`;
+      remaining.forEach((video) => {
+        rowHtml += `
+          <div class="video-card" onclick="playVideo('${video.id}', '${escapeHtml(video.title).replace(/'/g, "\\'")}', '${escapeHtml(video.channel).replace(/'/g, "\\'")}')">
+            <div class="video-card__thumb">
+              <img src="${getYouTubeThumbnail(video.id, 'mqdefault')}" alt="" loading="lazy">
+            </div>
+            <div class="video-card__info">
+              <p class="video-card__title">${escapeHtml(video.title)}</p>
+              <p class="video-card__channel">${escapeHtml(video.channel)}</p>
+            </div>
+          </div>
+        `;
+      });
+      rowHtml += `</div>`;
+      
+      rowContainer.innerHTML = rowHtml;
+      chatMessages.appendChild(rowContainer);
+      
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    
+    async function showStandbyContent() {
+      // Always show curated library first (your best picks!)
+      // Layout: 1 featured + 3 row, then LLM response below
+      
+      // FEATURED #1: Ricky Williams - Cannabis Revolution (SI Films)
+      // DEFAULT ROW: Sisqo in Suburbs, Manute Bol, Dennis Rodman
+      const rickyWilliams = CURATED_LIBRARY.find(v => v.id === 'h0D2UEzTeaQ');
+      const defaultRow = CURATED_LIBRARY.filter(v => v.defaultRow === true);
+      const curatedPicks = rickyWilliams && defaultRow.length === 3 
+        ? [rickyWilliams, ...defaultRow] 
+        : getRandomCurated(4);
+      
+      // Cards first (1 + 3)
+      addCuratedVideos(curatedPicks);
+      
+      // LLM response below the cards
+      addMessage(`What are you in the mood for? DJ sets, ski films, classic sports, comedy...`, 'system');
+      
+      // Shuffle button at bottom
+      const moreBtn = document.createElement('div');
+      moreBtn.className = 'chat-message';
+      moreBtn.innerHTML = `
+        <button class="btn-shuffle" onclick="showMoreCurated()">
+          <i class="fas fa-shuffle"></i>
+          Shuffle picks
+        </button>
+      `;
+      chatMessages.appendChild(moreBtn);
+    }
+    
+    function showMoreCurated() {
+      // Show different random curated videos
+      const newPicks = getRandomCurated(4);
+      addCuratedVideos(newPicks);
+      addMessage(`Here's more from your library.`, 'system');
+    }
+    
+    async function handleUserMessage(message) {
+      if (!message.trim()) return;
+      
+      // Add user message
+      addMessage(message, 'user');
+      chatInput.value = '';
+      
+      // Show loading
+      const loadingMsg = addLoading();
+      
+      try {
+        // First, check if query matches curated categories
+        const matchedCurated = findMatchingCurated(message);
+        
+        if (matchedCurated.length >= 4) {
+          // We have curated content for this! Use it.
+          loadingMsg.remove();
+          
+          // Cards first (1 + 3)
+          addCuratedVideos(matchedCurated.slice(0, 4));
+          
+          // LLM response below
+          addMessage(`Found some great ${message} content from your library.`, 'system');
+          return;
+        }
+        
+        // Ask LLM to understand and generate search queries
+        const llmResult = await askLLM(message);
+        
+        loadingMsg.remove();
+        
+        // If we have some curated matches, show those first (cards on top)
+        if (matchedCurated.length > 0) {
+          const paddedCurated = [...matchedCurated, ...getRandomCurated(4 - matchedCurated.length)].slice(0, 4);
+          addCuratedVideos(paddedCurated);
+        }
+        
+        // LLM response below the cards
+        if (llmResult.response) {
+          addMessage(llmResult.response, 'system');
+        }
+        
+        // If no curated matches, show search links as fallback
+        if (matchedCurated.length === 0) {
+          const searches = llmResult.searches || [message];
+          addSearchResults(searches.slice(0, 3));
+        }
+        
+      } catch (error) {
+        loadingMsg.remove();
+        console.error('Error:', error);
+        
+        // Fallback: direct search
+        addSearchResults([message]);
+      }
+    }
+    
+    // ==========================================
+    // Video Player
+    // ==========================================
+    
+    function playVideo(videoId, title, channel) {
+      currentVideoId = videoId;
+      
+      // Update player
+      videoPlayer.innerHTML = `
+        <iframe 
+          src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" 
+          allowfullscreen
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        ></iframe>
+      `;
+      
+      // Show now playing bar and update info
+      nowPlayingBar.classList.add('active');
+      nowPlayingTitle.textContent = title;
+      nowPlayingChannel.textContent = channel;
+      
+      // Save to history
+      saveToHistory(videoId, title, channel);
+    }
+    
+    // ==========================================
+    // History
+    // ==========================================
+    
+    function saveToHistory(videoId, title, channel) {
+      let history = JSON.parse(localStorage.getItem('videoHistory') || '[]');
+      history = history.filter(h => h.id !== videoId);
+      history.unshift({ id: videoId, title, channel, timestamp: new Date().toISOString() });
+      history = history.slice(0, 50);
+      localStorage.setItem('videoHistory', JSON.stringify(history));
+    }
+    
+    // ==========================================
+    // Settings Modal
+    // ==========================================
+    
+    function showSettings() {
+      const modal = document.getElementById('settingsModal');
+      modal.classList.add('active');
+      
+      // Populate current values
+      document.getElementById('llmProvider').value = LLM_CONFIG.provider;
+      document.getElementById('openaiKey').value = LLM_CONFIG.openai_key;
+      document.getElementById('anthropicKey').value = LLM_CONFIG.anthropic_key;
+    }
+    
+    function closeSettings() {
+      document.getElementById('settingsModal').classList.remove('active');
+    }
+    
+    function saveSettings() {
+      LLM_CONFIG.provider = document.getElementById('llmProvider').value;
+      LLM_CONFIG.openai_key = document.getElementById('openaiKey').value.trim();
+      LLM_CONFIG.anthropic_key = document.getElementById('anthropicKey').value.trim();
+      
+      // Save to localStorage
+      localStorage.setItem('llm_provider', LLM_CONFIG.provider);
+      localStorage.setItem('openai_api_key', LLM_CONFIG.openai_key);
+      localStorage.setItem('anthropic_api_key', LLM_CONFIG.anthropic_key);
+      
+      closeSettings();
+      addMessage('✓ Settings saved!', 'system');
+    }
+    
+    // ==========================================
+    // Utils
+    // ==========================================
+    
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+    
+    // ==========================================
+    // Event Listeners
+    // ==========================================
+    
+    chatSend.addEventListener('click', () => handleUserMessage(chatInput.value));
+    
+    chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleUserMessage(chatInput.value);
+      }
+    });
+    
+    // Settings gear in header
+    document.querySelector('.nav-links').innerHTML += `
+      <a href="#" onclick="showSettings(); return false;" title="Settings">
+        <i class="fas fa-cog"></i>
+      </a>
+    `;
+    
+    // Initialize with standby suggestions
+    showStandbyContent();
+  </script>
+</body>
+</html>
