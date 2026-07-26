@@ -1,0 +1,35 @@
+name: Deploy doubled.life
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+concurrency:
+  group: deploy-doubled-life
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inject gate config from secrets
+        env:
+          PASS_SHA256: ${{ secrets.DOUBLED_PASS_SHA256 }}
+          POLL_TOKEN: ${{ secrets.DOUBLED_POLL_TOKEN }}
+        run: |
+          cat > config.php <<EOF
+          <?php return ['pass_sha256' => '$PASS_SHA256', 'email' => 'jasonjenkins1981@gmail.com', 'poll_token' => '$POLL_TOKEN'];
+          EOF
+      - name: Deploy via lftp
+        env:
+          FTP_HOST: ${{ secrets.GODADDY_SFTP_HOST }}
+          FTP_USER: ${{ secrets.GODADDY_SFTP_USER }}
+          FTP_PASS: ${{ secrets.GODADDY_SFTP_PASSWORD }}
+        run: |
+          sudo apt-get install -y lftp > /dev/null 2>&1
+          lftp -u "$FTP_USER","$FTP_PASS" "$FTP_HOST" -e "
+            set ftp:ssl-allow yes; set ftp:ssl-force no; set ssl:verify-certificate no;
+            set ftp:passive-mode yes; set net:max-retries 3; set net:reconnect-interval-base 5;
+            mirror --reverse --verbose --only-newer -x '\.git/' -x '\.github/' -x '\.gitignore' ./ /doubled.life/;
+            quit"
+          echo "deployed"
