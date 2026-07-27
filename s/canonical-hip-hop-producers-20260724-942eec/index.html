@@ -70,6 +70,26 @@
   .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
   .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
 
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
   /* MIDDLE: deliverable */
   .article { max-width:60ch; }
   .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
@@ -120,34 +140,38 @@
     <div class="stats">
       <div class="stat"><div class="v">2026-07-24</div><div class="k">researched</div></div>
       <div class="stat"><div class="v">0</div><div class="k">sources</div></div>
-      <div class="stat"><div class="v">302</div><div class="k">words</div></div>
+      <div class="stat"><div class="v">615</div><div class="k">words</div></div>
     </div>
   </header>
 
   <div class="cols">
     <!-- LEFT -->
-    <section class="col">
+    <section class="col" id="visuals">
       <div class="coltag">visuals — long-form</div>
-      <div class="videos">
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Primary</span><img src="data:image/svg+xml;utf8,&lt;svg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; width=&#x27;400&#x27; height=&#x27;400&#x27;&gt;&lt;rect width=&#x27;400&#x27; height=&#x27;400&#x27; fill=&#x27;hsl(157,45%25,22%25)&#x27;/&gt;&lt;text x=&#x27;200&#x27; y=&#x27;245&#x27; font-family=&#x27;Helvetica&#x27; font-size=&#x27;160&#x27; fill=&#x27;hsl(157,60%25,70%25)&#x27; text-anchor=&#x27;middle&#x27;&gt;C&lt;/text&gt;&lt;/svg&gt;" alt="Canonical hip-hop producers"></div>
-          <div class="vcap">Canonical hip-hop producers<span class="src">from research</span></div>
-        </div>
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Documentary</span><span class="vstate">awaiting pipeline</span><span class="play"></span></div>
-          <div class="vcap">long-form documentary<span class="src">not yet sourced</span></div>
-        </div>
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Interview</span><span class="vstate">awaiting pipeline</span><span class="play"></span></div>
-          <div class="vcap">interview / conversation<span class="src">not yet sourced</span></div>
-        </div>
-      </div>
-      <div class="subtag">more visuals — awaiting pipeline</div>
-      <div class="vmore">
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-      </div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="crUqPTTPA9g" type="button"><img src="https://i.ytimg.com/vi/crUqPTTPA9g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Canonical</span></button>
+<button class="vtile" data-yt="WfODqpxxNl8" type="button"><img src="https://i.ytimg.com/vi/WfODqpxxNl8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">CANONICAL LUV</span></button>
+<button class="vtile" data-yt="nfAz4Wisg4s" type="button"><img src="https://i.ytimg.com/vi/nfAz4Wisg4s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">I Produced Legend’s Most Successful Song — I’m From N.Y. (Ghost Wav)</span></button>
+<button class="vtile" data-yt="zhtCadS0yac" type="button"><img src="https://i.ytimg.com/vi/zhtCadS0yac/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">I Registered My Sampled Records Online | WhoSampled Producer History</span></button>
+<button class="vtile" data-yt="R3Z8y81_Lng" type="button"><img src="https://i.ytimg.com/vi/R3Z8y81_Lng/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Before Content Creators — There Were Producers | Ron Browz &amp; oO5 Dynasty (Ghost Wav)</span></button>
+<button class="vtile" data-yt="gJqhsScbiLs" type="button"><img src="https://i.ytimg.com/vi/gJqhsScbiLs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">15 Forgotten One Hit Wonder HIP HOP from the 1980s You Need To Hear</span></button>
+<button class="vtile" data-yt="z6NTgTJa4C4" type="button"><img src="https://i.ytimg.com/vi/z6NTgTJa4C4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Abba Alabanza - Canonical</span></button>
+<button class="vtile" data-yt="OJa2r7j_9Ks" type="button"><img src="https://i.ytimg.com/vi/OJa2r7j_9Ks/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fake Musical Producers on YouTube (Ghost Wav)</span></button>
+<button class="vtile" data-yt="oKB3d00nkFc" type="button"><img src="https://i.ytimg.com/vi/oKB3d00nkFc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Producers Nez and Rio Talks Pretty Flacko 2, Man Of The Year &amp; More</span></button>
+<button class="vtile" data-yt="2D3I1hFCjdg" type="button"><img src="https://i.ytimg.com/vi/2D3I1hFCjdg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Chemical Solution (ACT III) | Official Cinematic Music Video | SoReal</span></button>
+<button class="vtile" data-yt="h01aExyNIsA" type="button"><img src="https://i.ytimg.com/vi/h01aExyNIsA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Producer&#x27;s Leap of Faith</span></button>
+<button class="vtile" data-yt="HR6Vk1L_kQE" type="button"><img src="https://i.ytimg.com/vi/HR6Vk1L_kQE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Allmighty - So Misunderstood Intro (Official Music Video)</span></button>
+<button class="vtile" data-yt="SENzTt3ftiU" type="button"><img src="https://i.ytimg.com/vi/SENzTt3ftiU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How J Dilla humanized his MPC3000</span></button>
+<button class="vtile" data-yt="Caxwob1iKX4" type="button"><img src="https://i.ytimg.com/vi/Caxwob1iKX4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Robert Glasper: “Jazz is the mother of hip-hop” | JAZZ NIGHT IN AMERICA</span></button>
+<button class="vtile" data-yt="LBKeDBr2M3U" type="button"><img src="https://i.ytimg.com/vi/LBKeDBr2M3U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Jazz and Hip Hop Harmonize: J Dilla, Herbie Hancock, and Nas</span></button>
+<button class="vtile" data-yt="ZnMqFrxxQNg" type="button"><img src="https://i.ytimg.com/vi/ZnMqFrxxQNg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Early Years of Hip-Hop (feat. Questlove &amp; Method Man) - Drunk History</span></button>
+<button class="vtile" data-yt="DSbtkLA3GrY" type="button"><img src="https://i.ytimg.com/vi/DSbtkLA3GrY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Hip-Hop &amp; Shakespeare? Akala at TEDxAldeburgh</span></button>
+<button class="vtile" data-yt="10C-Q3NIlzU" type="button"><img src="https://i.ytimg.com/vi/10C-Q3NIlzU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Birth of Hip Hop</span></button>
+<button class="vtile" data-yt="40v32d6ny7Q" type="button"><img src="https://i.ytimg.com/vi/40v32d6ny7Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">New Flavors (2009) | Hip Hop | Full Movie | Free Movie</span></button>
+<button class="vtile" data-yt="1w5ifkuXpE4" type="button"><img src="https://i.ytimg.com/vi/1w5ifkuXpE4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">i-D Meets: Icelandic Hip Hop</span></button>
+<button class="vtile" data-yt="0C3kVyxZ11A" type="button"><img src="https://i.ytimg.com/vi/0C3kVyxZ11A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Hip Hop Production: Masterclass with Focus... (Dr. Dre, Kendrick Lamar)</span></button>
+<button class="vtile" data-yt="zHY0lPjTBEk" type="button"><img src="https://i.ytimg.com/vi/zHY0lPjTBEk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Southside - Kerala&#x27;s Rising Hip Hop Culture I Documentary I Kappa Studios I Drop J Supply CO</span></button>
+</div>
     </section>
 
     <!-- MIDDLE -->
@@ -208,5 +232,23 @@
     </aside>
   </div>
 </div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
 </body>
 </html>

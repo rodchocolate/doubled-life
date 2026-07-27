@@ -70,6 +70,26 @@
   .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
   .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
 
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
   /* MIDDLE: deliverable */
   .article { max-width:60ch; }
   .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
@@ -120,34 +140,40 @@
     <div class="stats">
       <div class="stat"><div class="v">2026-07-05</div><div class="k">researched</div></div>
       <div class="stat"><div class="v">1</div><div class="k">sources</div></div>
-      <div class="stat"><div class="v">138</div><div class="k">words</div></div>
+      <div class="stat"><div class="v">522</div><div class="k">words</div></div>
     </div>
   </header>
 
   <div class="cols">
     <!-- LEFT -->
-    <section class="col">
+    <section class="col" id="visuals">
       <div class="coltag">visuals — long-form</div>
-      <div class="videos">
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Primary</span><img src="lead.jpg" alt="Toyota 4Runner"></div>
-          <div class="vcap">Toyota 4Runner<span class="src">from research</span></div>
-        </div>
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Documentary</span><span class="vstate">awaiting pipeline</span><span class="play"></span></div>
-          <div class="vcap">long-form documentary<span class="src">not yet sourced</span></div>
-        </div>
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Interview</span><span class="vstate">awaiting pipeline</span><span class="play"></span></div>
-          <div class="vcap">interview / conversation<span class="src">not yet sourced</span></div>
-        </div>
-      </div>
-      <div class="subtag">more visuals — awaiting pipeline</div>
-      <div class="vmore">
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-      </div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="TB8UjzNbb8I" type="button"><img src="https://i.ytimg.com/vi/TB8UjzNbb8I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Should You Buy a 2025 Toyota 4Runner? Is This Better Than Before?</span></button>
+<button class="vtile" data-yt="atcjkA5rlaM" type="button"><img src="https://i.ytimg.com/vi/atcjkA5rlaM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The New 2025 Toyota 4Runner Is the Best One Yet</span></button>
+<button class="vtile" data-yt="ezK_zdLJ9G4" type="button"><img src="https://i.ytimg.com/vi/ezK_zdLJ9G4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Here&#x27;s Why This Vehicle is the Best Thing Toyota Makes (and the Only One You Should Buy)</span></button>
+<button class="vtile" data-yt="IRU4g3i5ef0" type="button"><img src="https://i.ytimg.com/vi/IRU4g3i5ef0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">2026 Toyota 4Runner | 6 Month Ownership Update</span></button>
+<button class="vtile" data-yt="emNgvepFuA8" type="button"><img src="https://i.ytimg.com/vi/emNgvepFuA8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Better than the last model? // 2025 Toyota 4Runner review</span></button>
+<button class="vtile" data-yt="cKwe6W78p3Y" type="button"><img src="https://i.ytimg.com/vi/cKwe6W78p3Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What It&#x27;s Like to LIVE with a 2026 Toyota 4Runner TRD Pro (POV)</span></button>
+<button class="vtile" data-yt="ZDGAe8DOmck" type="button"><img src="https://i.ytimg.com/vi/ZDGAe8DOmck/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Should you get a Toyota 4Runner Now? Or Wait for the New One?</span></button>
+<button class="vtile" data-yt="Td9m-Jw1NyM" type="button"><img src="https://i.ytimg.com/vi/Td9m-Jw1NyM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">After Owning the New 2025 Toyota 4Runner For Two Weeks, Is It Really That Bad?</span></button>
+<button class="vtile" data-yt="-hRqjH06pes" type="button"><img src="https://i.ytimg.com/vi/-hRqjH06pes/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Toyota 4Runner TRD Pro | Could Be Great</span></button>
+<button class="vtile" data-yt="RaZQQE9yfb0" type="button"><img src="https://i.ytimg.com/vi/RaZQQE9yfb0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The LESS The Better! // 2026 Toyota 4Runner Review</span></button>
+<button class="vtile" data-yt="pYU8K2qHtxg" type="button"><img src="https://i.ytimg.com/vi/pYU8K2qHtxg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The 2026 Toyota 4Runner Is Completely Different… Is That a Problem?</span></button>
+<button class="vtile" data-yt="7Ufr3HxIpoA" type="button"><img src="https://i.ytimg.com/vi/7Ufr3HxIpoA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">2025 Toyota 4Runner Review // Decisions, Decisions</span></button>
+<button class="vtile" data-yt="tNChvXdw5mQ" type="button"><img src="https://i.ytimg.com/vi/tNChvXdw5mQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Toyota 4Runner- Everything You Need To Know | Up To Speed</span></button>
+<button class="vtile" data-yt="FCGMLFo7vX8" type="button"><img src="https://i.ytimg.com/vi/FCGMLFo7vX8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Toyota 4Runner: The Complete History of an Off-Road Icon (1984–2025)</span></button>
+<button class="vtile" data-yt="U6TxnUemvPo" type="button"><img src="https://i.ytimg.com/vi/U6TxnUemvPo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Toyota 4Runner: Everything you need to know - Full History (Explained) - as quickly as possible</span></button>
+<button class="vtile" data-yt="MoEQ3Oxu1po" type="button"><img src="https://i.ytimg.com/vi/MoEQ3Oxu1po/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The History of The Toyota 4Runner</span></button>
+<button class="vtile" data-yt="K1dSHlsg6WU" type="button"><img src="https://i.ytimg.com/vi/K1dSHlsg6WU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Toyota 4Runner Evolution (1984–2025) | Every Generation Explained</span></button>
+<button class="vtile" data-yt="RLsJNKupI3o" type="button"><img src="https://i.ytimg.com/vi/RLsJNKupI3o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">You&#x27;ve NEVER Seen Guatemala Like This | 4x4 Travel Documentary</span></button>
+<button class="vtile" data-yt="vWJBnqsRv_c" type="button"><img src="https://i.ytimg.com/vi/vWJBnqsRv_c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Greatest Road Trip On Earth | The Pan American Movie</span></button>
+<button class="vtile" data-yt="tW8OD8veC90" type="button"><img src="https://i.ytimg.com/vi/tW8OD8veC90/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">🚙 The Toyota 4Runner Story: From Prototypes to Legend 🌟 | 🛻 Trekker, Trail Blazer, &amp; More! 🌄</span></button>
+<button class="vtile" data-yt="iEiHKRJgtvQ" type="button"><img src="https://i.ytimg.com/vi/iEiHKRJgtvQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Exploring Remote Baja Mexico in Our Toyota 4Runner - Overland Travel Film</span></button>
+<button class="vtile" data-yt="ZW7Ub688rJE" type="button"><img src="https://i.ytimg.com/vi/ZW7Ub688rJE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">4Runner | Your Window To The Wild | Toyota</span></button>
+<button class="vtile" data-yt="tMXVdoyft7w" type="button"><img src="https://i.ytimg.com/vi/tMXVdoyft7w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Guatemala Overland | 4x4 Travel Documentary</span></button>
+<button class="vtile" data-yt="bBBcBJvMBBM" type="button"><img src="https://i.ytimg.com/vi/bBBcBJvMBBM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">COLORADO: The Overland Movie | 4Runners, Tacomas &amp; Tundras in the Rockies</span></button>
+</div>
     </section>
 
     <!-- MIDDLE -->
@@ -188,5 +214,23 @@
     </aside>
   </div>
 </div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
 </body>
 </html>

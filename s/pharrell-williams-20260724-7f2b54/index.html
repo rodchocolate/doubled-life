@@ -70,6 +70,26 @@
   .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
   .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
 
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
   /* MIDDLE: deliverable */
   .article { max-width:60ch; }
   .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
@@ -120,34 +140,43 @@
     <div class="stats">
       <div class="stat"><div class="v">2026-07-27</div><div class="k">researched</div></div>
       <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
-      <div class="stat"><div class="v">528</div><div class="k">words</div></div>
+      <div class="stat"><div class="v">880</div><div class="k">words</div></div>
     </div>
   </header>
 
   <div class="cols">
     <!-- LEFT -->
-    <section class="col">
+    <section class="col" id="visuals">
       <div class="coltag">visuals — long-form</div>
-      <div class="videos">
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Primary</span><img src="lead.jpg" alt="Pharrell Williams"></div>
-          <div class="vcap">Pharrell Williams<span class="src">from research</span></div>
-        </div>
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Documentary</span><span class="vstate">awaiting pipeline</span><span class="play"></span></div>
-          <div class="vcap">long-form documentary<span class="src">not yet sourced</span></div>
-        </div>
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Interview</span><span class="vstate">awaiting pipeline</span><span class="play"></span></div>
-          <div class="vcap">interview / conversation<span class="src">not yet sourced</span></div>
-        </div>
-      </div>
-      <div class="subtag">more visuals — awaiting pipeline</div>
-      <div class="vmore">
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-      </div>
+<div class="videos">
+<div class="vslot"><button class="vtile" data-yt="hfa6-PZ46Lo" type="button"><img src="https://i.ytimg.com/vi/hfa6-PZ46Lo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pharrell On His Legendary Career, Working With Snoop, Justin Timberlake, Nigo &amp; More | Drink Champs</span></button></div>
+<div class="vslot"><button class="vtile" data-yt="E9Fh4p_jiN4" type="button"><img src="https://i.ytimg.com/vi/E9Fh4p_jiN4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pharrell On Kendrick Regret, Neptunes Hits, LV Fashion, Jay Z Collabs &amp; More | Gangsta Grillz (2023)</span></button></div>
+<div class="vslot"><button class="vtile" data-yt="PnahkJevp64" type="button"><img src="https://i.ytimg.com/vi/PnahkJevp64/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pharrell and Rick Rubin Have an Epic Conversation | GQ</span></button></div>
+</div>
+<div class="subtag">more visuals — 21</div>
+<div class="vmore">
+<button class="vtile vtile-sm" data-yt="in9sub7cDFM" type="button"><img src="https://i.ytimg.com/vi/in9sub7cDFM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pharrell Williams</span></button>
+<button class="vtile vtile-sm" data-yt="eRefd27Y3Vk" type="button"><img src="https://i.ytimg.com/vi/eRefd27Y3Vk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pharrell Replies To Fans Online | Actually Me</span></button>
+<button class="vtile vtile-sm" data-yt="WzgMzf4sBFU" type="button"><img src="https://i.ytimg.com/vi/WzgMzf4sBFU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pharrell Williams Sees the Future While Eating Spicy Wings | Hot Ones</span></button>
+<button class="vtile vtile-sm" data-yt="ZqCRvPFc5jI" type="button"><img src="https://i.ytimg.com/vi/ZqCRvPFc5jI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Disney&#x27;s &#x27;The Lion King&#x27;: An Interview with Pharrell Williams</span></button>
+<button class="vtile vtile-sm" data-yt="R7w9sub4v_Y" type="button"><img src="https://i.ytimg.com/vi/R7w9sub4v_Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pharrell Williams &amp; Steve Stoute on Thriving in The Music Business and Black Ambition</span></button>
+<button class="vtile vtile-sm" data-yt="FIYavkB9m9k" type="button"><img src="https://i.ytimg.com/vi/FIYavkB9m9k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">PHARRELL - ON WORK ETHIC, CREATIVE PHILOSOPHY, &amp; COLLABORATION</span></button>
+<button class="vtile vtile-sm" data-yt="uetK2ZGhM3k" type="button"><img src="https://i.ytimg.com/vi/uetK2ZGhM3k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">In the Studio With Pharrell Williams | Vogue</span></button>
+<button class="vtile vtile-sm" data-yt="rC1UUVveQW0" type="button"><img src="https://i.ytimg.com/vi/rC1UUVveQW0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pharrell Williams tells Gayle King about his skincare routine</span></button>
+<button class="vtile vtile-sm" data-yt="qOJIlCNPnrE" type="button"><img src="https://i.ytimg.com/vi/qOJIlCNPnrE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pharrell &amp; Marc Jacobs on collaboration, personal style and Louis Vuitton | System</span></button>
+<button class="vtile vtile-sm" data-yt="KuwO7Vez_O4" type="button"><img src="https://i.ytimg.com/vi/KuwO7Vez_O4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">PHARRELL WILLIAMS / NERD / 2004 / DOCUMENTARY</span></button>
+<button class="vtile vtile-sm" data-yt="OewkJ2A_2fc" type="button"><img src="https://i.ytimg.com/vi/OewkJ2A_2fc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Pharrell Williams Story</span></button>
+<button class="vtile vtile-sm" data-yt="Gtd57JoyW5Q" type="button"><img src="https://i.ytimg.com/vi/Gtd57JoyW5Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Pharrell Williams Influenced An Entire Generation | Mini Documentary</span></button>
+<button class="vtile vtile-sm" data-yt="W_vulnR0KfU" type="button"><img src="https://i.ytimg.com/vi/W_vulnR0KfU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pharrell Williams: Happy Go Lucky (FULL MOVIE)</span></button>
+<button class="vtile vtile-sm" data-yt="y5RX3WkA7fk" type="button"><img src="https://i.ytimg.com/vi/y5RX3WkA7fk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Pharrell Effect</span></button>
+<button class="vtile vtile-sm" data-yt="cGkcF7bHko4" type="button"><img src="https://i.ytimg.com/vi/cGkcF7bHko4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Kanye plays &#x27;Through The Wire&#x27; for Pharrell for the first time (2004)</span></button>
+<button class="vtile vtile-sm" data-yt="7Bc6trBc1kc" type="button"><img src="https://i.ytimg.com/vi/7Bc6trBc1kc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">PIECE BY PIECE - Official Trailer [HD] - Only In Theaters October 11</span></button>
+<button class="vtile vtile-sm" data-yt="OpKjTI60koY" type="button"><img src="https://i.ytimg.com/vi/OpKjTI60koY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Neptunes Documentary - Part 1: The Takeover</span></button>
+<button class="vtile vtile-sm" data-yt="Ps31QXFKb28" type="button"><img src="https://i.ytimg.com/vi/Ps31QXFKb28/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Neptunes : The Eighth Planet Short Film (2003)</span></button>
+<button class="vtile vtile-sm" data-yt="fXIEB7-sG-c" type="button"><img src="https://i.ytimg.com/vi/fXIEB7-sG-c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pharrell Williams: How He Changed Pop and Hip-Hop Forever</span></button>
+<button class="vtile vtile-sm" data-yt="mJM_Zf9ZrtM" type="button"><img src="https://i.ytimg.com/vi/mJM_Zf9ZrtM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mike D interviews Pharrell Williams &amp; Chad Hugo of N.E.R.D. / The Neptunes</span></button>
+<button class="vtile vtile-sm" data-yt="UyGT0K1vA8k" type="button"><img src="https://i.ytimg.com/vi/UyGT0K1vA8k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What EVERY PRODUCER can learn from Pharrell</span></button>
+</div>
     </section>
 
     <!-- MIDDLE -->
@@ -199,5 +228,23 @@
     </aside>
   </div>
 </div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
 </body>
 </html>

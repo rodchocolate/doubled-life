@@ -70,6 +70,26 @@
   .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
   .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
 
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
   /* MIDDLE: deliverable */
   .article { max-width:60ch; }
   .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
@@ -126,28 +146,9 @@
 
   <div class="cols">
     <!-- LEFT -->
-    <section class="col">
+    <section class="col" id="visuals">
       <div class="coltag">visuals — long-form</div>
-      <div class="videos">
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Primary</span><img src="data:image/svg+xml;utf8,&lt;svg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; width=&#x27;400&#x27; height=&#x27;400&#x27;&gt;&lt;rect width=&#x27;400&#x27; height=&#x27;400&#x27; fill=&#x27;hsl(328,45%25,22%25)&#x27;/&gt;&lt;text x=&#x27;200&#x27; y=&#x27;245&#x27; font-family=&#x27;Helvetica&#x27; font-size=&#x27;160&#x27; fill=&#x27;hsl(328,60%25,70%25)&#x27; text-anchor=&#x27;middle&#x27;&gt;M&lt;/text&gt;&lt;/svg&gt;" alt="melodiclabs.com"></div>
-          <div class="vcap">melodiclabs.com<span class="src">from research</span></div>
-        </div>
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Documentary</span><span class="vstate">awaiting pipeline</span><span class="play"></span></div>
-          <div class="vcap">long-form documentary<span class="src">not yet sourced</span></div>
-        </div>
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Interview</span><span class="vstate">awaiting pipeline</span><span class="play"></span></div>
-          <div class="vcap">interview / conversation<span class="src">not yet sourced</span></div>
-        </div>
-      </div>
-      <div class="subtag">more visuals — awaiting pipeline</div>
-      <div class="vmore">
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-      </div>
+<div class="videos"><div class="vslot"><div class="vframe"><img src="data:image/svg+xml;utf8,&lt;svg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; width=&#x27;400&#x27; height=&#x27;400&#x27;&gt;&lt;rect width=&#x27;400&#x27; height=&#x27;400&#x27; fill=&#x27;hsl(328,45%25,22%25)&#x27;/&gt;&lt;text x=&#x27;200&#x27; y=&#x27;245&#x27; font-family=&#x27;Helvetica&#x27; font-size=&#x27;160&#x27; fill=&#x27;hsl(328,60%25,70%25)&#x27; text-anchor=&#x27;middle&#x27;&gt;M&lt;/text&gt;&lt;/svg&gt;" alt="melodiclabs.com"></div></div></div>
     </section>
 
     <!-- MIDDLE -->
@@ -182,5 +183,23 @@
     </aside>
   </div>
 </div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
 </body>
 </html>

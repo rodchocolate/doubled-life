@@ -70,6 +70,26 @@
   .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
   .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
 
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
   /* MIDDLE: deliverable */
   .article { max-width:60ch; }
   .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
@@ -120,34 +140,44 @@
     <div class="stats">
       <div class="stat"><div class="v">2026-07-27</div><div class="k">researched</div></div>
       <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
-      <div class="stat"><div class="v">522</div><div class="k">words</div></div>
+      <div class="stat"><div class="v">827</div><div class="k">words</div></div>
     </div>
   </header>
 
   <div class="cols">
     <!-- LEFT -->
-    <section class="col">
+    <section class="col" id="visuals">
       <div class="coltag">visuals — long-form</div>
-      <div class="videos">
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Primary</span><img src="data:image/svg+xml;utf8,&lt;svg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; width=&#x27;400&#x27; height=&#x27;400&#x27;&gt;&lt;rect width=&#x27;400&#x27; height=&#x27;400&#x27; fill=&#x27;hsl(220,45%25,22%25)&#x27;/&gt;&lt;text x=&#x27;200&#x27; y=&#x27;245&#x27; font-family=&#x27;Helvetica&#x27; font-size=&#x27;160&#x27; fill=&#x27;hsl(220,60%25,70%25)&#x27; text-anchor=&#x27;middle&#x27;&gt;J&lt;/text&gt;&lt;/svg&gt;" alt="J Dilla"></div>
-          <div class="vcap">J Dilla<span class="src">from research</span></div>
-        </div>
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Documentary</span><span class="vstate">awaiting pipeline</span><span class="play"></span></div>
-          <div class="vcap">long-form documentary<span class="src">not yet sourced</span></div>
-        </div>
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Interview</span><span class="vstate">awaiting pipeline</span><span class="play"></span></div>
-          <div class="vcap">interview / conversation<span class="src">not yet sourced</span></div>
-        </div>
-      </div>
-      <div class="subtag">more visuals — awaiting pipeline</div>
-      <div class="vmore">
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-      </div>
+<div class="videos">
+<div class="vslot"><div class="vframe"><span class="vrole">Performance</span><span class="vstate">awaiting pipeline</span><span class="play"></span></div><div class="vcap">performance<span class="src">not yet sourced</span></div></div>
+<div class="vslot"><button class="vtile" data-yt="2jhxIY3WNw0" type="button"><img src="https://i.ytimg.com/vi/2jhxIY3WNw0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">J Dilla &quot;Still Shinning&quot; Documentary</span></button></div>
+<div class="vslot"><button class="vtile" data-yt="hfI8BnSycGs" type="button"><img src="https://i.ytimg.com/vi/hfI8BnSycGs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">J Dilla Rare TV Interview (Finland, 2003) &#x27;Sessions&#x27;</span></button></div>
+</div>
+<div class="subtag">more visuals — 22</div>
+<div class="vmore">
+<button class="vtile vtile-sm" data-yt="3O7jmyd7e_c" type="button"><img src="https://i.ytimg.com/vi/3O7jmyd7e_c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">J Dilla - 2003 Netherlands Interview HD - Y&#x27;skid</span></button>
+<button class="vtile vtile-sm" data-yt="6Vf50LV9VqM" type="button"><img src="https://i.ytimg.com/vi/6Vf50LV9VqM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">J Dilla&#x27;s Struggles and Music (Interview 2003)</span></button>
+<button class="vtile vtile-sm" data-yt="3WQ1BA8bybE" type="button"><img src="https://i.ytimg.com/vi/3WQ1BA8bybE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">VERY RARE interview of J Dilla in Toronto (2003)</span></button>
+<button class="vtile vtile-sm" data-yt="AZCW96QdsVc" type="button"><img src="https://i.ytimg.com/vi/AZCW96QdsVc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">J Dilla Interview on Ross Allen NTS Radio 2001</span></button>
+<button class="vtile vtile-sm" data-yt="CbRn_Oxt2w4" type="button"><img src="https://i.ytimg.com/vi/CbRn_Oxt2w4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">J Dilla Interview by P3 Soul (2003)</span></button>
+<button class="vtile vtile-sm" data-yt="SOCO205WGVo" type="button"><img src="https://i.ytimg.com/vi/SOCO205WGVo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Madlib &amp; J Dilla meet for the first time - [05/09/2000]</span></button>
+<button class="vtile vtile-sm" data-yt="pmHm3hrD3vo" type="button"><img src="https://i.ytimg.com/vi/pmHm3hrD3vo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Q-Tip on meeting J Dilla for the first time</span></button>
+<button class="vtile vtile-sm" data-yt="xJxfoJP_kqg" type="button"><img src="https://i.ytimg.com/vi/xJxfoJP_kqg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Kanye West on J Dilla</span></button>
+<button class="vtile vtile-sm" data-yt="PKlOkbDHvuM" type="button"><img src="https://i.ytimg.com/vi/PKlOkbDHvuM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Amp Fiddler &amp; Q-Tip Discussing J Dilla (Hip Hop Evolution S4)</span></button>
+<button class="vtile vtile-sm" data-yt="l_1M0vM8d5c" type="button"><img src="https://i.ytimg.com/vi/l_1M0vM8d5c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">J Dilla interview on Gilles Peterson Worldwide BBC Radio 2001</span></button>
+<button class="vtile vtile-sm" data-yt="4n-R7RRqa1A" type="button"><img src="https://i.ytimg.com/vi/4n-R7RRqa1A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Your Favorite Producers Favorite Producer, J Dilla (Mini Documentary) - Rap Verified</span></button>
+<button class="vtile vtile-sm" data-yt="XL3ENrZwjmw" type="button"><img src="https://i.ytimg.com/vi/XL3ENrZwjmw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">J Dilla | Crate Diggers | Fuse</span></button>
+<button class="vtile vtile-sm" data-yt="urOyVlNYYAs" type="button"><img src="https://i.ytimg.com/vi/urOyVlNYYAs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The J Dilla &amp; Nujabes History (Documentary)</span></button>
+<button class="vtile vtile-sm" data-yt="SPZvh4wsBF0" type="button"><img src="https://i.ytimg.com/vi/SPZvh4wsBF0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">J Dilla Documentary (Soul Daad)</span></button>
+<button class="vtile vtile-sm" data-yt="SENzTt3ftiU" type="button"><img src="https://i.ytimg.com/vi/SENzTt3ftiU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How J Dilla humanized his MPC3000</span></button>
+<button class="vtile vtile-sm" data-yt="lgctrdAhaUc" type="button"><img src="https://i.ytimg.com/vi/lgctrdAhaUc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Decade of J Dilla (Documentary)</span></button>
+<button class="vtile vtile-sm" data-yt="XvuoB_Er2Ko" type="button"><img src="https://i.ytimg.com/vi/XvuoB_Er2Ko/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Breaking Down J Dilla’s Most Underrated Album</span></button>
+<button class="vtile vtile-sm" data-yt="-HZOdRaeXmA" type="button"><img src="https://i.ytimg.com/vi/-HZOdRaeXmA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sampling Documentary</span></button>
+<button class="vtile vtile-sm" data-yt="XuWM6ULXnc0" type="button"><img src="https://i.ytimg.com/vi/XuWM6ULXnc0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Unseen - A Detroit Beat Tape // Full Documentary</span></button>
+<button class="vtile vtile-sm" data-yt="HaFczz4NuwY" type="button"><img src="https://i.ytimg.com/vi/HaFczz4NuwY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Understanding J Dilla: The Soul of Hip Hop</span></button>
+<button class="vtile vtile-sm" data-yt="6By2YvpjjWw" type="button"><img src="https://i.ytimg.com/vi/6By2YvpjjWw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sample Breakdown: J. Dilla - Don’t Cry</span></button>
+<button class="vtile vtile-sm" data-yt="Pv_mHP0Ogxg" type="button"><img src="https://i.ytimg.com/vi/Pv_mHP0Ogxg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sample Breakdown: J Dilla - Workinonit</span></button>
+</div>
     </section>
 
     <!-- MIDDLE -->
@@ -198,5 +228,23 @@
     </aside>
   </div>
 </div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
 </body>
 </html>

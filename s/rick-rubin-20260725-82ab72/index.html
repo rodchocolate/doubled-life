@@ -70,6 +70,26 @@
   .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
   .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
 
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
   /* MIDDLE: deliverable */
   .article { max-width:60ch; }
   .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
@@ -120,34 +140,43 @@
     <div class="stats">
       <div class="stat"><div class="v">2026-07-27</div><div class="k">researched</div></div>
       <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
-      <div class="stat"><div class="v">452</div><div class="k">words</div></div>
+      <div class="stat"><div class="v">788</div><div class="k">words</div></div>
     </div>
   </header>
 
   <div class="cols">
     <!-- LEFT -->
-    <section class="col">
+    <section class="col" id="visuals">
       <div class="coltag">visuals — long-form</div>
-      <div class="videos">
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Primary</span><img src="lead.jpg" alt="Rick Rubin"></div>
-          <div class="vcap">Rick Rubin<span class="src">from research</span></div>
-        </div>
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Documentary</span><span class="vstate">awaiting pipeline</span><span class="play"></span></div>
-          <div class="vcap">long-form documentary<span class="src">not yet sourced</span></div>
-        </div>
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Interview</span><span class="vstate">awaiting pipeline</span><span class="play"></span></div>
-          <div class="vcap">interview / conversation<span class="src">not yet sourced</span></div>
-        </div>
-      </div>
-      <div class="subtag">more visuals — awaiting pipeline</div>
-      <div class="vmore">
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-      </div>
+<div class="videos">
+<div class="vslot"><button class="vtile" data-yt="g6MEDOY7tHo" type="button"><img src="https://i.ytimg.com/vi/g6MEDOY7tHo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rick Rubin on Finding Your Life’s Work</span></button></div>
+<div class="vslot"><button class="vtile" data-yt="vabwGiTWRVo" type="button"><img src="https://i.ytimg.com/vi/vabwGiTWRVo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The creative power of invisibility</span></button></div>
+<div class="vslot"><button class="vtile" data-yt="qkwISstQQVw" type="button"><img src="https://i.ytimg.com/vi/qkwISstQQVw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Rick Rubin Interview</span></button></div>
+</div>
+<div class="subtag">more visuals — 21</div>
+<div class="vmore">
+<button class="vtile vtile-sm" data-yt="ABTbvfkYKBg" type="button"><img src="https://i.ytimg.com/vi/ABTbvfkYKBg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Lessons on Creativity with Rick Rubin</span></button>
+<button class="vtile vtile-sm" data-yt="YS299z6ahsk" type="button"><img src="https://i.ytimg.com/vi/YS299z6ahsk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">For People Feeling Behind In Life - Do This Before 2025 Ends To Find Purpose &amp; Meaning | Rick Rubin</span></button>
+<button class="vtile vtile-sm" data-yt="atXpy2CkNMY" type="button"><img src="https://i.ytimg.com/vi/atXpy2CkNMY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Matthew McConaughey</span></button>
+<button class="vtile vtile-sm" data-yt="sE1teB5bN-w" type="button"><img src="https://i.ytimg.com/vi/sE1teB5bN-w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rick Rubin on the Creative Act — 60 Minutes</span></button>
+<button class="vtile vtile-sm" data-yt="uFiR3nVtYKY" type="button"><img src="https://i.ytimg.com/vi/uFiR3nVtYKY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Joe Rogan Experience #1881 - Rick Rubin</span></button>
+<button class="vtile vtile-sm" data-yt="UyW_acegSVc" type="button"><img src="https://i.ytimg.com/vi/UyW_acegSVc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rick Rubin - How To Stop Overthinking</span></button>
+<button class="vtile vtile-sm" data-yt="Zr-OZaJ-DVQ" type="button"><img src="https://i.ytimg.com/vi/Zr-OZaJ-DVQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rick Rubin on The Creative Act, Overcoming Ego, and Enjoying the Process</span></button>
+<button class="vtile vtile-sm" data-yt="PnahkJevp64" type="button"><img src="https://i.ytimg.com/vi/PnahkJevp64/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pharrell and Rick Rubin Have an Epic Conversation | GQ</span></button>
+<button class="vtile vtile-sm" data-yt="brPHcAJn7ZU" type="button"><img src="https://i.ytimg.com/vi/brPHcAJn7ZU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rick Rubin Reveals His Secret to UNLOCK Your Creativity!</span></button>
+<button class="vtile vtile-sm" data-yt="mVN9iptDhcM" type="button"><img src="https://i.ytimg.com/vi/mVN9iptDhcM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rick Rubin on Creativity and the Universe</span></button>
+<button class="vtile vtile-sm" data-yt="vekseGq-6dM" type="button"><img src="https://i.ytimg.com/vi/vekseGq-6dM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Rick Rubin Effect</span></button>
+<button class="vtile vtile-sm" data-yt="lUksi4RrrWo" type="button"><img src="https://i.ytimg.com/vi/lUksi4RrrWo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Zane Lowe meets.... Rick Rubin</span></button>
+<button class="vtile vtile-sm" data-yt="AkWSLIMZW-A" type="button"><img src="https://i.ytimg.com/vi/AkWSLIMZW-A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Spiritual Journey Behind Creativity &amp; Art ft. Rick Rubin | Shane Smith Has Questions | Vice News</span></button>
+<button class="vtile vtile-sm" data-yt="KjtZ_CLY1hQ" type="button"><img src="https://i.ytimg.com/vi/KjtZ_CLY1hQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rick Rubin Compares the Creative Process of Eminem, Jay-Z, and Anthony Kiedis</span></button>
+<button class="vtile vtile-sm" data-yt="PZ-AVFpB3KI" type="button"><img src="https://i.ytimg.com/vi/PZ-AVFpB3KI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Neil Young and Rick Rubin: &#x27;World Record&#x27;, Recording on Tape, and Creative Process | Apple Music</span></button>
+<button class="vtile vtile-sm" data-yt="__CYYICRLCs" type="button"><img src="https://i.ytimg.com/vi/__CYYICRLCs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Rick Rubin helped revitalize Johnny Cash&#x27;s career</span></button>
+<button class="vtile vtile-sm" data-yt="q4HoIpcyCBY" type="button"><img src="https://i.ytimg.com/vi/q4HoIpcyCBY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rick Rubin: the father of modern American music</span></button>
+<button class="vtile vtile-sm" data-yt="0XetG_YqjTw" type="button"><img src="https://i.ytimg.com/vi/0XetG_YqjTw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Shangri La Studio tour from Zane Lowe</span></button>
+<button class="vtile vtile-sm" data-yt="IBHADseIs-w" type="button"><img src="https://i.ytimg.com/vi/IBHADseIs-w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dawn of Def Jam: Rick Rubin Returns to His NYU Dorm Room</span></button>
+<button class="vtile vtile-sm" data-yt="I3M9iYfdDzo" type="button"><img src="https://i.ytimg.com/vi/I3M9iYfdDzo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Paul McCartney &amp; Rick Rubin Listen To CANNIBAL CORPSE</span></button>
+<button class="vtile vtile-sm" data-yt="IzNiJVfCp1E" type="button"><img src="https://i.ytimg.com/vi/IzNiJVfCp1E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sample Breakdown: Jay-Z - 99 Problems (prod by Rick Rubin)</span></button>
+</div>
     </section>
 
     <!-- MIDDLE -->
@@ -198,5 +227,23 @@
     </aside>
   </div>
 </div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
 </body>
 </html>

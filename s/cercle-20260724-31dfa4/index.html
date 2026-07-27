@@ -70,6 +70,26 @@
   .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
   .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
 
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
   /* MIDDLE: deliverable */
   .article { max-width:60ch; }
   .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
@@ -120,34 +140,38 @@
     <div class="stats">
       <div class="stat"><div class="v">2026-07-27</div><div class="k">researched</div></div>
       <div class="stat"><div class="v">9</div><div class="k">sources</div></div>
-      <div class="stat"><div class="v">364</div><div class="k">words</div></div>
+      <div class="stat"><div class="v">622</div><div class="k">words</div></div>
     </div>
   </header>
 
   <div class="cols">
     <!-- LEFT -->
-    <section class="col">
+    <section class="col" id="visuals">
       <div class="coltag">visuals — long-form</div>
-      <div class="videos">
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Primary</span><iframe class="embed" src="https://www.youtube.com/embed/crZfT5qnFdA" title="" frameborder="0" allow="encrypted-media" allowfullscreen></iframe></div>
-          <div class="vcap">Cercle<span class="src">from research</span></div>
-        </div>
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Documentary</span><span class="vstate">awaiting pipeline</span><span class="play"></span></div>
-          <div class="vcap">long-form documentary<span class="src">not yet sourced</span></div>
-        </div>
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Interview</span><span class="vstate">awaiting pipeline</span><span class="play"></span></div>
-          <div class="vcap">interview / conversation<span class="src">not yet sourced</span></div>
-        </div>
-      </div>
-      <div class="subtag">more visuals — awaiting pipeline</div>
-      <div class="vmore">
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-      </div>
+<div class="videos">
+<div class="vslot"><button class="vtile" data-yt="crZfT5qnFdA" type="button"><img src="https://i.ytimg.com/vi/crZfT5qnFdA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Disclosure for Cercle at Plitvice Lakes National Park, Croatia</span></button></div>
+<div class="vslot"><div class="vframe"><span class="vrole">Documentary</span><span class="vstate">awaiting pipeline</span><span class="play"></span></div><div class="vcap">documentary<span class="src">not yet sourced</span></div></div>
+<div class="vslot"><div class="vframe"><span class="vrole">Interview</span><span class="vstate">awaiting pipeline</span><span class="play"></span></div><div class="vcap">interview<span class="src">not yet sourced</span></div></div>
+</div>
+<div class="subtag">more visuals — 16</div>
+<div class="vmore">
+<button class="vtile vtile-sm" data-yt="KS6KPNusfFQ" type="button"><img src="https://i.ytimg.com/vi/KS6KPNusfFQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tame Impala at Parque de Quetzalcóatl, Mexico, for Cercle</span></button>
+<button class="vtile vtile-sm" data-yt="XHNHq1mC0VQ" type="button"><img src="https://i.ytimg.com/vi/XHNHq1mC0VQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ZHU at Hakuba Iwatake in Nagano, Japan for Cercle</span></button>
+<button class="vtile vtile-sm" data-yt="YDJEo-rQrfw" type="button"><img src="https://i.ytimg.com/vi/YDJEo-rQrfw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Folamour at Cathédrale Saint-Pierre in Geneva, Switzerland for Cercle &amp; W Hotels</span></button>
+<button class="vtile vtile-sm" data-yt="VM2dxRnhq7g" type="button"><img src="https://i.ytimg.com/vi/VM2dxRnhq7g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bonobo Solo live at Cercle Odyssey, Paris, France</span></button>
+<button class="vtile vtile-sm" data-yt="nxuB96ppBLY" type="button"><img src="https://i.ytimg.com/vi/nxuB96ppBLY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Monolink live at Cercle Odyssey, Paris, France</span></button>
+<button class="vtile vtile-sm" data-yt="hENgrbIMiy4" type="button"><img src="https://i.ytimg.com/vi/hENgrbIMiy4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ARTBAT at Bondinho Pão de Açúcar in Rio de Janeiro, Brazil for Cercle</span></button>
+<button class="vtile vtile-sm" data-yt="XxSmY7VNaCk" type="button"><img src="https://i.ytimg.com/vi/XxSmY7VNaCk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">HVOB live at Copa del Sol in Careyes, Mexico for Cercle</span></button>
+<button class="vtile vtile-sm" data-yt="h96MGcsi7GQ" type="button"><img src="https://i.ytimg.com/vi/h96MGcsi7GQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Lee Burridge at Savaya Bali in Indonesia for Cercle</span></button>
+<button class="vtile vtile-sm" data-yt="4hnJUB_g290" type="button"><img src="https://i.ytimg.com/vi/4hnJUB_g290/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ARTBAT live at Cercle Odyssey, Paris, France</span></button>
+<button class="vtile vtile-sm" data-yt="M1PcxAESEnY" type="button"><img src="https://i.ytimg.com/vi/M1PcxAESEnY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mochakk at Plaza de España, in Sevilla, Spain for Cercle &amp; Volcan X.A.</span></button>
+<button class="vtile vtile-sm" data-yt="cVFzblT5VPE" type="button"><img src="https://i.ytimg.com/vi/cVFzblT5VPE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Einmusik b2b Jonas Saalbach live at Preikestolen in Norway for Cercle</span></button>
+<button class="vtile vtile-sm" data-yt="_SvwdK_HibQ" type="button"><img src="https://i.ytimg.com/vi/_SvwdK_HibQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Monolink live for Cercle &amp; W Hotels at Gaatafushi Island, Maldives</span></button>
+<button class="vtile vtile-sm" data-yt="cxvdImFbNyQ" type="button"><img src="https://i.ytimg.com/vi/cxvdImFbNyQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Kiasmos live for Cercle at Citadelle de Sisteron, France</span></button>
+<button class="vtile vtile-sm" data-yt="VjQmQ00LKSc" type="button"><img src="https://i.ytimg.com/vi/VjQmQ00LKSc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Hot Since 82 at Culture Club Revelin terrace in Dubrovnik, Croatia for Cercle</span></button>
+<button class="vtile vtile-sm" data-yt="2OHFgjuy3DI" type="button"><img src="https://i.ytimg.com/vi/2OHFgjuy3DI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sofiane Pamart live under the Northern Lights, in Lapland, Finland for Cercle</span></button>
+<button class="vtile vtile-sm" data-yt="MEzU1HvBo6Y" type="button"><img src="https://i.ytimg.com/vi/MEzU1HvBo6Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Above &amp; Beyond for Cercle in Guatape, Colombia</span></button>
+</div>
     </section>
 
     <!-- MIDDLE -->
@@ -201,5 +225,23 @@
     </aside>
   </div>
 </div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
 </body>
 </html>

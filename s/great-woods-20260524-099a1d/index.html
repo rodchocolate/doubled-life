@@ -70,6 +70,26 @@
   .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
   .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
 
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
   /* MIDDLE: deliverable */
   .article { max-width:60ch; }
   .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
@@ -120,34 +140,40 @@
     <div class="stats">
       <div class="stat"><div class="v">2026-07-27</div><div class="k">researched</div></div>
       <div class="stat"><div class="v">9</div><div class="k">sources</div></div>
-      <div class="stat"><div class="v">401</div><div class="k">words</div></div>
+      <div class="stat"><div class="v">743</div><div class="k">words</div></div>
     </div>
   </header>
 
   <div class="cols">
     <!-- LEFT -->
-    <section class="col">
+    <section class="col" id="visuals">
       <div class="coltag">visuals — long-form</div>
-      <div class="videos">
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Primary</span><iframe class="embed" src="https://www.youtube.com/embed/MQy7nvZ4XY4" title="" frameborder="0" allow="encrypted-media" allowfullscreen></iframe></div>
-          <div class="vcap">Great Woods<span class="src">from research</span></div>
-        </div>
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Documentary</span><span class="vstate">awaiting pipeline</span><span class="play"></span></div>
-          <div class="vcap">long-form documentary<span class="src">not yet sourced</span></div>
-        </div>
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Interview</span><span class="vstate">awaiting pipeline</span><span class="play"></span></div>
-          <div class="vcap">interview / conversation<span class="src">not yet sourced</span></div>
-        </div>
-      </div>
-      <div class="subtag">more visuals — awaiting pipeline</div>
-      <div class="vmore">
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-      </div>
+<div class="videos">
+<div class="vslot"><button class="vtile" data-yt="SEo4kjnPwgQ" type="button"><img src="https://i.ytimg.com/vi/SEo4kjnPwgQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Phish 7/8/1994 Great Woods Performing Arts Center</span></button></div>
+<div class="vslot"><button class="vtile" data-yt="MQy7nvZ4XY4" type="button"><img src="https://i.ytimg.com/vi/MQy7nvZ4XY4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Allman Brothers Band - Dreams (Great Woods, Mansfield, MA, 09-19-1998)</span></button></div>
+<div class="vslot"><div class="vframe"><span class="vrole">Interview</span><span class="vstate">awaiting pipeline</span><span class="play"></span></div><div class="vcap">interview<span class="src">not yet sourced</span></div></div>
+</div>
+<div class="subtag">more visuals — 18</div>
+<div class="vmore">
+<button class="vtile vtile-sm" data-yt="A7BpVAW0c30" type="button"><img src="https://i.ytimg.com/vi/A7BpVAW0c30/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jerry Garciai Band [1080p Remaster] 09/10/89 Great Woods Mansfield, MA (WSG Clarence Clemens) [SBD]</span></button>
+<button class="vtile vtile-sm" data-yt="f84JNwJv7cA" type="button"><img src="https://i.ytimg.com/vi/f84JNwJv7cA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">1989-09-10 - Jerry Garcia Band - Great Woods - Mansfield, MA</span></button>
+<button class="vtile vtile-sm" data-yt="HyngvIMlSh8" type="button"><img src="https://i.ytimg.com/vi/HyngvIMlSh8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Allman Brothers Band - Featuring Jack Pearson - 9/19/98 - Great Woods - Second Set.</span></button>
+<button class="vtile vtile-sm" data-yt="4x-ZTSd-6O4" type="button"><img src="https://i.ytimg.com/vi/4x-ZTSd-6O4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Allman Brothers Band - Featuring Jack Pearson - 9/19/98 - Great Woods - First Set</span></button>
+<button class="vtile vtile-sm" data-yt="a9ySU0aJBcM" type="button"><img src="https://i.ytimg.com/vi/a9ySU0aJBcM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Allman Brothers Band - Whipping Post - Live at Great Woods 9-6-91</span></button>
+<button class="vtile vtile-sm" data-yt="N_ba_Le-GPE" type="button"><img src="https://i.ytimg.com/vi/N_ba_Le-GPE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">9.19.98 Allman Bros. Band: pt 1 Great Woods Ampitheater Mansfield, MA 480 PRO</span></button>
+<button class="vtile vtile-sm" data-yt="4J11Dti3els" type="button"><img src="https://i.ytimg.com/vi/4J11Dti3els/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Great Woods 7/8/1994 set 1 Part one</span></button>
+<button class="vtile vtile-sm" data-yt="yZn3xdi_DoA" type="button"><img src="https://i.ytimg.com/vi/yZn3xdi_DoA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Phish - Twist - Crosseyed and Painless - Live from Great Woods, Mansfield, MA - 7/21/24 - N3 - 4K</span></button>
+<button class="vtile vtile-sm" data-yt="-Sk8sOHEIkA" type="button"><img src="https://i.ytimg.com/vi/-Sk8sOHEIkA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">All-Season Cottage Near Big Pond | 87 Great Woods Rd, Otis</span></button>
+<button class="vtile vtile-sm" data-yt="VMOa36deA_4" type="button"><img src="https://i.ytimg.com/vi/VMOa36deA_4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Allman Brothers Band - September 19, 1998 - Great Woods - Mansfield, Massachusetts</span></button>
+<button class="vtile vtile-sm" data-yt="d8VApj_yzO4" type="button"><img src="https://i.ytimg.com/vi/d8VApj_yzO4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rush Live June 17th, 1992 Great Woods, Mansfield, MA Analog Master</span></button>
+<button class="vtile vtile-sm" data-yt="FKDrOHQalbQ" type="button"><img src="https://i.ytimg.com/vi/FKDrOHQalbQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Allman Brothers Band - Blue Sky - Live at Great Woods 9-6-91</span></button>
+<button class="vtile vtile-sm" data-yt="a_0BOKtyClE" type="button"><img src="https://i.ytimg.com/vi/a_0BOKtyClE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Allman Brothers Band 1998-09-19 Great Woods PPV</span></button>
+<button class="vtile vtile-sm" data-yt="-i-J2Nec5d8" type="button"><img src="https://i.ytimg.com/vi/-i-J2Nec5d8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Allman Brothers Band - Jessica - Live at Great Woods 9-6-91</span></button>
+<button class="vtile vtile-sm" data-yt="vg1Jx6f2ESA" type="button"><img src="https://i.ytimg.com/vi/vg1Jx6f2ESA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Allman Brothers Band - Midnight Rider - Live at Great Woods 9-6-91</span></button>
+<button class="vtile vtile-sm" data-yt="xRNCToXDrTM" type="button"><img src="https://i.ytimg.com/vi/xRNCToXDrTM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Allman Brothers Band - Statesboro Blue - Live at Great Woods 9-6-91</span></button>
+<button class="vtile vtile-sm" data-yt="Kl6YxdiuboE" type="button"><img src="https://i.ytimg.com/vi/Kl6YxdiuboE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Allman Brothers Band - Revival - Live at Great Woods 9-6-91</span></button>
+<button class="vtile vtile-sm" data-yt="-p9B0Vh0Rk4" type="button"><img src="https://i.ytimg.com/vi/-p9B0Vh0Rk4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Allman Brothers Band - Hoochie Coochie Man - Live at Great Woods 9-6-91</span></button>
+</div>
     </section>
 
     <!-- MIDDLE -->
@@ -202,5 +228,23 @@
     </aside>
   </div>
 </div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
 </body>
 </html>

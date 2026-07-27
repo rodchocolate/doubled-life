@@ -70,6 +70,26 @@
   .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
   .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
 
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
   /* MIDDLE: deliverable */
   .article { max-width:60ch; }
   .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
@@ -120,34 +140,43 @@
     <div class="stats">
       <div class="stat"><div class="v">2026-07-27</div><div class="k">researched</div></div>
       <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
-      <div class="stat"><div class="v">407</div><div class="k">words</div></div>
+      <div class="stat"><div class="v">780</div><div class="k">words</div></div>
     </div>
   </header>
 
   <div class="cols">
     <!-- LEFT -->
-    <section class="col">
+    <section class="col" id="visuals">
       <div class="coltag">visuals — long-form</div>
-      <div class="videos">
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Primary</span><img src="lead.jpg" alt="Timbaland"></div>
-          <div class="vcap">Timbaland<span class="src">from research</span></div>
-        </div>
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Documentary</span><span class="vstate">awaiting pipeline</span><span class="play"></span></div>
-          <div class="vcap">long-form documentary<span class="src">not yet sourced</span></div>
-        </div>
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Interview</span><span class="vstate">awaiting pipeline</span><span class="play"></span></div>
-          <div class="vcap">interview / conversation<span class="src">not yet sourced</span></div>
-        </div>
-      </div>
-      <div class="subtag">more visuals — awaiting pipeline</div>
-      <div class="vmore">
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-      </div>
+<div class="videos">
+<div class="vslot"><button class="vtile" data-yt="mXYcMX_lh0E" type="button"><img src="https://i.ytimg.com/vi/mXYcMX_lh0E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Timbaland musical mastermind on addiction battle, legacy &amp; hits w/ Jay Z, Missy, Justin |The Pivot</span></button></div>
+<div class="vslot"><button class="vtile" data-yt="YfWSMMPnTiI" type="button"><img src="https://i.ytimg.com/vi/YfWSMMPnTiI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Timbaland Revolutionized R&amp;B + Hip-Hop and then Reinvented Himself After Addiction | Blueprint</span></button></div>
+<div class="vslot"><button class="vtile" data-yt="qQuFJD8zNYE" type="button"><img src="https://i.ytimg.com/vi/qQuFJD8zNYE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Timbaland on The Future of Music - New Book - Subpac - The Next Phase - Interview - BigBoyTV</span></button></div>
+</div>
+<div class="subtag">more visuals — 21</div>
+<div class="vmore">
+<button class="vtile vtile-sm" data-yt="A8jbY0jYv20" type="button"><img src="https://i.ytimg.com/vi/A8jbY0jYv20/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Timbaland on Jay-Z &amp; Drake Reaching Out During His Darkest Moments And Working With Missy Elliott</span></button>
+<button class="vtile vtile-sm" data-yt="QrMxBf3sT20" type="button"><img src="https://i.ytimg.com/vi/QrMxBf3sT20/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Timbaland: Producer Come Up, Selling Beats For $500K, AI Taking Over Producers, BeatClub &amp; More</span></button>
+<button class="vtile vtile-sm" data-yt="aayZ9ybDTBw" type="button"><img src="https://i.ytimg.com/vi/aayZ9ybDTBw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Inspiration: Jay-Z &amp; Timbaland in the Studio</span></button>
+<button class="vtile vtile-sm" data-yt="qVR5CXpuA0Y" type="button"><img src="https://i.ytimg.com/vi/qVR5CXpuA0Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Timbaland | Drink Champs (Full Episode)</span></button>
+<button class="vtile vtile-sm" data-yt="CeRZbup8OSw" type="button"><img src="https://i.ytimg.com/vi/CeRZbup8OSw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Timbaland On Meeting Justin Timberlake At 15: &#x27;This White boy cold&#x27; | CLUB SHAY SHAY</span></button>
+<button class="vtile vtile-sm" data-yt="HyQEsFhC17A" type="button"><img src="https://i.ytimg.com/vi/HyQEsFhC17A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">5: Timbaland on Fame, Fatherhood &amp; Raising Reign</span></button>
+<button class="vtile vtile-sm" data-yt="m5jPRxgMpQk" type="button"><img src="https://i.ytimg.com/vi/m5jPRxgMpQk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Timbaland Opens Up On Overcoming An Opioid Addiction</span></button>
+<button class="vtile vtile-sm" data-yt="KhEDWadAuuo" type="button"><img src="https://i.ytimg.com/vi/KhEDWadAuuo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">HOW JUSTIN TIMBERLAKE WROTE &quot;SEXYBACK&quot; | POP INTERVIEW</span></button>
+<button class="vtile vtile-sm" data-yt="hUNjy43hn4M" type="button"><img src="https://i.ytimg.com/vi/hUNjy43hn4M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Timbaland &amp; Justin Timberlake Discuss Their Most Iconic Songs In Exclusive Sit Down</span></button>
+<button class="vtile vtile-sm" data-yt="PS2nHv5K5R8" type="button"><img src="https://i.ytimg.com/vi/PS2nHv5K5R8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Hit Maker: The SHOCKING Story Of Mega Producer Timbaland</span></button>
+<button class="vtile vtile-sm" data-yt="buU8jAkHAb4" type="button"><img src="https://i.ytimg.com/vi/buU8jAkHAb4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What Really Happened to Timbaland? The Best Producer of the 2000s..</span></button>
+<button class="vtile vtile-sm" data-yt="l3URhuA70kI" type="button"><img src="https://i.ytimg.com/vi/l3URhuA70kI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Rise &amp; Fall Of Timbaland</span></button>
+<button class="vtile vtile-sm" data-yt="cwAxxENZf1k" type="button"><img src="https://i.ytimg.com/vi/cwAxxENZf1k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Timbaland: The History Of Timbaland | Mini Documentary | Hip Hop Awards 23&#x27;</span></button>
+<button class="vtile vtile-sm" data-yt="2Nl2Wn1pjrs" type="button"><img src="https://i.ytimg.com/vi/2Nl2Wn1pjrs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Kanye West &amp; Timbaland In The Studio Working On &quot;Stonger&quot;</span></button>
+<button class="vtile vtile-sm" data-yt="SQBQbuIGIMg" type="button"><img src="https://i.ytimg.com/vi/SQBQbuIGIMg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Hip-Hop Made Timberland a Billion Dollar Brand</span></button>
+<button class="vtile vtile-sm" data-yt="sAorJjmc2Lo" type="button"><img src="https://i.ytimg.com/vi/sAorJjmc2Lo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Making of: JUSTIFIED (Timberlake Documentary) 1080p</span></button>
+<button class="vtile vtile-sm" data-yt="PM9hwy3Zx_4" type="button"><img src="https://i.ytimg.com/vi/PM9hwy3Zx_4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">This Is Not A Boot | The Story of an Icon</span></button>
+<button class="vtile vtile-sm" data-yt="gQz71zgXYXA" type="button"><img src="https://i.ytimg.com/vi/gQz71zgXYXA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Studio Session: Jay-Z&#x27;s &quot;Magna Carta Holy Grail&quot;</span></button>
+<button class="vtile vtile-sm" data-yt="ZWz1NUqUH5g" type="button"><img src="https://i.ytimg.com/vi/ZWz1NUqUH5g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Timbaland talks about Static writing Are You That Somebody</span></button>
+<button class="vtile vtile-sm" data-yt="K-SZlGCWE58" type="button"><img src="https://i.ytimg.com/vi/K-SZlGCWE58/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What EVERY PRODUCER can learn from Timbaland</span></button>
+<button class="vtile vtile-sm" data-yt="cyGjocAgKwQ" type="button"><img src="https://i.ytimg.com/vi/cyGjocAgKwQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">TIMBALAND Teaches Producing and Beatmaking - MasterClass Trailer</span></button>
+</div>
     </section>
 
     <!-- MIDDLE -->
@@ -199,5 +228,23 @@
     </aside>
   </div>
 </div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
 </body>
 </html>

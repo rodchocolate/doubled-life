@@ -70,6 +70,26 @@
   .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
   .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
 
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
   /* MIDDLE: deliverable */
   .article { max-width:60ch; }
   .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
@@ -120,34 +140,43 @@
     <div class="stats">
       <div class="stat"><div class="v">2026-07-27</div><div class="k">researched</div></div>
       <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
-      <div class="stat"><div class="v">503</div><div class="k">words</div></div>
+      <div class="stat"><div class="v">832</div><div class="k">words</div></div>
     </div>
   </header>
 
   <div class="cols">
     <!-- LEFT -->
-    <section class="col">
+    <section class="col" id="visuals">
       <div class="coltag">visuals — long-form</div>
-      <div class="videos">
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Primary</span><img src="lead.jpg" alt="Kanye West"></div>
-          <div class="vcap">Kanye West<span class="src">from research</span></div>
-        </div>
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Documentary</span><span class="vstate">awaiting pipeline</span><span class="play"></span></div>
-          <div class="vcap">long-form documentary<span class="src">not yet sourced</span></div>
-        </div>
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Interview</span><span class="vstate">awaiting pipeline</span><span class="play"></span></div>
-          <div class="vcap">interview / conversation<span class="src">not yet sourced</span></div>
-        </div>
-      </div>
-      <div class="subtag">more visuals — awaiting pipeline</div>
-      <div class="vmore">
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-      </div>
+<div class="videos">
+<div class="vslot"><button class="vtile" data-yt="qxOeWuAHOiw" type="button"><img src="https://i.ytimg.com/vi/qxOeWuAHOiw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Joe Rogan Experience #1554 - Kanye West</span></button></div>
+<div class="vslot"><button class="vtile" data-yt="9UgSbBUceAY" type="button"><img src="https://i.ytimg.com/vi/9UgSbBUceAY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DROPOUT: A Kanye West Documentary</span></button></div>
+<div class="vslot"><button class="vtile" data-yt="L63Jt6__aGw" type="button"><img src="https://i.ytimg.com/vi/L63Jt6__aGw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Kanye &#x27;Ye&#x27; West Interview With Piers Morgan</span></button></div>
+</div>
+<div class="subtag">more visuals — 21</div>
+<div class="vmore">
+<button class="vtile vtile-sm" data-yt="mun1HCpwy7c" type="button"><img src="https://i.ytimg.com/vi/mun1HCpwy7c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ye ⚡️DRINK CHAMPS | Full Episode in 4k Ultra HD! 🏆</span></button>
+<button class="vtile vtile-sm" data-yt="27NstO1qOJk" type="button"><img src="https://i.ytimg.com/vi/27NstO1qOJk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Kanye West On &quot;Donda,&quot; Drake, Marriage W/ Kim Kardashian, His Legendary Career &amp; More | Drink Champs</span></button>
+<button class="vtile vtile-sm" data-yt="W58_fnZ3oGQ" type="button"><img src="https://i.ytimg.com/vi/W58_fnZ3oGQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Kanye West FULL Banned Ellen Interview HD May 19 2016</span></button>
+<button class="vtile vtile-sm" data-yt="4AWLcxTGZPA" type="button"><img src="https://i.ytimg.com/vi/4AWLcxTGZPA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Kanye &#x27;Ye&#x27; West Interview | Lex Fridman Podcast #332</span></button>
+<button class="vtile vtile-sm" data-yt="kNbyZWcp5Pw" type="button"><img src="https://i.ytimg.com/vi/kNbyZWcp5Pw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Kanye West in 2005— Charlie Rose Interview</span></button>
+<button class="vtile vtile-sm" data-yt="QuOCvKvrwI8" type="button"><img src="https://i.ytimg.com/vi/QuOCvKvrwI8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Kanye West: &#x27;Jesus Is King&#x27; and Iconic Sunday Service | Apple Music</span></button>
+<button class="vtile vtile-sm" data-yt="zOHhaMvk-XM" type="button"><img src="https://i.ytimg.com/vi/zOHhaMvk-XM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Breakfast Club Classic - Kanye West Interview 2013</span></button>
+<button class="vtile vtile-sm" data-yt="PmZjaYdS3fA" type="button"><img src="https://i.ytimg.com/vi/PmZjaYdS3fA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jimmy Kimmel’s Full Interview with Kanye West</span></button>
+<button class="vtile vtile-sm" data-yt="DR_yTQ0SYVA" type="button"><img src="https://i.ytimg.com/vi/DR_yTQ0SYVA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Kanye West. Zane Lowe. Full Interview</span></button>
+<button class="vtile vtile-sm" data-yt="zxwfDlhJIpw" type="button"><img src="https://i.ytimg.com/vi/zxwfDlhJIpw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">kanye west / charlamagne interview</span></button>
+<button class="vtile vtile-sm" data-yt="-8K9iEMyYDo" type="button"><img src="https://i.ytimg.com/vi/-8K9iEMyYDo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Genius Of: Kanye West</span></button>
+<button class="vtile vtile-sm" data-yt="0mOnyU2rArU" type="button"><img src="https://i.ytimg.com/vi/0mOnyU2rArU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Rise of Kanye West (Documentary)</span></button>
+<button class="vtile vtile-sm" data-yt="CzESR3iAOSA" type="button"><img src="https://i.ytimg.com/vi/CzESR3iAOSA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">IN WHOSE NAME? - YE Confronted By Michael Che After SNL Performance</span></button>
+<button class="vtile vtile-sm" data-yt="SUff1JxxCg4" type="button"><img src="https://i.ytimg.com/vi/SUff1JxxCg4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Kanye screams at Kris Jenner in new footage</span></button>
+<button class="vtile vtile-sm" data-yt="rIOfofsi3Jk" type="button"><img src="https://i.ytimg.com/vi/rIOfofsi3Jk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Kanye West: VH1 Driven (Full Episode)</span></button>
+<button class="vtile vtile-sm" data-yt="Fm0TnhedbvY" type="button"><img src="https://i.ytimg.com/vi/Fm0TnhedbvY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">In Whose Name - Official Full Trailer (2025) Documentary</span></button>
+<button class="vtile vtile-sm" data-yt="S1Qwx8NlgW8" type="button"><img src="https://i.ytimg.com/vi/S1Qwx8NlgW8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Kanye West &amp; Jay Z - Watch The Throne Documentary + BTS Tour Footage</span></button>
+<button class="vtile vtile-sm" data-yt="cGkcF7bHko4" type="button"><img src="https://i.ytimg.com/vi/cGkcF7bHko4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Kanye plays &#x27;Through The Wire&#x27; for Pharrell for the first time (2004)</span></button>
+<button class="vtile vtile-sm" data-yt="bSrpAHyGoZA" type="button"><img src="https://i.ytimg.com/vi/bSrpAHyGoZA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Unraveling the Madness of Kanye West | REDUX (Extended Documentary)</span></button>
+<button class="vtile vtile-sm" data-yt="nUXtGUEoxmg" type="button"><img src="https://i.ytimg.com/vi/nUXtGUEoxmg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">500 Days In UCLA</span></button>
+<button class="vtile vtile-sm" data-yt="J_CT8dy2mlc" type="button"><img src="https://i.ytimg.com/vi/J_CT8dy2mlc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The ULTIMATE Kanye West Iceberg Explained: PART 1</span></button>
+</div>
     </section>
 
     <!-- MIDDLE -->
@@ -198,5 +227,23 @@
     </aside>
   </div>
 </div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
 </body>
 </html>

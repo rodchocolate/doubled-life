@@ -70,6 +70,26 @@
   .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
   .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
 
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
   /* MIDDLE: deliverable */
   .article { max-width:60ch; }
   .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
@@ -120,34 +140,43 @@
     <div class="stats">
       <div class="stat"><div class="v">2026-07-27</div><div class="k">researched</div></div>
       <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
-      <div class="stat"><div class="v">430</div><div class="k">words</div></div>
+      <div class="stat"><div class="v">820</div><div class="k">words</div></div>
     </div>
   </header>
 
   <div class="cols">
     <!-- LEFT -->
-    <section class="col">
+    <section class="col" id="visuals">
       <div class="coltag">visuals — long-form</div>
-      <div class="videos">
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Primary</span><img src="lead.jpg" alt="Quincy Jones"></div>
-          <div class="vcap">Quincy Jones<span class="src">from research</span></div>
-        </div>
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Documentary</span><span class="vstate">awaiting pipeline</span><span class="play"></span></div>
-          <div class="vcap">long-form documentary<span class="src">not yet sourced</span></div>
-        </div>
-        <div class="vslot">
-          <div class="vframe"><span class="vrole">Interview</span><span class="vstate">awaiting pipeline</span><span class="play"></span></div>
-          <div class="vcap">interview / conversation<span class="src">not yet sourced</span></div>
-        </div>
-      </div>
-      <div class="subtag">more visuals — awaiting pipeline</div>
-      <div class="vmore">
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-        <div class="vmrow"><span class="vmthumb"><span class="play"></span></span><span class="vmtitle">additional clip<span class="src">not yet sourced</span></span></div>
-      </div>
+<div class="videos">
+<div class="vslot"><button class="vtile" data-yt="_A7mDx7pRTE" type="button"><img src="https://i.ytimg.com/vi/_A7mDx7pRTE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Charlie Rose Conversations With Quincy Jones</span></button></div>
+<div class="vslot"><button class="vtile" data-yt="FMK4EvETOrg" type="button"><img src="https://i.ytimg.com/vi/FMK4EvETOrg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Quincy Jones Reflects On His Feud With Michael Jackson | the detail.</span></button></div>
+<div class="vslot"><button class="vtile" data-yt="56C80JZtIhs" type="button"><img src="https://i.ytimg.com/vi/56C80JZtIhs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Quincy Jones, Academy Class of 1984, Full Interview</span></button></div>
+</div>
+<div class="subtag">more visuals — 21</div>
+<div class="vmore">
+<button class="vtile vtile-sm" data-yt="Bu4G_3oW6vI" type="button"><img src="https://i.ytimg.com/vi/Bu4G_3oW6vI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Quincy Jones on the Power of Music - Uncut Retrospective Interview (1991)</span></button>
+<button class="vtile vtile-sm" data-yt="PgpFjIPXB2s" type="button"><img src="https://i.ytimg.com/vi/PgpFjIPXB2s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Quincy Jones and Khalid&#x27;s Epic Conversation | GQ</span></button>
+<button class="vtile vtile-sm" data-yt="HSZxPZbpp0k" type="button"><img src="https://i.ytimg.com/vi/HSZxPZbpp0k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Quincy Jones: When I First Met Miles Davis</span></button>
+<button class="vtile vtile-sm" data-yt="EK6M5jPsolQ" type="button"><img src="https://i.ytimg.com/vi/EK6M5jPsolQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Quincy Jones on battling Michael Jackson, befriending Sinatra</span></button>
+<button class="vtile vtile-sm" data-yt="c2BA8Ze525Y" type="button"><img src="https://i.ytimg.com/vi/c2BA8Ze525Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Quincy Jones explains how he got started in music | American Masters | PBS</span></button>
+<button class="vtile vtile-sm" data-yt="WB9T7mxRmAs" type="button"><img src="https://i.ytimg.com/vi/WB9T7mxRmAs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Quincy Jones Candid On Jackson</span></button>
+<button class="vtile vtile-sm" data-yt="o2rb-dWTEpk" type="button"><img src="https://i.ytimg.com/vi/o2rb-dWTEpk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Quincy Jones Talks About The Making Of &quot;Thriller&quot; | Letterman</span></button>
+<button class="vtile vtile-sm" data-yt="W5gYjUslrtw" type="button"><img src="https://i.ytimg.com/vi/W5gYjUslrtw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">In Conversation With Quincy Jones | CMW Playback | Departure</span></button>
+<button class="vtile vtile-sm" data-yt="12ECYdq9msw" type="button"><img src="https://i.ytimg.com/vi/12ECYdq9msw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Teddy Riley on Real Reason Quincy Jones Stopped Working with Michael Jackson After &#x27;Bad&#x27; (Part 17)</span></button>
+<button class="vtile vtile-sm" data-yt="LfrnX29tZJw" type="button"><img src="https://i.ytimg.com/vi/LfrnX29tZJw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Quincy Jones: The Many Lives of Q (Part 1 of 2) - From the Jazz Age to Hollywood (1933 to 1974)</span></button>
+<button class="vtile vtile-sm" data-yt="WT7gn6nhsAc" type="button"><img src="https://i.ytimg.com/vi/WT7gn6nhsAc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Quincy | Official Trailer [HD] | Netflix</span></button>
+<button class="vtile vtile-sm" data-yt="8sCMawIwa1U" type="button"><img src="https://i.ytimg.com/vi/8sCMawIwa1U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Quincy Jones - Listen Up The Lives Of Quincy 1990 (Full Movie HD)</span></button>
+<button class="vtile vtile-sm" data-yt="fBQQlcC1QAY" type="button"><img src="https://i.ytimg.com/vi/fBQQlcC1QAY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Quincy Jones on producing music, his life and career, and the industry (2001) - PART 2</span></button>
+<button class="vtile vtile-sm" data-yt="e3PYKw9LAKc" type="button"><img src="https://i.ytimg.com/vi/e3PYKw9LAKc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Quincy Jones Documentary</span></button>
+<button class="vtile vtile-sm" data-yt="irm8sKiwB_4" type="button"><img src="https://i.ytimg.com/vi/irm8sKiwB_4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Real Reason Michael Jackson Walked Away From Quincy Jones (Full Documentary) | the detail.</span></button>
+<button class="vtile vtile-sm" data-yt="SE2xJd-xCD8" type="button"><img src="https://i.ytimg.com/vi/SE2xJd-xCD8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Quincy | Official Trailer [HD] | Netflix</span></button>
+<button class="vtile vtile-sm" data-yt="_ulDRYTozTs" type="button"><img src="https://i.ytimg.com/vi/_ulDRYTozTs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The &quot;HIDDEN LIFE&quot; of QUINCY JONES - Michael Jackson | P. Diddy | The Dark Side of MUSIC INDUSTRY</span></button>
+<button class="vtile vtile-sm" data-yt="FnKIR77wuWM" type="button"><img src="https://i.ytimg.com/vi/FnKIR77wuWM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Mysterious DARKSIDE of Record Producer Quincy Jones</span></button>
+<button class="vtile vtile-sm" data-yt="HR0Czf_epcU" type="button"><img src="https://i.ytimg.com/vi/HR0Czf_epcU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Dark Side Of &#x27;We Are The World&#x27; — What They Didn&#x27;t Want You To Know! (Full Doc) | the detail.</span></button>
+<button class="vtile vtile-sm" data-yt="e-H1mCEAoiA" type="button"><img src="https://i.ytimg.com/vi/e-H1mCEAoiA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How To Make Sonic Sound, Quincy Jones, Recording Engineer Skills</span></button>
+<button class="vtile vtile-sm" data-yt="rGpJtSRxIi4" type="button"><img src="https://i.ytimg.com/vi/rGpJtSRxIi4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">7 ways Quincy helped me break free from LAME music production</span></button>
+</div>
     </section>
 
     <!-- MIDDLE -->
@@ -199,5 +228,23 @@
     </aside>
   </div>
 </div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
 </body>
 </html>
