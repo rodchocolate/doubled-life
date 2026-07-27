@@ -126,6 +126,7 @@ $videos = array_values(array_filter($subjects, fn($s) => ($s['kind'] ?? '') === 
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&display=swap');
   :root {
     --bg: #26547c;            /* dusk blue — background */
+    --bg-deep: #1e415f; --bg-slot: #16324b; --line-soft: rgba(255,252,249,.10);
     --text: #06d6a0;          /* emerald — main text */
     --porcelain: #fffcf9;     /* porcelain — detail */
     --line: rgba(255,252,249,.24);   /* porcelain borders */
