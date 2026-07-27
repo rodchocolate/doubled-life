@@ -114,6 +114,8 @@
   .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
   .rb-note { font-size:.58rem; opacity:.5; }
   .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
   .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
     border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
   .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
@@ -217,9 +219,16 @@
       </div>
 
       <form class="rebuild" method="post" action="/rebuild.php">
-        <input type="hidden" name="slug" value="pending">
+        <input type="hidden" name="subject" value="Timbaland">
+        <input type="hidden" name="slug" value="timbaland">
         <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
         <div class="rb-subject">subject — Timbaland</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
         <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
         <div class="rb-actions">
           <button type="submit">rebuild page</button>
