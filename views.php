@@ -33,6 +33,7 @@ function dl_notes_html($note_ok) {
   .dltoggle button.active { opacity:1; color:var(--link); }
   .dlview { display:none; } .dlview.active { display:block; }
   .dlrow-hidden { display:none !important; }
+  .dltoggle { display:none; }   /* ESPN-only for now — re-enable to restore the desktop/mobile toggle */
 
   .dlq { width:100%; border-collapse:collapse; font-size:12px; }
   .dlq th { background:rgba(255,252,249,.05); border-bottom:1px solid var(--line); padding:6px 10px;
@@ -364,6 +365,8 @@ function setView(v){
   try { localStorage.setItem('dl_view', v); } catch(e){}
 }
 document.querySelectorAll('.dltoggle button').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
-let stored = null; try { stored = localStorage.getItem('dl_view'); } catch(e){}
-setView(stored || (window.innerWidth <= 820 ? 'espn' : 'napster'));
+/* ESPN-only for now — ignore stored/width and force the mobile view.
+   Restore `setView(stored || (window.innerWidth <= 820 ? 'espn' : 'napster'))`
+   (and remove the .dltoggle{display:none} rule) to bring the toggle back. */
+setView('espn');
 </script>
