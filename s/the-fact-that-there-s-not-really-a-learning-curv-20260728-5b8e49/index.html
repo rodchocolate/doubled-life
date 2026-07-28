@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>The fact that there’s not really a learning curve to… — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">video</div>
+      <h1>The fact that there’s not really a learning curve to…</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">—</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">1</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1577</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos"><div class="vslot"><div class="vframe"><img src="lead.jpg" alt="The fact that there’s not really a learning curve to…"></div></div></div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The video discusses the &#x27;productivity paradox&#x27; and the increasing burnout among AI builders and users. The speaker, Kyle Grove, discusses the hypothesis that burnout is caused by the constant, unpredictable nature of LLM outputs (stochasticity) and the lack of &#x27;continual learning</p>
+<ul>
+<li>url: <a href="https://www.tiktok.com/@kylegrove03/video/7667506330222988574?_r=1&amp;_t=ZT-98QI2sGckJi" rel="noopener">https://www.tiktok.com/@kylegrove03/video/7667506330222988574?_r=1&amp;_t=ZT-98QI2sGckJi</a></li>
+<li>uploader: kylegrove03</li>
+<li>duration: 430s</li>
+<li>source uuid: 019fab28-7d57-7058-9760-375ebac3e5d2</li>
+<li>processed: 2026-07-28T23:57:36.206597+00:00</li>
+</ul>
+<h3>summary</h3>
+<p>The video discusses the &#x27;productivity paradox&#x27; and the increasing burnout among AI builders and users. The speaker, Kyle Grove, discusses the hypothesis that burnout is caused by the constant, unpredictable nature of LLM outputs (stochasticity) and the lack of &#x27;continual learning&#x27; within the human-AI tandem. Unlike human-to-human management, where a manager can learn to predict and coach the same team&#x27;s mistakes, AI outputs are equally surprising every time, keeping the human auditor auditory own nervous system in a high-state of alert, and preventing the same efficiency gains from the same repeated work over time.</p>
+<h4>LLM-based AI — product</h4>
+<ul>
+<li>what it does: Large Language Models that generate text and autonomous outputs based on on-set training data.</li>
+<li>why relevant: The core technology being discussed as the source of both productivity paradoxes and burnout due to its lack of continual learning in a specific domain.</li>
+<li>search terms: Large Language Models, LLM productivity paradox, LLM stochasticity</li>
+</ul>
+<h4>Autonomous Driving — product</h4>
+<ul>
+<li>what it does: -</li>
+<li>why relevant: Used as an analogy for the &#x27;surprise&#x27; factor in auditing AI work; the human is disengaged and then suddenly forced to take over, which slows reaction time and increases stress.</li>
+<li>search terms: Autonomous driving paradox, Human-in-the-loop AI auditing, Level 3 autonomy stress</li>
+</ul>
+<h4>Thinking Labs — service</h4>
+<ul>
+<li>what it does: An organization co-founded by Lillian Wang, focusing on ML researcher and communication.</li>
+<li>why relevant: -</li>
+<li>search terms: Thinking Labs Lillian Wang</li>
+</ul>
+<h4>Human-AI Tandem — technique</h4>
+<ul>
+<li>what it does: Combines human judgment and a combined LLM&#x27;s output to produce a software engineering or professional output.</li>
+<li>why relevant: The speaker argues that this tandem doesn&#x27;t currently have a &#x27;learning return to efficiency&#x27; because the human doesn&#x27;t get better at predicting the AI&#x27;s specific errors</li>
+<li>search terms: Human-AI collaboration,</li>
+</ul>
+<h4>Productivity Paradox — idea</h4>
+<ul>
+<li>what it does: -</li>
+<li>why relevant: The central theme of the video; the speaker is trying to quantify why AI is not delivering the expected productivity gains in some organizations.</li>
+<li>search terms: AI productivity paradox,</li>
+</ul>
+<h4>Continual Learning — technique</h4>
+<ul>
+<li>what it does: The ability of a model to learn from new data and continuously update its knowledge without forgetting previous knowledge.</li>
+<li>why relevant: The speaker claims the lack of this in LLMs (within a specific domain) prevents the human-AI tandem from from the same efficiency gains seen in human-to-human management.</li>
+<li>search terms: -</li>
+</ul>
+<h3>transcript</h3>
+<p>I have a hypothesis for why burnout is seemingly increasing in A I, uh,</p>
+<p>accelerated workplaces, uh,</p>
+<p>as well as why A I.</p>
+<p>Doesn&#x27;t have the impact on the workplace that you might expect. Uh,</p>
+<p>and the answer is what I&#x27;m gonna call the abstraction.</p>
+<p>I&#x27;m Kyle Grove. I&#x27;m an A I. Builder.</p>
+<p>Focuses on safety and security.</p>
+<p>Uh, I&#x27;ve been wondering about burnout, uh,</p>
+<p>a little bit lately,</p>
+<p>in part cause there&#x27;s a few anecdotes around it.</p>
+<p>Lillian Wang, who, um,</p>
+<p>kind of pretty well known M L.</p>
+<p>Researcher and communicator and co founder at Thinking Labs, uh,</p>
+<p>announced their resignation today.</p>
+<p>And I don&#x27;t know if they used the word burnout specifically,</p>
+<p>but they cited, like,</p>
+<p>you know, the breakneck pace of the work and fatigue.</p>
+<p>And I think there&#x27;s a few things that are,</p>
+<p>are driving burnout, especially now.</p>
+<p>And I don&#x27;t think that they&#x27;re like.</p>
+<p>I don&#x27;t think they&#x27;re a surprise to anybody.</p>
+<p>I think, like,</p>
+<p>the level of expectation around A I.</p>
+<p>Is high, and so that&#x27;s driving some level of burnout. Um,</p>
+<p>as is, the field is moving so fast,</p>
+<p>so it&#x27;s hard to, like, uh,</p>
+<p>kind of feel like you&#x27;re putting your feet down on Terra firma, uh,</p>
+<p>as you try to, uh,</p>
+<p>get more successful in this work.</p>
+<p>But I wanna talk about another factor that I think is really important.</p>
+<p>Maybe not as important as those first two, but.</p>
+<p>But close to why, um,</p>
+<p>why burn? Why a.</p>
+<p>People who work Adjacent to A I.</p>
+<p>Are so prone to burnout and why we,</p>
+<p>we haven&#x27;t seen the, uh,</p>
+<p>productivity from firms with A I.</p>
+<p>That you might expect.</p>
+<p>The productivity paradox that I talk on this channel about all the time. Um,</p>
+<p>and I think it&#x27;s this. I think that the fact that L O M.</p>
+<p>Based A I&#x27;s don&#x27;t really have continual learning,</p>
+<p>plus, uh,</p>
+<p>the fact that humans as a skill</p>
+<p>don&#x27;t really get better at auditing these A I&#x27;s with the.</p>
+<p>With respect to a given domain, uh,</p>
+<p>I think is having these effects.</p>
+<p>So let&#x27;s like, come kind of compare, um,</p>
+<p>what kind of this paradigm of L 0 and based A I.</p>
+<p>Plus human does</p>
+<p>relative to what might have been before when humans were mediating the work.</p>
+<p>So say you&#x27;re a software engineering manager</p>
+<p>and you manage a bunch of human software engineers, um,</p>
+<p>and they&#x27;re gonna make mistakes,</p>
+<p>anomalies are gonna pop up. Uh,</p>
+<p>but as a function of the domain,</p>
+<p>it is a function of your expertise.</p>
+<p>And as a function of your knowledge of those humans, um,</p>
+<p>you get better and better and more efficient</p>
+<p>at kind of identifying those anomalies</p>
+<p>and pattern matching them to, um.</p>
+<p>Systems that could have generated them.</p>
+<p>As well as being able to, um.</p>
+<p>Address and coach, um,</p>
+<p>the anomalies that are generated from the human, uh,</p>
+<p>engineers on your team. Um,</p>
+<p>when you compare that to A I,</p>
+<p>L O M. Based A I,</p>
+<p>the L O M based A I.</p>
+<p>Might actually have a lower error rate than the humans who did that work.</p>
+<p>And yet it may make things more challenging</p>
+<p>because um, if you,</p>
+<p>as the human who&#x27;s on the spot to audit the work, um,</p>
+<p>everything is kinda equally surprising to you, uh,</p>
+<p>for what the LMS can come up with.</p>
+<p>And you can&#x27;t really like,</p>
+<p>rest your guard. It&#x27;s kinda similar to the paradox of with autonomous driving. Um,</p>
+<p>if you autonomous driving basically kinda has to be perfect before you can kinda</p>
+<p>really trust it. Because if it&#x27;s only like,</p>
+<p>mostly perfect, um,</p>
+<p>you take off your hands off the wheel and you go watch some Netflix while.</p>
+<p>While your car is going down the road 70 miles an hour, um.</p>
+<p>And then all of a sudden you have to, yeah,</p>
+<p>take control of the car. Um,</p>
+<p>you are extremely surprised and your reaction time is much,</p>
+<p>much, much slower than in a normal driving situation.</p>
+<p>And I think that that&#x27;s analogous to what&#x27;s been happening.</p>
+<p>I think that the fact that, um,</p>
+<p>humans are paired with these highly domain general L O M based A I&#x27;s.</p>
+<p>And the L 0 M. Based A I.</p>
+<p>Does not really do continual learning with respect to a domain.</p>
+<p>And the human doesn&#x27;t really have the ability,</p>
+<p>I think in most cases to more readily predict anomalies from the L L M based A I.</p>
+<p>Um, in that given domain</p>
+<p>there&#x27;s no In domain learning</p>
+<p>as such. There&#x27;s obviously in domain learning for L L m&#x27;s,</p>
+<p>but it&#x27;s a very limited phenomenon.</p>
+<p>But I think the fact that like,</p>
+<p>the human L L M. Tandem, uh,</p>
+<p>doesn&#x27;t really have the ability to learn within that domain</p>
+<p>means that the level of surprise is distributed differently</p>
+<p>in a way that humans are not good at, uh,</p>
+<p>accommodating.</p>
+<p>And it means that their level of work is constant rather than decreasing.</p>
+<p>I think that those things are directly driving uh,</p>
+<p>the levels of burnout that we see.</p>
+<p>And they&#x27;re also driving kinda like the paradox around productivity to some,</p>
+<p>to some degree, because if we can&#x27;t really form an abstraction for</p>
+<p>this is what the tandem of human and A I.</p>
+<p>Should be able to do within six months time</p>
+<p>it will have the same capabilities that it basically has now.</p>
+<p>Then it really gets really hard to define like a job based role around the L L M.</p>
+<p>Or the human L L M. Tandem, um,</p>
+<p>and it, it does kind of get even if the L L M.</p>
+<p>Is doing the work adequately with a pretty low error rate.</p>
+<p>The fact that there&#x27;s, there&#x27;s not like a learning return to efficiency, um,</p>
+<p>I think it&#x27;s kind of a challenge for the way that uh,</p>
+<p>organisations are structured around work</p>
+<p>in a fundamental way that I&#x27;m trying to quantify here.</p>
+<p>But like, I think parts of this are elusive because it&#x27;s a,</p>
+<p>it&#x27;s A productivity paradox for a reason.</p>
+<p>But I think the fact that, um.</p>
+<p>I think the fact that there&#x27;s not continual learning.</p>
+<p>And humans don&#x27;t really learn to get better in the context of A I.</p>
+<p>I think in most cases, um,</p>
+<p>is driving. Driving burnout.</p>
+<p>Because there&#x27;s a lot of high constant stochasticity of outputs from the L O M.</p>
+<p>In a way that&#x27;s hard to predict,</p>
+<p>and it&#x27;s hard to get better at predicting.</p>
+<p>And because there&#x27;s no return to learning efficiency, uh,</p>
+<p>also makes it hard for, um,</p>
+<p>the L L m&#x27;s to really kinda get economic purchase.</p>
+<p>Really get purchase on productivity in some fundamental way.</p>
+<p>Uh, I&#x27;m curious to know what you think,</p>
+<p>especially anecdotes and use cases around, um. Around that concept.</p>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://www.tiktok.com/@kylegrove03/video/7667506330222988574?_r=1&amp;_t=ZT-98QI2sGckJi" rel="noopener">https://www.tiktok.com/@kylegrove03/video/7667506330222988574?_r=1&amp;_t=ZT-98QI2sGckJi</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="The fact that there’s not really a learning curve to…">
+        <input type="hidden" name="slug" value="the-fact-that-there-s-not-really-a-learning-curv">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — The fact that there’s not really a learning curve to…</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
