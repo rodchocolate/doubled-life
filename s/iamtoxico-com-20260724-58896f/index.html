@@ -136,13 +136,13 @@
 <div class="app">
   <header class="masthead">
     <div>
-      <div class="kind">concept</div>
+      <div class="kind">organization</div>
       <h1>iamtoxico.com</h1>
     </div>
     <div class="stats">
-      <div class="stat"><div class="v">2026-07-24</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">2026-07-28</div><div class="k">researched</div></div>
       <div class="stat"><div class="v">0</div><div class="k">sources</div></div>
-      <div class="stat"><div class="v">429</div><div class="k">words</div></div>
+      <div class="stat"><div class="v">467</div><div class="k">words</div></div>
     </div>
   </header>
 
@@ -157,36 +157,18 @@
     <section class="col col-text">
       <div class="coltag">deliverable</div>
       <article class="article">
-        <p class="lede">iamtoxico.com is an AI-driven print-on-demand streetwear brand integrated with Shopify and Printify. The brand utilizes a custom automated pipeline called Hermes to rapidly transition designs from email to live, purchasable products.</p>
-<p>iamtoxico.com is an AI-driven print-on-demand streetwear brand integrated with Shopify and Printify. The brand utilizes a custom automated pipeline called Hermes to rapidly transition designs from email to live, purchasable products.</p>
-<p>iamtoxico.com is an AI-driven print-on-demand streetwear brand integrated with Shopify and Printify. The brand utilizes a custom automated pipeline called Hermes to rapidly transition designs from email to live, purchasable products.</p>
-<h3>Overview</h3>
-<p>iamtoxico.com is a streetwear brand that operates via a Shopify storefront (`iamtoxico.myshopify.com`) and Printify for fulfillment. The technical infrastructure includes a Flask-based backend for development and a central `catalog.json` file that manages both live Printify products and affiliate items sourced from Amazon. The system maintains both a live production shop and a disconnected staging store for development.</p>
-<h3>Product line</h3>
-<p>The current live product offering consists exclusively of Harem Pants, including the following styles:</p>
-<ul>
-<li>Arctic River</li>
-<li>Cyan Glow</li>
-<li>Frozen Sky</li>
-<li>Hold Cards</li>
-<li>Hot Oil</li>
-<li>Toxico</li>
-</ul>
-<p>Additional products in the staging phase include zip hoodies, cover/pullover hoodies, shorts, blankets, kimono robes, long sleeve tees, boxy tees, women&#x27;s thongs, windbreakers, puffer jackets, comforters, and full-zip hoodies.</p>
-<h3>How it works</h3>
-<p>The brand employs the &quot;Hermes&quot; pipeline for &quot;instant drops.&quot; This process allows a user to email a design image, which is then automatically converted into live products across a curated set of garments (such as apres/harem, hoop, and puffer) without an approval gate.</p>
-<p>Because Printify mockup rendering and Shopify URL (handle) synchronization can be slow, the system uses a placeholder and backfill architecture:</p>
-<p>1. <strong>Instant Drop:</strong> The `instant_drop.py` script saves the emailed design as a placeholder image so storefront tiles are not blank upon creation.</p>
-<p>2. <strong>Parallel Publishing:</strong> Products are published in parallel to reduce the time required for a drop to land.</p>
-<p>3. <strong>Backfill:</strong> A separate worker (`ingest/backfill_drops.py`) runs every 300 seconds to sweep the catalog and replace placeholders with real Printify mockups and live Shopify URLs once they are generated.</p>
-<h3>Evolution</h3>
-<ul>
-<li><strong>2026-05-15:</strong> Establishment of the seed row for drop #1.</li>
-<li><strong>2026-05-24:</strong> Development of `skills/instant_drop.py` and `data/instant_drop.json`; implementation of the &quot;instant live&quot; flow with no approval gate.</li>
-<li><strong>2026-05-25:</strong> Completion of the first end-to-end live drop via the launchd worker (&quot;glown&quot;).</li>
-<li><strong>2026-05-25 (later):</strong> Transition to parallel publishing and the implementation of the placeholder + backfill architecture to resolve slow rendering and empty product URLs.</li>
-<li><strong>2026-06-25:</strong> Development of a drop-repair playbook following a partial failure of the &quot;crispus&quot; drop (June 19), confirming that `drop_tag` is generated via sha256 hash of image bytes.</li>
-</ul>
+        <p class="lede">iamtoxico.com is a casual and loungewear brand utilizing a Shopify storefront and Printify for fulfillment. The brand&#x27;s aesthetic is described as edgy, minimal, and lounge-forward.</p>
+<p>iamtoxico.com is a casual and loungewear brand utilizing a Shopify storefront and Printify for fulfillment. The brand&#x27;s aesthetic is described as edgy, minimal, and lounge-forward.</p>
+<h3>brand operations and infrastructure</h3>
+<p>The brand operates using a Shopify storefront on the primary domain iamtoxico.com. Fulfillment is handled via Printify, utilizing direct-to-garment (DTG) and embroidery where applicable. The brand&#x27;s initial artwork asset is a 4500x5400 pixel image at 200dpi in sRGB color space. To launch the brand, several specialized agents are tasked with brand strategy, creative design, Printify operations, and Shopify build-out, including the selecting of a performant free theme like Dawn or a paid minimal theme.</p>
+<h3>product lines and capsules</h3>
+<p>A planned underwear capsule running from August 2025 to January 2026 consists of women&#x27;s thongs and men&#x27;s boxers. The women&#x27;s products feature the waistband slogan &quot;I love toxico&quot; and the men&#x27;s products feature &quot;I am toxico,&quot; with both featuring a back print that reads &quot;handle with care.&quot; The capsule includes 12 total SKUs across six months of clashing color pairings, two colors per month. For example, in August, the thong is Neon Pink with a white waistband and the boxers are Lime Green with a white waistband.</p>
+<h3>toxico life</h3>
+<p>Toxico Life is a third page on iamtoxico.com designed to extend the brand into a curated lifestyle world. This section features affiliate products, reseller partnerships, and creative collaborations, positioning the brand as a tastemaker. The page architecture includes a public storefront for Printify originals, a password-protected internal staging grid (preview.html), and the public curated lifestyle page (toxico-life.html). The brand has identified several prospects for reseller and wholesale accounts, such as Dakine, JanSport, and Hung Adult Products, and is currently active in the Amazon Associates program for luxury loungewear and activewear.</p>
+<h3>collaborations and partnerships</h3>
+<p>The brand collaborates with graphic designer Papa Mesk for product artwork, print designs, and brand visuals. Other potential affiliate or editorial partnerships are identified in the toxico life section, including prosumer audio/HiFi gear from platforms like Reverb and Audiogon, motorsport apparel from K1 RaceGear, and luxury car brokers for aspirational lifestyle plays.</p>
+<h3>title</h3>
+<p>title</p>
       </article>
     </section>
 

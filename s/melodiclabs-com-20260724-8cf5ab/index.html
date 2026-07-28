@@ -136,13 +136,13 @@
 <div class="app">
   <header class="masthead">
     <div>
-      <div class="kind">question</div>
+      <div class="kind">organization</div>
       <h1>melodiclabs.com</h1>
     </div>
     <div class="stats">
-      <div class="stat"><div class="v">2026-07-24</div><div class="k">researched</div></div>
-      <div class="stat"><div class="v">1</div><div class="k">sources</div></div>
-      <div class="stat"><div class="v">138</div><div class="k">words</div></div>
+      <div class="stat"><div class="v">2026-07-28</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">0</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">382</div><div class="k">words</div></div>
     </div>
   </header>
 
@@ -157,9 +157,22 @@
     <section class="col col-text">
       <div class="coltag">deliverable</div>
       <article class="article">
-        <p class="lede">Summarize the site melodiclabs.com: what it is and what it presents.</p>
-<h3>question</h3>
-<p>Summarize the site melodiclabs.com: what it is and what it presents.</p>
+        <p class="lede">melodiclabs.com is associated with the Hermes services running on a Mac Studio. These services include a Gmail intake daemon and a pager dispatcher acting as a switchboard.</p>
+<p>melodiclabs.com is associated with the Hermes services running on a Mac Studio. These services include a Gmail intake daemon and a pager dispatcher acting as a switchboard.</p>
+<h3>hermes services overview</h3>
+<p>The Hermes system consists of two primary components: the `com.melodiclabs.hermes-email` daemon and the pager dispatcher. The email daemon performs IMAP IDLE on the account `labsmelodic@gmail.com`, dispatching emails based on subject tokens (such as `discover`) and enqueuing unrecognized subjects to a research inbox. It replies with confirmation of receipt. The pager dispatcher, located at `pager/worker.py`, polls the Soundline Pager sync API at `pager.melodiclabs.com` using the `operator` handle. It relays pages, answers `help` requests, and provides short operator-voice acknowledgments via Ollama, using the `mistral-nemo` model by default.</p>
+<h3>operational configuration</h3>
+<p>Hermes is configured via an environment file located at `~/.hermes/.env`, which requires `GMAIL_IMAP_USER` and `GMAIL_APP_PASSWORD`. Optional overrides include `HERMES_ALLOWED_SENDERS` (defaulting to `jasonjenkins1981@gmail.com` and `rodchocolate@yahoo.com`), `HERMES_LOG_LEVEL`, `YTDLP_BIN`, `YTDLP_COOKIES`, and `HERMES_DOWNLOADS`. The email daemon is managed via `launchctl` as a user agent running under the `melodiclabs` user. The {`com.melodiclabs.hermes-email`} service is installed by copying a plist file into `~/Library/LaunchAgents/`.</p>
+<h3>maintenance and troubleshooting</h3>
+<p>The system requires periodic updates to YouTube cookies to prevent `yt-dlp` download failures. This process involves exporting cookies from Firefox as `labsmelodic@gmail.com` and transferring them to the Mac Studio via scp to `~/.hermes/cookies/youtube.txt`. Troubleshooting steps for the email daemon include checking `email_daemon.err.log` for tracebacks, verifying IMAP settings in Gmail, and the same app password, and ensuring `imapclient` is installed via `uv`. The system&#x27;s audit trail is recorded in `/Volumes/melody/hermes/logs/actions.jsonl`.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Gmail Intake Account:</strong> labsmelodic@gmail.com</li>
+<li><strong>Pager API URL:</strong> pager.melodiclabs.com</li>
+<li><strong>Default Pager LLM Model:</strong> mistral-nemo</li>
+<li><strong>Default Allowed Senders:</strong> jasonjenkins1981@gmail.com, rodchocolate@yahoo.com</li>
+<li><strong> :</strong> -</li>
+</ul>
       </article>
     </section>
 
@@ -168,7 +181,7 @@
       <div class="resources">
         <div class="coltag">resources — raw</div>
         <ol class="rawrefs">
-          <li><a href="https://melodiclabs.com" rel="noopener">https://melodiclabs.com</a></li>
+          <li>none captured yet</li>
         </ol>
         <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
       </div>

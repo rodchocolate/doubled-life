@@ -136,13 +136,13 @@
 <div class="app">
   <header class="masthead">
     <div>
-      <div class="kind">concept</div>
+      <div class="kind">product</div>
       <h1>Hermes capabilities</h1>
     </div>
     <div class="stats">
-      <div class="stat"><div class="v">2026-07-25</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">2026-07-28</div><div class="k">researched</div></div>
       <div class="stat"><div class="v">0</div><div class="k">sources</div></div>
-      <div class="stat"><div class="v">461</div><div class="k">words</div></div>
+      <div class="stat"><div class="v">404</div><div class="k">words</div></div>
     </div>
   </header>
 
@@ -157,35 +157,21 @@
     <section class="col col-text">
       <div class="coltag">deliverable</div>
       <article class="article">
-        <p class="lede">Hermes is a local-first LLM agent system hosted on a Mac Studio, designed to operate via an &quot;Email-as-API&quot; pattern. By utilizing local models via Ollama, it allows the user to trigger complex studio workflows from any device without exposing the system to the public internet. The</p>
-<p>Hermes is a local-first LLM agent system hosted on a Mac Studio, designed to operate via an &quot;Email-as-API&quot; pattern. By utilizing local models via Ollama, it allows the user to trigger complex studio workflows from any device without exposing the system to the public internet. The</p>
-<p><strong>EXECUTIVE SUMMARY: HERMES</strong></p>
-<p>Hermes is a local-first LLM agent system hosted on a Mac Studio, designed to operate via an &quot;Email-as-API&quot; pattern. By utilizing local models via Ollama, it allows the user to trigger complex studio workflows from any device without exposing the system to the public internet. The system prioritizes data privacy and zero-cost execution by keeping all processing and data on-device.</p>
-<h3>System Architecture</h3>
-<p>Hermes is built to decouple intake from execution to prevent system &quot;wedges&quot; (specifically those caused by macOS TCC/external volume access). The pipeline operates as follows:</p>
+        <p class="lede">Hermes is a system designed for research and information intake. It utilizes a variety of tools and sub-behaviors to process and organize research subjects into structured output, such as gated web pages.</p>
+<p>Hermes is a system designed for research and information intake. It utilizes a variety of tools and sub-behaviors to process and organize research subjects into structured output, such as gated web pages.</p>
+<h3>architecture and intake</h3>
+<p>Hermes operates using a queue-based architecture consisting of a classifier, sub-behaviors, and tools. Intake is handled via email, where emails with the subject &#x27;Research:&#x27; or those with no token are fall-throughs into the research queue. The system&#x27;s research_runner is- a a process that runs in tmux with the `--watch` flag. The intake daemon, com.melodiclabs.hermes-email, is a Gmail intake daemon that uses IMAP IDLE on labsmelodic@gmail.com to dispatch emails by subject token and enqueues unrecognized subjects to the research_inbox.</p>
+<h3>capabilities and tools</h3>
+<p>Hermes has several engineered sub-behaviors, including a music-intent classifier and a TikTok transcribe-and-investigate behavior that uses yt-dlp, mlx-whisper, and Gemma product-lead extraction. The system&#x27;s tool inventory includes yt-dlp, mlx-whisper, and Pillow. While some tools like MusicBrainz, Last.fm, and a content-hash dedupe are still unbuilt, the system can produce distilled output to ~/hermes-runtime/research_out/.</p>
+<h3>research output and delivery</h3>
+<p>Hermes is capable of producing subject pages in a JSON schema (subject.json) subject.json contains name, kind, key facts, lede, sections, timeline, media, and references. These are rendered into static HTML pages hosted on GoDaddy. These subject pages are unlisted and use random tokens in their slugs to prevent guessing, and are protected by a 1FA gate that protects only the landing page index. The landing page is a small PHP script that requires a password and a one-time 4-digit code emailed to Jason.</p>
+<h3>facts</h3>
 <ul>
-<li>  <strong>Email Intake:</strong> A `launchd` daemon monitors a Gmail account via IMAP IDLE. To ensure reliability, the daemon enqueues raw `.eml` files to the internal SSD, where a separate <strong>Async Worker</strong> drains the queue and dispatches tasks.</li>
-<li>  <strong>Local LLM Layer:</strong> Processing is handled by <strong>Ollama</strong>, utilizing models such as <strong>Gemma 4 (31B and e4b)</strong> and <strong>Mistral-Nemo (12B)</strong>.</li>
-<li>  <strong>Skills &amp; Execution:</strong> Tasks are routed to &quot;Skills&quot;—Python modules that execute specific logic (e.g., metadata extraction or API calls).</li>
-<li>  <strong>Write-Gate &amp; Audit Log:</strong> To protect the system, a <strong>Write-gate</strong> (`policy/write_gate.py`) must be called by skills to validate destination paths before any write operation. Every gate decision and processed email is recorded in a canonical <strong>Audit Log</strong> (`actions.jsonl`).</li>
-</ul>
-<h3>Email Command Tokens</h3>
-<p>Hermes dispatches actions based on subject line tokens. Supported tokens include:</p>
-<ul>
-<li>  <strong>`drop`</strong>: Triggers product deployments.</li>
-<li>  <strong>`discover`</strong>: Executes `yt-dlp` for metadata and distilled note creation.</li>
-<li>  <strong>`prototype`</strong>: Adds tiles to the iamtoxico scratch board.</li>
-<li>  <strong>`remove`</strong>: Deletes specific tiles by title.</li>
-<li>  <strong>`digest`</strong>: Summarizes the body/links or provides a rollup of recent research notes.</li>
-<li>  <strong>`order`</strong>: A two-step money gate for creating and submitting Printify orders.</li>
-<li>  <strong>`research` / `recall`</strong>: Emails without specific tokens (or those explicitly marked for research) fall into the research queue for deeper processing.</li>
-<li>  <strong>`capsule`</strong>: (Supported dispatch token).</li>
-</ul>
-<h3>Current Capabilities</h3>
-<ul>
-<li>  <strong>Instant Printify Drops:</strong> Hermes can transform email designs into live, buyable products on the iamtoxico store, automating the deployment of product grids and metadata.</li>
-<li>  <strong>TikTok &amp; Video Transcription:</strong> A dedicated pipeline uses `yt-dlp` for audio extraction, `mlx-whisper` for transcription, and Gemma 4 (31B) to extract product and tool leads.</li>
-<li>  <strong>Research Pipeline &amp; Doubled.life:</strong> Hermes manages an automated research workflow that populates <strong>doubled.life</strong>, a gated research site. This includes the generation of unlisted subject pages and a secure 1FA authentication gate with iMessage and Gmail SMTP code delivery.</li>
+<li><strong>Intake Method:</strong> Email (labsmelodic@gmail.com)</li>
+<li><strong>Tiktok Sub-behavior Tools:</strong> yt-dlp, mlx-whisper, Gemma</li>
+<li><strong>Tiktok Sub-behavior Process:</strong> yt-dlp –&gt; mlx-whisper –&gt; Gemma product-lead extraction</li>
+<li><strong>Tiktok Sub-behavior Date:</strong> 2026-07-05</li>
+<li><strong>Tiktok Sub-behavior Status:</strong> value:</li>
 </ul>
       </article>
     </section>
