@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'RÜFÜS DU SOL', 'kind' => 'artist', 'lede' => 'artist researched 2026-08-01.', 'url' => '/s/r-f-s-du-sol-20260801-ac091f/', 'thumb' => '/s/r-f-s-du-sol-20260801-ac091f/lead.jpg', 'date' => '2026-08-01', 'refs' => 0],
   ['name' => 'Weird Al Yankovic', 'kind' => 'person', 'lede' => 'person researched 2026-08-01.', 'url' => '/s/weird-al-yankovic-20260801-ce18c2/', 'thumb' => '/s/weird-al-yankovic-20260801-ce18c2/lead.jpg', 'date' => '2026-08-01', 'refs' => 0],
   ['name' => 'The Neighbourhood', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-01.', 'url' => '/s/the-neighbourhood-20260801-f7c336/', 'thumb' => '/s/the-neighbourhood-20260801-f7c336/lead.jpg', 'date' => '2026-08-01', 'refs' => 0],
   ['name' => 'Kesha', 'kind' => 'person', 'lede' => 'Kesha Rose Sebert, known professionally as Kesha, is an American singer, rapper, and songwriter. She has achieved multiple number-one albums on the US Billboard 200, including Animal (2010) and Rainbow (2017).', 'url' => '/s/kesha-20260801-a0ddfe/', 'thumb' => '/s/kesha-20260801-a0ddfe/lead.jpg', 'date' => '2026-08-01', 'refs' => 3],
