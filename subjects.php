@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'ANOTR', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/anotr-20260806-132cf1/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Michael Bibi', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/michael-bibi-20260806-007d31/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Nick Leon', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/nick-leon-20260806-f756fd/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Chris Lake', 'kind' => 'person', 'lede' => 'Chris Lake is an English electronic dance music producer and DJ. He rose to fame in 2006 with the hit single "Changes", featuring Laura V.', 'url' => '/s/chris-lake-20260806-c4bfbd/', 'thumb' => '/s/chris-lake-20260806-c4bfbd/lead.jpg', 'date' => '2026-08-06', 'refs' => 3],
