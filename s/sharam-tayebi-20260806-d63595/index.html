@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Sharam Tayebi — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Sharam Tayebi</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-06</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1050</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="ZRc1gL-5sAU" type="button"><img src="https://i.ytimg.com/vi/ZRc1gL-5sAU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">SHARAM TAYEBI - PARTY ALL THE TIME (QUADRASONIC REMIX)</span></button>
+<button class="vtile" data-yt="E3eds2a5RcI" type="button"><img src="https://i.ytimg.com/vi/E3eds2a5RcI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Deep Dish (Dubfire &amp; Sharam) at The Concourse Project | Full Set (31 Jan 2025)</span></button>
+<button class="vtile" data-yt="lB5Nc3l8MwA" type="button"><img src="https://i.ytimg.com/vi/lB5Nc3l8MwA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">El DJ iraní Sharam Tayebi se reencuentra con su público israelí</span></button>
+<button class="vtile" data-yt="EOqfBnRbS9E" type="button"><img src="https://i.ytimg.com/vi/EOqfBnRbS9E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">SHARAM TAYEBI - PARTY ALL THE TIME (QUADRASONIC REMIX)</span></button>
+<button class="vtile" data-yt="4cPMDiAvdvY" type="button"><img src="https://i.ytimg.com/vi/4cPMDiAvdvY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sharam feat Daniel Bedingfield - The One (OFFICIAL HQ VIDEO)</span></button>
+<button class="vtile" data-yt="ofFjIiJjLZk" type="button"><img src="https://i.ytimg.com/vi/ofFjIiJjLZk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sharam - Texi</span></button>
+<button class="vtile" data-yt="z9myS5e696g" type="button"><img src="https://i.ytimg.com/vi/z9myS5e696g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sharam - Texi ( Original Mix )</span></button>
+<button class="vtile" data-yt="mTMaxvZYIh8" type="button"><img src="https://i.ytimg.com/vi/mTMaxvZYIh8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sharam Wildcast 76 - Live from Fire London</span></button>
+<button class="vtile" data-yt="m7TJd6P8rPI" type="button"><img src="https://i.ytimg.com/vi/m7TJd6P8rPI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">King Britt ft. Astrid Suryanto - NOW (Sharam Crazi Vox Remix)</span></button>
+<button class="vtile" data-yt="DBE96rPiXlI" type="button"><img src="https://i.ytimg.com/vi/DBE96rPiXlI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DEEP DISH (DUBFIRE &amp; SHARAM) Melodic &amp; Deep House full Dj Set // By Xtyle Productions @ Costa Rica</span></button>
+<button class="vtile" data-yt="Mok0wV7_ZSg" type="button"><img src="https://i.ytimg.com/vi/Mok0wV7_ZSg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Filthi</span></button>
+<button class="vtile" data-yt="DNva3JOLyGo" type="button"><img src="https://i.ytimg.com/vi/DNva3JOLyGo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sharam - Essential Mix 12.17.2006</span></button>
+<button class="vtile" data-yt="3kL2Q-1g9lc" type="button"><img src="https://i.ytimg.com/vi/3kL2Q-1g9lc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Deep Dish: Dubfire and Sharam Origin Story, Global Underground, and Skyline | Super Progressive</span></button>
+<button class="vtile" data-yt="ZpGz3mQNibY" type="button"><img src="https://i.ytimg.com/vi/ZpGz3mQNibY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">GUMBALL 3000 with SHARAM (Episode 01)</span></button>
+<button class="vtile" data-yt="-CP8XoGJAgw" type="button"><img src="https://i.ytimg.com/vi/-CP8XoGJAgw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Deep Dish ‘Flashdance’ | The Making Of A House Hit</span></button>
+<button class="vtile" data-yt="KVaHQW0xwvw" type="button"><img src="https://i.ytimg.com/vi/KVaHQW0xwvw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DJs Sharam and Ali of Deep Dish Interview, Southport Weekender, 1998</span></button>
+<button class="vtile" data-yt="8WgSHLc5Z3E" type="button"><img src="https://i.ytimg.com/vi/8WgSHLc5Z3E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Entrevista a Sharam Tabe, jurado do Panazorean Film Festival</span></button>
+<button class="vtile" data-yt="yeoTB6DqMAk" type="button"><img src="https://i.ytimg.com/vi/yeoTB6DqMAk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Behind The Scenes - Sharam &quot;Fun&quot;</span></button>
+<button class="vtile" data-yt="a4dF233kbIE" type="button"><img src="https://i.ytimg.com/vi/a4dF233kbIE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Interview with Sharam (Deep Dish)</span></button>
+<button class="vtile" data-yt="Ck6IPbKOyo0" type="button"><img src="https://i.ytimg.com/vi/Ck6IPbKOyo0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sharam - Bunker Chronicles Episode 6</span></button>
+<button class="vtile" data-yt="5MnzjvwrHSk" type="button"><img src="https://i.ytimg.com/vi/5MnzjvwrHSk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sharam@Warung-26/09/09 - Party All The Time</span></button>
+<button class="vtile" data-yt="du5UnOl3uJY" type="button"><img src="https://i.ytimg.com/vi/du5UnOl3uJY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">EDC 07 sharam /deep dish - party all the time</span></button>
+<button class="vtile" data-yt="dHxGvWAYInA" type="button"><img src="https://i.ytimg.com/vi/dHxGvWAYInA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sharam @ The SURFCOMBER WMC2008 part 1</span></button>
+<button class="vtile" data-yt="iPOOVUMdSKA" type="button"><img src="https://i.ytimg.com/vi/iPOOVUMdSKA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Get Wild in Black Rock City with Sharam (Trailer)</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Sharam Tayebi, known professionally as Sharam, is an Iranian techno and house DJ and producer. Born in Tehran, Iran, he emigrated to Washington D.C. at age 14, where he became a mainstay of the underground dance music scene.</p>
+<p>Sharam Tayebi, known professionally as Sharam, is an Iranian techno and house DJ and producer. Born in Tehran, Iran, he emigrated to Washington D.C. at age 14, where he became a mainstay of the underground dance music scene.</p>
+<h3>early life and career beginnings</h3>
+<p>Sharam Tayebi was born in Iran and settled in Washington D.C. with his family at age 14. In this city, he discovered dance music and developed his skills as a musician, DJ, and producer. During the 1990s, he met Ali &quot;Dubfire&quot; Shirazinia, another Iranian immigrant, and together they formed the duo Deep Dish in 1992. Their sound was characterized by a mix of deep house and techno with influences from rock and industrial music. Together, they established the eponymous record label Deep Dish and Yoshitoshi Records, and released their music through the Tribal America label after meeting Danny Tenaglia.</p>
+<h3>deep dish era</h3>
+<p>As part of Deep Dish, Sharam and Dubfire released two albums: Penetrate Deeper (1995) and Junk Science (1998). The duo&#x27;s work was highly acclaimed, winning a Grammy Award for Best Remixed Recording for their remix of Dido&#x27;s &quot;Thank You&quot; and receiving nominations for the album George Is On (2005), including Best Electronic Album. They were known for the house or dance remixes of tracks by artists such as Madonna, Janet Jackson, Cher, Stevie Nicks, and Gabrielle. They released six DJ mix compilations between 1999 and 2003, and their final album together before a hiatus, George Is On, featured the single &quot;Flashdance,&quot; which reached number 3 in the UK.</p>
+<h3>solo career</h3>
+<p>Following a split from Dubfire in 2006, Sharam launched his solo career with the Global Underground mix compilation Dubai GU29. He gained significant success with his cover of Eddie Murphy&#x27;s &quot;Party All the Time,&quot; released as &quot;P.A.T.T.&quot; featuring P. Diddy, which peaked at number 8 in the UK charts. His solo albums include Get Wild (2009), a concept album inspired by Sergio Leone spaghetti westerns, and Retroactive (2016), which paid homage to his musical history. He also released the techno-influenced album Collecti (2017). Other notable solo works include the mix compilation Night and Day (2012) and singles such as &quot;She Came Along&quot; featuring Kid Cudi, and tracks from his Mach EP series including &quot;M.I.T.T.&quot; with Shakira and &quot;Fun&quot; written by Chris Martin of Coldplay.</p>
+<h3>reunions and recent work</h3>
+<p>In 2014, Sharam and Dubfire reunited as Deep Dish, releasing the single &quot;Quincy&quot; and performing at the Ultra Music Festival. After another hiatus, they announced a permanent return to touring and the studio in 2024 with &quot;The Future&quot; tour. In 2025, they released their first original single in over a decade, &quot;Midnight,&quot; featuring Eynka and Wrabel, accompanied by several sold-out residencies in London at venues such as fabric and The Cause.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Born:</strong> August 12, 1970</li>
+<li><strong>Birthplace:</strong> Tehran, Iran</li>
+<li><strong>Crossover to US:</strong> value: Washington D.C.</li>
+<li><strong>Grammy Award Won:</strong> Best Remixed Recording for Dido&#x27;s &quot;Thank You&quot;</li>
+<li><strong>Notable Solo Hits:</strong> &quot;P.A.T.T. (Party All the Time)&quot;, &quot;The One&quot;, &quot;She Came Along&quot;, &quot;Don’t Say A Word&quot;</li>
+<li><strong>label: BBC Radio 1 Essential Mix of the Year:</strong> Won in 2009</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Deep_Dish_(duo" rel="noopener">https://en.wikipedia.org/wiki/Deep_Dish_(duo</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Party_All_the_Time" rel="noopener">https://en.wikipedia.org/wiki/Party_All_the_Time</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Sharam" rel="noopener">https://en.wikipedia.org/wiki/Sharam</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Sharam Tayebi">
+        <input type="hidden" name="slug" value="sharam-tayebi">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Sharam Tayebi</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
