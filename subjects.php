@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'Prince Rakeem', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/prince-rakeem-20260806-6b37f7/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Wu-Tang Clan', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-06.', 'url' => '/s/wu-tang-clan-20260806-5ac0f8/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Kelis', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/kelis-20260806-16bbfc/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Teddy Riley', 'kind' => 'person', 'lede' => 'Teddy Riley is an American record producer and songwriter credited with the creation of new jack swing, a fusion genre of hip-hop and R&B. He is the founder of musical groups Guy and Blackstreet, and has worked with numerous high-profile artists including Michael Jackson and Bobb', 'url' => '/s/teddy-riley-20260806-315970/', 'thumb' => '/s/teddy-riley-20260806-315970/lead.jpg', 'date' => '2026-08-06', 'refs' => 3],
