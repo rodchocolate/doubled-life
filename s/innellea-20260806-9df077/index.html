@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Innellea — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Innellea</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-06</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">673</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="H4XPerTqaY4" type="button"><img src="https://i.ytimg.com/vi/H4XPerTqaY4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Innellea @ The Ruins New York City 2026 - @belonging-label showcase</span></button>
+<button class="vtile" data-yt="XPMPhXsEENE" type="button"><img src="https://i.ytimg.com/vi/XPMPhXsEENE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Innellea Live at EDC Las Vegas 2026 (Official Full Set)</span></button>
+<button class="vtile" data-yt="MESaZ0x_mVA" type="button"><img src="https://i.ytimg.com/vi/MESaZ0x_mVA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Innellea Live at Experts Only Loveland Amsterdam ADE 2025</span></button>
+<button class="vtile" data-yt="rZiR5otb17s" type="button"><img src="https://i.ytimg.com/vi/rZiR5otb17s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">INNELLEA LIVE - DISTORTED YOUTH WORLD LIVE TOUR - Full concert at Warehouse Beirut (2022)</span></button>
+<button class="vtile" data-yt="2BPWWYAgUE4" type="button"><img src="https://i.ytimg.com/vi/2BPWWYAgUE4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">COLYN b2b INNELLEA || LIVE @ ULTRA MIAMI 2026</span></button>
+<button class="vtile" data-yt="IdQp3KFUaGY" type="button"><img src="https://i.ytimg.com/vi/IdQp3KFUaGY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Colyn b3b Innellea &amp; Sainte Vie - Maxa x Bipolar Express - Burning Man 2024</span></button>
+<button class="vtile" data-yt="vgHasjtd0NQ" type="button"><img src="https://i.ytimg.com/vi/vgHasjtd0NQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">INNELLEA - BOUNCE MUSIC (Official Music Video)</span></button>
+<button class="vtile" data-yt="cpIxw1XeTDc" type="button"><img src="https://i.ytimg.com/vi/cpIxw1XeTDc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">INNELLEA - WARUNG full set (Brazil)</span></button>
+<button class="vtile" data-yt="BTsK9YZze0s" type="button"><img src="https://i.ytimg.com/vi/BTsK9YZze0s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">INNELLEA ALL NIGHT LONG (10-Hour Extended Set) from Stereo Montreal, Canada 2024</span></button>
+<button class="vtile" data-yt="0Wcvi2DnfBQ" type="button"><img src="https://i.ytimg.com/vi/0Wcvi2DnfBQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Innellea - Full Set from Green Valley Brazil (April 2025)</span></button>
+<button class="vtile" data-yt="53cnFnxghGI" type="button"><img src="https://i.ytimg.com/vi/53cnFnxghGI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Burning Out - Innellea &amp; @juan_hansen</span></button>
+<button class="vtile" data-yt="Kck0S76HwEk" type="button"><img src="https://i.ytimg.com/vi/Kck0S76HwEk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Innellea – The Belonging | Submerge 21 Years Celebration | Official Aftermovie | AD Riot Visualz</span></button>
+<button class="vtile" data-yt="5SP4zetsGcs" type="button"><img src="https://i.ytimg.com/vi/5SP4zetsGcs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Budweiser Studios pres. Innellea | Five Phases | #Budweiserindia #Beaking #cheers</span></button>
+<button class="vtile" data-yt="98lUAUiuBNw" type="button"><img src="https://i.ytimg.com/vi/98lUAUiuBNw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Innellea 🌴// Aftermovie Film 🎥-#Bolivar 13.08.2022 🏖️ //</span></button>
+<button class="vtile" data-yt="jlp60Gh81MA" type="button"><img src="https://i.ytimg.com/vi/jlp60Gh81MA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">INNELLEA - Slave To The Hype (Official Music Video)</span></button>
+<button class="vtile" data-yt="-q00EksAr2Q" type="button"><img src="https://i.ytimg.com/vi/-q00EksAr2Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Innellea | India Tour | Bengaluru | Techno | 2021</span></button>
+<button class="vtile" data-yt="xrHMEhmmlhY" type="button"><img src="https://i.ytimg.com/vi/xrHMEhmmlhY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Innellea @ Dogma Hub / Official aftermovie (2021)</span></button>
+<button class="vtile" data-yt="r3gU9wyjUCI" type="button"><img src="https://i.ytimg.com/vi/r3gU9wyjUCI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">preworks 2023 | after movie / Innellea, Adana Twins, Ison, Momery</span></button>
+<button class="vtile" data-yt="09q5XL0kmCw" type="button"><img src="https://i.ytimg.com/vi/09q5XL0kmCw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Trailer - Initiate the Future - Innellea - Live Set Stream</span></button>
+<button class="vtile" data-yt="SmWXKBpQMjM" type="button"><img src="https://i.ytimg.com/vi/SmWXKBpQMjM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">@Innellea LIVE AT CODE DXB! #AFTERMOVIE</span></button>
+<button class="vtile" data-yt="3WxPVlRrtgc" type="button"><img src="https://i.ytimg.com/vi/3WxPVlRrtgc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Innellea @Afterlife 28.11.2021</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Innellea is a musical artist who has collaborated with DJ and record producer Anyma. They have also produced a remix of the song &quot;In and Out of Love&quot; by Armin van Buuren.</p>
+<p>Innellea is a musical artist who has collaborated with DJ and record producer Anyma. They have also produced a remix of the song &quot;In and Out of Love&quot; by Armin van Buuren.</p>
+<h3>collaborations</h3>
+<p>Innellea is one of several collaborators on Anyma&#x27;s debut solo album, Genesys, which was released on August 11, 2023, by Interscope Records and Afterlife. The album features collaborations with artists such as Cassian, Chris Avantgarde, CamelPhat, Delhia de France, Grimes, Rebuke, Poppy Baskcomb, and Sevdaliza.</p>
+<h3>works</h3>
+<p>Innellea produced a remix of the song &quot;In and Out of Love&quot; by Armin van Buuren. This remix was released through A State of Trance on July 28, 2023.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Collaborations:</strong> Anyma (album: Genesys)</li>
+<li><strong>Remeix of &#x27;In and Out of Love&#x27;:</strong> Released July 28, 2023</li>
+<li><strong>// a single fact about the label that released the remix remix:</strong> -</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Coachella_2024" rel="noopener">https://en.wikipedia.org/wiki/Coachella_2024</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Genesys_(album" rel="noopener">https://en.wikipedia.org/wiki/Genesys_(album</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/In_and_Out_of_Love_(Armin_van_Buuren_song" rel="noopener">https://en.wikipedia.org/wiki/In_and_Out_of_Love_(Armin_van_Buuren_song</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Innellea">
+        <input type="hidden" name="slug" value="innellea">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Innellea</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
