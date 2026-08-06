@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'Nick Leon', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/nick-leon-20260806-f756fd/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Chris Lake', 'kind' => 'person', 'lede' => 'Chris Lake is an English electronic dance music producer and DJ. He rose to fame in 2006 with the hit single "Changes", featuring Laura V.', 'url' => '/s/chris-lake-20260806-c4bfbd/', 'thumb' => '/s/chris-lake-20260806-c4bfbd/lead.jpg', 'date' => '2026-08-06', 'refs' => 3],
   ['name' => 'Green Velvet', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/green-velvet-20260806-7e1d49/', 'thumb' => '/s/green-velvet-20260806-7e1d49/lead.jpg', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Danny Daze', 'kind' => 'person', 'lede' => 'Danny Daze is a DJ and music producer. He is known for his collaborative projects with other artists such as Gigamesh.', 'url' => '/s/danny-daze-20260806-5207b5/', 'thumb' => '/s/danny-daze-20260806-5207b5/lead.jpg', 'date' => '2026-08-06', 'refs' => 3],
