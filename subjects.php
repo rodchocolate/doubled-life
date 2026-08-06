@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'Flamengo', 'kind' => 'organization', 'lede' => 'Clube de Regatas do Flamengo is a Brazilian multi-sports club based in Rio de Janeiro\'s Gávea neighborhood. Founded in 1895 and named after the Flamengo neighborhood, it is most famous for its professional football team.', 'url' => '/s/flamengo-20260806-a975a3/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 3],
   ['name' => 'Marjory Stoneman Douglas High School', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-06.', 'url' => '/s/marjory-stoneman-douglas-high-school-20260806-6e99a2/', 'thumb' => '/s/marjory-stoneman-douglas-high-school-20260806-6e99a2/lead.png', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Grums Municipality', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-06.', 'url' => '/s/grums-municipality-20260806-a1c28f/', 'thumb' => '/s/grums-municipality-20260806-a1c28f/lead.jpg', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'FireEye', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-06.', 'url' => '/s/fireeye-20260806-e16990/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
