@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'CL Smooth', 'kind' => 'person', 'lede' => 'CL Smooth is an American rapper born Corey Brent Penn Sr. on October 8, 1968. He is best known as one half of the hip hop duo Pete Rock & CL Smooth.', 'url' => '/s/cl-smooth-20260806-65fec7/', 'thumb' => '/s/cl-smooth-20260806-65fec7/lead.jpg', 'date' => '2026-08-06', 'refs' => 3],
   ['name' => 'Gravediggaz', 'kind' => 'organization', 'lede' => 'Gravediggaz were an American hip-hop group from New York that pioneered the horrorcore subgenre. Formed in 1991, they are known for their abrasive, menacing soundscapes and a dark sense of humor.', 'url' => '/s/gravediggaz-20260806-2bdfe0/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 3],
   ['name' => 'Prince Rakeem', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/prince-rakeem-20260806-6b37f7/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Wu-Tang Clan', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-06.', 'url' => '/s/wu-tang-clan-20260806-5ac0f8/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
