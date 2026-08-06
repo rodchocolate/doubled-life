@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>David Bowie — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>David Bowie</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-06</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">995</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="Ypgq0qdgVZA" type="button"><img src="https://i.ytimg.com/vi/Ypgq0qdgVZA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fame (2016 Remaster)</span></button>
+<button class="vtile" data-yt="iYYRH4apXDo" type="button"><img src="https://i.ytimg.com/vi/iYYRH4apXDo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">David Bowie - Space Oddity (Official Video)</span></button>
+<button class="vtile" data-yt="RPUAldgS7Sg" type="button"><img src="https://i.ytimg.com/vi/RPUAldgS7Sg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Moonage Daydream (2012 Remaster)</span></button>
+<button class="vtile" data-yt="rq1bcVOmyjw" type="button"><img src="https://i.ytimg.com/vi/rq1bcVOmyjw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Suffragette City (2012 Remaster)</span></button>
+<button class="vtile" data-yt="a01QQZyl-_I" type="button"><img src="https://i.ytimg.com/vi/a01QQZyl-_I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Queen and David Bowie - Under Pressure (Official Video)</span></button>
+<button class="vtile" data-yt="t365MuktYQs" type="button"><img src="https://i.ytimg.com/vi/t365MuktYQs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">David Bowie - Starman (Official Video) [4K]</span></button>
+<button class="vtile" data-yt="VbD_kBJc_gI" type="button"><img src="https://i.ytimg.com/vi/VbD_kBJc_gI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">David Bowie - Let&#x27;s Dance (Official Video) [HD]</span></button>
+<button class="vtile" data-yt="h9tPn70Hq8Y" type="button"><img src="https://i.ytimg.com/vi/h9tPn70Hq8Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">David Bowie - Starman (HQ)</span></button>
+<button class="vtile" data-yt="bsYp9q3QNaQ" type="button"><img src="https://i.ytimg.com/vi/bsYp9q3QNaQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">David Bowie - Heroes</span></button>
+<button class="vtile" data-yt="HivQqTtiHVw" type="button"><img src="https://i.ytimg.com/vi/HivQqTtiHVw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">David Bowie - Modern Love (Official Video) [HD]</span></button>
+<button class="vtile" data-yt="lXgkuM2NhYI" type="button"><img src="https://i.ytimg.com/vi/lXgkuM2NhYI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">David Bowie - &quot;Heroes&quot; (Official Video) [HD]</span></button>
+<button class="vtile" data-yt="KVXc0VCsmb4" type="button"><img src="https://i.ytimg.com/vi/KVXc0VCsmb4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">David Bowie - The Essential 70s Rock Collection [Ziggy Stardust to Heroes]</span></button>
+<button class="vtile" data-yt="bXf_4rrq0co" type="button"><img src="https://i.ytimg.com/vi/bXf_4rrq0co/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">David Bowie - Sound and Vision (BBC Documentary)</span></button>
+<button class="vtile" data-yt="czdED4WiwVM" type="button"><img src="https://i.ytimg.com/vi/czdED4WiwVM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">David Bowie - The Story Of Ziggy Stardust - BBC 4 Documentary - Narrated By Jarvis Cocker</span></button>
+<button class="vtile" data-yt="yyT-VhLIq2I" type="button"><img src="https://i.ytimg.com/vi/yyT-VhLIq2I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">David Bowie - The Last Five Years ( Full Documentary), 2017</span></button>
+<button class="vtile" data-yt="VACQ8nZYBjc" type="button"><img src="https://i.ytimg.com/vi/VACQ8nZYBjc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">David Bowie The Berlin Trilogy: 1976-79 | Full Documentary</span></button>
+<button class="vtile" data-yt="nG1dg0Ktx0o" type="button"><img src="https://i.ytimg.com/vi/nG1dg0Ktx0o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">BOWIE: The Man Who Changed The World | Amplified 👩‍🎤</span></button>
+<button class="vtile" data-yt="55Oppq8lk78" type="button"><img src="https://i.ytimg.com/vi/55Oppq8lk78/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">David Bowie: The Man from Mars | Full Biography (Space Oddity, Ziggy Stardust, Rebel Rebel)</span></button>
+<button class="vtile" data-yt="HNAJ2cObnUU" type="button"><img src="https://i.ytimg.com/vi/HNAJ2cObnUU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Genius of David Bowie&#x27;s Songs | Full Music Documentary!</span></button>
+<button class="vtile" data-yt="-mXhiZS4YeY" type="button"><img src="https://i.ytimg.com/vi/-mXhiZS4YeY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">When Ricky Gervais met David Bowie! - BBC The Graham Norton Show</span></button>
+<button class="vtile" data-yt="YwCakYbptcA" type="button"><img src="https://i.ytimg.com/vi/YwCakYbptcA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">David⚡️Bowie - Ricochet documentary (1984)</span></button>
+<button class="vtile" data-yt="jrLMcpbP13M" type="button"><img src="https://i.ytimg.com/vi/jrLMcpbP13M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">David Bowie’s Darkest Character: The Thin White Duke (Full Documentary) | Amplified</span></button>
+<button class="vtile" data-yt="tQxWArZlpNg" type="button"><img src="https://i.ytimg.com/vi/tQxWArZlpNg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">David Bowie | Unknown to Rock Royalty | Full Music Documentary | Inside the Music</span></button>
+<button class="vtile" data-yt="c-KAzkA2E70" type="button"><img src="https://i.ytimg.com/vi/c-KAzkA2E70/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Watch David Bowie Reveal the Adorable Way He First Asked Iman Out</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">David Bowie was an English singer, songwriter and actor known for his frequent reinvention and visual presentation. He is often referred to as the &quot;chameleon of rock&quot; and is regarded as among the most influential musicians of the 20th century.</p>
+<p>David Bowie was an English singer, songwriter and actor known for his frequent reinvention and visual presentation. He is often referred to as the &quot;chameleon of rock&quot; and is regarded as among the most influential musicians of the 20th century.</p>
+<h3>early life and influences</h3>
+<p>Born David Robert Jones in Brixton, London, on 8 January 1947, Bowie attended Stockwell Infants School and later Burnt Ash Junior School. He was influenced by American 45s of artists like Elvis Presley, Little Richard, and the Platters, and later took up the ukulele, tea-chest bass, and piano. His maternal half-brother, Terry Burns, introduced him to modern jazz, Buddhism, and Beat poetry, and experienced schizophrenia spectrum disorders which influenced his early work. After studying art, music and design, he received a serious eye injury in 1962 during a fight with friend George Underwood, resulting in permanently dilated pupil (anisocoria) and faulty depth perception.</p>
+<h3>musical career and personas</h3>
+<p>Bowie&#x27;s music career began in 1962, after which he released several unsuccessful singles with local bands before achieving success with the 1969 single &quot;Space Oddity&quot;. His major commercial breakthrough came in 1972 with the Ziggy Stardust character and the album The Rise and Fall of Ziggy Stardust and the Spiders from Mars. He later adopted personas such as Halloween Jack for Diamond Dogs (1974) and the Thin White Duke for Station to Station (1976). His music evolved through various styles, including glam rock, soul-influenced Young Americans (1975), art rock, electronica, and ambient, most fully explored in the Berlin Trilogy: Low, &quot;Heroes&quot; and Lodger. He later achieved his greatest commercial success with Let&#x27;s Dance (1983) and fronted the hard rock band Tin Machine from 1988 to 1992.</p>
+<h3>acting and other pursuits</h3>
+<p>Hie own acting roles, emphasizing smaller parts and cameos rather than leading roles. His best-known films include The Man Who Fell to Earth (1976), Merry Christmas, Mr. Lawrence (1983), Labyrinth (1986), and The Prestige (2006). He was also a painter, writer, and creator of the first modern celebrity bond (&quot;Bowie Bonds&quot;). Through his website BowieNet, he was one of the first artists to engage with fans directly through the Internet.</p>
+<h3>final years and death</h3>
+<p>Bowie died on 10 January 2016 at his home in New York City after an 18-month battle with liver cancer, which he kept private. His final studio album, Blackstar, was released on 8 January 2016, two days before his death and coincided with his 69th birthday. Following his death, memorials were created globally, including in London, New York City, Berlin, and Rio de Janeiro. In accordance with his will, he was cremated in New Jersey and his ashes were scattered in Bali, Indonesia, according to Buddhist rituals.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Born:</strong> 8 January 1947</li>
+<li><strong>Died:</strong> 10 January 2016</li>
+<li><strong> uma own record sales:</strong> Estimated over 100 million worldwide</li>
+<li><strong>Inducted into Rock and Roll Hall of Fame:</strong> 1996</li>
+<li><strong>UK Number-One Albums:</strong> Eleven</li>
+<li><strong>Accolades:</strong> Six Grammy Awards and four Brit Awards</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/David_Bowie" rel="noopener">https://en.wikipedia.org/wiki/David_Bowie</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/David_Bowie_discography" rel="noopener">https://en.wikipedia.org/wiki/David_Bowie_discography</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Death_of_David_Bowie" rel="noopener">https://en.wikipedia.org/wiki/Death_of_David_Bowie</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="David Bowie">
+        <input type="hidden" name="slug" value="david-bowie">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — David Bowie</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
