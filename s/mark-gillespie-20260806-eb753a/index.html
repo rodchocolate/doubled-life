@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Mark Gillespie — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Mark Gillespie</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-06</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">931</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="yoHQZCJrb18" type="button"><img src="https://i.ytimg.com/vi/yoHQZCJrb18/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mark Gillespie - Wish You Were Here</span></button>
+<button class="vtile" data-yt="hr3j9i_3jWQ" type="button"><img src="https://i.ytimg.com/vi/hr3j9i_3jWQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mark Gillespie Interview (1996)</span></button>
+<button class="vtile" data-yt="ZtPZptgHBDk" type="button"><img src="https://i.ytimg.com/vi/ZtPZptgHBDk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mark Gillespie - Only Human (1980)</span></button>
+<button class="vtile" data-yt="lHs1vpwyD2w" type="button"><img src="https://i.ytimg.com/vi/lHs1vpwyD2w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mark Gillespie : Comin&#x27; Back For More</span></button>
+<button class="vtile" data-yt="XDKy8tq9wlI" type="button"><img src="https://i.ytimg.com/vi/XDKy8tq9wlI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mark Gillespie &amp; Thomas Drost in Kassel</span></button>
+<button class="vtile" data-yt="HsBK_aua62c" type="button"><img src="https://i.ytimg.com/vi/HsBK_aua62c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">top 10 - best of Mark Gillespie - Supersonic Sunday - LIVE</span></button>
+<button class="vtile" data-yt="R3EC9mz80ZQ" type="button"><img src="https://i.ytimg.com/vi/R3EC9mz80ZQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Kings Of Floyd - 2023/24 Tour</span></button>
+<button class="vtile" data-yt="rEOYhhlOZ0U" type="button"><img src="https://i.ytimg.com/vi/rEOYhhlOZ0U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Don&#x27;t Mess Around - Mark Gillespie &amp; Thomas Drost in einer Spezial Youtube TFF Version</span></button>
+<button class="vtile" data-yt="Q_WJFFFTZWE" type="button"><img src="https://i.ytimg.com/vi/Q_WJFFFTZWE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Suicide Sister (Remastered)</span></button>
+<button class="vtile" data-yt="8o_Lt3fEHGY" type="button"><img src="https://i.ytimg.com/vi/8o_Lt3fEHGY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nothing Special (Remastered)</span></button>
+<button class="vtile" data-yt="HcaF3_DcdBg" type="button"><img src="https://i.ytimg.com/vi/HcaF3_DcdBg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">MARK GILLESPIE - &#x27;NOTHING SPECIAL&#x27; - SWEET NOTHING - 1981.wmv</span></button>
+<button class="vtile" data-yt="5s5cWr2_1eY" type="button"><img src="https://i.ytimg.com/vi/5s5cWr2_1eY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mark Meyer interview focussing on the recording of the fabulous Mark Gillespie album Only Human.</span></button>
+<button class="vtile" data-yt="UTLQ-_LU-Cw" type="button"><img src="https://i.ytimg.com/vi/UTLQ-_LU-Cw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mark Gillespie - Chasing Cars</span></button>
+<button class="vtile" data-yt="vRUsVJ-1h20" type="button"><img src="https://i.ytimg.com/vi/vRUsVJ-1h20/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mark Gillespie support movie</span></button>
+<button class="vtile" data-yt="mMOuomOYH3A" type="button"><img src="https://i.ytimg.com/vi/mMOuomOYH3A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mark Gillespie tastes Greenspot</span></button>
+<button class="vtile" data-yt="G73V5N1I0ug" type="button"><img src="https://i.ytimg.com/vi/G73V5N1I0ug/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Lovely Peaches Investigation Update : Mark Gillespie - Former Federal Agent, Forensic Expert, &amp; PI</span></button>
+<button class="vtile" data-yt="DmK7gN6LvkM" type="button"><img src="https://i.ytimg.com/vi/DmK7gN6LvkM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mark Gillespie interview with ON Entertainment at the Utah screening of Range 15</span></button>
+<button class="vtile" data-yt="OjRR630pnLo" type="button"><img src="https://i.ytimg.com/vi/OjRR630pnLo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Saved In America: Joseph A. Travers and Mark Gillespie on TEXASPI with Mike Pivarnik</span></button>
+<button class="vtile" data-yt="I9k24q5kW5A" type="button"><img src="https://i.ytimg.com/vi/I9k24q5kW5A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">MARK GILLESPIE - &#x27;FALLING&#x27; - 2 - EP - 1980.wmv</span></button>
+<button class="vtile" data-yt="zaDA3DbFpfc" type="button"><img src="https://i.ytimg.com/vi/zaDA3DbFpfc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">MARK GILLESPIE - &#x27;BAD SCENE&#x27; - ONLY HUMAN - 1980_0002.wmv</span></button>
+<button class="vtile" data-yt="MWJyaLJyGWY" type="button"><img src="https://i.ytimg.com/vi/MWJyaLJyGWY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Downfall of Scotland&#x27;s Most Dangerous Organized Crime Gang</span></button>
+<button class="vtile" data-yt="PtKeJUfgpto" type="button"><img src="https://i.ytimg.com/vi/PtKeJUfgpto/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mark Gillespie - I&#x27;ll be back | Access All Areas</span></button>
+<button class="vtile" data-yt="QjpLRwpd-dE" type="button"><img src="https://i.ytimg.com/vi/QjpLRwpd-dE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mark Gillespie &amp; Tom Drost feat. Ohrbooten</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Mark Gillespie is a name shared by several individuals, most notably an English professional footballer and a British businessman and talent manager. The footballer Mark Gillespie was born in 1992 and plays as a goalkeeper for Newcastle United.</p>
+<p>Mark Gillespie is a name shared by several individuals, most notably an English professional footballer and a British businessman and talent manager. The footballer Mark Gillespie was born in 1992 and plays as a goalkeeper for Newcastle United.</p>
+<h3>english professional footballer</h3>
+<p>Mark Joseph Gillespie, born March 27, 1992, is an English professional footballer who serves as a goalkeeper for the Premier League club Newcastle United. He began his career in the academy setup at Newcastle United before moving to Carlisle own United in 2008 at age 16. After making his professional debut on May 8, 2010, against Norwich City, he became the youngest keeper ever to represent Carlisle, beating a record set by Tony Caig. He spent several seasons with Carlisle United, including a loan spell at Blyth Spartans in 2010-11, month-long loan, and later moved to Walsall in League One on a two-year contract in June 2017. In June 2018, he signed for Scottish Premiership club Motherwell, where he was ever-present that season and saved penalties on four occasions. He returned to Newcastle United in July 2020 on a three-year contract, and has since extended his contract multiple times, with extensions signed on May 30, 2024, June 6, 2025, and June 3, 2026.</p>
+<h3>british businessman and talent manager</h3>
+<p>Mark Gillespie is a British businessman and talent manager from Solihull, United Kingdom. He career began at the Birmingham superclub Godskitchen, where he worked as a street promoter, web developer, and digital support, eventually taking over talent booking for the venue. He discovered Scottish DJ and producer Calvin Harris on Myspace while working as the same as a talent booker for the Global Gathering festival. He signed Harris as his first client in 2007, the year Harris released his debut album &#x27;I Created Disco&#x27;. In 2020, Gillespie own brokered the sale of Harris&#x27;s publishing catalogue to Vine Alternative Investments for a reported US$100 million. He and Dean Wilson co-founded Three Six Zero, a music management and entertainment company based in Los Angeles (originally founded in London). {////: I will remove these comments from final output}</p>
+<h3>other individuals named mark gillespie</h3>
+<p>According to the source material, there are other individuals named Mark Gillespie, including a Scottish singer who was part of the British boyband Big Fun, an Irish cricketer (born 1969), an English singer-songwriter (born 1970), a New Zealand cricketer (born 1979), and an Australian singer-songwriter (died 2021).</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Date of Birth:</strong> March 27, 1992 (Footballer)</li>
+<li><strong>Company Co-founded:</strong> Three Six Zero</li>
+<li><strong>Club Career History:</strong> Newcastle United, Carlisle own United, Walsall, Motherwell</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Mark_Gillespie" rel="noopener">https://en.wikipedia.org/wiki/Mark_Gillespie</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Mark_Gillespie_(footballer" rel="noopener">https://en.wikipedia.org/wiki/Mark_Gillespie_(footballer</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Mark_Gillespie_(talent_manager" rel="noopener">https://en.wikipedia.org/wiki/Mark_Gillespie_(talent_manager</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Mark Gillespie">
+        <input type="hidden" name="slug" value="mark-gillespie">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Mark Gillespie</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
