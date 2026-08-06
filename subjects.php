@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'Anyma', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/anyma-20260806-3f62e0/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Adriatique', 'kind' => 'person', 'lede' => 'Adriatique is a Swiss electronic music producer and DJ duo consisting of Adrian Shala and Adrian Schweizer. They have been producing and playing house and techno music since 2009.', 'url' => '/s/adriatique-20260806-3117cc/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 3],
   ['name' => 'Solomun', 'kind' => 'person', 'lede' => 'Mladen Solomun is a Bosnian-German DJ, producer and remixer known by his stage name Solomun. He has won the DJ Awards for Best Producer, Best DJ, and Best Melodic House four times.', 'url' => '/s/solomun-20260806-2e5da2/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 3],
   ['name' => 'Hernan Cattaneo', 'kind' => 'person', 'lede' => 'Hernán Cattáneo is an Argentine house DJ and electronic music producer specializing in progressive house. He was born on 4 March 1965.', 'url' => '/s/hernan-cattaneo-20260806-7cf121/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 3],
