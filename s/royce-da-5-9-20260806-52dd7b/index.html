@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Royce da 5&#x27;9&quot; — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Royce da 5&#x27;9&quot;</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-06</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">932</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="dARAN1z2KqY" type="button"><img src="https://i.ytimg.com/vi/dARAN1z2KqY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Royce da 5&#x27;9&quot; - Caterpillar ft. Eminem, King Green</span></button>
+<button class="vtile" data-yt="R4qa2qBnNFY" type="button"><img src="https://i.ytimg.com/vi/R4qa2qBnNFY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Boom (Explicit Album Version)</span></button>
+<button class="vtile" data-yt="4STstdvnMfU" type="button"><img src="https://i.ytimg.com/vi/4STstdvnMfU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Royce da 5&#x27;9&quot; - Tabernacle (Official Video)</span></button>
+<button class="vtile" data-yt="kP3xrSPYi-0" type="button"><img src="https://i.ytimg.com/vi/kP3xrSPYi-0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ROYCE DA 5&#x27;9&quot; | DJ PREMIER | #FREESTYLE090 WITH FUNK FLEX</span></button>
+<button class="vtile" data-yt="XXi629ypSwY" type="button"><img src="https://i.ytimg.com/vi/XXi629ypSwY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Royce Da 5&#x27;9&quot; Freestyle W/ The L.A. Leakers - Freestyle #100</span></button>
+<button class="vtile" data-yt="Cx5ToLwsvmk" type="button"><img src="https://i.ytimg.com/vi/Cx5ToLwsvmk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">BEEF - D12 vs. Royce da 5&#x27;&#x27;9&quot;</span></button>
+<button class="vtile" data-yt="ulZqy5kp4Mg" type="button"><img src="https://i.ytimg.com/vi/ulZqy5kp4Mg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Writer&#x27;s Block</span></button>
+<button class="vtile" data-yt="fj88tXEIU2k" type="button"><img src="https://i.ytimg.com/vi/fj88tXEIU2k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Royce da 5&#x27;9&quot; - Summer On Lock ft. Pusha T, Fabolous, Jadakiss, Agent Sasco</span></button>
+<button class="vtile" data-yt="xk8485aEd58" type="button"><img src="https://i.ytimg.com/vi/xk8485aEd58/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Legendary</span></button>
+<button class="vtile" data-yt="FHNJYmTgFkU" type="button"><img src="https://i.ytimg.com/vi/FHNJYmTgFkU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Woke</span></button>
+<button class="vtile" data-yt="rJOsjP33nF4" type="button"><img src="https://i.ytimg.com/vi/rJOsjP33nF4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bad Meets Evil - Fast Lane ft. Eminem, Royce Da 5&#x27;9</span></button>
+<button class="vtile" data-yt="5QxWSfzb-ek" type="button"><img src="https://i.ytimg.com/vi/5QxWSfzb-ek/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The WAR that Shook SHADY RECORDS 💥| Documentary</span></button>
+<button class="vtile" data-yt="HwsKYnb-d9E" type="button"><img src="https://i.ytimg.com/vi/HwsKYnb-d9E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ROYCE DA 5&#x27;9 i Documentary</span></button>
+<button class="vtile" data-yt="Wne6dalSRJ4" type="button"><img src="https://i.ytimg.com/vi/Wne6dalSRJ4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Royce da 5&#x27;9&quot; on Meeting Eminem, Eminem&#x27;s Temper, Em Attacking People</span></button>
+<button class="vtile" data-yt="8qHKlTEySNo" type="button"><img src="https://i.ytimg.com/vi/8qHKlTEySNo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Royce Da 5’9 Reveals He Was Dealing With Health Issue Where He Couldn’t Talk Or Record Music</span></button>
+<button class="vtile" data-yt="_h2OQdVFgfs" type="button"><img src="https://i.ytimg.com/vi/_h2OQdVFgfs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Royce Da 5&#x27;9&quot; on Getting Sober</span></button>
+<button class="vtile" data-yt="J8SNoajeEUU" type="button"><img src="https://i.ytimg.com/vi/J8SNoajeEUU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Royce Da 5&#x27;9&quot; (Full Interview)</span></button>
+<button class="vtile" data-yt="RjE-eqKGF9g" type="button"><img src="https://i.ytimg.com/vi/RjE-eqKGF9g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">D12 vs Royce Da 5&#x27;9 Part 2</span></button>
+<button class="vtile" data-yt="yZQAc1_ildM" type="button"><img src="https://i.ytimg.com/vi/yZQAc1_ildM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Royce da 5’9” Gets Emotional Over Never Seen Before Footage Of Proof</span></button>
+<button class="vtile" data-yt="h9qSaBVg2k4" type="button"><img src="https://i.ytimg.com/vi/h9qSaBVg2k4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bad Meets Evil: The Untold Story of Eminem and Royce da 5&#x27;9</span></button>
+<button class="vtile" data-yt="wczhTFoXr5A" type="button"><img src="https://i.ytimg.com/vi/wczhTFoXr5A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The REAL Reason Why Royce Da 5&#x27;9 And Yelawolf Are Beefing With Each Other</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Royce da 5&#x27;9&quot; is an American rapper known for his association with Eminem and his work as part of the duo Bad Meets Evil. He has released several solo studio albums and was a member of the hip hop supergroup Slaughterhouse.</p>
+<p>Royce da 5&#x27;9&quot; is an American rapper known for his association with Eminem and his work as part of the duo Bad Meets Evil. He has released several solo studio albums and was a member of the hip hop supergroup Slaughterhouse.</p>
+<h3>early life and name origin</h3>
+<p>Ryan Daniel Montgomery, born July 5, 1977, moved to Oak Park, Michigan, at age ten. He began rapping at 18, influenced by artists such as Nas, Jay-Z, Tupac Shakur, and The Notorious B.I.G. His first stage name was &#x27;R-Dog&#x27;, but he later acquired the nickname &#x27;Royce&#x27; in high school after wearing a chain with an R pendant resembling the Rolls-Royce symbol. The &#x27;5&#x27;9&quot;&#x27; part of his name comes from his height, though he notes that the numbers five and nine have appeared frequently in his life, such as his first son being born on the ninth and his grandmother dying on the fifth floor of a hospital.</p>
+<h3>career and collaborations</h3>
+<p>Royce began his career with collaborations with Eminem, forming the duo Bad Meets Evil in 1998. Together they released the 2011 single &#x27;Lighters&#x27; (featuring Bruno Mars), which peaked at number four on the Billboard Hot 100, and the debut EP Hell: The Sequel (2011). Royce also formed the hip hop supergroup Slaughterhouse in 2008 with Joe Budden, Joell Ortiz and Kxng Crooked. In 2014, he partnered with producer DJ Premier to form the duo PRhyme. Additionally, Royce has released several solo albums, including his debut studio album Rock City (2002) and the critically successful Death Is Certain (2004).</p>
+<h3>title la own</h3>
+<p>Royce&#x27;s early career was marked by label disputes. His debut album, Rock City, suffered delays due to conflicts with Columbia Records, leading to an independent release via Koch Records as Version 2.0. He also had a public rivalry with the group D12 and member Proof, which ended in 2003 after they were jailed overnight in adjacent cells. He later released the following projects: Independent&#x27;s Day (2005), The Bar Exam mixtapes with DJ Premier and Statik Selektah, and his latest album, The Allegory (2020), which earned him a first Grammy Award nomination for Best Rap Album in 2021.</p>
+<h3>chart performance and singles</h3>
+<p>The single &#x27;Writer&#x27;s Block&#x27; (2011) from his album Success Is Certain, featuring Eminem, charted at #4 on the US Bubbling Under R&amp;B/Hip-Hop Singles chart and #199 in the UK. His debut album Rock City peaked at number twenty-nine on the Billboard Top R&amp;B/Hip-Hop Albums chart. The DJ Premier-produced single &#x27;Boom&#x27; also provided him with underground recognition.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Full Name:</strong> Ryan Daniel Montgomery</li>
+<li><strong>Birth Date:</strong> July 5, 1977</li>
+<li><strong>Grammy Nomination:</strong> Best Rap Album for The Allegory (2021)</li>
+<li><strong>Highest Billboard Hot 100 Peak:</strong> Number four with &#x27;Lighters&#x27;</li>
+<li><strong>_//_ / _//_:</strong> -</li>
+<li><strong>First Stage Name:</strong> R-Dog</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Rock_City_(Royce_da_5%279%22_album" rel="noopener">https://en.wikipedia.org/wiki/Rock_City_(Royce_da_5%279%22_album</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Royce_da_5%279%22" rel="noopener">https://en.wikipedia.org/wiki/Royce_da_5%279%22</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Writer%27s_Block_(Royce_da_5%279%22_song" rel="noopener">https://en.wikipedia.org/wiki/Writer%27s_Block_(Royce_da_5%279%22_song</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Royce da 5&#x27;9&quot;">
+        <input type="hidden" name="slug" value="royce-da-5-9">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Royce da 5&#x27;9&quot;</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
