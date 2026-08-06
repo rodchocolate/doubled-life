@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'BLOND:ISH', 'kind' => 'person', 'lede' => 'BLOND:ISH is a Canadian DJ, producer, and environmental activist. She is known for high-energy music and a mission to help one billion people live their best lives.', 'url' => '/s/blond-ish-20260806-8a5048/', 'thumb' => '/s/blond-ish-20260806-8a5048/lead.jpg', 'date' => '2026-08-06', 'refs' => 3],
   ['name' => 'Ray Okpara', 'kind' => 'person', 'lede' => 'The provided source material does not contain information regarding Ray Okpara.', 'url' => '/s/ray-okpara-20260806-c469da/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 3],
   ['name' => 'Simos Tagias', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/simos-tagias-20260806-73c5f5/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Nima Gorji', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/nima-gorji-20260806-78da9c/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
