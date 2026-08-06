@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'name la label', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-06.', 'url' => '/s/name-la-label-20260806-a152f6/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'L.E.D. Festival', 'kind' => 'event', 'lede' => 'event researched 2026-08-06.', 'url' => '/s/l-e-d-festival-20260806-d1763b/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Love Regenerator', 'kind' => 'product', 'lede' => 'product researched 2026-08-06.', 'url' => '/s/love-regenerator-20260806-c7dbab/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Mark Gillespie', 'kind' => 'person', 'lede' => 'Mark Gillespie is a name shared by several individuals, most notably an English professional footballer and a British businessman and talent manager. The footballer Mark Gillespie was born in 1992 and plays as a goalkeeper for Newcastle United.', 'url' => '/s/mark-gillespie-20260806-eb753a/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 3],
