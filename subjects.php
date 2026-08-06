@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'Ray Okpara', 'kind' => 'person', 'lede' => 'The provided source material does not contain information regarding Ray Okpara.', 'url' => '/s/ray-okpara-20260806-c469da/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 3],
   ['name' => 'Simos Tagias', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/simos-tagias-20260806-73c5f5/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Nima Gorji', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/nima-gorji-20260806-78da9c/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Grum', 'kind' => 'person', 'lede' => 'Grum is a term associated with several distinct subjects including a Scottish electronic musician, a pharmaceutical spam botnet, and a locality in Sweden.', 'url' => '/s/grum-20260806-7766a5/', 'thumb' => '/s/grum-20260806-7766a5/lead.jpg', 'date' => '2026-08-06', 'refs' => 3],
