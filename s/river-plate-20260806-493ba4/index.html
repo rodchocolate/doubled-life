@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>River Plate — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>River Plate</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-06</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1115</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="LOI3fhCdFuQ" type="button"><img src="https://i.ytimg.com/vi/LOI3fhCdFuQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">River Plate vs. Rosario Central | #TorneoClausura2026 | RESUMEN | Fecha 3</span></button>
+<button class="vtile" data-yt="n_GFN3a0yj0" type="button"><img src="https://i.ytimg.com/vi/n_GFN3a0yj0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">AC/DC - Thunderstruck (Live At River Plate, December 2009)</span></button>
+<button class="vtile" data-yt="MqjLDMj6D68" type="button"><img src="https://i.ytimg.com/vi/MqjLDMj6D68/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">River Plate 0 vs. 1 Rosario Central - Game Highlights | #TorneoClausura2026</span></button>
+<button class="vtile" data-yt="rKv3TJCNme8" type="button"><img src="https://i.ytimg.com/vi/rKv3TJCNme8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">GIMNASIA LP 1 - 0 RIVER | Resumen del partido | #TorneoMercadoLibre Clausura 2026 🏆</span></button>
+<button class="vtile" data-yt="GCC8gWTOkEk" type="button"><img src="https://i.ytimg.com/vi/GCC8gWTOkEk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ACDC Live River Plate Argentina Full Concert 2009</span></button>
+<button class="vtile" data-yt="NHSw43AmwlI" type="button"><img src="https://i.ytimg.com/vi/NHSw43AmwlI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">River Plate 0 vs. 1 Barracas Central | #TorneoClausura2026 | EXTENDED HIGHLIGHTS | Matchday 1</span></button>
+<button class="vtile" data-yt="CVlZWzWCegc" type="button"><img src="https://i.ytimg.com/vi/CVlZWzWCegc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">THE CONTROVERSY AT RIVER OVER &quot;THE CONTAINER BOYS&quot; CONTINUES | Y YA LO VE with Hernán Castillo</span></button>
+<button class="vtile" data-yt="p_pQW9_Eq24" type="button"><img src="https://i.ytimg.com/vi/p_pQW9_Eq24/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">River Plate 2 vs. Boca Juniors 1 - Game Highlights #torneoapertura2025</span></button>
+<button class="vtile" data-yt="d49XlIclB-4" type="button"><img src="https://i.ytimg.com/vi/d49XlIclB-4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">🚨BREAKING NEWS AT RIVER...CORTESE LEAKS WHEN THIAGO ALMADA ARRIVES AT RIVER. FLAMENGO DROPPED OUT</span></button>
+<button class="vtile" data-yt="m8bISpsdoZM" type="button"><img src="https://i.ytimg.com/vi/m8bISpsdoZM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Battle Of The River Plate -1956 -Full Movie</span></button>
+<button class="vtile" data-yt="IkpzqErhRmI" type="button"><img src="https://i.ytimg.com/vi/IkpzqErhRmI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">😳🚨 GIMNASIA LP 1-0 RIVER PLATE | Another defeat for the &#x27;Millionaire&#x27; | HIGHLIGHTS | Argentine Le...</span></button>
+<button class="vtile" data-yt="OBGEpN_nkPM" type="button"><img src="https://i.ytimg.com/vi/OBGEpN_nkPM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">🔥 BOMBA EN RIVER: TODO SOBRE ALMADA, HABLÓ SALAS Y SE VIENEN LOS OCTAVOS</span></button>
+<button class="vtile" data-yt="rIG13KfUSkI" type="button"><img src="https://i.ytimg.com/vi/rIG13KfUSkI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Boca vs River: The Copa Libertadores Final That Stopped Argentina</span></button>
+<button class="vtile" data-yt="MzF3EsxqNac" type="button"><img src="https://i.ytimg.com/vi/MzF3EsxqNac/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">RIVALS: Inside the World of the Superclasico - VICE World of Sports</span></button>
+<button class="vtile" data-yt="qqCucAAYk6E" type="button"><img src="https://i.ytimg.com/vi/qqCucAAYk6E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">RIVER EL MAS GRANDE SIEMPRE - LA PELICULA - River Plate VHS</span></button>
+<button class="vtile" data-yt="OczL382l8qk" type="button"><img src="https://i.ytimg.com/vi/OczL382l8qk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How River Plate Produce So Much Talent! | Explained</span></button>
+<button class="vtile" data-yt="BzDjyAPco34" type="button"><img src="https://i.ytimg.com/vi/BzDjyAPco34/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">SBS Height of Passion Documentary about Football Derbies - Boca Juniors &amp; River Plate</span></button>
+<button class="vtile" data-yt="mHrsel5B0rQ" type="button"><img src="https://i.ytimg.com/vi/mHrsel5B0rQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The 32: River Plate</span></button>
+<button class="vtile" data-yt="TEVEyfQpG_c" type="button"><img src="https://i.ytimg.com/vi/TEVEyfQpG_c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Chasing The Trophy - Ep 23 | River Plate in the Superclásico | FIFA Club World Cup 2025</span></button>
+<button class="vtile" data-yt="k0kVdk-30_M" type="button"><img src="https://i.ytimg.com/vi/k0kVdk-30_M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Inside Argentina&#x27;s Football Religion: The World Cup Curse, The Superclasico, &amp; Fan First Football</span></button>
+<button class="vtile" data-yt="Ze6O3Y_P-98" type="button"><img src="https://i.ytimg.com/vi/Ze6O3Y_P-98/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Fans Who Make Football: Boca Juniors FC | Featured Documentary</span></button>
+<button class="vtile" data-yt="R4Y02TV_I-4" type="button"><img src="https://i.ytimg.com/vi/R4Y02TV_I-4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tracing RIVER PLATE’s Rise: Neighborhoods, Identity &amp; The Ultras 🇦🇷</span></button>
+<button class="vtile" data-yt="iq-EkA4FNAQ" type="button"><img src="https://i.ytimg.com/vi/iq-EkA4FNAQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Why Argentina&#x27;s Football Rivalries Are Like Nowhere Else On Earth | Boca vs River Super Clasico</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The River Plate refers to both a professional sports club based in Buenos Aires, Argentina, and an estuary formed by the confluence of the Uruguay and Paraná rivers. The estuary is located on the southeastern coastline of South America and forms part of the border between Argenti</p>
+<p>The River Plate refers to both a professional sports club based in Buenos Aires, Argentina, and an estuary formed by the confluence of the Uruguay and Paraná rivers. The estuary is located on the southeastern coastline of South America and forms part of the border between Argentina and Uruguay.</p>
+<h3>club atlético river plate</h3>
+<p>Club Atlético River Plate (CARP) is a professional sports club founded in 1901 in the Belgrano neighborhood of Buenos Aires. The club is named after the English-language name for the city&#x27;s estuary, Río de la Plata. It is widely regarded as the most successful professional club among Argentina&#x27;s traditional &#x27;Big Five&#x27; of Argentine football. Its home stadium, the Monumental, is the largest in South America. As a multi-sport club, it is best known for its association football department, which has won the Primera División championship 38 times and holds a record of 54 domestic titles total. Internationally, the club has won 18 titles, including four Copa Libertadores and one Intercontinental Cup. The club maintains a fierce rivalry with Boca Juniors, matches between whom are known as the Superclásico.</p>
+<h3>río de la plata estuary</h3>
+<p>The Río de la Plata (or River Plate) is an estuary that empties into the Atlantic Ocean and forms a funnel-shaped indentation on the South American coastline. Depending on the geographer, it may be considered a river, river, a gulf or a marginal sea; if viewed as a river, it is the widest in the world with a maximum width of 220 kilometres. It begins at the confluence of the Uruguay and Paraná rivers at Punta Gorda and flows eastward into the South Atlantic Ocean. The estuary forms part of the border between Argentina and Uruguay, and its coasts are among the most densely populated areas of both countries.</p>
+<h3>geography and hydrology</h3>
+<p>The Río de la Plata&#x27;s drainage basin is one of the largest in the world, covering approximately 3.17 million to 3.18 million square kilometres across southeastern Bolivia, southern and central Brazil, Paraguay, and northern Argentina and Uruguay. The estuary behaves as a salt wedge estuary where denser saltwater penetrates below freshwater from the main tributaries, the Paraná and Uruguay rivers. A submerged shoal called the Barra del Indio divides the river into an inner freshwater riverine portion and an outer brackish estuarine portion.</p>
+<h3>history of the estuary</h3>
+<p>The region was inhabited by nomadic aboriginal people for thousands of years before European exploration. The Portuguese first explored the Río de la Plata in 1512–13, followed by the Spanish in 1516 when Juan Díaz de Solís called it the &#x27;Mar Dulce&#x27;. Later, explorer Sebastian Cabot gave the river its modern name after acquiring silver trinkets from the Guaraní near Asunción. The English name &#x27;River Plate&#x27; was adopted using the archaic term &#x27;plate&#x27; meaning silver.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Founded:</strong> 1901 (Club Atlético River Plate)</li>
+<li><strong>Maximum Width:</strong> 220 kilometres (Río de la Plata)</li>
+<li><strong>Home Stadium:</strong> The Monumental</li>
+<li><strong>Domestic Titles:</strong> 54 total (Club Atlético River Plate)</li>
+<li><strong>Drainage Basin Size:</strong> 3,170,000 km2 - 3,182,064 km2</li>
+<li><strong>Main Tributaries:</strong> Paraná River and Uruguay River</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Club_Atl%C3%A9tico_River_Plate" rel="noopener">https://en.wikipedia.org/wiki/Club_Atl%C3%A9tico_River_Plate</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Ian_Subiabre" rel="noopener">https://en.wikipedia.org/wiki/Ian_Subiabre</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/R%C3%ADo_de_la_Plata" rel="noopener">https://en.wikipedia.org/wiki/R%C3%ADo_de_la_Plata</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="River Plate">
+        <input type="hidden" name="slug" value="river-plate">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — River Plate</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
