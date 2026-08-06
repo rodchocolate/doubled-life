@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'Swedish House Mafia\'s collaborations and remixes involving…', 'kind' => 'concept', 'lede' => 'concept researched 2026-08-06.', 'url' => '/s/swedish-house-mafia-s-collaborations-and-remixes-20260806-cfd650/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Tale Of Us', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-06.', 'url' => '/s/tale-of-us-20260806-c52247/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Diynamic record label', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-06.', 'url' => '/s/diynamic-record-label-20260806-eb7e28/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Inéz', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/in-z-20260806-974be3/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
