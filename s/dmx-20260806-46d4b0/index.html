@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>DMX — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>DMX</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-06</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">934</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="ThlhSnRk21E" type="button"><img src="https://i.ytimg.com/vi/ThlhSnRk21E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DMX - Ruff Ryders&#x27; Anthem</span></button>
+<button class="vtile" data-yt="fGx6K90TmCI" type="button"><img src="https://i.ytimg.com/vi/fGx6K90TmCI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DMX - X Gon&#x27; Give It To Ya</span></button>
+<button class="vtile" data-yt="4AognXgM9FQ" type="button"><img src="https://i.ytimg.com/vi/4AognXgM9FQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DMX - How&#x27;s It Goin&#x27; Down</span></button>
+<button class="vtile" data-yt="9Ww-TQUeA3E" type="button"><img src="https://i.ytimg.com/vi/9Ww-TQUeA3E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DMX - Slippin&#x27;</span></button>
+<button class="vtile" data-yt="0MdAbsd0HmI" type="button"><img src="https://i.ytimg.com/vi/0MdAbsd0HmI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DMX - What They Really Want ft. Sisqo</span></button>
+<button class="vtile" data-yt="thIVtEOtlWM" type="button"><img src="https://i.ytimg.com/vi/thIVtEOtlWM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DMX - Party Up (Up In Here) (Enhanced Video, Edited)</span></button>
+<button class="vtile" data-yt="4FFK5Oh10os" type="button"><img src="https://i.ytimg.com/vi/4FFK5Oh10os/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DMX - What&#x27;s My Name?</span></button>
+<button class="vtile" data-yt="U8U_gR58eJU" type="button"><img src="https://i.ytimg.com/vi/U8U_gR58eJU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DMX - Lord Give Me A Sign (Official Video)</span></button>
+<button class="vtile" data-yt="Vvofs3n2ZmY" type="button"><img src="https://i.ytimg.com/vi/Vvofs3n2ZmY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DMX - Get It On The Floor (Official Music Video) ft. Swizz Beatz</span></button>
+<button class="vtile" data-yt="6CqXgs-7ico" type="button"><img src="https://i.ytimg.com/vi/6CqXgs-7ico/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DMX - Where The Hood At? (Dirty) (Music Video) HQ</span></button>
+<button class="vtile" data-yt="MHl2OzgPlgA" type="button"><img src="https://i.ytimg.com/vi/MHl2OzgPlgA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DMX - We Right Here</span></button>
+<button class="vtile" data-yt="P5L1WtHwJF0" type="button"><img src="https://i.ytimg.com/vi/P5L1WtHwJF0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DMX - Stop Being Greedy (BET, Final Revision)</span></button>
+<button class="vtile" data-yt="Sm_S81QE1qY" type="button"><img src="https://i.ytimg.com/vi/Sm_S81QE1qY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Story Of DMX: His Tragic Life &amp; Death</span></button>
+<button class="vtile" data-yt="ZRorPmK5xkM" type="button"><img src="https://i.ytimg.com/vi/ZRorPmK5xkM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DMX &amp; The Ruff Ryders Reminisce On Rough Road To Success – Ruff Ryders Chronicles Full Ep 1</span></button>
+<button class="vtile" data-yt="IEF1TzMejkU" type="button"><img src="https://i.ytimg.com/vi/IEF1TzMejkU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">&#x27;X vs Earl: The Simmons Family Speaks&#x27; | FULL DOCU-SERIES EPISODES 1-6</span></button>
+<button class="vtile" data-yt="3rIGdq_Biuc" type="button"><img src="https://i.ytimg.com/vi/3rIGdq_Biuc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">WHY DMX is ONE OF A KIND?! | True story of hip-hop legend | Documentary</span></button>
+<button class="vtile" data-yt="JzfNQNVxzGE" type="button"><img src="https://i.ytimg.com/vi/JzfNQNVxzGE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DMX - One More Road (Documentary)</span></button>
+<button class="vtile" data-yt="9_BzM9LxC0U" type="button"><img src="https://i.ytimg.com/vi/9_BzM9LxC0U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">When DMX Was Supposed To Check In...</span></button>
+<button class="vtile" data-yt="m91im5FK_bQ" type="button"><img src="https://i.ytimg.com/vi/m91im5FK_bQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Honoring DMX&#x27;s Legacy (S1, E3) | Hip Hop Treasures | Full Episode | Biography</span></button>
+<button class="vtile" data-yt="UCq9VJ_FvAM" type="button"><img src="https://i.ytimg.com/vi/UCq9VJ_FvAM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ruff Ryders Chronicles: The DMX Origin Story Ft. Waah Dean &amp; More | Greatest Rap Crew Of All Time</span></button>
+<button class="vtile" data-yt="yKjypESbST0" type="button"><img src="https://i.ytimg.com/vi/yKjypESbST0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DMX ex wife Tashera on battle of his estate, new book, the 15 kids and how he was almost billionaire</span></button>
+<button class="vtile" data-yt="oxbbAo3vJrU" type="button"><img src="https://i.ytimg.com/vi/oxbbAo3vJrU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">#BETRemembers: The Legendary DMX | Rest In Power</span></button>
+<button class="vtile" data-yt="kqNVtpwbABc" type="button"><img src="https://i.ytimg.com/vi/kqNVtpwbABc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DMX Tearfully Explains How His Mother Surprised Him During Therapy | UNCENSORED</span></button>
+<button class="vtile" data-yt="9Q8hAHQhowA" type="button"><img src="https://i.ytimg.com/vi/9Q8hAHQhowA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DMX Life Story (Documentary) | Timeline</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">DMX, born Earl Simmons, was an influential American rapper, songwriter, and actor who lived from 1970 to 2021. He is recognized as one of the greats of hip-hop with a music style characterized by aggressive rapping and lyrics focusing on hardcore themes or personal trauma.</p>
+<p>DMX, born Earl Simmons, was an influential American rapper, songwriter, and actor who lived from 1970 to 2021. He is recognized as one of the greats of hip-hop with a music style characterized by aggressive rapping and lyrics focusing on hardcore themes or personal trauma.</p>
+<h3>early life</h3>
+<p>Earl Simmons was born in Mount Vernon, New York, to Arnett Simmons and Joe Barker. As the middle child, he experienced physical violence from his mother and was diagnosed with bronchial asthma. He was raised as a Jehovah&#x27;s Witness but later disassociated himself from the spirituality after an accident involving a driver. At age five, his mother sent him to live with relatives in Yonkers&#x27; School Street housing apartments. After being expelled from middle school at ten and spending time in a group home, he returned to Yonkers at fifteen, where he slept in empty storage bins and befriended stray dogs. To survive, he robbed students for food and clothing and eventually began carjacking.</p>
+<h3>musical career</h3>
+<p>Simmons&#x27; career began in 1985 when he beatboxed for a local rapper named Ready Ron. He later adopted the name &#x27;DMX&#x27;, inspired by the Oberheim DMX drum machine, which he initially defined as &#x27;Divine Master Of the Unknown&#x27; and later as &#x27;Darkman X&#x27;. After serving a two-year prison sentence, he began writing lyrics and performing for children at a local recreation center. While imprisoned for carjacking in 1988, he developed a &#x27;Spellbound&#x27; style of rapping. He eventually signed with Ruff Ryders Entertainment and Def Jam Recordings. Between 1998 and 2003, DMX released five consecutive number one albums on the Billboard 200, including It&#x27;s Dark and Hell Is Hot (1998), Flesh of My Flesh, Blood of My Blood (1998), ... And Then There Was X (1999), The Great Depression (2001), and Grand Champ (2003).</p>
+<h3>acting and other works</h3>
+<p>DMX acted in several commercially successful films, such as Belly (1998), Romeo Must Die (2000), Exit Wounds (2001), and Cradle 2 the Grave (2003). In 2006, he starred in a reality television series called DMX: Soul of a Man on the BET cable network. He also published an autobiography titled E.A.R.L.: The Autobiography of DMX in 2003.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Full Name:</strong> Earl Simmons</li>
+<li><strong>Lifespan:</strong> December 18, 1970 – April 9, 2021</li>
+<li><strong>Total Record Sales:</strong> Over 75 million records worldwide</li>
+<li><strong>label: Billboard 200 Achievement:</strong> First artist to have first five albums consecutively debut atop the Billboard 200</li>
+<li><strong>Billboard Hot 100 Singles:</strong> Eleven solo singles charted on the Billboard Hot 100</li>
+<li><strong>Accolades:</strong> An American Music Award, a Billboard Music Award, and six Grammy Award nominations</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/DMX" rel="noopener">https://en.wikipedia.org/wiki/DMX</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/DMX_(disambiguation" rel="noopener">https://en.wikipedia.org/wiki/DMX_(disambiguation</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/DMX_discography" rel="noopener">https://en.wikipedia.org/wiki/DMX_discography</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="DMX">
+        <input type="hidden" name="slug" value="dmx">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — DMX</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
