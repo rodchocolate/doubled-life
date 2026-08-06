@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'Daniel Lanois', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/daniel-lanois-20260806-280f39/', 'thumb' => '/s/daniel-lanois-20260806-280f39/lead.jpg', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Mutt Lange', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/mutt-lange-20260806-f0f937/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Phil Spector', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/phil-spector-20260806-d2383c/', 'thumb' => '/s/phil-spector-20260806-d2383c/lead.jpg', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Just Blaze', 'kind' => 'person', 'lede' => 'Just Blaze is an American record producer born in Paterson, New Jersey. He is known for his work as an in-house producer for Roc-A-Fella Records during the early 2000s and for developing the "chipmunk soul" sampling style.', 'url' => '/s/just-blaze-20260806-0438c3/', 'thumb' => '/s/just-blaze-20260806-0438c3/lead.jpg', 'date' => '2026-08-06', 'refs' => 3],
