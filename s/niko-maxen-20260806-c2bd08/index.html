@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Niko Maxen — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Niko Maxen</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-06</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">2</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">484</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="NCF1i7Q7Oas" type="button"><img src="https://i.ytimg.com/vi/NCF1i7Q7Oas/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Niko Maxen - Jaya</span></button>
+<button class="vtile" data-yt="_Mm4jsY3qX4" type="button"><img src="https://i.ytimg.com/vi/_Mm4jsY3qX4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Niko Maxen - BBBB [MAXEN003]</span></button>
+<button class="vtile" data-yt="-rqqy8DIJ98" type="button"><img src="https://i.ytimg.com/vi/-rqqy8DIJ98/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Niko Maxen - Aaaa [MAXEN01]</span></button>
+<button class="vtile" data-yt="ld3S1PySlzY" type="button"><img src="https://i.ytimg.com/vi/ld3S1PySlzY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Niko Maxen - Bbbb [MAXEN01]</span></button>
+<button class="vtile" data-yt="jpFWW1nNwww" type="button"><img src="https://i.ytimg.com/vi/jpFWW1nNwww/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Niko Maxen - Decisive Matters (Rowle)</span></button>
+<button class="vtile" data-yt="BXIK47MmIho" type="button"><img src="https://i.ytimg.com/vi/BXIK47MmIho/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Niko Maxen - Spoilt For Choice [RWL004]</span></button>
+<button class="vtile" data-yt="mgMn9JS66tE" type="button"><img src="https://i.ytimg.com/vi/mgMn9JS66tE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Niko Maxen - Monza [LNR006]</span></button>
+<button class="vtile" data-yt="iU8I_9z1bB8" type="button"><img src="https://i.ytimg.com/vi/iU8I_9z1bB8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Niko Maxen - AAAA [MAXEN03]</span></button>
+<button class="vtile" data-yt="rvKngURZZJU" type="button"><img src="https://i.ytimg.com/vi/rvKngURZZJU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Niko Maxen - Guardian Angel (Original Mix) // TZHA005</span></button>
+<button class="vtile" data-yt="bSXiiVUDf6Q" type="button"><img src="https://i.ytimg.com/vi/bSXiiVUDf6Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bleep Test</span></button>
+<button class="vtile" data-yt="30wdaxi2md8" type="button"><img src="https://i.ytimg.com/vi/30wdaxi2md8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Niko Maxen - Unconditional Love (Original Mix) // TZHA005</span></button>
+<button class="vtile" data-yt="InEC95xALEw" type="button"><img src="https://i.ytimg.com/vi/InEC95xALEw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Niko Maxen - Father &amp; Friend (Original Mix) // TZHA005</span></button>
+<button class="vtile" data-yt="MwwhmD50L3Y" type="button"><img src="https://i.ytimg.com/vi/MwwhmD50L3Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Erie (Original Mix)</span></button>
+<button class="vtile" data-yt="VFQR4g0bbXA" type="button"><img src="https://i.ytimg.com/vi/VFQR4g0bbXA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">&quot;The Velvet Underground and Nico&quot; Visual Album</span></button>
+<button class="vtile" data-yt="i6E9111GTtY" type="button"><img src="https://i.ytimg.com/vi/i6E9111GTtY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Delaphine 003</span></button>
+<button class="vtile" data-yt="xo0nGjXNvhc" type="button"><img src="https://i.ytimg.com/vi/xo0nGjXNvhc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Maxime Le Mal Backstory Scene | DESPICABLE ME 4 (2024) Movie CLIP HD</span></button>
+<button class="vtile" data-yt="zrwuol6dBRc" type="button"><img src="https://i.ytimg.com/vi/zrwuol6dBRc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Crossing Over</span></button>
+<button class="vtile" data-yt="neCoMPzMDWY" type="button"><img src="https://i.ytimg.com/vi/neCoMPzMDWY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">MAXEN 2016</span></button>
+<button class="vtile" data-yt="NJlZjgb-Uhc" type="button"><img src="https://i.ytimg.com/vi/NJlZjgb-Uhc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Simple and delicious sandwich recipe! No one knows this recipe! Affordable and easy.</span></button>
+<button class="vtile" data-yt="7x2Q-E_9baY" type="button"><img src="https://i.ytimg.com/vi/7x2Q-E_9baY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sonnorum Cosmic Wave</span></button>
+<button class="vtile" data-yt="T7Vwi5czHvM" type="button"><img src="https://i.ytimg.com/vi/T7Vwi5czHvM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Michael Vancosso - Cosmic Jazz Cavern</span></button>
+<button class="vtile" data-yt="bWjAaGPceks" type="button"><img src="https://i.ytimg.com/vi/bWjAaGPceks/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Despicable Me 4 (2024) - YOU TURNED MY BABY INTO A COCKROACH?!! Scene | Movieclips</span></button>
+<button class="vtile" data-yt="TBdybnMOu1c" type="button"><img src="https://i.ytimg.com/vi/TBdybnMOu1c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ASPAI - THURSDAYS DELIVERY PODCAST 020</span></button>
+<button class="vtile" data-yt="HzTP-3qD9Cc" type="button"><img src="https://i.ytimg.com/vi/HzTP-3qD9Cc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">They&#x27;ll be begging for more! The easiest and tastiest sandwich for every morning!</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Niko Maxen is not mentioned in the provided source material.</p>
+<p>Niko Maxen is not mentioned in the provided source material.</p>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/List_of_European_association_football_families" rel="noopener">https://en.wikipedia.org/wiki/List_of_European_association_football_families</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/List_of_foreign_Swiss_Super_League_players" rel="noopener">https://en.wikipedia.org/wiki/List_of_foreign_Swiss_Super_League_players</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Niko Maxen">
+        <input type="hidden" name="slug" value="niko-maxen">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Niko Maxen</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
