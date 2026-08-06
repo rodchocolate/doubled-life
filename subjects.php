@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'Green Velvet', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/green-velvet-20260806-7e1d49/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Danny Daze', 'kind' => 'person', 'lede' => 'Danny Daze is a DJ and music producer. He is known for his collaborative projects with other artists such as Gigamesh.', 'url' => '/s/danny-daze-20260806-5207b5/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 3],
   ['name' => 'Mau P', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/mau-p-20260806-4df745/', 'thumb' => '/s/mau-p-20260806-4df745/lead.png', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Jamie Jones', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/jamie-jones-20260806-8a9376/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
