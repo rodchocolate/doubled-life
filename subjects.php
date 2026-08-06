@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'L.E.D. Festival', 'kind' => 'event', 'lede' => 'event researched 2026-08-06.', 'url' => '/s/l-e-d-festival-20260806-d1763b/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Love Regenerator', 'kind' => 'product', 'lede' => 'product researched 2026-08-06.', 'url' => '/s/love-regenerator-20260806-c7dbab/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Mark Gillespie', 'kind' => 'person', 'lede' => 'Mark Gillespie is a name shared by several individuals, most notably an English professional footballer and a British businessman and talent manager. The footballer Mark Gillespie was born in 1992 and plays as a goalkeeper for Newcastle United.', 'url' => '/s/mark-gillespie-20260806-eb753a/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 3],
   ['name' => 'Detlef Roth', 'kind' => 'person', 'lede' => 'Detlef Roth is a German operatic bass-baritone born in 1969. He studied singing with Georg Jelden at the State University of Music and Performing Arts Stuttgart.', 'url' => '/s/detlef-roth-20260806-5ffec1/', 'thumb' => '/s/detlef-roth-20260806-5ffec1/lead.jpg', 'date' => '2026-08-06', 'refs' => 3],
