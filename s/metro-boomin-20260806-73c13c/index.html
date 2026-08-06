@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Metro Boomin — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Metro Boomin</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-06</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">921</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="ZEGpWo7ethQ" type="button"><img src="https://i.ytimg.com/vi/ZEGpWo7ethQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Metro Boomin - Red Bull Symphonic (Full Performance)</span></button>
+<button class="vtile" data-yt="_WCD3Z9UmJ4" type="button"><img src="https://i.ytimg.com/vi/_WCD3Z9UmJ4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Metro Boomin &amp; Future - Superhero (Heroes &amp; Villains) [Official Music Video]</span></button>
+<button class="vtile" data-yt="NyTkaQHdySM" type="button"><img src="https://i.ytimg.com/vi/NyTkaQHdySM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Metro Boomin, Don Toliver, Future - Too Many Nights (Official Video)</span></button>
+<button class="vtile" data-yt="3q_ijl-aaTI" type="button"><img src="https://i.ytimg.com/vi/3q_ijl-aaTI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Metro Boomin, Future - Too Many Nights (Visualizer) ft. Don Toliver</span></button>
+<button class="vtile" data-yt="N9bKBAA22Go" type="button"><img src="https://i.ytimg.com/vi/N9bKBAA22Go/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Future, Metro Boomin, Kendrick Lamar - Like That (Official Audio)</span></button>
+<button class="vtile" data-yt="e7RvFZ6XtkI" type="button"><img src="https://i.ytimg.com/vi/e7RvFZ6XtkI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Metro Boomin &amp; Swae Lee, Lil Wayne, Offset “Annihilate – Spider-Man: Across the Spider-Verse”</span></button>
+<button class="vtile" data-yt="iUZyn_w6Y1Q" type="button"><img src="https://i.ytimg.com/vi/iUZyn_w6Y1Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Metro Boomin - Take Me Thru Dere ft. Quavo, Breskii, YK Niece, &amp; DJ Spinz (Official Music Video)</span></button>
+<button class="vtile" data-yt="LPTlvQ1Zet0" type="button"><img src="https://i.ytimg.com/vi/LPTlvQ1Zet0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">21 Savage, Offset, Metro Boomin - Ric Flair Drip (Official Music Video)</span></button>
+<button class="vtile" data-yt="IjnCoWA9u9M" type="button"><img src="https://i.ytimg.com/vi/IjnCoWA9u9M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Metro Boomin - Around Me (Visualizer) ft. Don Toliver</span></button>
+<button class="vtile" data-yt="7aUZtDaxS60" type="button"><img src="https://i.ytimg.com/vi/7aUZtDaxS60/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Metro Boomin, A$AP Rocky, Roisee - Am I Dreaming (Visualizer)</span></button>
+<button class="vtile" data-yt="8fK1kA9Q-3Y" type="button"><img src="https://i.ytimg.com/vi/8fK1kA9Q-3Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Metro Boomin - Space Cadet (feat. Gunna) [OFFICIAL AUDIO]</span></button>
+<button class="vtile" data-yt="EbHhQfTvMSA" type="button"><img src="https://i.ytimg.com/vi/EbHhQfTvMSA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Spider-Man: Across the Spider-Verse | &quot;Annihilate&quot; by Metro Boomin x Swae Lee x Lil Wayne x Offset</span></button>
+<button class="vtile" data-yt="GM6H3Yb3GHQ" type="button"><img src="https://i.ytimg.com/vi/GM6H3Yb3GHQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Metro Boomin Became the GOAT Producer</span></button>
+<button class="vtile" data-yt="Hatl3cKElOk" type="button"><img src="https://i.ytimg.com/vi/Hatl3cKElOk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Rise of Metro Boomin (Documentary)</span></button>
+<button class="vtile" data-yt="wuomK7RuRx8" type="button"><img src="https://i.ytimg.com/vi/wuomK7RuRx8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Tragic Rise Of Metro Boomin</span></button>
+<button class="vtile" data-yt="33sOgc1qC3Y" type="button"><img src="https://i.ytimg.com/vi/33sOgc1qC3Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Metro Boomin: Top 5 Plugins, MPC Vs FL Studio, Producer Albums, 2017 Retirement, Mixing Tips, Faith</span></button>
+<button class="vtile" data-yt="wkH7chAH91M" type="button"><img src="https://i.ytimg.com/vi/wkH7chAH91M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The REAL Metro Boomin Story</span></button>
+<button class="vtile" data-yt="bt_Sji1N_Zc" type="button"><img src="https://i.ytimg.com/vi/bt_Sji1N_Zc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Metro Boomin - Thank God For The Day</span></button>
+<button class="vtile" data-yt="xtZVxyYGjWk" type="button"><img src="https://i.ytimg.com/vi/xtZVxyYGjWk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Wizrd | Future Full Documentary</span></button>
+<button class="vtile" data-yt="uI29qCR9PGk" type="button"><img src="https://i.ytimg.com/vi/uI29qCR9PGk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Metro Boomin - Heroes &amp; Villains (Short Film)</span></button>
+<button class="vtile" data-yt="m6qz-95TP4c" type="button"><img src="https://i.ytimg.com/vi/m6qz-95TP4c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">[HD] Playboi Carti Documentary - Studio Session (Part 1 - Metro / Durk / 21 Savage / The Weeknd)</span></button>
+<button class="vtile" data-yt="lHMXXFfMP8I" type="button"><img src="https://i.ytimg.com/vi/lHMXXFfMP8I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Metro Boomin is a New Legend</span></button>
+<button class="vtile" data-yt="J9-w7JSHIKA" type="button"><img src="https://i.ytimg.com/vi/J9-w7JSHIKA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Who Is Metro Boomin ? [Documentary]</span></button>
+<button class="vtile" data-yt="gWTu8zu7Rw0" type="button"><img src="https://i.ytimg.com/vi/gWTu8zu7Rw0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Did Metro Start BOOMIN?|Full Documentary Biography (2025)</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Metro Boomin is an American record producer known for his dark and cinematic production style. He is regarded as one of the most influential producers in contemporary hip-hop and trap music.</p>
+<p>Metro Boomin is an American record producer known for his dark and cinematic production style. He is regarded as one of the most influential producers in contemporary hip-hop and trap music.</p>
+<h3>early life and education</h3>
+<p>Leland Tyler Wayne, born September 16, 1993, in St. Louis, Missouri, attended Parkway North High School. He is the son of Lamont and Leslie Joanne Wayne and has four siblings. At age 13, he began making beats using FL Studio (then known as FruityLoops) on a laptop provided by his mother. Initially wanting to rap, he eventually focused entirely on hip-hop production. While in high school, he produced five beats a day and used social media platforms like Twitter to network with established artists.</p>
+<h3>career progression</h3>
+<p>Wayne moved to Atlanta, Georgia, to attend Morehouse College for business management in 2012, but took a hiatus after one semester due to the difficulty of balancing school and production. In 2009-2012, he collaborated with artists such as Tay Don, Gucci Mane, and Future. He gained wider recognition for co-producing the 2014 single &#x27;Tuesday&#x27; for iLoveMakonnen. He later produced several charting hits including &#x27;Jumpman&#x27; by Drake and Future, &#x27;Bad and Boujee&#x27; by umaigos, Migos, and &#x27;Heartless&#x27; by the Weeknd.</p>
+<h3>studio albums and collaborative projects</h3>
+<p>As a lead artist, Metro Boomin released two studio albums: Not All Heroes Wear Capes (2018) and Heroes &amp; Villains (2022), both of which debuted at the top of the Billboard 200. He also collaborated with Future on the studio albums We Don&#x27;t Trust You (2024) and We Still Don&#x27;t Trust You (2024). Additionally, he has released collaborative projects with 21 Savage (Savage Mode, 2016; Savage Mode II, 2020), Gucci Mane (DropTopWop, 2017), Nav (Perfect Timing, 2017), and Big Sean (Double or Nothing, 2017).</p>
+<h3>notable singles</h3>
+<p>The single &#x27;Creepin’&#x27; (with the Weeknd and 21 Savage) from Heroes &amp; Villains peaked at number three on the Billboard Hot 100. The song &#x27;Like That&#x27; (with Future and Kendrick Lamar) from We Don&#x27;t Trust You debuted atop the Billboard Hot 100, becoming Metro Boomin&#x27;s first number-one song as a lead performer.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Full Name:</strong> Leland Tyler Wayne</li>
+<li><strong>Born:</strong> September 16, 1993</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Creepin%27_(Metro_Boomin,_the_Weeknd_and_21_Savage_song" rel="noopener">https://en.wikipedia.org/wiki/Creepin%27_(Metro_Boomin,_the_Weeknd_and_21_Savage_song</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Like_That_(Future,_Metro_Boomin_and_Kendrick_Lamar_song" rel="noopener">https://en.wikipedia.org/wiki/Like_That_(Future,_Metro_Boomin_and_Kendrick_Lamar_song</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Metro_Boomin" rel="noopener">https://en.wikipedia.org/wiki/Metro_Boomin</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Metro Boomin">
+        <input type="hidden" name="slug" value="metro-boomin">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Metro Boomin</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
