@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>uma — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">concept</div>
+      <h1>uma</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-06</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">926</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="_dyvXcv3ej0" type="button"><img src="https://i.ytimg.com/vi/_dyvXcv3ej0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What&#x27;s My Name (from Descendants 2) (Official Video)</span></button>
+<button class="vtile" data-yt="npZb1pE-ZDA" type="button"><img src="https://i.ytimg.com/vi/npZb1pE-ZDA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Celebrating 1 Incredible Year of Tripate ❤️ | Uma Telugu Traveller</span></button>
+<button class="vtile" data-yt="WJ__GHtWR6A" type="button"><img src="https://i.ytimg.com/vi/WJ__GHtWR6A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Uma</span></button>
+<button class="vtile" data-yt="cYhpai8O_Wk" type="button"><img src="https://i.ytimg.com/vi/cYhpai8O_Wk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">China Anne McClain, Thomas Doherty, Dylan Playfair - What&#x27;s My Name (From &quot;Descendants 2&quot;)</span></button>
+<button class="vtile" data-yt="2VTxYQL2SbA" type="button"><img src="https://i.ytimg.com/vi/2VTxYQL2SbA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fall Out Boy - Uma Thurman (Official Music Video)</span></button>
+<button class="vtile" data-yt="sDRhBfmcYE4" type="button"><img src="https://i.ytimg.com/vi/sDRhBfmcYE4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Uma is Back! 🐚| Descendants 3</span></button>
+<button class="vtile" data-yt="Fssm7rcXR2g" type="button"><img src="https://i.ytimg.com/vi/Fssm7rcXR2g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Uma Musume - Stego&#x27;s Happy Family</span></button>
+<button class="vtile" data-yt="oQQCBaGO8oU" type="button"><img src="https://i.ytimg.com/vi/oQQCBaGO8oU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">UMA IN AMERICA</span></button>
+<button class="vtile" data-yt="UbpiM2v_TEs" type="button"><img src="https://i.ytimg.com/vi/UbpiM2v_TEs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">UMA Spring 2025 Commencement 30</span></button>
+<button class="vtile" data-yt="HkYcO1TvTuQ" type="button"><img src="https://i.ytimg.com/vi/HkYcO1TvTuQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sailing Uma Finally Breaks Silence On The Rumours</span></button>
+<button class="vtile" data-yt="7qQ7DsjHYvo" type="button"><img src="https://i.ytimg.com/vi/7qQ7DsjHYvo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What&#x27;s My Name (From &quot;Descendants 2&quot;/Sing-Along)</span></button>
+<button class="vtile" data-yt="pFq34eMpvC0" type="button"><img src="https://i.ytimg.com/vi/pFq34eMpvC0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What Really Happened to Dan &amp; Kika behind &quot;Sailing Uma&quot;? YouTube | Location | Net Worth</span></button>
+<button class="vtile" data-yt="8LE1UXR3Atw" type="button"><img src="https://i.ytimg.com/vi/8LE1UXR3Atw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tarantino’s Muse Or A Hollywood Victim? | Uma Thurman | Full Biography</span></button>
+<button class="vtile" data-yt="LQtEdZbOI04" type="button"><img src="https://i.ytimg.com/vi/LQtEdZbOI04/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">WTF Happened to UMA THURMAN?</span></button>
+<button class="vtile" data-yt="Zl2qPNlLsRg" type="button"><img src="https://i.ytimg.com/vi/Zl2qPNlLsRg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">OH CANADA Trailer (2024) Uma Thurman, Richard Gere</span></button>
+<button class="vtile" data-yt="iS290QfLXnE" type="button"><img src="https://i.ytimg.com/vi/iS290QfLXnE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The story of Uma Thurman is weirder than you thought</span></button>
+<button class="vtile" data-yt="RNYSdIwt8UE" type="button"><img src="https://i.ytimg.com/vi/RNYSdIwt8UE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">uma thurman - uma&#x27;s story - the story of uma - the uma story</span></button>
+<button class="vtile" data-yt="326iVw2MZhA" type="button"><img src="https://i.ytimg.com/vi/326iVw2MZhA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Real Reason We Don&#x27;t See Much Of Uma Thurman Anymore</span></button>
+<button class="vtile" data-yt="dHLVwqUon0Q" type="button"><img src="https://i.ytimg.com/vi/dHLVwqUon0Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Uma, LSD &amp; Vogue - How Nena Thurman Wrecked The Counterculture | Society Mysteries #32</span></button>
+<button class="vtile" data-yt="SVz1IWgFTwQ" type="button"><img src="https://i.ytimg.com/vi/SVz1IWgFTwQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Uma Thurman Wins Best Actress TV Movie - Golden Globes 2003</span></button>
+<button class="vtile" data-yt="CK2j4Tars4k" type="button"><img src="https://i.ytimg.com/vi/CK2j4Tars4k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">JUMP! - short film starring Uma Thurman</span></button>
+<button class="vtile" data-yt="alKAsqvdzGE" type="button"><img src="https://i.ytimg.com/vi/alKAsqvdzGE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What Uma Musume to Horse Racing Pipeline Does to a mf</span></button>
+<button class="vtile" data-yt="C8T8lXkiODc" type="button"><img src="https://i.ytimg.com/vi/C8T8lXkiODc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dangerous Liaisons - Keanu Reeves and Uma Thurman scenes</span></button>
+<button class="vtile" data-yt="4EbFk66V0_c" type="button"><img src="https://i.ytimg.com/vi/4EbFk66V0_c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Kill Bill - Interview with Uma Thurman (2003)</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Uma is a term used across various contexts including religion, nature, arts and entertainment, and geography. It also appears as an acronym for several scientific, technological, and organizational entities under the UMA abbreviation.</p>
+<p>Uma is a term used across various contexts including religion, nature, arts and entertainment, and geography. It also appears as an acronym for several scientific, technological, and organizational entities under the UMA abbreviation.</p>
+<h3>religion and nature</h3>
+<p>In Hindu religion, Uma is a goddess known as Parvati or Gauri. In nature, Uma refers to the genus of fringe-toed lizards. In terms of geography, there are places named Uma, including a village in North Macedonia (also known as Huma), a district in Ehime, Japan, and Río Uma, a tributary of the uma river in Spain.</p>
+<h3>arts and entertainment</h3>
+<p>The term is associated with several films, such as a 1941 Japanese film known as Horse, a 2013 Nepali film by Tsering Rhitar Sherpa, and a 2018 Indian Bengali-language film. It also appears in media franchises like The Witcher 3: Wild Hunt, Descendants, and the children&#x27;s TV series Oobi. In manga, Miss Uma is a character from Crayon Shin-chan, and in Hawaii, there is a wrestling game called Uma.</p>
+<h3>science and technology</h3>
+<p>UMA can stand for various technical terms such as Unified memory architecture (a synonym of integrated graphics), Uniform memory access (a shared memory architecture in parallel computers), User-Managed Access, and Unlicensed Mobile Access. In computer memory management, it refers to the Upper memory area in DOS. In astronomy, UMa is the abbreviation for Ursa Major, a constellation in the Northern Sky.</p>
+<h3>titles</h3>
+<p>UMA stands for several organizations including the University of Maine at Augusta, University of Málaga, University of Mannheim, University of Madeira, and University of Mohaghegh Ardabili. It also refers to the political and economic union known as the Arab Maghreb Union (Union du Maghreb Union), and the Argentine Mathematical Union (Unión Matemática Argentina).</p>
+<h3>ursa major</h3>
+<p>Ursa Major, abbreviated as UMa, is the third largest of the 88 modern constellations. It is primarily known for the asterism of its main seven stars called the &#x27;Big Dipper&#x27; (or &#x27;the Plough&#x27; in the UK). The stars Merak and Dubhe are used as pointer stars to find Polaris, the North Star. The constellation covers 1279.66 square degrees of the sky and borders eight other constellations.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Hindu Goddess:</strong> Uma is another name for Parvati or Gauri</li>
+<li><strong>Lizard Genus:</strong> Uma is the genus of fringe-toed lizards</li>
+<li><strong>Constellation Abbreviation:</strong> value own abbreviation for Ursa Major</li>
+<li><strong>Crayon Shin-chan Character:</strong> Miss Uma is a character from the manga series Crayon Shin-chan</li>
+<li><strong>Cryptid Term:</strong> UMA can refer to an Unidentified Mysterious Animal</li>
+<li><strong>Ursa Major Size:</strong> The constellation Ursa Major covers 1279.66 square degrees</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/UMA" rel="noopener">https://en.wikipedia.org/wiki/UMA</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Uma" rel="noopener">https://en.wikipedia.org/wiki/Uma</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Ursa_Major" rel="noopener">https://en.wikipedia.org/wiki/Ursa_Major</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="uma">
+        <input type="hidden" name="slug" value="uma">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — uma</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
