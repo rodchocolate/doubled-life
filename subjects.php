@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'Mau P', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/mau-p-20260806-4df745/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Jamie Jones', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/jamie-jones-20260806-8a9376/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Argy', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/argy-20260806-b48a87/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Bedouin (music producer / DJ)', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/bedouin-music-producer-dj-20260806-89b37c/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
