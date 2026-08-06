@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'Jimmy Jam & Terry Lewis', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/jimmy-jam-terry-lewis-20260806-db2b92/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Jack Antonoff', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/jack-antonoff-20260806-d10336/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Max Martin', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/max-martin-20260806-933a3f/', 'thumb' => '/s/max-martin-20260806-933a3f/lead.jpg', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Babyface', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/babyface-20260806-cd0cc7/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
