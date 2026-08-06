@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'Giorgio Moroder', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/giorgio-moroder-20260806-5ae1db/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Steve Albini', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/steve-albini-20260806-6cb3ee/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Jimmy Jam & Terry Lewis', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/jimmy-jam-terry-lewis-20260806-db2b92/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Jack Antonoff', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/jack-antonoff-20260806-d10336/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
