@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'Deep Dish', 'kind' => 'person', 'lede' => 'Deep Dish refers to several distinct subjects, including a style of pizza developed in Chicago and an American electronic music duo. It is also the name of a global food documentary series and a 2008 romance novel.', 'url' => '/s/deep-dish-20260806-24afd4/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 3],
   ['name' => 'ANOTR', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/anotr-20260806-132cf1/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Michael Bibi', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/michael-bibi-20260806-007d31/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Nick Leon', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/nick-leon-20260806-f756fd/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
