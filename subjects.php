@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'Mark Ronson', 'kind' => 'person', 'lede' => 'Mark Ronson is a British and American musician, record producer, songwriter, and DJ. He has won ten Grammy Awards, an Academy Award for Best Original Song, and a Golden Globe.', 'url' => '/s/mark-ronson-20260806-6d6b89/', 'thumb' => '/s/mark-ronson-20260806-6d6b89/lead.jpg', 'date' => '2026-08-06', 'refs' => 3],
   ['name' => 'Giorgio Moroder', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/giorgio-moroder-20260806-5ae1db/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Steve Albini', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/steve-albini-20260806-6cb3ee/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Jimmy Jam & Terry Lewis', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/jimmy-jam-terry-lewis-20260806-db2b92/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
