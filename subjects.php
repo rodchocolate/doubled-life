@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'Argy', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/argy-20260806-b48a87/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Bedouin (music producer / DJ)', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/bedouin-music-producer-dj-20260806-89b37c/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Adam Beyer', 'kind' => 'person', 'lede' => 'Adam Beyer is a Swedish electronic dance music producer and DJ. He is the founder of Drumcode Records and was one of several Swedish EDM artists to emerge in the mid-1990s.', 'url' => '/s/adam-beyer-20260806-e103a9/', 'thumb' => '/s/adam-beyer-20260806-e103a9/lead.jpg', 'date' => '2026-08-06', 'refs' => 3],
   ['name' => 'Charlotte de Witte', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/charlotte-de-witte-20260806-c3b8ad/', 'thumb' => '/s/charlotte-de-witte-20260806-c3b8ad/lead.jpg', 'date' => '2026-08-06', 'refs' => 0],
