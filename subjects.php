@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'Tale Of Us', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-06.', 'url' => '/s/tale-of-us-20260806-c52247/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Diynamic record label', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-06.', 'url' => '/s/diynamic-record-label-20260806-eb7e28/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Inéz', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/in-z-20260806-974be3/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Adriano Trolio', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/adriano-trolio-20260806-cc4be2/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
