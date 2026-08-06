@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'Marjory Stoneman Douglas High School', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-06.', 'url' => '/s/marjory-stoneman-douglas-high-school-20260806-6e99a2/', 'thumb' => '/s/marjory-stoneman-douglas-high-school-20260806-6e99a2/lead.png', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Grums Municipality', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-06.', 'url' => '/s/grums-municipality-20260806-a1c28f/', 'thumb' => '/s/grums-municipality-20260806-a1c28f/lead.jpg', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'FireEye', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-06.', 'url' => '/s/fireeye-20260806-e16990/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
   ['name' => 'Anjunabeats', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-06.', 'url' => '/s/anjunabeats-20260806-a0a9a5/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
