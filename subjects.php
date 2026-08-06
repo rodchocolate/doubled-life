@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'Grum', 'kind' => 'person', 'lede' => 'Grum is a term associated with several distinct subjects including a Scottish electronic musician, a pharmaceutical spam botnet, and a locality in Sweden.', 'url' => '/s/grum-20260806-7766a5/', 'thumb' => '/s/grum-20260806-7766a5/lead.jpg', 'date' => '2026-08-06', 'refs' => 3],
   ['name' => 'Niko Maxen', 'kind' => 'person', 'lede' => 'Niko Maxen is not mentioned in the provided source material.', 'url' => '/s/niko-maxen-20260806-c2bd08/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 2],
   ['name' => 'Bakke', 'kind' => 'person', 'lede' => 'Bakke is a Norwegian surname and a term associated with various places, buildings, and legal cases. It refers to individuals across multiple professions and locations including Norway, the United States, and South Africa.', 'url' => '/s/bakke-20260806-f8aa1c/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 3],
   ['name' => 'Cassian', 'kind' => 'person', 'lede' => 'person researched 2026-08-06.', 'url' => '/s/cassian-20260806-97ef86/', 'thumb' => '', 'date' => '2026-08-06', 'refs' => 0],
