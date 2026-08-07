@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>The Fillmore — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>The Fillmore</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-07</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">928</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="a8h2meDtdm8" type="button"><img src="https://i.ytimg.com/vi/a8h2meDtdm8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">A History of the Fillmore Neighborhood in San Francisco | KQED</span></button>
+<button class="vtile" data-yt="_SDWjfsy-GA" type="button"><img src="https://i.ytimg.com/vi/_SDWjfsy-GA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Last Days at the Fillmore - Full Documentary - (Official)</span></button>
+<button class="vtile" data-yt="rlyZ8sifBZE" type="button"><img src="https://i.ytimg.com/vi/rlyZ8sifBZE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Fillmore West San Francisco’s Psychedelic Rock Sanctuary That Defined an Era</span></button>
+<button class="vtile" data-yt="5VbcEs4SqDA" type="button"><img src="https://i.ytimg.com/vi/5VbcEs4SqDA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Fillmore: The Rock Venue That Changed Music Forever</span></button>
+<button class="vtile" data-yt="GbZ1DaW7r-8" type="button"><img src="https://i.ytimg.com/vi/GbZ1DaW7r-8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">After 50 years SF iconic music still rocks</span></button>
+<button class="vtile" data-yt="5fAsK6v3bFY" type="button"><img src="https://i.ytimg.com/vi/5fAsK6v3bFY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Welcome To The Fillmore East (1970)</span></button>
+<button class="vtile" data-yt="xOs4GbscjRg" type="button"><img src="https://i.ytimg.com/vi/xOs4GbscjRg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Los Lonely Boys: Live at the Fillmore | Full Concert</span></button>
+<button class="vtile" data-yt="l8xm97rgpPs" type="button"><img src="https://i.ytimg.com/vi/l8xm97rgpPs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">They Can&#x27;t Take That Away: The Legacy of the Fillmore (A BAVC Production)</span></button>
+<button class="vtile" data-yt="7dtsysauJjE" type="button"><img src="https://i.ytimg.com/vi/7dtsysauJjE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">GREEN DAY THE FILLMORE SF 12.15.97 FULL SET</span></button>
+<button class="vtile" data-yt="Y7L44T96LlE" type="button"><img src="https://i.ytimg.com/vi/Y7L44T96LlE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cream (1993) On San Francisco &amp; The Fillmore - &quot;The Audience Were Pretty High&quot;</span></button>
+<button class="vtile" data-yt="02I3Ag7R71w" type="button"><img src="https://i.ytimg.com/vi/02I3Ag7R71w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Linkin Park - The Fillmore, San Francisco 2001 (Full Show)</span></button>
+<button class="vtile" data-yt="dys16Y8BqrE" type="button"><img src="https://i.ytimg.com/vi/dys16Y8BqrE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Big Steve visits The Fillmore- The San Francisco home to legendary Grateful Dead shows</span></button>
+<button class="vtile" data-yt="Q3t3oaNzhf4" type="button"><img src="https://i.ytimg.com/vi/Q3t3oaNzhf4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Squeeze Documentary: Take Me I&#x27;m Yours 2012</span></button>
+<button class="vtile" data-yt="hi3dQIHAKiQ" type="button"><img src="https://i.ytimg.com/vi/hi3dQIHAKiQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bill Graham - Bill Graham Reminisces About The Fillmore East - 8/19/1984 - New York City</span></button>
+<button class="vtile" data-yt="4gbU7zZltgI" type="button"><img src="https://i.ytimg.com/vi/4gbU7zZltgI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Millard Fillmore: A presidential portrait</span></button>
+<button class="vtile" data-yt="wIdScOqs20A" type="button"><img src="https://i.ytimg.com/vi/wIdScOqs20A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Harlem of the West - The Fillmore Jazz Era</span></button>
+<button class="vtile" data-yt="iTTV_4MdwpI" type="button"><img src="https://i.ytimg.com/vi/iTTV_4MdwpI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Spirit of Fillmore</span></button>
+<button class="vtile" data-yt="5CQ18Zx2Ttc" type="button"><img src="https://i.ytimg.com/vi/5CQ18Zx2Ttc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Millard Fillmore: The Conspiracy Theorist President</span></button>
+<button class="vtile" data-yt="K4Pj706JeB4" type="button"><img src="https://i.ytimg.com/vi/K4Pj706JeB4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jefferson Airplane at The Fillmore - #16mmfilm Preservation Project</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The Fillmore refers to both a historical neighborhood in San Francisco and a historic music venue located on the edge of that district and the Upper Fillmore neighborhood.</p>
+<p>The Fillmore refers to both a historical neighborhood in San Francisco and a historic music venue located on the edge of that district and the Upper Fillmore neighborhood.</p>
+<h3>fillmore district</h3>
+<p>The Fillmore District is a historical neighborhood in San Francisco, generally treated as either a synonym or subneighborhood of the Western Addition. It rose to prominence after the 1906 earthquake because it was not affected by the earthquake or subsequent fires. This led to an influx of diverse ethnic populations, including African Americans, Jews, and Japanese residents. The district was known for having the largest jazz scene on the west coast of the United States until its decline in the 1970s. However, redevelopment programs in the late 1960s and 1970s led to the forced removal of African American residents and a decline in the jazz scene, a process some call &#x27;Negro Removal&#x27;. City planners claim this was done to combat crime and reinvigorate the economy.</p>
+<h3>the fillmore music venue</h3>
+<p>Built in 1912 as Majestic Hall, the venue became the Fillmore Auditorium in 1954 when it was taken over by Charles Sullivan, an African-American businessman who introduced integrated dances and major Black music acts. Following Sullivan&#x27;s unsolved murder in 1966, Bill Graham took over management. Under Graham, the venue became a focal point for psychedelic music and counterculture, hosting acts like the Grateful Dead, Jimi Hendrix, and Pink Floyd. The building was damaged by the Loma Prieta earthquake of 1989 and closed, but it was reopened in 1994 after structural retrofitting. Since 2007, it has been operated by Live Nation.</p>
+<h3>title history and other venues</h3>
+<p>The venue&#x27;s name changed several times before becoming the Fillmore Auditorium; it was known as the Majestic Hall, Ambassador Dance Hall, and Ambassador Roller Skating Rink. For a period from 1969 to 1970, it was operated as the New Old Fillmore. In the early 1980s, it became The Elite Club, hosting punk rock shows. As a result of its cultural impact, Bill Graham expanded the concept to other locations including Fillmore West and Fillmore East in New York City. Live Nation has since further expanded the brand into clubs in cities such as Denver, Detroit, Philadelphia, and Miami.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Location:</strong> San Francisco, California</li>
+<li><strong>Current Operator:</strong> Live Nation</li>
+<li><strong>Capatcity:</strong> 1,315 guests for a standard show</li>
+<li><strong>Historical Significance:</strong> West coast&#x27;s largest jazz scene until the 1970s</li>
+<li><strong>Fillmore Auditorium Opening Date:</strong> 1954</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Fillmore_District,_San_Francisco" rel="noopener">https://en.wikipedia.org/wiki/Fillmore_District,_San_Francisco</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Live_at_the_Fillmore" rel="noopener">https://en.wikipedia.org/wiki/Live_at_the_Fillmore</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/The_Fillmore" rel="noopener">https://en.wikipedia.org/wiki/The_Fillmore</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="The Fillmore">
+        <input type="hidden" name="slug" value="the-fillmore">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — The Fillmore</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
