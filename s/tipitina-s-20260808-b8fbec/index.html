@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Tipitina&#x27;s — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>Tipitina&#x27;s</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">907</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="Yj6AXu7_psY" type="button"><img src="https://i.ytimg.com/vi/Yj6AXu7_psY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">&quot;Tipitina&quot; Professor Longhair &amp; The Meters 1974</span></button>
+<button class="vtile" data-yt="Xftg9dz-2H8" type="button"><img src="https://i.ytimg.com/vi/Xftg9dz-2H8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tipitina&#x27;s 2025 | Adam Deitch</span></button>
+<button class="vtile" data-yt="laM3Wey0RuY" type="button"><img src="https://i.ytimg.com/vi/laM3Wey0RuY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pro Drummer Takes You Behind the Scenes at the World Famous Tipitina&#x27;s in New Orleans</span></button>
+<button class="vtile" data-yt="W8poHWyaskM" type="button"><img src="https://i.ytimg.com/vi/W8poHWyaskM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">KEITH RICHARDS Was Turned Away at Tipitina&#x27;s — The Girl Playing Ruby Tuesday Changed Everything</span></button>
+<button class="vtile" data-yt="PD999hTxirc" type="button"><img src="https://i.ytimg.com/vi/PD999hTxirc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tipitina&#x27;s 2025 | Stanton Moore</span></button>
+<button class="vtile" data-yt="NvhOF-YuQcI" type="button"><img src="https://i.ytimg.com/vi/NvhOF-YuQcI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The history of New Orleans iconic venue Tipitina&#x27;s</span></button>
+<button class="vtile" data-yt="SdBG7Y9UADM" type="button"><img src="https://i.ytimg.com/vi/SdBG7Y9UADM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">&quot;Yes We Can Can&quot; - Ivan Neville &amp; Galactic Save Tip&#x27;s Benefit Tipitina&#x27;s, New Orleans</span></button>
+<button class="vtile" data-yt="p-lsiDJWMsQ" type="button"><img src="https://i.ytimg.com/vi/p-lsiDJWMsQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Professor Longhair - Tipitina</span></button>
+<button class="vtile" data-yt="JRj0MLXKXi0" type="button"><img src="https://i.ytimg.com/vi/JRj0MLXKXi0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tipitina’s, the internationally known neighborhood nightclub</span></button>
+<button class="vtile" data-yt="BMI0HjCB23U" type="button"><img src="https://i.ytimg.com/vi/BMI0HjCB23U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tipitina’s 2025 | Keith Carlock</span></button>
+<button class="vtile" data-yt="jUIuary-IL4" type="button"><img src="https://i.ytimg.com/vi/jUIuary-IL4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Revivalists &quot;BTBD&quot; Live at Tipitina&#x27;s</span></button>
+<button class="vtile" data-yt="bZ6G1neE-mQ" type="button"><img src="https://i.ytimg.com/vi/bZ6G1neE-mQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">History of Tipitina&#x27;s</span></button>
+<button class="vtile" data-yt="-qoZ0nm4UqI" type="button"><img src="https://i.ytimg.com/vi/-qoZ0nm4UqI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tipitina&#x27;s Record Club Podcast | Episode 5: Earl King - Street Parade</span></button>
+<button class="vtile" data-yt="yq3eqmd5WSg" type="button"><img src="https://i.ytimg.com/vi/yq3eqmd5WSg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ARMORED SAINT: Tipitina&#x27;s - October 2, 1991 - New Orleans, LA.</span></button>
+<button class="vtile" data-yt="kc52f335CGI" type="button"><img src="https://i.ytimg.com/vi/kc52f335CGI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tipitina - Allen Toussaint and Jon Cleary</span></button>
+<button class="vtile" data-yt="lgTKVR5Xl4c" type="button"><img src="https://i.ytimg.com/vi/lgTKVR5Xl4c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Professor Longhair - &quot;Tipitina&quot; (ATLANTIC) 1954</span></button>
+<button class="vtile" data-yt="0nlMZZgtDEA" type="button"><img src="https://i.ytimg.com/vi/0nlMZZgtDEA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cast of the Wire and BYB@Tipitina&#x27;s</span></button>
+<button class="vtile" data-yt="Oj3hFlDsIew" type="button"><img src="https://i.ytimg.com/vi/Oj3hFlDsIew/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">CHRIS FINNEY @TIPITINA&#x27;S, NEW ORLEANS, LA</span></button>
+<button class="vtile" data-yt="oIY30-U4FnY" type="button"><img src="https://i.ytimg.com/vi/oIY30-U4FnY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Robert Plant @ Tipitina&#x27;s New Orleans</span></button>
+<button class="vtile" data-yt="BpDoKmG2uqs" type="button"><img src="https://i.ytimg.com/vi/BpDoKmG2uqs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The NOLA Gents - Tipitina / ONYX Artists New Orleans Country band</span></button>
+<button class="vtile" data-yt="11CM67qk1gM" type="button"><img src="https://i.ytimg.com/vi/11CM67qk1gM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Radiators - Tipitina&#x27;s TV</span></button>
+<button class="vtile" data-yt="hbvVakAVMyk" type="button"><img src="https://i.ytimg.com/vi/hbvVakAVMyk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">New Orleans Piano | How to play Tipitina (Professor Longhair)</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Tipitina&#x27;s is a music venue located at the corner of Napoleon Avenue and Tchoupitoulas Street in Uptown New Orleans, Louisiana. It is considered one of the best-known clubs in New Orleans.</p>
+<p>Tipitina&#x27;s is a music venue located at the corner of Napoleon Avenue and Tchoupitoulas Street in Uptown New Orleans, Louisiana. It is considered one of the best-known clubs in New Orleans.</p>
+<h3>history</h3>
+<p>Local music enthusiasts opened Tipitina&#x27;s on January 14, 1977. The venue was named after a song by Professor Longhair, who performed there until his death in 1980. Before it became Tipitina&#x27;s, the building—constructed in 1912—served as a gambling house, gymnasium, and brothel. In its early years, the venue featured a juice bar, restaurant, and bar; the banana in the logo is the only remaining remnant of the juice bar. During the early 1980s, radio station WWOZ&#x27;s studios were located in upstairs apartments, allowing them to broadcast live shows by lowering a microphone through a hole in the floor. Tipitina&#x27;s closed temporarily during the 1984 World&#x27;s Fair, after which it was remodeled to remove the upstairs apartments and increase the ceiling height of the music venue.</p>
+<h3>community and operations</h3>
+<p>In 1998, a second location opened on North Peters Street in the French Quarter, though it is currently closed. The Tipitina&#x27;s Foundation was established as a non-profit to support local music and musicians, specifically providing uniforms and instruments for New Orleans public high school marching bands and supporting musicians affected by Hurricane Katrina. This foundation closed shortly after the venue was sold in late 2018. In December 2018, Tipitina&#x27;s was purchased from Mary and Roland von Kurnatowski by members of the jam band Galactic, who then formed the Tip-It Foundation to promote the music, culture, and heritage of the Gulf South via the brand and venue.</p>
+<h3>live recordings</h3>
+<p>Numerous live albums have been recorded at the venue, including &#x27;Work Done on Premises&#x27; (1980) by The Radiators, &#x27;Nevillization: Live at Tipitina&#x27;s&#x27; (1982) by The Neville Brothers, and &#x27;Live – Tipitina&#x27;s, New Orleans, LA, 16 Jan &#x27;89&#x27; (1989) by Jane&#x27;s Addiction. Other recordings include works by Galactic, Anders Osborne, Tuts Washington, Dr. John, Bonerama, The Blind Boys of Alabama, and Mem Shannon. Tipitina&#x27;s is also featured in the documentary and live album &#x27;Wilco Live: Ashes of American Flags&#x27;.</p>
+<h3>annual events</h3>
+<p>Tipitina&#x27;s hosts a concert series called &#x27;Fess Jazztival&#x27;, which is a play on the nickname of Professor Longhair, &#x27;Fess&#x27;. This event takes place during the annual New Orleans Jazz &amp; Heritage Festival period.</p>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Tipitina" rel="noopener">https://en.wikipedia.org/wiki/Tipitina</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Tipitina%27s" rel="noopener">https://en.wikipedia.org/wiki/Tipitina%27s</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Work_Done_on_Premises" rel="noopener">https://en.wikipedia.org/wiki/Work_Done_on_Premises</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Tipitina&#x27;s">
+        <input type="hidden" name="slug" value="tipitina-s">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Tipitina&#x27;s</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
