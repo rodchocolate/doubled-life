@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'The Hacienda', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-08.', 'url' => '/s/the-hacienda-20260808-a5a1d0/', 'thumb' => '', 'date' => '2026-08-08', 'refs' => 0],
   ['name' => 'Berghain', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-08.', 'url' => '/s/berghain-20260808-cf0c98/', 'thumb' => '/s/berghain-20260808-cf0c98/lead.jpg', 'date' => '2026-08-08', 'refs' => 0],
   ['name' => 'Studio 54', 'kind' => 'place', 'lede' => 'place researched 2026-08-08.', 'url' => '/s/studio-54-20260808-0a61b0/', 'thumb' => '/s/studio-54-20260808-0a61b0/lead.png', 'date' => '2026-08-08', 'refs' => 0],
   ['name' => 'Paradise Garage', 'kind' => 'place', 'lede' => 'place researched 2026-08-08.', 'url' => '/s/paradise-garage-20260808-b1912a/', 'thumb' => '/s/paradise-garage-20260808-b1912a/lead.jpg', 'date' => '2026-08-08', 'refs' => 0],
