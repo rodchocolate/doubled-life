@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>CBGB — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>CBGB</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">860</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="scW0Dqims9c" type="button"><img src="https://i.ytimg.com/vi/scW0Dqims9c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">CBGB Theatrical Trailer #1 (2013) - Alan Rickman, Rupert Grint Movie HD</span></button>
+<button class="vtile" data-yt="3hcSLF5Bc4c" type="button"><img src="https://i.ytimg.com/vi/3hcSLF5Bc4c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Talking Heads - Psycho Killer (Earliest Live Video, Live at CBGB&#x27;s,1975)</span></button>
+<button class="vtile" data-yt="FTdFiN_7zJo" type="button"><img src="https://i.ytimg.com/vi/FTdFiN_7zJo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Rise and Fall of CBGB</span></button>
+<button class="vtile" data-yt="DMdPTzb6PmU" type="button"><img src="https://i.ytimg.com/vi/DMdPTzb6PmU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">CBGB Theatrical TRAILER 1 (2013) - Alan Rickman, Rupert Grint Movie HD</span></button>
+<button class="vtile" data-yt="xjdXRaYaeEA" type="button"><img src="https://i.ytimg.com/vi/xjdXRaYaeEA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Outside CBGB 1985</span></button>
+<button class="vtile" data-yt="_m3yPzYMBQw" type="button"><img src="https://i.ytimg.com/vi/_m3yPzYMBQw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Schub as Dee Dee Ramone in &quot;CBGB&quot; with Alan Rickman. Directed by Randall Miller.</span></button>
+<button class="vtile" data-yt="zgkzexy_p5Q" type="button"><img src="https://i.ytimg.com/vi/zgkzexy_p5Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">&#x27;CBGB&#x27; Trailer | Moviefone</span></button>
+<button class="vtile" data-yt="TpHNrgCFQa4" type="button"><img src="https://i.ytimg.com/vi/TpHNrgCFQa4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What Happened To CBGB (Punk Club) in New York?</span></button>
+<button class="vtile" data-yt="G4e0OtxXWgk" type="button"><img src="https://i.ytimg.com/vi/G4e0OtxXWgk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">CBGB tour with Sting, Brian Johnson &amp; John Varvatos</span></button>
+<button class="vtile" data-yt="2kmUfWPeIRE" type="button"><img src="https://i.ytimg.com/vi/2kmUfWPeIRE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sheena Is A Punk Rocker - The Ramones - Live CBGB 1977</span></button>
+<button class="vtile" data-yt="JbXbNfetqKI" type="button"><img src="https://i.ytimg.com/vi/JbXbNfetqKI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">1975 Blondie Rare Performance of &quot;Femme Fatale&quot; At The CBGB | Premium Footage</span></button>
+<button class="vtile" data-yt="cVoNI8rFaNI" type="button"><img src="https://i.ytimg.com/vi/cVoNI8rFaNI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">HBO Vinyl: 1973 Shaping The Culture - CBGBs</span></button>
+<button class="vtile" data-yt="kRIBGGVdywk" type="button"><img src="https://i.ytimg.com/vi/kRIBGGVdywk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">CBGB&#x27;S DOCUMENTARY 1978 CBGBS BLITZKRIEG BOP FEAT. RAMONES , BLONDIE &amp; DEAD BOYS</span></button>
+<button class="vtile" data-yt="7XD912WNn-0" type="button"><img src="https://i.ytimg.com/vi/7XD912WNn-0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Marky Ramone remembers legendary NYC venue CBGBs</span></button>
+<button class="vtile" data-yt="1IcI__qmF5c" type="button"><img src="https://i.ytimg.com/vi/1IcI__qmF5c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Truth About CBGB That Punk Fans Still Deny</span></button>
+<button class="vtile" data-yt="6kyIU-Q_KZk" type="button"><img src="https://i.ytimg.com/vi/6kyIU-Q_KZk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Lou Reed Called Her a &quot;Cheap Copy&quot;: The 1975 CBGB Bathroom Fight That Changed Punk</span></button>
+<button class="vtile" data-yt="WUmcp1wo_lI" type="button"><img src="https://i.ytimg.com/vi/WUmcp1wo_lI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">CBGB&#x27;s the roots of punk documentary part 1</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">CBGB was a music club in New York City&#x27;s East Village located at 315 Bowery. Opened in 1973 by Hilly Kristal and Karen Kristal, it became an iconic venue for punk rock and new wave bands. It is recognized in academic scholarship as a linchpin of early American punk culture.</p>
+<p>CBGB was a music club in New York City&#x27;s East Village located at 315 Bowery. Opened in 1973 by Hilly Kristal and Karen Kristal, it became an iconic venue for punk rock and new wave bands. It is recognized in academic scholarship as a linchpin of early American punk culture.</p>
+<h3>establishment and evolution</h3>
+<p>CBGB was founded on December 10, 1973, on the site of Hilly Kristal&#x27;s earlier bar, Hilly&#x27;s on the Bowery. The club&#x27;s full name, CBGB &amp; OMFUG, stands for &quot;Country, Bluegrass, Blues, and Other Music For Uplifting Gourmandizers,&quot; reflecting Kristal&#x27;s original vision for a country music venue. However, the club soon shifted toward rock bands and original music, becoming the birthplace of underground rock &#x27;n&#x27; roll and punk in New York City before the genre spread to the United Kingdom. The interior was deliberately rough with graffiti-covered walls and doorless greenrooms, which allowed musicians and audience members to interact in a shared space.</p>
+<h3>musical performance and programming</h3>
+<p>Early influential performers included Television, the Ramones, Blondie, Patti Smith Group, and Talking Heads. In 1977, the Damned became the first British punk band to play at the venue. Later, in the 1980s, hardcore punk&#x27;s New York underground became the mainstay of the club, with &#x27;thrash day&#x27; matinées on Sundays. Other affiliated bands included Agnostic Front, Murphy&#x27;s Law, Cro-Mags, and Warzone. Additionally, a storefront beside CBGB became the CBGB Record Canteen, which was later converted into CB&#x27;s 313 Gallery for milder sounds like jazz, folk, and acoustic rock, as well as weekly Goth night called Alchemy.</p>
+<h3>closure and legacy</h3>
+<p>Following a protracted dispute over unpaid rent with the landlord, Bowery Residents&#x27; Committee, CBGB closed on October 15, 2006, with a final performance by Patti Smith. In 2013, the building at 315 Bowery was added to the National Register of Historic Places as part of The Bowery Historic District. Subsequent developments include the launch of CBGB Radio on iHeartRadio in 2010 and the start of CBGB music festivals beginning in 2012.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Founded:</strong> December 10, 1973</li>
+<li><strong>Location:</strong> 315 Bowery, East Village, Manhattan, New York City</li>
+<li><strong>나s:</strong> Hilly Kristal and Karen Kristal</li>
+<li><strong>Closing Date:</strong> October 15, 2006</li>
+<li><strong>Full Name:</strong> CBGB &amp; OMFUG</li>
+<li><strong>나s:</strong> Country, Bluegrass, Blues</li>
+<li><strong>Final Performance:</strong> value: &quot;Patti Smith&quot;</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/CBGB" rel="noopener">https://en.wikipedia.org/wiki/CBGB</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/CBGB_(film" rel="noopener">https://en.wikipedia.org/wiki/CBGB_(film</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Live_at_CBGB_(Agnostic_Front_album" rel="noopener">https://en.wikipedia.org/wiki/Live_at_CBGB_(Agnostic_Front_album</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="CBGB">
+        <input type="hidden" name="slug" value="cbgb">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — CBGB</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
