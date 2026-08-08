@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'Paradiso', 'kind' => 'place', 'lede' => 'place researched 2026-08-08.', 'url' => '/s/paradiso-20260808-174cda/', 'thumb' => '/s/paradiso-20260808-174cda/lead.jpg', 'date' => '2026-08-08', 'refs' => 0],
   ['name' => 'Fabric (music venue)', 'kind' => 'place', 'lede' => 'place researched 2026-08-08.', 'url' => '/s/fabric-music-venue-20260808-884d72/', 'thumb' => '', 'date' => '2026-08-08', 'refs' => 0],
   ['name' => 'Tresor (music venue)', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-08.', 'url' => '/s/tresor-music-venue-20260808-60c273/', 'thumb' => '', 'date' => '2026-08-08', 'refs' => 0],
   ['name' => 'The Hacienda', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-08.', 'url' => '/s/the-hacienda-20260808-a5a1d0/', 'thumb' => '', 'date' => '2026-08-08', 'refs' => 0],
