@@ -1,5 +1,6 @@
 <?php return [
-  ['name' => 'Preservation Hall', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-08.', 'url' => '/s/preservation-hall-20260808-b01472/', 'thumb' => '', 'date' => '2026-08-08', 'refs' => 0],
+  ['name' => 'First Avenue', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-08.', 'url' => '/s/first-avenue-20260808-312af3/', 'thumb' => '', 'date' => '2026-08-08', 'refs' => 0],
+  ['name' => 'Preservation Hall', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-08.', 'url' => '/s/preservation-hall-20260808-b01472/', 'thumb' => '/s/preservation-hall-20260808-b01472/lead.jpg', 'date' => '2026-08-08', 'refs' => 0],
   ['name' => 'Ronnie Scott\'s', 'kind' => 'organization', 'lede' => 'Ronnie Scott\'s Jazz Club is a jazz club located in Soho, London, that has been operating since 1959. It was co-founded and managed by musicians Ronnie Scott and Pete King.', 'url' => '/s/ronnie-scott-s-20260808-0bfae4/', 'thumb' => '/s/ronnie-scott-s-20260808-0bfae4/lead.jpg', 'date' => '2026-08-08', 'refs' => 3],
   ['name' => 'Village Vanguard', 'kind' => 'place', 'lede' => 'place researched 2026-08-08.', 'url' => '/s/village-vanguard-20260808-625c45/', 'thumb' => '/s/village-vanguard-20260808-625c45/lead.jpg', 'date' => '2026-08-08', 'refs' => 0],
   ['name' => 'Apollo Theater', 'kind' => 'place', 'lede' => 'place researched 2026-08-08.', 'url' => '/s/apollo-theater-20260808-30d02c/', 'thumb' => '/s/apollo-theater-20260808-30d02c/lead.jpg', 'date' => '2026-08-08', 'refs' => 0],
