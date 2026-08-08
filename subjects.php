@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'Ministry of Sound', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-08.', 'url' => '/s/ministry-of-sound-20260808-1a31d0/', 'thumb' => '', 'date' => '2026-08-08', 'refs' => 0],
   ['name' => 'Paradiso', 'kind' => 'place', 'lede' => 'place researched 2026-08-08.', 'url' => '/s/paradiso-20260808-174cda/', 'thumb' => '/s/paradiso-20260808-174cda/lead.jpg', 'date' => '2026-08-08', 'refs' => 0],
   ['name' => 'Fabric (music venue)', 'kind' => 'place', 'lede' => 'place researched 2026-08-08.', 'url' => '/s/fabric-music-venue-20260808-884d72/', 'thumb' => '', 'date' => '2026-08-08', 'refs' => 0],
   ['name' => 'Tresor (music venue)', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-08.', 'url' => '/s/tresor-music-venue-20260808-60c273/', 'thumb' => '', 'date' => '2026-08-08', 'refs' => 0],
