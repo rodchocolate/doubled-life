@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Nina Simone — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Nina Simone</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1022</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="oHRNrgDIJfo" type="button"><img src="https://i.ytimg.com/vi/oHRNrgDIJfo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nina Simone - Feeling Good (Official Video)</span></button>
+<button class="vtile" data-yt="JS8LWRCS6do" type="button"><img src="https://i.ytimg.com/vi/JS8LWRCS6do/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nina Simone - Don&#x27;t Let Me Be Misunderstood (Official Video)</span></button>
+<button class="vtile" data-yt="ua2k52n_Bvw" type="button"><img src="https://i.ytimg.com/vi/ua2k52n_Bvw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nina Simone - I put a spell on you</span></button>
+<button class="vtile" data-yt="-sEP0-8VAow" type="button"><img src="https://i.ytimg.com/vi/-sEP0-8VAow/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nina Simone - I Wish I Knew How It Would Feel To Be Free (Montreux 1976)</span></button>
+<button class="vtile" data-yt="L5jI9I03q8E" type="button"><img src="https://i.ytimg.com/vi/L5jI9I03q8E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ain&#x27;t Got No, I Got Life - Nina Simone</span></button>
+<button class="vtile" data-yt="5cnZjClf6zM" type="button"><img src="https://i.ytimg.com/vi/5cnZjClf6zM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nina Simone &quot;Love Me Or Leave Me&quot; on The Ed Sullivan Show</span></button>
+<button class="vtile" data-yt="R96jRnBYymU" type="button"><img src="https://i.ytimg.com/vi/R96jRnBYymU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">NINA SIMONE on DAVID BOWIE, JANIS JOPLIN and singing STARS( Live at Montreux, 1976)</span></button>
+<button class="vtile" data-yt="LymNICNvaH8" type="button"><img src="https://i.ytimg.com/vi/LymNICNvaH8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nina Simone: To Love Somebody (Live in Antibes, 1969)</span></button>
+<button class="vtile" data-yt="LJ25-U3jNWM" type="button"><img src="https://i.ytimg.com/vi/LJ25-U3jNWM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nina Simone: Mississippi Goddam</span></button>
+<button class="vtile" data-yt="WyB5tt8Wql4" type="button"><img src="https://i.ytimg.com/vi/WyB5tt8Wql4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nina Simone &quot;Feelings&quot; - best performance</span></button>
+<button class="vtile" data-yt="9ckv6-yhnIY" type="button"><img src="https://i.ytimg.com/vi/9ckv6-yhnIY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nina Simone - Don&#x27;t Let Me Be Misunderstood</span></button>
+<button class="vtile" data-yt="D5Y11hwjMNs" type="button"><img src="https://i.ytimg.com/vi/D5Y11hwjMNs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nina Simone Feeling Good</span></button>
+<button class="vtile" data-yt="JS9dLkXjnlw" type="button"><img src="https://i.ytimg.com/vi/JS9dLkXjnlw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nina Simone, the wounded soul of jazz | Personal archives</span></button>
+<button class="vtile" data-yt="jRV2hReWFU8" type="button"><img src="https://i.ytimg.com/vi/jRV2hReWFU8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nina Simone The Legend Divx</span></button>
+<button class="vtile" data-yt="sL1m7SvoICw" type="button"><img src="https://i.ytimg.com/vi/sL1m7SvoICw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nina Simone &amp; Me with Laura Mvula BBC Documentary 2016</span></button>
+<button class="vtile" data-yt="z7jIOawq8y8" type="button"><img src="https://i.ytimg.com/vi/z7jIOawq8y8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nina Simone - What Happened, Miss Simone? - Trailer</span></button>
+<button class="vtile" data-yt="Dz89_dV9Fuo" type="button"><img src="https://i.ytimg.com/vi/Dz89_dV9Fuo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nina Simone Explained In A Single Performance</span></button>
+<button class="vtile" data-yt="trqy2FdJVa4" type="button"><img src="https://i.ytimg.com/vi/trqy2FdJVa4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Heartbreaking Details About Nina Simone</span></button>
+<button class="vtile" data-yt="f51JuPimVMI" type="button"><img src="https://i.ytimg.com/vi/f51JuPimVMI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nina (2016): The Biopic That Sparked a Global Debate</span></button>
+<button class="vtile" data-yt="8olEruTT_io" type="button"><img src="https://i.ytimg.com/vi/8olEruTT_io/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nina Simone on BBC HARDtalk, 1999</span></button>
+<button class="vtile" data-yt="T2id9k3J6XA" type="button"><img src="https://i.ytimg.com/vi/T2id9k3J6XA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nina Simone’s Genius Artistry &amp; Proud Black Legacy | Black History Month | MTV News</span></button>
+<button class="vtile" data-yt="99V0mMNf5fo" type="button"><img src="https://i.ytimg.com/vi/99V0mMNf5fo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nina Simone: An Artist&#x27;s Duty</span></button>
+<button class="vtile" data-yt="aKSQlk2vJe8" type="button"><img src="https://i.ytimg.com/vi/aKSQlk2vJe8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nina Simone - sold her soul for fame.. but at what cost?</span></button>
+<button class="vtile" data-yt="DeevW_zYojY" type="button"><img src="https://i.ytimg.com/vi/DeevW_zYojY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What Happened, Miss Simone? - Trailer legendado - Netflix [HD]</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Nina Simone owns a reputation as an American composer, concert pianist, singer, songwriter, and civil rights activist known as the High Priestess of Soul. Her music spanned styles including pop, jazz, R&amp;B, folk, gospel, blues, and classical. Her piano playing was influenced by ba</p>
+<p>Nina Simone owns a reputation as an American composer, concert pianist, singer, songwriter, and civil rights activist known as the High Priestess of Soul. Her music spanned styles including pop, jazz, R&amp;B, folk, gospel, blues, and classical. Her piano playing was influenced by baroque and classical music, particularly Johann Sebastian Bach.</p>
+<h3>early life and education</h3>
+<p>Born Eunice Kathleen Waymon in 1933 in Tryon, North Carolina, Simone owns a reputation as the sixth of eight children. Her father was an entertainer, barber, and dry-cleaner, and her mother was a Methodist preacher. She began playing piano at age three or four, and her concert debut as a classical recitalist was given when she was 12. After graduating valedictorian from Allen High School for Girls in Asheville, North Carolina, she spent the summer of 1950 at the Juilliard School in New York City to prepare for an audition at the Curtis Institute of Music in Philadelphia. However, her application to Curtis was denied, which she attributed to racial prejudice. Discouraged, she took private lessons with Vladimir Sokoloff, a professor at Curtis, and worked as a photographer&#x27;s assistant, piano teacher, and accompanist.</p>
+<h3>musical career</h3>
+<p>To fund her private piano lessons, Simone performed at the Midtown Bar &amp; Grill in Atlantic City, New Jersey. It was here that she adopted the stage name &quot;Nina Simone&quot; to hide from her mother, who would not approve of her playing &quot;the Devil&#x27;s music&quot;. The owner of the Midtown Bar &amp; Grill insisted she sing as well as play piano, which launched her career as a jazz vocalist. After making her debut with Little Girl Blue in 1958, she recorded more than 40 albums by 1974. Her first and biggest US hit single, &quot;I Loves You, Porgy&quot;, peaked inside the top 20 of the Billboard Hot 100 chart in 1959. She later signed a contract with producer Hecky Krasnow at Colpix Records, which gave her full creative control over her recorded material.</p>
+<h3>activism and later years</h3>
+<p>Simone became known for her work in the civil rights movement during the 1950s and 1960s. This involvement was partly influenced by an incident during her childhood concert debut where her parents were forced to move to the back of the hall to make way for white people. Following the assassination of Martin Luther King Jr. in 1968, she left the United States and settled in France. She lived and performed across Africa, Europe, and the Caribbean throughout the 1970s, 1980s, and90s. In 1991, she published her autobiography, I Put a Spell on You. She remained musically active until her death in 2003, two days after receiving an honorary degree from the Curtis Institute of Music.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Birth Name:</strong> Eunice Kathleen Waymon</li>
+<li><strong>Born:</strong> February 21, 1933</li>
+<li><strong>// a fact about her music style/influence:</strong> Strongly influenced by baroque and classical music, especially Johann Sebastian Bach</li>
+<li><strong>Death:</strong> value owns a reputation as April 21, 2003</li>
+<li><strong>label owns a reputation as 1959 hit single:</strong> I Loves You, Porgy</li>
+<li><strong>Autobiography:</strong> I Put a Spell on You</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Nina_Simone" rel="noopener">https://en.wikipedia.org/wiki/Nina_Simone</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Nina_Simone_and_Piano" rel="noopener">https://en.wikipedia.org/wiki/Nina_Simone_and_Piano</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Nina_Simone_discography" rel="noopener">https://en.wikipedia.org/wiki/Nina_Simone_discography</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Nina Simone">
+        <input type="hidden" name="slug" value="nina-simone">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Nina Simone</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
