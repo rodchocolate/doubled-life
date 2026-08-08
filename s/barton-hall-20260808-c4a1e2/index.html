@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Barton Hall — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">place</div>
+      <h1>Barton Hall</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">12</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1171</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="lvwY2psxdl0" type="button"><img src="https://i.ytimg.com/vi/lvwY2psxdl0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Deal (Live at Barton Hall, Cornell University, Ithaca, NY 5/8/77)</span></button>
+<button class="vtile" data-yt="RMotfSyRcwU" type="button"><img src="https://i.ytimg.com/vi/RMotfSyRcwU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Morning Dew (Live at Barton Hall, Cornell University, Ithaca, NY 5/8/77)</span></button>
+<button class="vtile" data-yt="ZGPeO9jZYvM" type="button"><img src="https://i.ytimg.com/vi/ZGPeO9jZYvM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fire on the Mountain (Live at Barton Hall, Cornell University, Ithaca, NY 5/8/77)</span></button>
+<button class="vtile" data-yt="Sp18EhK_lBE" type="button"><img src="https://i.ytimg.com/vi/Sp18EhK_lBE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Estimated Prophet (Live at Barton Hall, Cornell University, Ithaca, NY 5/8/77)</span></button>
+<button class="vtile" data-yt="eV16Ysr03Vw" type="button"><img src="https://i.ytimg.com/vi/eV16Ysr03Vw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dancing in the Street (Live at Barton Hall, Cornell University, Ithaca, NY 5/8/77)</span></button>
+<button class="vtile" data-yt="bdexAK_KDrE" type="button"><img src="https://i.ytimg.com/vi/bdexAK_KDrE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Loser (Live at Barton Hall, Cornell University, Ithaca, NY 5/8/77)</span></button>
+<button class="vtile" data-yt="cebeFr2FKRw" type="button"><img src="https://i.ytimg.com/vi/cebeFr2FKRw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">St. Stephen (Live at Barton Hall, Cornell University, Ithaca, NY 5/8/77)</span></button>
+<button class="vtile" data-yt="QNSVVZmlxt4" type="button"><img src="https://i.ytimg.com/vi/QNSVVZmlxt4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jack Straw (Live at Barton Hall, Cornell University, Ithaca, NY 5/8/77)</span></button>
+<button class="vtile" data-yt="YKDvwC8cOlk" type="button"><img src="https://i.ytimg.com/vi/YKDvwC8cOlk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Grateful Dead, 5/8/77, Set 2 | Barton Hall, Cornell University</span></button>
+<button class="vtile" data-yt="YFt7DobqbfI" type="button"><img src="https://i.ytimg.com/vi/YFt7DobqbfI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Scarlet Begonias (Live at Barton Hall, Cornell University, Ithaca, NY 5/8/77)</span></button>
+<button class="vtile" data-yt="gdvY6BiPPhE" type="button"><img src="https://i.ytimg.com/vi/gdvY6BiPPhE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Brown-Eyed Women (Live at Barton Hall, Cornell University, Ithaca, NY 5/8/77)</span></button>
+<button class="vtile" data-yt="rf2WFeVi8jY" type="button"><img src="https://i.ytimg.com/vi/rf2WFeVi8jY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cornell University Barton Hall Indoor Track Facilities Tour</span></button>
+<button class="vtile" data-yt="Gqgp0o6yFqQ" type="button"><img src="https://i.ytimg.com/vi/Gqgp0o6yFqQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Grateful Dead - Cornell &#x27;77 (Fan Mini-Doc)</span></button>
+<button class="vtile" data-yt="LOLogGjy9g8" type="button"><img src="https://i.ytimg.com/vi/LOLogGjy9g8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Film of Barton Hall/Cunningham Plantation, Colbert County, Alabama 1935-39</span></button>
+<button class="vtile" data-yt="t-y-5uDstao" type="button"><img src="https://i.ytimg.com/vi/t-y-5uDstao/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">John Barton&#x27;s acting sessions</span></button>
+<button class="vtile" data-yt="WZwGUPWqgsc" type="button"><img src="https://i.ytimg.com/vi/WZwGUPWqgsc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Julia &amp; James wedding film @ Barton Hall</span></button>
+<button class="vtile" data-yt="H2O0zdpmosE" type="button"><img src="https://i.ytimg.com/vi/H2O0zdpmosE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cornell &#x27;23 — Dead &amp; Company at Barton Hall 05/08/23</span></button>
+<button class="vtile" data-yt="ELVjHlK8_Tw" type="button"><img src="https://i.ytimg.com/vi/ELVjHlK8_Tw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Barton Hall Wedding Videographer - Rosewood Wedding Films</span></button>
+<button class="vtile" data-yt="nhrclzJATfY" type="button"><img src="https://i.ytimg.com/vi/nhrclzJATfY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">12a 1974-1975 Barton Hall - Miss Pontin, Chedder Gorge, Bath, Jacquie Coming Home</span></button>
+<button class="vtile" data-yt="zUlFZrFzQMI" type="button"><img src="https://i.ytimg.com/vi/zUlFZrFzQMI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Winter Wedding in the Elegant Orangery at Barton Hall | Katie &amp; Kyle&#x27;s Wedding Video</span></button>
+<button class="vtile" data-yt="ogTdJFjYhoQ" type="button"><img src="https://i.ytimg.com/vi/ogTdJFjYhoQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">barton hall movie</span></button>
+<button class="vtile" data-yt="RTx9x2iYLAE" type="button"><img src="https://i.ytimg.com/vi/RTx9x2iYLAE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">A Barton Hall Hotel Wedding, Shann &amp; Nathan</span></button>
+<button class="vtile" data-yt="IsI4d-QTCqo" type="button"><img src="https://i.ytimg.com/vi/IsI4d-QTCqo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Barton hall wedding film - Rosewood wedding films</span></button>
+<button class="vtile" data-yt="G4VN7AmruZw" type="button"><img src="https://i.ytimg.com/vi/G4VN7AmruZw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">SNAKE Communication Breakdown, Barton Hall, Cornell 1970</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Barton Hall is an on-campus field house at Cornell University in Ithaca, New York. It serves as the site for Cornell Police, ROTC offices and classes, and the indoor track facilities of the university.</p>
+<p>Barton Hall is an on-campus field house at Cornell University in Ithaca, New York. It serves as the site for Cornell Police, ROTC offices and classes, and the indoor track facilities of the university.</p>
+<h3>building and design</h3>
+<p>Designed by Lewis Pilcher, the official State Architect of New York, Barton Hall was built in 1914 and 1915 as a drill hall for the Department of Military Science. The building is constructed from local limestone with double trusses spaced 40 feet apart to support the roof. Its original drill shed provided 362 x 228 feet of open floor space, which was capable of accommodating 1,000 men. For a long time, it was considered the largest unpillared room in existence, with an interior covering almost 2 acres.</p>
+<h3>university functions and history</h3>
+<p>Originally known as the &#x27;New Armory&#x27;, the building was named for Col. Frank A. Barton in January 1940. It served as an airplane hangar during World War I and as an armory during World War II. Historically, it hosted Cornell Basketball from 1919 to 1990 and hosted graduation ceremonies for both Cornell University and Ithaca High School until 1974. Until the start of online registration, students would register for classes by placing punched cards into bins in the hall. In the first part of the 20th century, mandatory drill for male students was conducted here. The Cornell Big Red Marching Band and Pep Band were based here until 2013.</p>
+<h3>current uses</h3>
+<p>Barton Hall currently houses the three ROTC Detachments (Army, Navy, and Air Force) and an indoor challenge course. It also contains the Wortham Museum, the Hart Memorial Library, basketball courts, and a premier indoor track facility featuring a 200 m Recaflex track with eight 42-inch lanes. The facility includes a throwing cage, high jump areas, and pits for long and triple jump, as well що як an indoor runway for pole vault. In 1995, the H. Hunt Bradley Track Center was constructed under the south bleachers, providing a weight room, library, and Hall of Fame.</p>
+<h3>concerts and protests</h3>
+<p>Barton Hall is used as a concert venue for the Cornell Campus via the Cornell Concert Commission. It has hosted various artists such as Bob Dylan, Santana, Ludacris, Death Cab For Cutie, Franz Ferdinand, Daya, Saint Motel, and the Flaming Lips. A May 8, 1977, performance by the Grateful Dead is widely considered one of the band&#x27;s career highlights and was selected for preservation in the National Recording Registry at the Library of Congress in 2011. The building has also been the site of political protests, including a student takeover in 1969 and anti-war protests in 1972.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Location:</strong> Cornell University campus, Ithaca, New York</li>
+<li><strong>Construction Date:</strong> 1914-1915</li>
+<li><strong>Architect:</strong> Lewis Pilcher</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Barton_Hall" rel="noopener">https://en.wikipedia.org/wiki/Barton_Hall</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Cornell_5/8/77" rel="noopener">https://en.wikipedia.org/wiki/Cornell_5/8/77</a></li>
+          <li><a href="https://www.setlist.fm/setlist/b-j-novak/2023/barton-hall-cornell-university-ithaca-ny-5bbb7f80.html" rel="noopener">https://www.setlist.fm/setlist/b-j-novak/2023/barton-hall-cornell-university-ithaca-ny-5bbb7f80.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/carly-rae-jepsen/2015/barton-hall-cornell-university-ithaca-ny-13933d55.html" rel="noopener">https://www.setlist.fm/setlist/carly-rae-jepsen/2015/barton-hall-cornell-university-ithaca-ny-13933d55.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/cupcakke/2018/barton-hall-cornell-university-ithaca-ny-63e9c637.html" rel="noopener">https://www.setlist.fm/setlist/cupcakke/2018/barton-hall-cornell-university-ithaca-ny-63e9c637.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/dead-and-company/2023/barton-hall-cornell-university-ithaca-ny-3bb9ac10.html" rel="noopener">https://www.setlist.fm/setlist/dead-and-company/2023/barton-hall-cornell-university-ithaca-ny-3bb9ac10.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/flo-milli/2022/barton-hall-cornell-university-ithaca-ny-63b82a47.html" rel="noopener">https://www.setlist.fm/setlist/flo-milli/2022/barton-hall-cornell-university-ithaca-ny-63b82a47.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/foster-the-people/2017/barton-hall-cornell-university-ithaca-ny-3be3380c.html" rel="noopener">https://www.setlist.fm/setlist/foster-the-people/2017/barton-hall-cornell-university-ithaca-ny-3be3380c.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/jid/2023/barton-hall-cornell-university-ithaca-ny-bb82d9a.html" rel="noopener">https://www.setlist.fm/setlist/jid/2023/barton-hall-cornell-university-ithaca-ny-bb82d9a.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/ken-carson/2025/barton-hall-cornell-university-ithaca-ny-3b46bc1c.html" rel="noopener">https://www.setlist.fm/setlist/ken-carson/2025/barton-hall-cornell-university-ithaca-ny-3b46bc1c.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/saint-motel/2019/barton-hall-cornell-university-ithaca-ny-4b9dbf36.html" rel="noopener">https://www.setlist.fm/setlist/saint-motel/2019/barton-hall-cornell-university-ithaca-ny-4b9dbf36.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/tinashe/2024/barton-hall-cornell-university-ithaca-ny-3b536844.html" rel="noopener">https://www.setlist.fm/setlist/tinashe/2024/barton-hall-cornell-university-ithaca-ny-3b536844.html</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Barton Hall">
+        <input type="hidden" name="slug" value="barton-hall">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Barton Hall</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
