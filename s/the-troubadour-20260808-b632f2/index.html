@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>The Troubadour — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">place</div>
+      <h1>The Troubadour</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">12</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1027</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="9jJf-p6RYvo" type="button"><img src="https://i.ytimg.com/vi/9jJf-p6RYvo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">George Strait - Troubadour (Official Music Video - Closed Captioned)</span></button>
+<button class="vtile" data-yt="5_sCmyxmC_Q" type="button"><img src="https://i.ytimg.com/vi/5_sCmyxmC_Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Troubadour: West Hollywood&#x27;s Music Mecca Since 1957 | History Of</span></button>
+<button class="vtile" data-yt="_roFIou9sew" type="button"><img src="https://i.ytimg.com/vi/_roFIou9sew/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Troubadour The Legendary Heart of Rock and Roll in Los Angeles</span></button>
+<button class="vtile" data-yt="iOBouT4L48I" type="button"><img src="https://i.ytimg.com/vi/iOBouT4L48I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cheap Trick• Live @ The Troubadour surprise Show Part-1 ￼8/5/26</span></button>
+<button class="vtile" data-yt="SD8A3w-8WHA" type="button"><img src="https://i.ytimg.com/vi/SD8A3w-8WHA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Scene Los Angeles: The Troubadour</span></button>
+<button class="vtile" data-yt="5DioJj65CD4" type="button"><img src="https://i.ytimg.com/vi/5DioJj65CD4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Alison Martino’s report from The Troubadour featuring Henry Diltz &amp; Micky Dolenz for Spectrum News 1</span></button>
+<button class="vtile" data-yt="m3-4O8qalXI" type="button"><img src="https://i.ytimg.com/vi/m3-4O8qalXI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Steve Martin Original Stand-Up, the Troubadour, 1976, Remastered 4K</span></button>
+<button class="vtile" data-yt="LXT6KfF52dM" type="button"><img src="https://i.ytimg.com/vi/LXT6KfF52dM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elton John live from The Troubadour, August 1970</span></button>
+<button class="vtile" data-yt="tPY533CZHfs" type="button"><img src="https://i.ytimg.com/vi/tPY533CZHfs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">A Night at the Troubadour | Carole King &amp; James Taylor Full Concert #classicrock #FolkRock</span></button>
+<button class="vtile" data-yt="rNeH7yPXcwo" type="button"><img src="https://i.ytimg.com/vi/rNeH7yPXcwo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cheap Trick - Surrender - Troubadour - West Hollywood, CA 8/5/26</span></button>
+<button class="vtile" data-yt="3IMntLIgIq8" type="button"><img src="https://i.ytimg.com/vi/3IMntLIgIq8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Carole King and James Taylor Live at the Troubadour.flv</span></button>
+<button class="vtile" data-yt="5GYJX3L8n4Q" type="button"><img src="https://i.ytimg.com/vi/5GYJX3L8n4Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Troubadour</span></button>
+<button class="vtile" data-yt="HsxPSHvIlP0" type="button"><img src="https://i.ytimg.com/vi/HsxPSHvIlP0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Troubadours: The Rise of the Singer - Songwriter, Movie review by Kenneth Turan</span></button>
+<button class="vtile" data-yt="9QxIOm3pNcU" type="button"><img src="https://i.ytimg.com/vi/9QxIOm3pNcU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Troubadours: The Rise of The Singer Songwriter - James Taylor &amp; Carole King</span></button>
+<button class="vtile" data-yt="uqTci9jQKHw" type="button"><img src="https://i.ytimg.com/vi/uqTci9jQKHw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Gordon Lightfoot: The Last Troubadour</span></button>
+<button class="vtile" data-yt="J23ZYkIhVJw" type="button"><img src="https://i.ytimg.com/vi/J23ZYkIhVJw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Trail of the Troubadours - complete</span></button>
+<button class="vtile" data-yt="PqLCn4xKas8" type="button"><img src="https://i.ytimg.com/vi/PqLCn4xKas8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Rise, Fall, and Resurrection of the Turnpike Troubadours</span></button>
+<button class="vtile" data-yt="Dm9RXR1pGds" type="button"><img src="https://i.ytimg.com/vi/Dm9RXR1pGds/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Troubadour - Dr. Draw Documentary 🎻</span></button>
+<button class="vtile" data-yt="Suwgyjzsaq4" type="button"><img src="https://i.ytimg.com/vi/Suwgyjzsaq4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Chivalrous Melodies and Colorful Lives of the Medieval Troubadours</span></button>
+<button class="vtile" data-yt="ofbX1BKh7Rg" type="button"><img src="https://i.ytimg.com/vi/ofbX1BKh7Rg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Troubadours: The Nastiest Poets of the Middle Ages</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The Troubadour is a nightclub located in West Hollywood, California, at 9081 Santa Monica Boulevard. It was opened in the 1950s by Doug Weston, inspired by a visit to a Troubadour café in London. The venue has served as a major center for folk music, singer-songwriters, and rock.</p>
+<p>The Troubadour is a nightclub located in West Hollywood, California, at 9081 Santa Monica Boulevard. It was opened in the 1950s by Doug Weston, inspired by a visit to a Troubadour café in London. The venue has served as a major center for folk music, singer-songwriters, and rock.</p>
+<h3>history</h3>
+<p>The club moved to its current location in 1957, which seats 300 people. In the 1960s, it was a center for folk music and hosted Monday night Hootenannies, known as &#x27;Hoot&#x27; nights, which were open-mic shows hosted by Larry Murray. During this period, it played an important role in the careers of artists such as the Byrds, Neil Diamond, Elton John, Carole King, James Taylor, and Joni Mitchell. In October 1962, comedian Lenny Bruce was arrested on obscenity charges for using the word &#x27;schmuck&#x27; on stage.</p>
+<h3>genre evolution</h3>
+<p>Throughout the 1970s, 1980s, and 1990s, the Troubadour featured a variety of genres. It hosted new wave and punk in the late 1970s and early 1980s, including bands like Bad Religion and Napalm Death. In the 1980s, it became associated with glam metal bands such as Mötley Crüe, Guns N&#x27; Roses, and Poison. It also continued to attract non-glam metal acts through the 1990s, including Radiohead and the Red Hot Chili Peppers.</p>
+<h3>21st century and recent events</h3>
+<p>Havering a diverse range of uma own artists such as Coldplay, Arctic Monkeys and Orville Peck. In the 21st century, the venue is well known for promoting diverse artists like Coldplay, Arctic Monkeys, and Orville Peck. Like many small businesses, the Troubadour struggled during the COVID-19 pandemic, which led to {// a GoFundMe page in May 2020 that raised $70,000. Elton John celebrated his  uma own anniversary of his first show at the venue in August 2020, and comedian Bill Burr hosted two Monday Morning Podcasts from the venue to raise money during the pandemic.</p>
+<h3>other notable performances</h3>
+<p>The Troubadour in West Hollywood is distinct from other venues of the uma own artists such as Cat Stevens, who recorded live recordings by Stevens in 1970 at the uma own artists such as Cat Stevens, who recorded live recordings by Stevens in 1970 at the Troubadour, and Cheap Trick, James McMurtry, and Drake Milligan who performed there in 2026.</p>
+<h3>// own artists such as cat stevens, who recorded live recordings by stevens in 1970 and cheap trick, 2026</h3>
+<p>The Troubadour in West Hollywood the uma own artists suchthought: The user wants a research writer to produce an encyclopedia-style subject page for</p>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Tea_for_the_Tillerman" rel="noopener">https://en.wikipedia.org/wiki/Tea_for_the_Tillerman</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Troubadour_(West_Hollywood,_California" rel="noopener">https://en.wikipedia.org/wiki/Troubadour_(West_Hollywood,_California</a></li>
+          <li><a href="https://www.setlist.fm/setlist/chandol/2026/troubadour-west-hollywood-ca-73734a71.html" rel="noopener">https://www.setlist.fm/setlist/chandol/2026/troubadour-west-hollywood-ca-73734a71.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/cheap-trick/2026/troubadour-west-hollywood-ca-73707a49.html" rel="noopener">https://www.setlist.fm/setlist/cheap-trick/2026/troubadour-west-hollywood-ca-73707a49.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/drake-milligan/2026/troubadour-west-hollywood-ca-3b75e408.html" rel="noopener">https://www.setlist.fm/setlist/drake-milligan/2026/troubadour-west-hollywood-ca-3b75e408.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/james-mcmurtry/2026/troubadour-west-hollywood-ca-7b76f230.html" rel="noopener">https://www.setlist.fm/setlist/james-mcmurtry/2026/troubadour-west-hollywood-ca-7b76f230.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/kate-clover/2026/troubadour-west-hollywood-ca-437373fb.html" rel="noopener">https://www.setlist.fm/setlist/kate-clover/2026/troubadour-west-hollywood-ca-437373fb.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/low-cut-connie/2026/troubadour-west-hollywood-ca-4373730b.html" rel="noopener">https://www.setlist.fm/setlist/low-cut-connie/2026/troubadour-west-hollywood-ca-4373730b.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/oldboy/2026/the-troubadour-london-england-237094b3.html" rel="noopener">https://www.setlist.fm/setlist/oldboy/2026/the-troubadour-london-england-237094b3.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/punching-swans/2026/the-troubadour-london-england-237094b7.html" rel="noopener">https://www.setlist.fm/setlist/punching-swans/2026/the-troubadour-london-england-237094b7.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/riff-wood/2026/troubadour-west-hollywood-ca-33709cc5.html" rel="noopener">https://www.setlist.fm/setlist/riff-wood/2026/troubadour-west-hollywood-ca-33709cc5.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/the-pyke-circuit/2026/the-troubadour-london-england-3b7094b0.html" rel="noopener">https://www.setlist.fm/setlist/the-pyke-circuit/2026/the-troubadour-london-england-3b7094b0.html</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="The Troubadour">
+        <input type="hidden" name="slug" value="the-troubadour">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — The Troubadour</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
