@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>The Fox Theatre — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>The Fox Theatre</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1011</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="bghbJ32F43c" type="button"><img src="https://i.ytimg.com/vi/bghbJ32F43c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">It&#x27;s the Fox Theatre like you&#x27;ve never seen it</span></button>
+<button class="vtile" data-yt="_FrnfqWODpw" type="button"><img src="https://i.ytimg.com/vi/_FrnfqWODpw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Goose Live at The Fox Theatre, Atlanta, GA (Night 3)</span></button>
+<button class="vtile" data-yt="MFo1Cqqqlh4" type="button"><img src="https://i.ytimg.com/vi/MFo1Cqqqlh4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Legend Lives On: Atlanta’s Fox Theatre | GPB Documentaries</span></button>
+<button class="vtile" data-yt="NkTbRnrx5NY" type="button"><img src="https://i.ytimg.com/vi/NkTbRnrx5NY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Take a special tour of the Fabulous Fox Theatre on its 90th birthday</span></button>
+<button class="vtile" data-yt="7Z4x99B7_Gw" type="button"><img src="https://i.ytimg.com/vi/7Z4x99B7_Gw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Walking tour recounts history of Atlanta&#x27;s fabulous Fox Theatre</span></button>
+<button class="vtile" data-yt="oTOON7WAr5A" type="button"><img src="https://i.ytimg.com/vi/oTOON7WAr5A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fly Through of Atlanta&#x27;s Fox Theatre</span></button>
+<button class="vtile" data-yt="gEmUE2-DJME" type="button"><img src="https://i.ytimg.com/vi/gEmUE2-DJME/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">R.E.M. live at the Fox Theatre (Nov. 13 1989)</span></button>
+<button class="vtile" data-yt="WKU3KT9MFng" type="button"><img src="https://i.ytimg.com/vi/WKU3KT9MFng/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Manchester Orchestra - No Rule (Live) – The Stuffing at Fox Theatre Atlanta</span></button>
+<button class="vtile" data-yt="vBmxmOegdpQ" type="button"><img src="https://i.ytimg.com/vi/vBmxmOegdpQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Human League @ The Fox Theatre 06-19-2026</span></button>
+<button class="vtile" data-yt="2aK3ikE5Sns" type="button"><img src="https://i.ytimg.com/vi/2aK3ikE5Sns/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fox Theatre | Detroit, MI</span></button>
+<button class="vtile" data-yt="slQYV3hmp84" type="button"><img src="https://i.ytimg.com/vi/slQYV3hmp84/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Balcony shakes at Fox Theatre during concert performance</span></button>
+<button class="vtile" data-yt="6Pre27K5CS8" type="button"><img src="https://i.ytimg.com/vi/6Pre27K5CS8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Blue Man Group | Fox Theatre | Feb. 20-22, 2026</span></button>
+<button class="vtile" data-yt="o-Zzny47eAo" type="button"><img src="https://i.ytimg.com/vi/o-Zzny47eAo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fox Theatre Documentary</span></button>
+<button class="vtile" data-yt="cOORdOke4fE" type="button"><img src="https://i.ytimg.com/vi/cOORdOke4fE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Fabulous Fox | GPB Documentaries</span></button>
+<button class="vtile" data-yt="FS8Sutfcjt8" type="button"><img src="https://i.ytimg.com/vi/FS8Sutfcjt8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Iconic moments at the Fox Theatere</span></button>
+<button class="vtile" data-yt="TXdmLXyQD4s" type="button"><img src="https://i.ytimg.com/vi/TXdmLXyQD4s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">the Fox theatre</span></button>
+<button class="vtile" data-yt="ApJAqpeET20" type="button"><img src="https://i.ytimg.com/vi/ApJAqpeET20/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Atlanta&#x27;s Fox Theatre: More Than A Movie Palace | GPB Documentaries</span></button>
+<button class="vtile" data-yt="7UuqkbvxXIY" type="button"><img src="https://i.ytimg.com/vi/7UuqkbvxXIY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fox Theater Documentary--TA</span></button>
+<button class="vtile" data-yt="lK6dR-6nCaU" type="button"><img src="https://i.ytimg.com/vi/lK6dR-6nCaU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Over a century of history lives in the Fox Theatre</span></button>
+<button class="vtile" data-yt="HKvFu78fUeo" type="button"><img src="https://i.ytimg.com/vi/HKvFu78fUeo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Spokane&#x27;s 21st Century Fox Theater (2008) | Documentary | KSPS PBS</span></button>
+<button class="vtile" data-yt="rFFjjmSlhzw" type="button"><img src="https://i.ytimg.com/vi/rFFjjmSlhzw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Behind the scenes of Atlanta&#x27;s iconic Fox Theatre</span></button>
+<button class="vtile" data-yt="xYuFiaKenBU" type="button"><img src="https://i.ytimg.com/vi/xYuFiaKenBU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Fox Theatre: The Legacy Lives On - No Gold</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The Fox Theatre, often marketed as the Fabulous Fox, is a performing arts venue and former movie palace located at 660 Peachtree Street NE in Midtown Atlanta, Georgia. It serves as the centerpiece of the Fox Theatre Historic District.</p>
+<p>The Fox Theatre, often marketed as the Fabulous Fox, is a performing arts venue and former movie palace located at 660 Peachtree Street NE in Midtown Atlanta, Georgia. It serves as the centerpiece of the Fox Theatre Historic District.</p>
+<h3>architecture</h3>
+<p>The theater&#x27;s design is divided into two primary architectural styles: Islamic architecture and Egyptian architecture. The 4,665-seat auditorium replicates an Arabian courtyard with a ceiling featuring 96 embedded crystal &quot;stars,&quot; some of which flicker, and a projection of drifting clouds. The Egyptian Ballroom is modeled after a temple for Ramses II at Karnak, while the mezzanine Ladies Lounge features makeup tables with tiny Sphinxes and a replica of King Tut&#x27;s throne chair. Throughout the building, trompe-l&#x27;œil is used extensively; plaster beams appear as wood, paint appears as gold leaf, and a giant Bedouin canopy in the auditorium is made of plaster and steel rods to funnel sound. The Islamic sections include ablution fountains that are currently kept dry.</p>
+<h3>history</h3>
+<p>Originally planned as the Yaarab Shrine Temple for a 5,000-member Shriners organization, the project exceeded its budget, leading the Shriners to lease the auditorium to movie mogul William Fox. The theater opened on December 25, 1929, shortly after the stock market crash. By 1932, William Fox was bankrupt and the Yaarab Temple could not meet mortgage payments, causing the venue to close only 125 weeks after opening. Following a foreclosure in December 1932, it was purchased by Paramount Pictures and Lucas &amp; Jenkins. In the 1940s, the theater became one of Atlanta&#x27;s finest movie theaters and its Egyptian Ballroom became a popular public dance hall for big bands and country and western swing bands.</p>
+<h3>title</h3>
+<p>The Fox Theatre was notable in the 1940s for being the only theater in Atlanta allowing both black and white patrons, though it remained segregated by separate box office, entrance, and seating. It was integrated in 1962. In the 1974, Southern Bell attempted to purchase the site to demolish the building for a parking deck. This led to a public outcry and a campaign involving celebrities like Liberace and Lynyrd Skynyrd, who recorded their first live album there. Following this effort, the city refused to issue a demolition permit. The venue was placed on the National Register of Historic Places in May 1974 and later named a National Historic Landmark on May 26, 1976.</p>
+<h3>current use</h3>
+<p>The theater currently hosts a variety of cultural and artistic events, including the Atlanta Ballet, national touring companies of Broadway shows, occasional concerts by popular artists, and a summer film series.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Location:</strong> 660 Peachtree Street NE, Midtown Atlanta, Georgia</li>
+<li><strong>Auditorium Capacity:</strong> 4,665 seats</li>
+<li><strong>Egyptian Ballroom:</strong> // a temple for Ramses II at Karnak</li>
+<li><strong>// own the same chainy thingy:</strong> Olivier Vinour of Marye, Alger and Vinour</li>
+<li><strong>// some other fact:</strong> May 26, 1976</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Fabulous_Fox_Theatre" rel="noopener">https://en.wikipedia.org/wiki/Fabulous_Fox_Theatre</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Fox_Theatre" rel="noopener">https://en.wikipedia.org/wiki/Fox_Theatre</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Fox_Theatre_(Atlanta" rel="noopener">https://en.wikipedia.org/wiki/Fox_Theatre_(Atlanta</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="The Fox Theatre">
+        <input type="hidden" name="slug" value="the-fox-theatre">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — The Fox Theatre</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
