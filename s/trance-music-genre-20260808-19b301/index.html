@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Trance music genre — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">concept</div>
+      <h1>Trance music genre</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1019</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="Mlon5n-R1-o" type="button"><img src="https://i.ytimg.com/vi/Mlon5n-R1-o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">30 Subgenres of Trance (with examples)</span></button>
+<button class="vtile" data-yt="rmkhm2u0mLc" type="button"><img src="https://i.ytimg.com/vi/rmkhm2u0mLc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The 30 Best Trance Music Songs Ever 3. (Tiesto, Armin, PvD, Ferry Corsten) | TranceForLife</span></button>
+<button class="vtile" data-yt="Yg6aIcF3Om4" type="button"><img src="https://i.ytimg.com/vi/Yg6aIcF3Om4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Armin van Buuren discusses the evolution of trance music</span></button>
+<button class="vtile" data-yt="sVqE8ggVNMg" type="button"><img src="https://i.ytimg.com/vi/sVqE8ggVNMg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Genre Style Guide || Trance [Ep.2]</span></button>
+<button class="vtile" data-yt="Fcsvn9B69Tw" type="button"><img src="https://i.ytimg.com/vi/Fcsvn9B69Tw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">26 EDM Genres Explained, With Examples</span></button>
+<button class="vtile" data-yt="ovRF3g7sB6M" type="button"><img src="https://i.ytimg.com/vi/ovRF3g7sB6M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Trance Classics | Golden Age Mix (1998 - 2005)</span></button>
+<button class="vtile" data-yt="fcXJBxsMMsM" type="button"><img src="https://i.ytimg.com/vi/fcXJBxsMMsM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Beginner&#x27;s Guide to EDM Genres and Subgenres (with Examples)</span></button>
+<button class="vtile" data-yt="iXAbte4QXKs" type="button"><img src="https://i.ytimg.com/vi/iXAbte4QXKs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">♫ Best Uplifting Trance Mix - All Time Favourites #1 ♫</span></button>
+<button class="vtile" data-yt="yEMt9esDe1g" type="button"><img src="https://i.ytimg.com/vi/yEMt9esDe1g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Classic Trance Anthems Mix | From 1999 to 2001</span></button>
+<button class="vtile" data-yt="aOYOdx3cSOg" type="button"><img src="https://i.ytimg.com/vi/aOYOdx3cSOg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Psychedelic Trance 2026: Astrix - Deep Jungle Walk 🌀 Magic Mushrooms &amp; Hallucinations AI Visuals</span></button>
+<button class="vtile" data-yt="H952Ej5v5a4" type="button"><img src="https://i.ytimg.com/vi/H952Ej5v5a4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">trance euphoria [1996-2004]</span></button>
+<button class="vtile" data-yt="syGyHZYsob0" type="button"><img src="https://i.ytimg.com/vi/syGyHZYsob0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Best Trance 2026 🚀 | Uplifting, Vocal &amp; Melodic Trance Mix | EDM, Deep, Euphoric &amp; Progressive</span></button>
+<button class="vtile" data-yt="qeYQIUZLb-M" type="button"><img src="https://i.ytimg.com/vi/qeYQIUZLb-M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Paul van Dyk &#x27;For An Angel&#x27; | The Making Of A Trance Classic</span></button>
+<button class="vtile" data-yt="tjMS6EM8pWk" type="button"><img src="https://i.ytimg.com/vi/tjMS6EM8pWk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">MFS Berliner Trance Documentary | 4:3 Feature Film</span></button>
+<button class="vtile" data-yt="e734oOGQ8Ek" type="button"><img src="https://i.ytimg.com/vi/e734oOGQ8Ek/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Goa Gil: The Untold Story Behind Psytrance &amp; Goa Trance</span></button>
+<button class="vtile" data-yt="1cciUE5aefU" type="button"><img src="https://i.ytimg.com/vi/1cciUE5aefU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Goa Trance: How Hippies Accidentally Changed Music Forever</span></button>
+<button class="vtile" data-yt="438FX75kUCU" type="button"><img src="https://i.ytimg.com/vi/438FX75kUCU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Before Psytrance Had a Name — The Birth of Goa Trance</span></button>
+<button class="vtile" data-yt="UY75a-hd5-Y" type="button"><img src="https://i.ytimg.com/vi/UY75a-hd5-Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Evian Christ: Lord Of The Trance (Documentary)</span></button>
+<button class="vtile" data-yt="7yc_q20NrZg" type="button"><img src="https://i.ytimg.com/vi/7yc_q20NrZg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">WHAT WE STARTED History Of Electronic Dance Music | Full Documentary Sub Spanish</span></button>
+<button class="vtile" data-yt="t4zzH67p1ts" type="button"><img src="https://i.ytimg.com/vi/t4zzH67p1ts/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Liquid Crystal Vision - Documentary about Goa Trance</span></button>
+<button class="vtile" data-yt="wRF7oylrGvU" type="button"><img src="https://i.ytimg.com/vi/wRF7oylrGvU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Paul van Dyk on trance and the future of music</span></button>
+<button class="vtile" data-yt="6Zp3gAerkV0" type="button"><img src="https://i.ytimg.com/vi/6Zp3gAerkV0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Goa Trance - A Channel 4 Documentary feat. rare footage from 1995</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Trance music is a genre of electronic dance music that emerged from the techno and EBM scene in Frankfurt, Germany, in the late 1980s and early 1990s. It is typically characterized by a tempo between 120 and 150 beats per minute (BPM) and repeating melodic phrases.</p>
+<p>Trance music is a genre of electronic dance music that emerged from the techno and EBM scene in Frankfurt, Germany, in the late 1980s and early 1990s. It is typically characterized by a tempo between 120 and 150 beats per minute (BPM) and repeating melodic phrases.</p>
+<h3>musical characteristics</h3>
+<p>Trance music often utilizes a musical form that builds tension and elements throughout a track, culminating in one to two peaks or drops. It incorporates influences from classical music, film scores, house, techno, chill-out, ambient, and tech house. Modern trance typically features a mid-song climax followed by a soft breakdown where beats and percussion are removed entirely, leaving the melody or atmospherics to stand alone before building up again. Tracks are often lengthy to allow for this progression and have sparse opening and closing sections to facilitate DJ mixing. While mostly instrumental, vocals can be mixed in, typically performed by mezzo-soprano to soprano female soloists without a traditional verse/chorus structure. Structured vocal form is the basis of the vocal trance subgenre, described as &#x27;grand, soaring, and operatic&#x27;. Male singers such as Jonathan Mendelsohn are also featured.</p>
+<h3>history and development</h3>
+<p>The genre&#x27;s early years were defined by Frankfurt labels like Eye Q, Harthouse, and Force Inc. Producers such as Rolf Ellmer, Oliver Lieb, and Pete Namlook created noteworthy tracks. Much of the development was traced to Sven Väth, who was influenced by his experiences in Goa, India, where DJs used psychedelic rock and other sounds to induce trance states at beach parties. Väth launched Eye Q in 1991 and Harthouse in 1992. In Berlin, MFS Records signed artists like Paul van Dyk, Cosmic Baby, and Mijk van Dijk. In the UK, labels such as Platipus Records and Hooj Choons were influential in progressive trance. In Australia, Christopher J. Dolan (Quench) released &#x27;Dreams&#x27; in 1993, which sold over a million copies worldwide by October 2000.</p>
+<h3>subgenres</h3>
+<p>Various subgenres emerged from the same roots. Goa trance, with an organic sound and oriental aesthetic, emerged as German trance moved back to Goa. This evolved into psychedelic trance (psytrance), characterized by high tempo riffs and a layered melodies. Psytrance tempos generally range from 125 to 150 BPM and use a a constant pounding bass beat. Subgenres of psytrance include dark psytrance, which is heavier with tempos starting at 150 bpm and often samples horror films; full-on, high energy for peak moments with tempos usually between 140–148 bpm; and Suomisaundi, originating in Finland during the mid-1990s. Other trance subgenres mentioned include hard trance, which introduced the breakdown-build-anthem template, and epic trance, influenced by classical and film music.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Origin:</strong> Frankfurt, Germany</li>
+<li><strong>Typical Tempo:</strong> 120-150 BPM</li>
+<li><strong>Crossover Influences:</strong> Techno, house, chill-out, classical music, tech house, ambient and film scores</li>
+<li><strong>label: Vocal Trance Characteristics:</strong> Grand, soaring, and operatic with ethereal female leads</li>
+<li><strong>Early Frankfurt Labels:</strong> Eye Q, Harthouse, Fax +49-69/450464, Force Inc.</li>
+<li><strong>Commercial Peak:</strong> Second part of 1990s and early 2000s</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/List_of_trance_genres" rel="noopener">https://en.wikipedia.org/wiki/List_of_trance_genres</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Psychedelic_trance" rel="noopener">https://en.wikipedia.org/wiki/Psychedelic_trance</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Trance_music" rel="noopener">https://en.wikipedia.org/wiki/Trance_music</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Trance music genre">
+        <input type="hidden" name="slug" value="trance-music-genre">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Trance music genre</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
