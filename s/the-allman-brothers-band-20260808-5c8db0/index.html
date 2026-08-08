@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>The Allman Brothers Band — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>The Allman Brothers Band</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">839</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="Z8zk7XKyoE8" type="button"><img src="https://i.ytimg.com/vi/Z8zk7XKyoE8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Midnight Rider</span></button>
+<button class="vtile" data-yt="TCRS4DRmf_w" type="button"><img src="https://i.ytimg.com/vi/TCRS4DRmf_w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Allman Brothers Midnight Rider</span></button>
+<button class="vtile" data-yt="ggeab0lKz2c" type="button"><img src="https://i.ytimg.com/vi/ggeab0lKz2c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Allman Brothers Blues Band - Melissa - Acoustic - Live Music - Gregg &amp; Dickie Betts - Video</span></button>
+<button class="vtile" data-yt="G1lrxoTc7i0" type="button"><img src="https://i.ytimg.com/vi/G1lrxoTc7i0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Allman Brothers Band One Way Out At Fillmore East 1971 HQ</span></button>
+<button class="vtile" data-yt="km6dHnWghlc" type="button"><img src="https://i.ytimg.com/vi/km6dHnWghlc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Allman Brothers Best Songs Music Playlist</span></button>
+<button class="vtile" data-yt="Wa4DCp6cl2U" type="button"><img src="https://i.ytimg.com/vi/Wa4DCp6cl2U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Allman Brothers Band - Ramblin&#x27; Man (Lyric Video)</span></button>
+<button class="vtile" data-yt="FUvxRjYqjEQ" type="button"><img src="https://i.ytimg.com/vi/FUvxRjYqjEQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Allman Brothers Band - Whipping Post | Live at Fillmore East (1970)</span></button>
+<button class="vtile" data-yt="RYIwiT1gmZE" type="button"><img src="https://i.ytimg.com/vi/RYIwiT1gmZE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Allman Brothers Perform &quot;Jessica&quot; | Letterman</span></button>
+<button class="vtile" data-yt="hd66VD1zm9M" type="button"><img src="https://i.ytimg.com/vi/hd66VD1zm9M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Allman Brothers &quot;In Memory of Elizabeth Reed&quot; 1970 HQ</span></button>
+<button class="vtile" data-yt="nfrSIUE3iAE" type="button"><img src="https://i.ytimg.com/vi/nfrSIUE3iAE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Allman Brothers Band - Whipping Post (Lyric Video)</span></button>
+<button class="vtile" data-yt="4uWQszeuX2A" type="button"><img src="https://i.ytimg.com/vi/4uWQszeuX2A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ain&#x27;t Wastin&#x27; Time No More</span></button>
+<button class="vtile" data-yt="tHcgmiQwEts" type="button"><img src="https://i.ytimg.com/vi/tHcgmiQwEts/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Allman Brothers Band - Blue Sky</span></button>
+<button class="vtile" data-yt="1zufRQsmWYw" type="button"><img src="https://i.ytimg.com/vi/1zufRQsmWYw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Rise, Fall and Comeback of the Allman Brothers Band</span></button>
+<button class="vtile" data-yt="aavVKk4xD68" type="button"><img src="https://i.ytimg.com/vi/aavVKk4xD68/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ALLMAN BROTHERS STORY</span></button>
+<button class="vtile" data-yt="u72zGKgSyog" type="button"><img src="https://i.ytimg.com/vi/u72zGKgSyog/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Whatever Happened to Gregg Allman’s 5 Children</span></button>
+<button class="vtile" data-yt="wiCbLRTia08" type="button"><img src="https://i.ytimg.com/vi/wiCbLRTia08/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">American Revolutions: Southern Rock</span></button>
+<button class="vtile" data-yt="msMKtu6dzXQ" type="button"><img src="https://i.ytimg.com/vi/msMKtu6dzXQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Allman Brothers Band - Episode 1: Before the Brotherhood | B-Side Chronicles</span></button>
+<button class="vtile" data-yt="i4BLJm3xbO0" type="button"><img src="https://i.ytimg.com/vi/i4BLJm3xbO0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Rise and Fall of The Allman Brothers: From 7 Platinum Albums to a Family Torn Apart</span></button>
+<button class="vtile" data-yt="f5EFu_w6xK4" type="button"><img src="https://i.ytimg.com/vi/f5EFu_w6xK4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Duane Allman | The Rise and Tragic Ending of the Guitar Great</span></button>
+<button class="vtile" data-yt="tnAvjpf5HlU" type="button"><img src="https://i.ytimg.com/vi/tnAvjpf5HlU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Allman Brothers Band: The Post-Duane Years | After The Crash | Amplified</span></button>
+<button class="vtile" data-yt="cJT3aUjPHv4" type="button"><img src="https://i.ytimg.com/vi/cJT3aUjPHv4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">GREGG ALLMAN: THE MUSIC OF MY SOUL | Official Trailer | Subtext</span></button>
+<button class="vtile" data-yt="RqGDRTpFLZM" type="button"><img src="https://i.ytimg.com/vi/RqGDRTpFLZM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Allman Brothers Band: CMT&#x27;s American Revolutions: Southern Rock</span></button>
+<button class="vtile" data-yt="fwXPtGXeQJE" type="button"><img src="https://i.ytimg.com/vi/fwXPtGXeQJE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Long and Grinding Road *The Allman Brother&#x27;s Story*</span></button>
+<button class="vtile" data-yt="1u3I8HtDFds" type="button"><img src="https://i.ytimg.com/vi/1u3I8HtDFds/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Gregg Allman Reminisces On His Allman Brothers Days | CONAN on TBS</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The Allman Brothers Band was an American rock band formed in Jacksonville, Florida, in 1969. The group incorporated elements of blues, jazz, and country music, with live shows featuring instrumentals and jam band-style improvisation. They were based in Macon, Georgia, and founded</p>
+<p>The Allman Brothers Band was an American rock band formed in Jacksonville, Florida, in 1969. The group incorporated elements of blues, jazz, and country music, with live shows featuring instrumentals and jam band-style improvisation. They were based in Macon, Georgia, and founded by brothers Duane and Gregg Allman.</p>
+<h3>evolution and personnel changes</h3>
+<p>Following the motorcycle accident death of group leader Duane Allman in 1971 and bassist Berry Oakley in 1972, the band recruited keyboardist Chuck Leavell and bassist Lamar Williams for their 1973 album Brothers and Sisters. This album featured the hit single &quot;Ramblin&#x27; Man&quot; and the instrumental &quot;Jessica&quot;, which became classic rock radio staples. The group dissolved in 1976, reformed briefly in 1978, and broke up again in 1982. They re-formed once more in 1989, continuing to tour and heavy touring until they retired in October 2014 after a final show at the Beacon Theatre.</p>
+<h3>musical style and recognition</h3>
+<p>The band&#x27;s music incorporated elements of Southern rock, blues, jazz, and country music. They were inducted into the Rock and Roll Hall of Fame in 1995 and awarded seven Gold and four Platinum albums by the RIAA. Rolling Stone magazine ranked them 52nd on its list of the All Time Greatest Artists in 2004 (or 2010), and they became renowned for their month-long concert residencies at New York City&#x27;s Beacon Theatre each spring.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Formed:</strong> 1969 in Jacksonville, Florida</li>
+<li><strong>Original Members:</strong> Duane Allman, Gregg Allman, Duane Allman, Dickey Betts, Berry Oakley, Butch Trucks, Jai Johanny &quot;Jaimoe&quot; Johanson</li>
+<li><strong>Halle of Fame Induction:</strong> 1995</li>
+<li><strong>Crtitically acclaimed live album:</strong> At Fillmore East (1971)</li>
+<li><strong>Final Show:</strong> value: October 28, 2014</li>
+<li><strong>RIAA Awards:</strong> Seven Gold and four Platinum albums</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/The_Allman_Brothers_Band" rel="noopener">https://en.wikipedia.org/wiki/The_Allman_Brothers_Band</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/The_Allman_Brothers_Band_(album" rel="noopener">https://en.wikipedia.org/wiki/The_Allman_Brothers_Band_(album</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/The_Allman_Brothers_Band_discography" rel="noopener">https://en.wikipedia.org/wiki/The_Allman_Brothers_Band_discography</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="The Allman Brothers Band">
+        <input type="hidden" name="slug" value="the-allman-brothers-band">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — The Allman Brothers Band</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
