@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'Space Ibiza', 'kind' => 'place', 'lede' => 'place researched 2026-08-08.', 'url' => '/s/space-ibiza-20260808-a77d6c/', 'thumb' => '', 'date' => '2026-08-08', 'refs' => 0],
   ['name' => 'The Fox Theatre', 'kind' => 'organization', 'lede' => 'The Fox Theatre, often marketed as the Fabulous Fox, is a performing arts venue and former movie palace located at 660 Peachtree Street NE in Midtown Atlanta, Georgia. It serves as the centerpiece of the Fox Theatre Historic District.', 'url' => '/s/the-fox-theatre-20260808-34c3cb/', 'thumb' => '', 'date' => '2026-08-08', 'refs' => 3],
   ['name' => 'Amnesia (Ibiza)', 'kind' => 'place', 'lede' => 'Amnesia is a nightclub located on the Spanish island of Ibiza. It opened in 1976 and has become a mecca for dance music enthusiasts.', 'url' => '/s/amnesia-ibiza-20260808-aa12d5/', 'thumb' => '/s/amnesia-ibiza-20260808-aa12d5/lead.png', 'date' => '2026-08-08', 'refs' => 12],
   ['name' => 'Ministry of Sound', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-08.', 'url' => '/s/ministry-of-sound-20260808-1a31d0/', 'thumb' => '', 'date' => '2026-08-08', 'refs' => 0],
