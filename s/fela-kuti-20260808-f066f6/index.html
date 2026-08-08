@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Fela Kuti — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Fela Kuti</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1041</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="IQBC5URoF0s" type="button"><img src="https://i.ytimg.com/vi/IQBC5URoF0s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fela Kuti - Water no get enemy</span></button>
+<button class="vtile" data-yt="kr8oRpA2SpE" type="button"><img src="https://i.ytimg.com/vi/kr8oRpA2SpE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fela Kuti &amp; Africa 70 - Pansa Pansa - FULL HD (Berlin 1978)</span></button>
+<button class="vtile" data-yt="RHR0tKRxiyY" type="button"><img src="https://i.ytimg.com/vi/RHR0tKRxiyY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Water No Get Enemy</span></button>
+<button class="vtile" data-yt="i99w2T8nQB4" type="button"><img src="https://i.ytimg.com/vi/i99w2T8nQB4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fela Kuti - Teacher Don&#x27;t Teach Me Nonsense (LP)</span></button>
+<button class="vtile" data-yt="FsY--sUhPHo" type="button"><img src="https://i.ytimg.com/vi/FsY--sUhPHo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fela Kuti / Africa 70 Live in Berlin @ Berliner Jazztage 1978 Full Concert</span></button>
+<button class="vtile" data-yt="tj1wpNuQRaM" type="button"><img src="https://i.ytimg.com/vi/tj1wpNuQRaM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fela Kuti - Sorrow Tears &amp; Blood (Original Extended Version)</span></button>
+<button class="vtile" data-yt="en88_IEcQwU" type="button"><img src="https://i.ytimg.com/vi/en88_IEcQwU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fela Kuti - Open and Close (LP)</span></button>
+<button class="vtile" data-yt="nmarTM8JyeY" type="button"><img src="https://i.ytimg.com/vi/nmarTM8JyeY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Very Best of FELA KUTI (The Mix) | Water No Get Enemy, Gentleman, Zombie, Lady | DJ Fresh Oman</span></button>
+<button class="vtile" data-yt="2XtkbruUslw" type="button"><img src="https://i.ytimg.com/vi/2XtkbruUslw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fela Kuti: Music Is The Weapon | Full Music Documentary Movie</span></button>
+<button class="vtile" data-yt="Qj5x6pbJMyU" type="button"><img src="https://i.ytimg.com/vi/Qj5x6pbJMyU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fela Kuti - Zombie</span></button>
+<button class="vtile" data-yt="qk3U9Pqy9R0" type="button"><img src="https://i.ytimg.com/vi/qk3U9Pqy9R0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Zombie</span></button>
+<button class="vtile" data-yt="NQSvb86a5cY" type="button"><img src="https://i.ytimg.com/vi/NQSvb86a5cY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fela Kuti - Lady</span></button>
+<button class="vtile" data-yt="7wOSmSvSY_0" type="button"><img src="https://i.ytimg.com/vi/7wOSmSvSY_0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Finding Fela | Full Documentary Movie</span></button>
+<button class="vtile" data-yt="_xFYteVvaOU" type="button"><img src="https://i.ytimg.com/vi/_xFYteVvaOU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Documental de Fela Kuti Music is the weapon (subtitulado en español)</span></button>
+<button class="vtile" data-yt="cS_Yd_iMYWo" type="button"><img src="https://i.ytimg.com/vi/cS_Yd_iMYWo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Faces of Africa - Fela Kuti: The Father of Afrobeat, Part 1</span></button>
+<button class="vtile" data-yt="cx-FMA02Oas" type="button"><img src="https://i.ytimg.com/vi/cx-FMA02Oas/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">FELA Documentary- Internubian Videos</span></button>
+<button class="vtile" data-yt="VeQ2oMdZxXQ" type="button"><img src="https://i.ytimg.com/vi/VeQ2oMdZxXQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Finding Fela! Official Trailer 1 (2014) - Documentary HD</span></button>
+<button class="vtile" data-yt="iqDnRq68a4s" type="button"><img src="https://i.ytimg.com/vi/iqDnRq68a4s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fela Kuti: Musician and Activist who caused &quot;Trouble&quot; in Nigeria</span></button>
+<button class="vtile" data-yt="-z0LKxeG4BI" type="button"><img src="https://i.ytimg.com/vi/-z0LKxeG4BI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">FELA ANIKULAPO KUTI: Family Background &amp; Early Childhood. (documentary)</span></button>
+<button class="vtile" data-yt="1H6DH0okUdk" type="button"><img src="https://i.ytimg.com/vi/1H6DH0okUdk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fela Ransome-Kuti OneRadio Documentary Pt. 1</span></button>
+<button class="vtile" data-yt="5YbEX4vQe4I" type="button"><img src="https://i.ytimg.com/vi/5YbEX4vQe4I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">💥 Finding Fela - Documentary [US / LQ / 2014]</span></button>
+<button class="vtile" data-yt="E4Jnl4jERqE" type="button"><img src="https://i.ytimg.com/vi/E4Jnl4jERqE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sir Paul McCartney - Thoughts On Fela</span></button>
+<button class="vtile" data-yt="b1zSoR4SI5g" type="button"><img src="https://i.ytimg.com/vi/b1zSoR4SI5g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Finding Fela - Official Trailer</span></button>
+<button class="vtile" data-yt="V70SU9Xds2I" type="button"><img src="https://i.ytimg.com/vi/V70SU9Xds2I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fela and his 27 wives documentary</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Fela Kuti was a Nigerian musician and political activist who is regarded as the principal innovator of Afrobeat. This music genre combines West African music with American funk and jazz. He was described by AllMusic as a &quot;musical and sociopolitical voice&quot; of international signifi</p>
+<p>Fela Kuti was a Nigerian musician and political activist who is regarded as the principal innovator of Afrobeat. This music genre combines West African music with American funk and jazz. He was described by AllMusic as a &quot;musical and sociopolitical voice&quot; of international significance.</p>
+<h3>early life and education</h3>
+<p>Fela Kuti was born Olufela Olusegun Oludotun Ransome-Kuti on 15 October 1938 in Abeokuta, Nigeria, into an upper-middle-class family. His mother, Funmilayo Ransome-Kuti, was an anti-colonial feminist and his father, Israel Oludotun Ransome-Kuti, was an Anglican minister and school principal. Kuti attended Abeokuta Grammar School before being invited to London in 1958 by his brother Beko to study music at the Trinity College of Music, where he preferred the trumpet. In London, he formed the band Koola Lobitos, which played a fusion of jazz and highlife.</p>
+<h3>musical evolution and afrobeat</h3>
+<p>Kuti developed a style he called Afrobeat, which combined traditional Yoruba music, Apala, funk, jazz, highlife, salsa, and calypso. After returning to Nigeria in 1963, he re-formed Koola Lobitos and trained as a radio producer for the Nigerian Broadcasting Corporation. He also played with Victor Olaiya and his All-Stars. Later, in 1969, he took his band, then renamed Nigeria 70, Nigeria 70 to the United States. A ten-month stay in Los Angeles where he discovered the Black Power movement through Sandra Smith influenced his political views and music. Following his return to return to Nigeria, the group was renamed Africa &#x27;70. As lyrical themes shifted from love to social issues, his music became popular among Africans but unpopular with the government.</p>
+<h3>political activism and conflict</h3>
+<p>In 1970, Kuti founded the Kalakuta Republic commune, which he declared independent from the Nigerian state. He also established a nightclub called the Afrika Shrine (originally the Afro-Spot), where he performed regularly. He changed his name to Anikulapo, meaning &quot;He who carries death in his pouch,&quot; and dropped the surname &quot;Ransome&quot; because he considered it a slave name. To reach a wider African audience, he decided to sing in Pidgin English. In 1977, Kuti released the album Zombie, which criticized Nigerian soldiers using a zombie metaphor. This led to a military raid on the Kalakuta Republic in 1977 where 1,000 soldiers burned the commune and destroyed his studio and master tapes. During the raid, Kuti was severely beaten and his mother, Funmilayo Ransome-Kuti, was fatally injured. He responded by delivering his mother&#x27;s coffin to the residence of General Olusegun Obasanjo and writing the songs &quot;Coffin for Head of State&quot; and &quot;Unknown Soldier.&quot;</p>
+<h3>later years and legacy</h3>
+<p>// a bit more on later years: he was jailed by the government of Muhammadu Buhari in 1984, but released after 20 months. He continued to record and perform through the 1980s and 1990s. Since his death in 1997, reissues and compilations of his music have been overseen by his son, Femi Kuti. In 2026, he was posthumously inducted into the Rock and Roll Hall of Fame in the early/musical influence category.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Birth Date:</strong> 15 October 1938</li>
+<li><strong>Full Name:</strong> Olufela Olusegun Oludotun Ransome-Kuti</li>
+<li><strong>Genre:</strong> Afrobeat</li>
+<li><strong>Death Date:</strong> 2 August 1997</li>
+<li><strong>Instruments:</strong> Trumpet</li>
+<li><strong>Nationality:</strong> Nigerian</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Fela_Kuti" rel="noopener">https://en.wikipedia.org/wiki/Fela_Kuti</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Fela_Kuti_discography" rel="noopener">https://en.wikipedia.org/wiki/Fela_Kuti_discography</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Funmilayo_Ransome-Kuti" rel="noopener">https://en.wikipedia.org/wiki/Funmilayo_Ransome-Kuti</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Fela Kuti">
+        <input type="hidden" name="slug" value="fela-kuti">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Fela Kuti</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
