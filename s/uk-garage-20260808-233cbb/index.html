@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>UK garage — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">concept</div>
+      <h1>UK garage</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1091</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="U8YCbEcmlfM" type="button"><img src="https://i.ytimg.com/vi/U8YCbEcmlfM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">uk garage pop for the girlies</span></button>
+<button class="vtile" data-yt="LgdHGMZHaRg" type="button"><img src="https://i.ytimg.com/vi/LgdHGMZHaRg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">UK Garage Classics</span></button>
+<button class="vtile" data-yt="VL2QPaHbisY" type="button"><img src="https://i.ytimg.com/vi/VL2QPaHbisY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">UK Garage Mix / Best Of Oldschool Garage UKG (by @DJDAYDAY_)</span></button>
+<button class="vtile" data-yt="0H5n2btXCaQ" type="button"><img src="https://i.ytimg.com/vi/0H5n2btXCaQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">lactose-free but still creamy uk garage/2-step mix</span></button>
+<button class="vtile" data-yt="VRZRrV2l87I" type="button"><img src="https://i.ytimg.com/vi/VRZRrV2l87I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">UK GARAGE MIX For People Who Commit Wicked Deeds</span></button>
+<button class="vtile" data-yt="uduNyEbTpv4" type="button"><img src="https://i.ytimg.com/vi/uduNyEbTpv4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Energetic Comfy UK Garage Mix by Opi</span></button>
+<button class="vtile" data-yt="Vril8WevRBI" type="button"><img src="https://i.ytimg.com/vi/Vril8WevRBI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Interplanetary Criminal UK Garage Set @ Snowbombing 2023</span></button>
+<button class="vtile" data-yt="VlbbYPC1oDs" type="button"><img src="https://i.ytimg.com/vi/VlbbYPC1oDs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Spooky // 90-min Vinyl Mix ~ UK Garage</span></button>
+<button class="vtile" data-yt="KZ3nZlcSjYc" type="button"><img src="https://i.ytimg.com/vi/KZ3nZlcSjYc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">UK Garage &amp; House Classics Mix - 1997 - Part 1 - Mixed by Chris Renegade</span></button>
+<button class="vtile" data-yt="sLcvUGn_4VM" type="button"><img src="https://i.ytimg.com/vi/sLcvUGn_4VM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sammy Virji&#x27;s Energetic UKG &amp; Bassline Set From DJ Mag HQ</span></button>
+<button class="vtile" data-yt="bADpu1Ql630" type="button"><img src="https://i.ytimg.com/vi/bADpu1Ql630/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">uk garage mix</span></button>
+<button class="vtile" data-yt="90suQs2Z2k0" type="button"><img src="https://i.ytimg.com/vi/90suQs2Z2k0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Oldskool Garage Mix UKG</span></button>
+<button class="vtile" data-yt="JAvqjkg5SA4" type="button"><img src="https://i.ytimg.com/vi/JAvqjkg5SA4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">History of the uk garage music scene in London rewind4ever</span></button>
+<button class="vtile" data-yt="yczsC9M5C5w" type="button"><img src="https://i.ytimg.com/vi/yczsC9M5C5w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sun, Sea and UKG | An Original Boiler Room Film</span></button>
+<button class="vtile" data-yt="QqK2l1lOYL0" type="button"><img src="https://i.ytimg.com/vi/QqK2l1lOYL0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">4.) That UK Sound - UK Garage &amp; Bassline</span></button>
+<button class="vtile" data-yt="K89qMKNyxQM" type="button"><img src="https://i.ytimg.com/vi/K89qMKNyxQM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Style Guide: UK Garage | Part 1 - A History of UK Garage with MJ Cole</span></button>
+<button class="vtile" data-yt="CRPuD_F-0Jk" type="button"><img src="https://i.ytimg.com/vi/CRPuD_F-0Jk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How did UK garage become dubstep? | Resident Advisor</span></button>
+<button class="vtile" data-yt="px7F3I8Z6Fk" type="button"><img src="https://i.ytimg.com/vi/px7F3I8Z6Fk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">A Short History of UKG | Boiler Room</span></button>
+<button class="vtile" data-yt="G3IXrTh1X0U" type="button"><img src="https://i.ytimg.com/vi/G3IXrTh1X0U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">MEGAMAN Dark Side of UK GARAGE! Dizzee Rascal BEEF, Ashley Walters Arrest &amp; MEGA Not Guilty!</span></button>
+<button class="vtile" data-yt="2cyNn_MW81k" type="button"><img src="https://i.ytimg.com/vi/2cyNn_MW81k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Wot Do U Call It Grime Documentary</span></button>
+<button class="vtile" data-yt="SKZ8Yr4VF2s" type="button"><img src="https://i.ytimg.com/vi/SKZ8Yr4VF2s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The UK Garage Phenomenon: The Story of Sammy Virji</span></button>
+<button class="vtile" data-yt="6v5FPyYUEGg" type="button"><img src="https://i.ytimg.com/vi/6v5FPyYUEGg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">8 Bar: The Evolution Of Grime | FULL MOVIE | Skepta, Dizzee Rascal, Kano | UK Music Documentary</span></button>
+<button class="vtile" data-yt="PQBl15IO_cQ" type="button"><img src="https://i.ytimg.com/vi/PQBl15IO_cQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">25 YEARS OF UK GARAGE Official Trailer (2022) Documentary</span></button>
+<button class="vtile" data-yt="SKtWUgKSbqQ" type="button"><img src="https://i.ytimg.com/vi/SKtWUgKSbqQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">That UK Sound Pirates, MCs &amp; DnB Documentary</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">UK garage (UKG) is a genre of electronic music that originated in England during the early to mid-1990s. It is characterized by syncopated hi-hats, cymbals, and snares with shuffled rhythms and percussive rhythms. The genre typically features a tempo around 130 BPM and often uses</p>
+<p>UK garage (UKG) is a genre of electronic music that originated in England during the early to mid-1990s. It is characterized by syncopated hi-hats, cymbals, and snares with shuffled rhythms and percussive rhythms. The genre typically features a tempo around 130 BPM and often uses pitch-shifted or time-stretched vocal samples.</p>
+<h3>origins and influences</h3>
+<p>UK garage emerged in London during the early 1990s from a blend of New York garage house, R&amp;B, Jamaican ragga and dancehall music, and jungle. It was influenced by rave culture, gospel, Baptist churches, the Black diaspora, and the pirate radio scene. According to MJ Cole, London&#x27;s multicultural nature as a &#x27;melting pot of young people&#x27; reflected in the music. In the UK, garage was initially played in second rooms at jungle events, providing a more soulful and sensual sound at 130bpm compared to the same-time popular 170bpm jungle basslines. This led to the creation of the &#x27;Sunday Scene,&#x27; as promoters could only hire venues on Sunday evenings because Friday and Saturday nights were reserved for faster, more popular jungle and drum and bass events.</p>
+<h3>evolution and subgenres</h3>
+<p>In 1994, DJ EZ started playing American DJ Todd Edwards&#x27; garage house tracks at a speedier 130bpm to match the tempo of UK hardcore and jungle music, which raised the visibility of garage house and created what became known as speed garage. Speed garage was characterized by reverse-warped basslines, rolling snares, and a sped-up house-style beat. By 1997, Armand van Helden&#x27;s remix of &#x27;Spin Spin Sugar&#x27; helped popularize the genre into the mainstream. As British producers began creating original tracks incorporating rave music and elements of Black British and Caribbean music, they called their work &#x27;UK garage&#x27;. The sound evolved further into 2-step garage, which added contemporary R&amp;B-styled vocals and more shuffled beats, and most radically changed by removing the second and fourth bass kick from each bar. 2-step garage became a mainstream success in 1999 with platinum status anthems like &#x27;Sweet Like Chocolate&#x27; by Shanks &amp; Bigfoot and &#x27;Re-Rewind&#x27; by Artful Dodger.</p>
+<h3>trajectory and legacy</h3>
+<p>The genre experienced a decline in the mid-2000s, during which it was largely subsumed into other styles of music production such as dubstep, grime, and bassline. This period also saw the birth of closely related UK funky. The 2010s witnessed a resurgence of the genre, and by the early 2020s, a revival known as &#x27;new UK garage&#x27; or &#x27;NUKG&#x27;.</p>
+<h3>key figures and venues</h3>
+<p>Early promoters of the sound include DJ EZ, Tuff Jam and Dreem Teem. Pirate radio stations such as Freek FM, Magic FM, Upfront FM and London Underground were influential in the promoter&#x27;s role. Pirate radio stations like Ice FM, Rinse FM, and Flex FM and Déjà Vu also provided continued support. Clubs such as Fabric, Ministry of Sound, The Colosseum, Scala and The Gass Club became associated with garage. Additionally, venues like Heaven in Charing Cross and the Frog &amp; Nightgown were early sites for the the same scene.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Origin:</strong> London, England</li>
+<li><strong>Typical Tempo:</strong> Around 130 BPM</li>
+<li><strong>Crossover Subgenres:</strong> Speed garage and 2-step</li>
+<li><strong>label: Mainstream Successes:</strong> Tracks like &#x27;Sweet Like Chocolate&#x27; and &#x27;Re-Rewind&#x27; reached platinum status</li>
+<li><strong>Influences:</strong> Garage house, jungle, Jamaican soundsystem, ragga, ragga, dancehall, gospel music, R&amp;B, and rave culture</li>
+<li><strong>label: Related Genres:</strong> Bassline, grime, dubstep, and UK funky</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Garage" rel="noopener">https://en.wikipedia.org/wiki/Garage</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/List_of_UK_garage_songs" rel="noopener">https://en.wikipedia.org/wiki/List_of_UK_garage_songs</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/UK_garage" rel="noopener">https://en.wikipedia.org/wiki/UK_garage</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="UK garage">
+        <input type="hidden" name="slug" value="uk-garage">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — UK garage</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
