@@ -1,4 +1,5 @@
 <?php return [
+  ['name' => 'Paradise Garage', 'kind' => 'place', 'lede' => 'place researched 2026-08-08.', 'url' => '/s/paradise-garage-20260808-b1912a/', 'thumb' => '/s/paradise-garage-20260808-b1912a/lead.jpg', 'date' => '2026-08-08', 'refs' => 0],
   ['name' => 'The Warehouse (music venue)', 'kind' => 'place', 'lede' => 'place researched 2026-08-08.', 'url' => '/s/the-warehouse-music-venue-20260808-2d417e/', 'thumb' => '', 'date' => '2026-08-08', 'refs' => 0],
   ['name' => '9:30 Club', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-08.', 'url' => '/s/9-30-club-20260808-2312b4/', 'thumb' => '/s/9-30-club-20260808-2312b4/lead.jpg', 'date' => '2026-08-08', 'refs' => 0],
   ['name' => 'Whisky a Go Go', 'kind' => 'organization', 'lede' => 'organization researched 2026-08-08.', 'url' => '/s/whisky-a-go-go-20260808-33c5b8/', 'thumb' => '/s/whisky-a-go-go-20260808-33c5b8/lead.jpg', 'date' => '2026-08-08', 'refs' => 0],
