@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Grand Ole Opry House — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">place</div>
+      <h1>Grand Ole Opry House</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">12</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">978</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="3tds4SaMaYw" type="button"><img src="https://i.ytimg.com/vi/3tds4SaMaYw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Scene Nashville: Grand Ole Opry House</span></button>
+<button class="vtile" data-yt="IlsiamL_0O4" type="button"><img src="https://i.ytimg.com/vi/IlsiamL_0O4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">&quot;Will The Circle Be Unbroken&quot; | OPRY 100: A Live Celebration</span></button>
+<button class="vtile" data-yt="obtX1PkC49c" type="button"><img src="https://i.ytimg.com/vi/obtX1PkC49c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Eric Church - Cause My Dad Did (live)</span></button>
+<button class="vtile" data-yt="Kyv5fXTvI4E" type="button"><img src="https://i.ytimg.com/vi/Kyv5fXTvI4E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ella Langley - Choosin&#x27; Texas (Grand Ole Opry)</span></button>
+<button class="vtile" data-yt="zaSzpWCIFTQ" type="button"><img src="https://i.ytimg.com/vi/zaSzpWCIFTQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Country&#x27;s Family Reunion: Salute to the Opry - Episode 1</span></button>
+<button class="vtile" data-yt="GjrZrvr0Elk" type="button"><img src="https://i.ytimg.com/vi/GjrZrvr0Elk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Grand Ole Opry Documentary</span></button>
+<button class="vtile" data-yt="SsEHP_2mWlY" type="button"><img src="https://i.ytimg.com/vi/SsEHP_2mWlY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Brothers of the Heart - Gentle On My Mind (Live At Grand Ole Opry, Nashville, TN, 2022)</span></button>
+<button class="vtile" data-yt="p6b2pn95i3A" type="button"><img src="https://i.ytimg.com/vi/p6b2pn95i3A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Blake Whiten - Rollin&#x27; Stone (Live at the Grand Ole Opry)</span></button>
+<button class="vtile" data-yt="6uTp9CeDXBk" type="button"><img src="https://i.ytimg.com/vi/6uTp9CeDXBk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tophouse Grand Ole Opry Debut - I Don&#x27;t Wanna Move On</span></button>
+<button class="vtile" data-yt="nCcClto4Ta4" type="button"><img src="https://i.ytimg.com/vi/nCcClto4Ta4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Grand Ole Opry Tour vs the Ryman</span></button>
+<button class="vtile" data-yt="Z4QMd0oEdnI" type="button"><img src="https://i.ytimg.com/vi/Z4QMd0oEdnI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">William Beckmann - &quot;Volver, Volver&quot; (LIVE at The Grand Ole Opry)</span></button>
+<button class="vtile" data-yt="2S_6trYNs8s" type="button"><img src="https://i.ytimg.com/vi/2S_6trYNs8s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Grand Ole Opry Tour</span></button>
+<button class="vtile" data-yt="_XT5RmCc-9o" type="button"><img src="https://i.ytimg.com/vi/_XT5RmCc-9o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Grand Ole Opry Documentary Classic A&amp;E VHS Rip Upscaled</span></button>
+<button class="vtile" data-yt="EmS0rDzI9uo" type="button"><img src="https://i.ytimg.com/vi/EmS0rDzI9uo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Grand Ole Opry: 100 Years of Country Music&#x27;s Heartbeat | Full Documentary</span></button>
+<button class="vtile" data-yt="CXxmEyyh8YA" type="button"><img src="https://i.ytimg.com/vi/CXxmEyyh8YA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Nashville Story (1971) — Rare Country Music Film | Dolly Parton, Roy Acuff &amp; More</span></button>
+<button class="vtile" data-yt="PPulhzzmaG4" type="button"><img src="https://i.ytimg.com/vi/PPulhzzmaG4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Grand Ole Opry (1940)</span></button>
+<button class="vtile" data-yt="3ikjDuwvIHg" type="button"><img src="https://i.ytimg.com/vi/3ikjDuwvIHg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">TNN Yesterday &amp; Today - History Of The Grand Ole Opry Part I &amp; II (1997)</span></button>
+<button class="vtile" data-yt="c1vwTB_xpDk" type="button"><img src="https://i.ytimg.com/vi/c1vwTB_xpDk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">A Behind-The-Scenes Look into Steve Earle’s Grand Ole Opry Induction</span></button>
+<button class="vtile" data-yt="TQpsYHViuyE" type="button"><img src="https://i.ytimg.com/vi/TQpsYHViuyE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Grand Ole Opry 60th Anniversary 1985</span></button>
+<button class="vtile" data-yt="rkvoTAWomwI" type="button"><img src="https://i.ytimg.com/vi/rkvoTAWomwI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Reba McEntire Exposes the 5 Opry Legends She&#x27;ll Never Forgive</span></button>
+<button class="vtile" data-yt="TGvvmaPKjRw" type="button"><img src="https://i.ytimg.com/vi/TGvvmaPKjRw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Tragic Story of Lew Childre: The Grand Ole Opry Comedian Time Forgot)</span></button>
+<button class="vtile" data-yt="QAJNjFPcvbQ" type="button"><img src="https://i.ytimg.com/vi/QAJNjFPcvbQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Trailer - A Grand Ole Opry Christmas: Extended Cut | Sign up for Hallmark+ on YouTube!</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The Grand Ole Opry House is the venue where the Grand Ole Opry radio broadcast has been based since 1974. It is located east of downtown Nashville, Tennessee, and serves as the home for the longest-running radio broadcast in U.S. history.</p>
+<p>The Grand Ole Opry House is the venue where the Grand Ole Opry radio broadcast has been based since 1974. It is located east of downtown Nashville, Tennessee, and serves as the home for the longest-running radio broadcast in U.S. history.</p>
+<h3>overview</h3>
+<p>The Grand Ole Opry House hosts a regular live country-music radio broadcast that occurs between two and five nights per week. The program showcases a mix of contemporary chart-toppers, famous singers, and comedic performances or skits, performing genres such as gospel, Americana, folk, Bluegrass, and country music. It attracts millions of internet and radio listeners and hundreds of thousands of visitors from around the world.</p>
+<h3>venue history</h3>
+<p>The Opry has moved through several venues before settling in its current home. In October 1934, it moved to the Hillsboro Theatre (now the Belcourt), the Dixie Tabernacle in East Nashville on June 13, 1936, and then to the War Memorial Auditorium. In June 1943, it moved to the Ryman Auditorium. Since 1974, the show has been broadcast from the Grand Ole Opry House, though it maintains winter residencies at the Ryman Auditorium (from 1999 to 2020 and again starting in 2023).</p>
+<h3>membership</h3>
+<p>Membership in the Grand Ole Opry is considered one of country music&#x27;s crowning achievements. Just over 225 acts have been members throughout its history, with approximately 75 members currently active as of 2024. The Grand Ole Opry House maintains a member gallery backstage featuring an engraved brass nameplate for every act that has ever been a member.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Location:</strong> East of downtown Nashville, Tennessee</li>
+<li><strong>//s:</strong> 1974</li>
+<li><strong>Current Ownership:</strong> Opry Entertainment (a joint venture between Atairos, NBCUniversal and Ryman Hospitality Properties)</li>
+<li><strong>Broadcast Station:</strong> WSM</li>
+<li><strong>Longest-serving active member:</strong> Bill Anderson</li>
+<li><strong>Current members (2024):</strong> About 75 acts</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Grand_Ole_Opry" rel="noopener">https://en.wikipedia.org/wiki/Grand_Ole_Opry</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/List_of_Grand_Ole_Opry_members" rel="noopener">https://en.wikipedia.org/wiki/List_of_Grand_Ole_Opry_members</a></li>
+          <li><a href="https://www.setlist.fm/setlist/dasha/2026/grand-ole-opry-house-nashville-tn-5370bb91.html" rel="noopener">https://www.setlist.fm/setlist/dasha/2026/grand-ole-opry-house-nashville-tn-5370bb91.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/emily-ann-roberts/2026/grand-ole-opry-house-nashville-tn-370a5d3.html" rel="noopener">https://www.setlist.fm/setlist/emily-ann-roberts/2026/grand-ole-opry-house-nashville-tn-370a5d3.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/julia-cole/2026/grand-ole-opry-house-nashville-tn-6b70aeca.html" rel="noopener">https://www.setlist.fm/setlist/julia-cole/2026/grand-ole-opry-house-nashville-tn-6b70aeca.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/orville-peck/2026/grand-ole-opry-house-nashville-tn-6370b21f.html" rel="noopener">https://www.setlist.fm/setlist/orville-peck/2026/grand-ole-opry-house-nashville-tn-6370b21f.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/switchfoot/2026/grand-ole-opry-house-nashville-tn-33709c1d.html" rel="noopener">https://www.setlist.fm/setlist/switchfoot/2026/grand-ole-opry-house-nashville-tn-33709c1d.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/the-oak-ridge-boys/2026/grand-ole-opry-house-nashville-tn-4b722ff2.html" rel="noopener">https://www.setlist.fm/setlist/the-oak-ridge-boys/2026/grand-ole-opry-house-nashville-tn-4b722ff2.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/the-oak-ridge-boys/2026/grand-ole-opry-house-nashville-tn-4b73e79a.html" rel="noopener">https://www.setlist.fm/setlist/the-oak-ridge-boys/2026/grand-ole-opry-house-nashville-tn-4b73e79a.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/the-oak-ridge-boys/2026/grand-ole-opry-house-nashville-tn-5b73e7a4.html" rel="noopener">https://www.setlist.fm/setlist/the-oak-ridge-boys/2026/grand-ole-opry-house-nashville-tn-5b73e7a4.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/vince-gill/2026/grand-ole-opry-house-nashville-tn-3b707460.html" rel="noopener">https://www.setlist.fm/setlist/vince-gill/2026/grand-ole-opry-house-nashville-tn-3b707460.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/wyatt-flores/2026/grand-ole-opry-house-nashville-tn-6b70663a.html" rel="noopener">https://www.setlist.fm/setlist/wyatt-flores/2026/grand-ole-opry-house-nashville-tn-6b70663a.html</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Grand Ole Opry House">
+        <input type="hidden" name="slug" value="grand-ole-opry-house">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Grand Ole Opry House</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
