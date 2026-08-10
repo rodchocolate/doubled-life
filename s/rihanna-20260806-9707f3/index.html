@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Rihanna — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Rihanna</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-06</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">876</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="wfN4PVaOU5Q" type="button"><img src="https://i.ytimg.com/vi/wfN4PVaOU5Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rihanna - Needed Me</span></button>
+<button class="vtile" data-yt="ehcVomMexkY" type="button"><img src="https://i.ytimg.com/vi/ehcVomMexkY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rihanna - Pour It Up (Explicit)</span></button>
+<button class="vtile" data-yt="QMP-o8WXSPM" type="button"><img src="https://i.ytimg.com/vi/QMP-o8WXSPM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Love On The Brain</span></button>
+<button class="vtile" data-yt="CvBfHwUxHIk" type="button"><img src="https://i.ytimg.com/vi/CvBfHwUxHIk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rihanna - Umbrella (Orange Version) (Official Music Video) ft. JAŸ-Z</span></button>
+<button class="vtile" data-yt="sau6npQmiiM" type="button"><img src="https://i.ytimg.com/vi/sau6npQmiiM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rihanna Greatest Hits Full Album 2026 – Best Songs of Rihanna</span></button>
+<button class="vtile" data-yt="49lY0HqqUVc" type="button"><img src="https://i.ytimg.com/vi/49lY0HqqUVc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rihanna - Kiss It Better (Explicit)</span></button>
+<button class="vtile" data-yt="J3UjJ4wKLkg" type="button"><img src="https://i.ytimg.com/vi/J3UjJ4wKLkg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rihanna - Take A Bow</span></button>
+<button class="vtile" data-yt="U0CGsw6h60k" type="button"><img src="https://i.ytimg.com/vi/U0CGsw6h60k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rihanna - What&#x27;s My Name? ft. Drake</span></button>
+<button class="vtile" data-yt="lWA2pjMjpBs" type="button"><img src="https://i.ytimg.com/vi/lWA2pjMjpBs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rihanna - Diamonds</span></button>
+<button class="vtile" data-yt="sEhy-RXkNo0" type="button"><img src="https://i.ytimg.com/vi/sEhy-RXkNo0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rihanna - Man Down</span></button>
+<button class="vtile" data-yt="HBxt_v0WF6Y" type="button"><img src="https://i.ytimg.com/vi/HBxt_v0WF6Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rihanna - Where Have You Been</span></button>
+<button class="vtile" data-yt="yd8jh9QYfEs" type="button"><img src="https://i.ytimg.com/vi/yd8jh9QYfEs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rihanna - Don&#x27;t Stop The Music</span></button>
+<button class="vtile" data-yt="bTI4lKOBD8I" type="button"><img src="https://i.ytimg.com/vi/bTI4lKOBD8I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ROBYN | Rihanna Documentary</span></button>
+<button class="vtile" data-yt="chxk-nihEUo" type="button"><img src="https://i.ytimg.com/vi/chxk-nihEUo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Insane True Story of Rihanna</span></button>
+<button class="vtile" data-yt="LbISqQMJfIY" type="button"><img src="https://i.ytimg.com/vi/LbISqQMJfIY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rihanna 777 A Tour Documentary 2013</span></button>
+<button class="vtile" data-yt="y432iwEl_Z4" type="button"><img src="https://i.ytimg.com/vi/y432iwEl_Z4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rihanna - Road To &#x27;Talk That Talk&#x27; (Part 1)</span></button>
+<button class="vtile" data-yt="Ji3dAbnR57c" type="button"><img src="https://i.ytimg.com/vi/Ji3dAbnR57c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Dark Truth Behind Rihanna&#x27;s Rise to Stardom (Documentary)</span></button>
+<button class="vtile" data-yt="micvyy7H2KI" type="button"><img src="https://i.ytimg.com/vi/micvyy7H2KI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rihanna: Pop Princess to Billionaire | A deep dive</span></button>
+<button class="vtile" data-yt="KVymJY0eee0" type="button"><img src="https://i.ytimg.com/vi/KVymJY0eee0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rihanna - Road To &#x27;Talk That Talk&#x27; (Part 2)</span></button>
+<button class="vtile" data-yt="X2yO0eKQI9E" type="button"><img src="https://i.ytimg.com/vi/X2yO0eKQI9E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rihanna Rebirth | The Untold Story</span></button>
+<button class="vtile" data-yt="liJTm1TIIHU" type="button"><img src="https://i.ytimg.com/vi/liJTm1TIIHU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">WHY RIANNA IS A PHENOMENON | Not Like Everyone Else | Documentary</span></button>
+<button class="vtile" data-yt="0slCzdxXCRA" type="button"><img src="https://i.ytimg.com/vi/0slCzdxXCRA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Making of Loud - RIHANNA</span></button>
+<button class="vtile" data-yt="rLeGYlx5pSQ" type="button"><img src="https://i.ytimg.com/vi/rLeGYlx5pSQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rihanna Takes Oprah on a Tour of Her Childhood Home | Oprah&#x27;s Next Chapter | Oprah Winfrey Network</span></button>
+<button class="vtile" data-yt="VSJlSyvJGdM" type="button"><img src="https://i.ytimg.com/vi/VSJlSyvJGdM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">RIHANNA`s TRUE STORY of RELATIONSHIPS | Private story of legend | Documentary</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Robyn Rihanna Fenty is a Barbadian singer, songwriter, businesswoman, and actress. She is an influential figure in popular culture known for her multifaceted career, artistic reinventions, and eclectic fashion style.</p>
+<p>Robyn Rihanna Fenty is a Barbadian singer, songwriter, businesswoman, and actress. She is an influential figure in popular culture known for her multifaceted career, artistic reinventions, and eclectic fashion style.</p>
+<h3>early life and education</h3>
+<p>Born on February 20, 1988, in Saint Michael, Barbados, Rihanna was the daughter of Monica, an Afro-Guyanese accountant, and Ronald Fenty, a former warehouse supervisor. She grew up in Bridgetown in a three-bedroom bungalow, where she helped her father sell clothes at a street stall. Her childhood was marked by her father&#x27;s alcoholism and crack cocaine addiction, which strained her parents&#x27; marriage and led to her witnessing physical abuse of her mother. As a child, she suffered from intense headaches that required multiple CT scans. After her parents divorced when she was 14, her health improved. She attended Charles F. Broome Memorial Primary School and Combermere School, where she showed an interest in poetry, dancing, and singing. At age 11, she became a cadet in Barbados&#x27;s Cadet Corps. She eventually dropped out of high school at age 16 to pursue music.</p>
+<h3>music career</h3>
+<p>Rihanna began her career by forming a music trio with classmates in Barbados. After auditioning for producer Evan Rogers, who was impressed by her, recorded demo tapes in Connecticut. In 2005, she signed with Syndicated Rhythm Productions and subsequently with Def Jam Recordings after an audition for Jay-Z and Antonio &quot;L.A.&quot; Reid. She debuted with the Caribbean-inspired albums Music of the Sun (2005) and A Girl Like Me (2006). Following these occurred her best-selling album Good Girl Gone Bad (2007), and its reissue, Reloaded (2008). After exploring personal themes on Rated R (2009), she released dance-pop albums Loud (2010) and Talk That Talk (2011), and the synth-pop set Unapologetic (2012). Later, departing from Def Jam in favor of Roc Nation, she released the eclectic Anti (2016). Her music has resulted in 14 number-one singles on the Billboard Hot 100 and  uma own&#x27;s total record sales exceeding 250 million records.</p>
+<h3>business ventures and accolades</h3>
+<p>Rihanna is the first female musician to achieve billionaire status. She founded the nonprofit Clara Lionel Foundation, the cosmetics brand Fenty Beauty, and the fashion brand Fenty under LVMH. In 2018, she was named an ambassador by the Government of Barbados, and in 2021, she was declared a National Hero of Barbados. She has received numerous accolades, including nine Grammy Awards, twelve Billboard Music Awards, thirteen American Music Awards, and seven MTV Video Music Awards.</p>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Loud_(Rihanna_album" rel="noopener">https://en.wikipedia.org/wiki/Loud_(Rihanna_album</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Rihanna" rel="noopener">https://en.wikipedia.org/wiki/Rihanna</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Rihanna_(disambiguation" rel="noopener">https://en.wikipedia.org/wiki/Rihanna_(disambiguation</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Rihanna">
+        <input type="hidden" name="slug" value="rihanna">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Rihanna</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

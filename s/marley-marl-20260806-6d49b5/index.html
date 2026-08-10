@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Marley Marl — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Marley Marl</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-06</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">859</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="62gl8dtMjCw" type="button"><img src="https://i.ytimg.com/vi/62gl8dtMjCw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Marley Marl - The Symphony</span></button>
+<button class="vtile" data-yt="-pmL1FMhj6g" type="button"><img src="https://i.ytimg.com/vi/-pmL1FMhj6g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rakim &amp; LL Cool J Pay Tribute To Marley Marl With &#x27;Paid In Full&#x27; &amp; &#x27;Around The Way Girl&#x27;</span></button>
+<button class="vtile" data-yt="f1MCfX7yf0Q" type="button"><img src="https://i.ytimg.com/vi/f1MCfX7yf0Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Symphony</span></button>
+<button class="vtile" data-yt="c2bhfL342nY" type="button"><img src="https://i.ytimg.com/vi/c2bhfL342nY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Marley Marl &#x27;Classic Recipes&#x27; - Recreating LL Cool J&#x27;s &#x27;Mama Said Knock You Out&#x27; w/ Ableton + APC40</span></button>
+<button class="vtile" data-yt="oisNk6e5VUs" type="button"><img src="https://i.ytimg.com/vi/oisNk6e5VUs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The History of Marley Marl and Hip-Hop Sampling Mini Documentary</span></button>
+<button class="vtile" data-yt="3QXOWVM_fbQ" type="button"><img src="https://i.ytimg.com/vi/3QXOWVM_fbQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Marley Marl ft. Juice Crew - The Symphony II</span></button>
+<button class="vtile" data-yt="XbsPTkwqWCI" type="button"><img src="https://i.ytimg.com/vi/XbsPTkwqWCI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Juice Crew - The Symphony (Official Video)</span></button>
+<button class="vtile" data-yt="6IxUXfhC8TI" type="button"><img src="https://i.ytimg.com/vi/6IxUXfhC8TI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Marley Marl &#x27;Classic Recipes&#x27; - Recreating MC Shan &#x27;The Bridge&#x27; w/ Akai MPC Renaissance</span></button>
+<button class="vtile" data-yt="HlF0WbfWzN0" type="button"><img src="https://i.ytimg.com/vi/HlF0WbfWzN0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Marley Marl Accidentally Revolutionised Sampling in Hip-Hop</span></button>
+<button class="vtile" data-yt="0z23nlZdm7Y" type="button"><img src="https://i.ytimg.com/vi/0z23nlZdm7Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Marley Marl Scratch (Original 12&quot; Version)</span></button>
+<button class="vtile" data-yt="vwYNZRecEl4" type="button"><img src="https://i.ytimg.com/vi/vwYNZRecEl4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Marley Marl feat. MC Shan - Marley Marl Scratch</span></button>
+<button class="vtile" data-yt="ZRmbCa4FLnY" type="button"><img src="https://i.ytimg.com/vi/ZRmbCa4FLnY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">KRS-One &amp; Marley Marl - Hip Hop Lives (I Come Back) [HD]</span></button>
+<button class="vtile" data-yt="CKEGiHqEyqA" type="button"><img src="https://i.ytimg.com/vi/CKEGiHqEyqA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Marley Marl on Queensbridge, Rise to Fame and Hip-Hop Evolution | Red Bull Music Academy</span></button>
+<button class="vtile" data-yt="_2O_4CeljeE" type="button"><img src="https://i.ytimg.com/vi/_2O_4CeljeE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Hip Hop - The Songs That Shook America - Marley Marl &amp; MC Shan - The Bridge (Part 5)</span></button>
+<button class="vtile" data-yt="5U14KRSztK4" type="button"><img src="https://i.ytimg.com/vi/5U14KRSztK4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Marley Marl | Drink Champs (Full Episode)</span></button>
+<button class="vtile" data-yt="znyZBdGdTh4" type="button"><img src="https://i.ytimg.com/vi/znyZBdGdTh4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Most Influential Neighborhood in Music History: Queensbridge Houses</span></button>
+<button class="vtile" data-yt="su2z_6bo6HI" type="button"><img src="https://i.ytimg.com/vi/su2z_6bo6HI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bonus Clip: Marley Marl from Revolutions On Air: The Golden Era of New York Radio 1980 - 1988</span></button>
+<button class="vtile" data-yt="6CdJlNW_ReU" type="button"><img src="https://i.ytimg.com/vi/6CdJlNW_ReU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Funkmaster Flex on Mr. Magic and Marley Marl | Songs That Shook</span></button>
+<button class="vtile" data-yt="A7_0DSsInnY" type="button"><img src="https://i.ytimg.com/vi/A7_0DSsInnY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Marley Marl Talks About His Come Up While Accepting The I Am Hip Hop Award | Hip Hop Awards &#x27;23</span></button>
+<button class="vtile" data-yt="r_ME_0dF4UY" type="button"><img src="https://i.ytimg.com/vi/r_ME_0dF4UY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Marley Marl &amp; Arthur Baker: Looking For The Perfect Beat Podcast - Episode 6</span></button>
+<button class="vtile" data-yt="u_PmXW2u3qo" type="button"><img src="https://i.ytimg.com/vi/u_PmXW2u3qo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Most Influential Neighborhood in Music History: Queensbridge Projects (Full Movie)</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Marley Marl (born Marlon Lu&#x27;Ree Williams) is an American record producer, rapper, DJ, and record label founder primarily operating in hip-hop music. He grew up in the Queensbridge housing projects of Queens, New York.</p>
+<p>Marley Marl (born Marlon Lu&#x27;Ree Williams) is an American record producer, rapper, DJ, and record label founder primarily operating in hip-hop music. He grew up in the Queensbridge housing projects of Queens, New York.</p>
+<h3>early career and sampling</h3>
+<p>Marley Marl&#x27;s career began with an interest in electronica and a stint as an intern at Unique Recording Studios in the early 1980s. While working there, he discovered sampling by accident during a session with artist Captain Rock. He later became the DJ for radio DJ Mr. Magic, after Mr. Magic heard his remix of Malcolm McLaren&#x27;s &quot;Roxanne&#x27;s Revenge&quot; (Buffalo Gals), and they together founded the hip-hop collective Juice Crew in 1983. In 1986, he served as an in-house producer for Cold Chillin&#x27; Records, where he earned $250,000 per year.</p>
+<h3>production style and influence</h3>
+<p>Marley Marl is credited with influencing hip-hop icons such as Pete Rock, Madlib, RZA, DJ Premier, and Biggie Smalls. Producer Madlib stated that Marley was the first producer to inspire him to make beats. He utilized the Roland TR-808 drum machine in inventive ways, often pairing 808 drum sounds with sampled drums to create a &#x27;gritty&#x27; feel with a heavy bottom and warm feel. On MC Shan&#x27;s &quot;The Bridge&quot;, he used the 808 pulse to trigger different samplers.</p>
+<h3>juice crew and cold chillin&#x27; records</h3>
+<p>Marl Marl&#x27;s big break came in 1984 with Roxanne Shante&#x27;s hit &quot;Roxanne&#x27;s Revenge&quot;. He produced entire albums for several Juice Crew members, including Big Daddy Kane&#x27;s Long Live The Kane (1988), Biz Markie&#x27;s Goin&#x27; Off (1988), and MC Shan&#x27;s Down By Law (1987). In 1988, he released the posse cut &quot;The Symphony&quot;, which used a Hal Jackson record from the WBLS record library as a sample source.</p>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Juice_Crew" rel="noopener">https://en.wikipedia.org/wiki/Juice_Crew</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Marley_Marl" rel="noopener">https://en.wikipedia.org/wiki/Marley_Marl</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Re-Entry_(Marley_Marl_album" rel="noopener">https://en.wikipedia.org/wiki/Re-Entry_(Marley_Marl_album</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Marley Marl">
+        <input type="hidden" name="slug" value="marley-marl">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Marley Marl</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

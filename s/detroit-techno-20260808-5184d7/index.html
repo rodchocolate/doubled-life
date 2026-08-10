@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Detroit techno — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">concept</div>
+      <h1>Detroit techno</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">883</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="YQgKrc1ClAI" type="button"><img src="https://i.ytimg.com/vi/YQgKrc1ClAI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Techno was born: From Detroit to Berlin and back</span></button>
+<button class="vtile" data-yt="IibHmLuzEI0" type="button"><img src="https://i.ytimg.com/vi/IibHmLuzEI0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Detroit Techno Militia (313 The Hard Way) Boiler Room Chicago DJ Set</span></button>
+<button class="vtile" data-yt="kbxiOw6U5Xg" type="button"><img src="https://i.ytimg.com/vi/kbxiOw6U5Xg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Deep Detroit Tech House Mix in Brooklyn: Dantiez</span></button>
+<button class="vtile" data-yt="0aJ8ojuw0SI" type="button"><img src="https://i.ytimg.com/vi/0aJ8ojuw0SI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">AMW ADE 24/5 DJ Marathon 2025 by Detroit Techno Militia</span></button>
+<button class="vtile" data-yt="a2gr73FQ9-s" type="button"><img src="https://i.ytimg.com/vi/a2gr73FQ9-s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Techno City: What is Detroit Techno?</span></button>
+<button class="vtile" data-yt="ng-_g2kp9EY" type="button"><img src="https://i.ytimg.com/vi/ng-_g2kp9EY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Techno / Detroit °Vinyl Mix° Pt.II</span></button>
+<button class="vtile" data-yt="7fx0JvKeLrA" type="button"><img src="https://i.ytimg.com/vi/7fx0JvKeLrA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">From Detroit With Love: A History of Techno Music</span></button>
+<button class="vtile" data-yt="mRSATEhAZh8" type="button"><img src="https://i.ytimg.com/vi/mRSATEhAZh8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">🏭 Detroit State of Mind • Deep Mental Techno 2025 Full Mix</span></button>
+<button class="vtile" data-yt="v6O__kB8Nc8" type="button"><img src="https://i.ytimg.com/vi/v6O__kB8Nc8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Detroit Techno - The Creation of Techno Music</span></button>
+<button class="vtile" data-yt="iMeT1g6IUWA" type="button"><img src="https://i.ytimg.com/vi/iMeT1g6IUWA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Detroit Techno Vinyl Mix | [OAM] Radio invite Sol Ortega</span></button>
+<button class="vtile" data-yt="44QyisgwE4o" type="button"><img src="https://i.ytimg.com/vi/44QyisgwE4o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">90&#x27;s Detroit Techno Classics Vinyl Set</span></button>
+<button class="vtile" data-yt="mNoUeZ87P_g" type="button"><img src="https://i.ytimg.com/vi/mNoUeZ87P_g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Detroit Techno Mix | With Tracklist | Vinyl Mix</span></button>
+<button class="vtile" data-yt="5ErxKvL_zzU" type="button"><img src="https://i.ytimg.com/vi/5ErxKvL_zzU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">&quot;Somewhere in Detroit&quot;: Underground Resistance, Submerge, Techno and the Detroit Way</span></button>
+<button class="vtile" data-yt="RSX_r0u3uzE" type="button"><img src="https://i.ytimg.com/vi/RSX_r0u3uzE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Universal Techno Pt.1 - Juan Atkins &amp; Derrick May</span></button>
+<button class="vtile" data-yt="9AJgKphg5w0" type="button"><img src="https://i.ytimg.com/vi/9AJgKphg5w0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Detroit Created the World&#x27;s Loudest Music</span></button>
+<button class="vtile" data-yt="bc6474KUBV8" type="button"><img src="https://i.ytimg.com/vi/bc6474KUBV8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">RICHIE HAWTIN - Pioneers of Electronic Music (70 Min.) - SLICES Special</span></button>
+<button class="vtile" data-yt="l3gDvo0rxPM" type="button"><img src="https://i.ytimg.com/vi/l3gDvo0rxPM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">they shaped Detroit Techno from the abyss...</span></button>
+<button class="vtile" data-yt="Br1T-xhMzd0" type="button"><img src="https://i.ytimg.com/vi/Br1T-xhMzd0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Techno Became Big | DW Documentary German</span></button>
+<button class="vtile" data-yt="SYSagw7v4dU" type="button"><img src="https://i.ytimg.com/vi/SYSagw7v4dU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Detroit The Blueprint Of Techno</span></button>
+<button class="vtile" data-yt="rjqIn2iVT-w" type="button"><img src="https://i.ytimg.com/vi/rjqIn2iVT-w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Detroit Techno Documentary</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Detroit techno is a genre of electronic music that originated in Detroit, Michigan. It resulted from the melding of African American styles such as funk, electro, and house with synth-pop by artists like Kraftwerk, Giorgio Moroder, and Yellow Magic Orchestra.</p>
+<p>Detroit techno is a genre of electronic music that originated in Detroit, Michigan. It resulted from the melding of African American styles such as funk, electro, and house with synth-pop by artists like Kraftwerk, Giorgio Moroder, and Yellow Magic Orchestra.</p>
+<h3>origins and influences</h3>
+<p>Detroit techno was influenced by the influence of futuristic and science-fiction themes relevant to contemporary American society, including Alvin Toffler&#x27;s book The Third Wave. Musical influences included European synthesizer music, which Derrick May identified as &#x27;classy and clean&#x27; and compared to outer space. Juan Atkins acknowledged early enthusiasm for Giorgio Moroder and Kraftwerk, while Derrick May also cited Yellow Magic Orchestra and Ultravox as influences. Kevin Saunderson noted he was more inspired by the idea of making music with electronic equipment. These artists used science fiction imagery to articulate visions of a transformed society.</p>
+<h3>first wave artists</h3>
+<p>The first wave of Detroit techno is viewed as consisting of musicians such as Eddie Fowlkes, Blake Baxter, James Pennington, and Juan Atkins, Derrick May, and Kevin Saunderson, who are collectively known as The Belleville Three. Belleville Three members Juan Atkins and Derrick May were influenced by the professores own album E=MC2 by Giorgio Moroder.</p>
+<h3>development of the local scene</h3>
+<p>Budding musicians, aspiring DJs, and &#x27;mix&#x27; tape traders like Atkins, Saunderson, May, and Fowlkes shared common interests. They found inspiration via the Midnight Funk Association, a late-night radio program hosted by DJ Charles &quot;The Electrifying Mojo&quot; Johnson from 1977 through the mid-1980s. This show featured electronic music by artists such as Tangerine Dream, Kraftwerk, Yellow Magic Orchestra and Giorgio Moroder, alongside new wave music by bands like the B-52&#x27;s and Devo, and funk sounds of acts like Parliament Funkadelic. In the late 1970s and early 1980s, the local dance music scene was nurtured in high school clubs such as Snobs, Gables, Rafael, Ciabattino, Charivari and Brats. The form was also developed in vacant warehouses, offices, YMCA auditoriums, and local church activity centers.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Origin City:</strong> Detroit, Michigan</li>
+<li><strong>First Wave Artists:</strong> The Belleville Three (Juan Atkins, Derrick May, Kevin Saunderson)</li>
+<li><strong>label: Influence of Radio:</strong> Midnight Funk Association hosted by DJ Charles &quot;The Electrifying Mojo&quot; Johnson</li>
+<li><strong>label: Science Fiction Themes:</strong> value: Futuristic and science-fiction themes relevant to contemporary American society</li>
+<li><strong>label: Key Influences:</strong> Kraftwerk, Giorgio Moroder, Yellow Magic OneDrive Orchestra</li>
+<li><strong>label: Terminology:</strong> Associated with Detroit EDM produced in 1988 following the UK release of Techno! The New Dance Sound of Detroit</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Detroit" rel="noopener">https://en.wikipedia.org/wiki/Detroit</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Music_of_Detroit" rel="noopener">https://en.wikipedia.org/wiki/Music_of_Detroit</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Techno" rel="noopener">https://en.wikipedia.org/wiki/Techno</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Detroit techno">
+        <input type="hidden" name="slug" value="detroit-techno">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Detroit techno</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

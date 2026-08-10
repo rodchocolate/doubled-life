@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Cream (Club/Brand) — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>Cream (Club/Brand)</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-07</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">744</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="BUlyWK2Dxnw" type="button"><img src="https://i.ytimg.com/vi/BUlyWK2Dxnw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What Happened To Billionaire Boys Club Icecream : The Rise And Fall Of A Streetwear Brand</span></button>
+<button class="vtile" data-yt="jXZEY4XhkQc" type="button"><img src="https://i.ytimg.com/vi/jXZEY4XhkQc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">CREAM Solutions CREAM Club</span></button>
+<button class="vtile" data-yt="-shACMaxUb0" type="button"><img src="https://i.ytimg.com/vi/-shACMaxUb0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">New Young Pony Club - Ice Cream</span></button>
+<button class="vtile" data-yt="34TMoEPlPUw" type="button"><img src="https://i.ytimg.com/vi/34TMoEPlPUw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Chris Kent: OFFLINE - Full Stand Up Comedy Special</span></button>
+<button class="vtile" data-yt="Qn4dYuj9tzc" type="button"><img src="https://i.ytimg.com/vi/Qn4dYuj9tzc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">CREAM 25 - OUT NOW</span></button>
+<button class="vtile" data-yt="6Myc0yf6HsM" type="button"><img src="https://i.ytimg.com/vi/6Myc0yf6HsM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">C.R.E.A.M. Club Grand Opening 🎉 | YouTube Partner Celebration + Black Ops Royale Talk</span></button>
+<button class="vtile" data-yt="Z81wUUjPsqM" type="button"><img src="https://i.ytimg.com/vi/Z81wUUjPsqM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DJ Kuba &amp; Neitan - Cream (Official Music Video)</span></button>
+<button class="vtile" data-yt="z3TPIzAonO8" type="button"><img src="https://i.ytimg.com/vi/z3TPIzAonO8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">BBC ICECREAM Miami Flagship Opening -October 2022</span></button>
+<button class="vtile" data-yt="faXpagP-Yrc" type="button"><img src="https://i.ytimg.com/vi/faXpagP-Yrc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cream Classics Vol. 2 CD1 | 2004</span></button>
+<button class="vtile" data-yt="mT2X9gXoZQA" type="button"><img src="https://i.ytimg.com/vi/mT2X9gXoZQA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ice Cream Club</span></button>
+<button class="vtile" data-yt="UIeNHr64Pv4" type="button"><img src="https://i.ytimg.com/vi/UIeNHr64Pv4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Top 20 Billionaire Boys Club Ice Cream Clothes and Sneakers</span></button>
+<button class="vtile" data-yt="X7JPgdHy4ww" type="button"><img src="https://i.ytimg.com/vi/X7JPgdHy4ww/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">WE HAVE A DATE FOR ULTA&#x27;S 10X! Info &amp; My Recs!</span></button>
+<button class="vtile" data-yt="sjREhKh_tR4" type="button"><img src="https://i.ytimg.com/vi/sjREhKh_tR4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Carnival Barker&#x27;s Ice Cream - Short Documentary Film</span></button>
+<button class="vtile" data-yt="VIVSVcdl3DY" type="button"><img src="https://i.ytimg.com/vi/VIVSVcdl3DY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ice Cream Club Ep 1 Part 1 ENG DUB</span></button>
+<button class="vtile" data-yt="Q6G21f1kzqU" type="button"><img src="https://i.ytimg.com/vi/Q6G21f1kzqU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">CLUB CREAM - PROJEKT STUDENT 2013</span></button>
+<button class="vtile" data-yt="FFJo3KhcZw4" type="button"><img src="https://i.ytimg.com/vi/FFJo3KhcZw4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">American Gangster (4/11) Movie CLIP - Diluting the Brand (2007) HD</span></button>
+<button class="vtile" data-yt="4L72C7tViKE" type="button"><img src="https://i.ytimg.com/vi/4L72C7tViKE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ICE CREAM MAN - Official Trailer (Greenband) - Directed by Eli Roth | STUDIOCANAL</span></button>
+<button class="vtile" data-yt="C4S2eEv3bak" type="button"><img src="https://i.ytimg.com/vi/C4S2eEv3bak/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Hell&#x27;s Angels Call out Fake MC Patch!</span></button>
+<button class="vtile" data-yt="_fFD_8dinXs" type="button"><img src="https://i.ytimg.com/vi/_fFD_8dinXs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">CREAM LUBLIN 2013 PROMO pres. HEY LADIES In Red &amp; A SKILLZ</span></button>
+<button class="vtile" data-yt="660mhJYoJ98" type="button"><img src="https://i.ytimg.com/vi/660mhJYoJ98/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ZA HAJS MATKI BALUJ - CREAM CLUB LUBLIN - 7.12.2012</span></button>
+<button class="vtile" data-yt="LdvxE9xEEvY" type="button"><img src="https://i.ytimg.com/vi/LdvxE9xEEvY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Functional Brand New Day Web Shooter</span></button>
+<button class="vtile" data-yt="GcZ4GWaUfh4" type="button"><img src="https://i.ytimg.com/vi/GcZ4GWaUfh4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Racquet Club Loves Bassetts Ice Cream</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Cream is a music promotion trio consisting of Darren Hughes, James Barton and Andy Carroll. They originally hosted a weekly house music club night in Liverpool from 1992 to 2002 at the Nation nightclub.</p>
+<p>Cream is a music promotion trio consisting of Darren Hughes, James Barton and Andy Carroll. They originally hosted a weekly house music club night in Liverpool from 1992 to 2002 at the Nation nightclub.</p>
+<h3>club operations and festivals</h3>
+<p>Cream&#x27;s home in Wolstenholme Square, Liverpool, was a venue that was demolished in 2016 as part of an urban regeneration project. The brand also hosts the dance music festival Creamfields every August in Daresbury, Cheshire. This festival has won the award for Best Dance Event at the UK Festival Awards six times and was named &#x27;Festival of the Year&#x27; by Music Week in 2010. In 2012, Live Nation acquired the Creamfields Festival Brand from Cream on a contract basis.</p>
+<h3>international presence and management</h3>
+<p>Cream has expanded its presence to Ibiza, where it hosts a club night every Thursday during the clubbing season at Amnesia. Since 2005, Amnesia has been run by Cream UK.</p>
+<h3>music releases</h3>
+<p>The brand&#x27;s label has released DJ mix albums through various labels including Deconstruction Records, Virgin/EMI, WEA, Ministry of Sound, and New State Recordings. Notable releases include Paul Oakenfold&#x27;s Goa Mix and Creamfields (2004), the latter being nominated for a Grammy Award for &#x27;Best Electronic/Dance Album&#x27; in 2005. Additionally, Cream Anthems 2001 reached number 1 in the UK Compilation Chart.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Founders:</strong> Darren Hughes, James Barton and Andy Carroll</li>
+<li><strong>Original Venue:</strong> Nation nightclub in Wolstenholme Square, Liverpool</li>
+<li><strong>Resident DJs:</strong> Steve Lawler and Yousef</li>
+<li><strong>Associated Festival:</strong> Creamfields</li>
+<li><strong>Chesire Festival Location:</strong> Daresbury, Cheshire</li>
+<li><strong> uma own label:</strong> Amnesia (Ibiza)</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Amnesia_(nightclub" rel="noopener">https://en.wikipedia.org/wiki/Amnesia_(nightclub</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Cream_(nightclub" rel="noopener">https://en.wikipedia.org/wiki/Cream_(nightclub</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Pete_Tong" rel="noopener">https://en.wikipedia.org/wiki/Pete_Tong</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Cream (Club/Brand)">
+        <input type="hidden" name="slug" value="cream-club-brand">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Cream (Club/Brand)</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

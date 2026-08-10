@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Live Nation — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>Live Nation</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-01</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">997</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="6XFA5iH_mnY" type="button"><img src="https://i.ytimg.com/vi/6XFA5iH_mnY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Building Katy Perry’s Lifetimes Tour: How Stage Design Became the Story | Stage Dive</span></button>
+<button class="vtile" data-yt="ICqAV8E4klI" type="button"><img src="https://i.ytimg.com/vi/ICqAV8E4klI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What landmark ruling means for future of Live Nation</span></button>
+<button class="vtile" data-yt="eOMnnlA0how" type="button"><img src="https://i.ytimg.com/vi/eOMnnlA0how/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Welcome to the Live Nation YouTube Channel: We Rock Concerts!</span></button>
+<button class="vtile" data-yt="_URbTPuQghI" type="button"><img src="https://i.ytimg.com/vi/_URbTPuQghI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How SHAKIRA’s Dance Captain Brings Her Vision to Life | 8 Count</span></button>
+<button class="vtile" data-yt="g5-ZMOYXF8I" type="button"><img src="https://i.ytimg.com/vi/g5-ZMOYXF8I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Live Nation illegally monopolized the market for tickets, jury finds</span></button>
+<button class="vtile" data-yt="mkbYto8t5os" type="button"><img src="https://i.ytimg.com/vi/mkbYto8t5os/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">FANDEMONIUM: What It Means to Love My Chemical Romance</span></button>
+<button class="vtile" data-yt="g-d-OccPFqM" type="button"><img src="https://i.ytimg.com/vi/g-d-OccPFqM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Live Nation settles antitrust case with Justice Department</span></button>
+<button class="vtile" data-yt="FJCKlikXF4c" type="button"><img src="https://i.ytimg.com/vi/FJCKlikXF4c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Live Nation and Ticketmaster abused monopoly power and gouged consumers, jury finds</span></button>
+<button class="vtile" data-yt="GjrFUEX5xFU" type="button"><img src="https://i.ytimg.com/vi/GjrFUEX5xFU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">BREAKING: Jury finds Live Nation liable in antitrust trial</span></button>
+<button class="vtile" data-yt="A3qb_umRCow" type="button"><img src="https://i.ytimg.com/vi/A3qb_umRCow/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Live Nation employees’ messages spark backlash after Ticketmaster settlement</span></button>
+<button class="vtile" data-yt="p0MyygwgF0Y" type="button"><img src="https://i.ytimg.com/vi/p0MyygwgF0Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Live Nation Reaches DOJ Settlement in Antitrust Case</span></button>
+<button class="vtile" data-yt="QvZ6CyWSafw" type="button"><img src="https://i.ytimg.com/vi/QvZ6CyWSafw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Live Nation Settles Antitrust Case: How It Impacts Concert Prices</span></button>
+<button class="vtile" data-yt="G0OP525STto" type="button"><img src="https://i.ytimg.com/vi/G0OP525STto/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Live Nation Is Devouring the Live Music Industry | WSJ The Economics Of</span></button>
+<button class="vtile" data-yt="V6WXz7s2adU" type="button"><img src="https://i.ytimg.com/vi/V6WXz7s2adU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Live Nation, Origin Story</span></button>
+<button class="vtile" data-yt="xjGowAPNlvc" type="button"><img src="https://i.ytimg.com/vi/xjGowAPNlvc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Live Nation &amp; Ticketmaster: The Monopoly Behind the Concert Industry</span></button>
+<button class="vtile" data-yt="RpMlFqwj8jU" type="button"><img src="https://i.ytimg.com/vi/RpMlFqwj8jU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Dark Truth About Live Nation’s Grip On The Music Industry</span></button>
+<button class="vtile" data-yt="ZJ9DWvZVDeA" type="button"><img src="https://i.ytimg.com/vi/ZJ9DWvZVDeA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Live Nation’s Rapino on Events Growth and Competition</span></button>
+<button class="vtile" data-yt="u--se25_px8" type="button"><img src="https://i.ytimg.com/vi/u--se25_px8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What Ticketmaster Doesn&#x27;t Want You To Know: Concerts Were Cheap For Decades</span></button>
+<button class="vtile" data-yt="tSKswBQLE2Q" type="button"><img src="https://i.ytimg.com/vi/tSKswBQLE2Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Live Nation&#x27;s Grip On The Music Industry Is INSANE</span></button>
+<button class="vtile" data-yt="PIA6m5_VizY" type="button"><img src="https://i.ytimg.com/vi/PIA6m5_VizY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Ticketmaster monopoly is over, now what?</span></button>
+<button class="vtile" data-yt="0IWpjiIcMb4" type="button"><img src="https://i.ytimg.com/vi/0IWpjiIcMb4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Investigating the hidden fees in your concert tickets | Four Corners</span></button>
+<button class="vtile" data-yt="3kGczCp6_vU" type="button"><img src="https://i.ytimg.com/vi/3kGczCp6_vU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Live Nation Entertainment Business Summary</span></button>
+<button class="vtile" data-yt="5dcdGoZJiF4" type="button"><img src="https://i.ytimg.com/vi/5dcdGoZJiF4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Music Monopoly: Inside Live Nation’s Concert Empire</span></button>
+<button class="vtile" data-yt="VpmWAblYrBU" type="button"><img src="https://i.ytimg.com/vi/VpmWAblYrBU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">HOME STRETCH: Matt Mathews (Episode 1)</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Live Nation Entertainment, Inc. is an American multinational entertainment company founded in 2010 following the merger of Live Nation and Ticketmaster. The company promotes and manages ticket sales for live entertainment internationally, operates entertainment venues and festiva</p>
+<p>Live Nation Entertainment, Inc. is an American multinational entertainment company founded in 2010 following the merger of Live Nation and Ticketmaster. The company promotes and manages ticket sales for live entertainment internationally, operates entertainment venues and festivals, and manages music artists&#x27; careers.</p>
+<h3>company history</h3>
+<p>Live Nation was originally established in 1996 as SFX Entertainment by Robert F. X. Sillerman to consolidate concert promoters into a national entity. It was sold to Clear Channel Communications in 2000 for $4.4 billion and operated as Clear Channel Entertainment until it was spun off as Live Nation in 2005. In February 2009, Live Nation announced a merger with the ticketing firm Ticketmaster in a $2.5 billion all-stock deal, which became Live Nation Entertainment in 2010 after receiving regulatory approval from Norway, Turkey, and the United Kingdom. The U.S. Department of Justice approved the merger pending certain conditions, including that Ticketmaster sell its self-ticketing company Paciolan and license its software to Anschutz Entertainment Group (AEG). Live Nation Entertainment was also placed under a 10-year court order prohibiting retaliation against venues using competing ticket contracts.</p>
+<h3>operations and growth</h3>
+<p>Live Nation Entertainment describes itself as the largest live entertainment company, producer of live music concerts, and leading ticketing sales and marketing company in the world. As of early 2023, it has controlling interests in 338 venues globally. The company has expanded through various acquisitions and joint ventures. In the United States, it has acquired stakes in festivals like Bonnaroo Music and Arts Festival, Voodoo Music + Arts Experience, and BottleRock Napa Valley. It also acquired a majority stake in Groot Hospitality&#x27;s nightclubs and restaurants in Miami. In Europe, it has acquired the MEO Arena in Lisbon and is set to acquire Royal Arena in Copenhagen. Additionally, the company launched Live Nation Productions, a film and television division that produced the movie A Star Is Born (2018).</p>
+<h3>legal challenges and controversies</h3>
+<p>Live Nation has faced widespread criticism over its role in the consolidation of the live events industry and allegations of anti-competitive practices. In May 2024, the U.S. Department of Justice and a coalition of states sued Live Nation and Ticketmaster for antitrust violations, alleging they illegally monopolized the live event market. While the DOJ reached a settlement in March 2026 requiring a Live Nation to create a $280m settlement fund and divest from 13 exclusive booking agreements, a federal jury in April 2026 found the company liable on the states&#x27; antitrust claims. Other controversies include a massive 1.3 TB data leak at subsidiary Ticketmaster attributed to hacker group ShinyHunters, and reports of at least 750 injuries and around 200 deaths at its events since 2006.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Founded:</strong> 2010 (as Live Nation Entertainment)</li>
+<li><strong>CEO:</strong> Michael Rapino</li>
+<li><strong>Revenue 2017:</strong> $10.3 billion</li>
+<li><strong>US DOJ Antitrust Lawsuit:</strong> Filed May 23, 2024</li>
+<li><strong>Global Venues:</strong> 338 (as of early 2023)</li>
+<li><strong>Subsidiaries:</strong> Live Nation and Ticketmaster</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Live_Nation_(events_promoter" rel="noopener">https://en.wikipedia.org/wiki/Live_Nation_(events_promoter</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Live_Nation_Entertainment" rel="noopener">https://en.wikipedia.org/wiki/Live_Nation_Entertainment</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/United_States_v._Live_Nation_Entertainment" rel="noopener">https://en.wikipedia.org/wiki/United_States_v._Live_Nation_Entertainment</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Live Nation">
+        <input type="hidden" name="slug" value="live-nation">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Live Nation</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

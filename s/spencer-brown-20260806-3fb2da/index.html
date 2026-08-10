@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Spencer Brown — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Spencer Brown</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-06</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">956</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="yJzVd0PybHQ" type="button"><img src="https://i.ytimg.com/vi/yJzVd0PybHQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Spencer Brown REVEALS the TRUTH about Joe Parker’s ban &amp; comeback!</span></button>
+<button class="vtile" data-yt="UGx9RZNxr3o" type="button"><img src="https://i.ytimg.com/vi/UGx9RZNxr3o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Spencer Brown | 5h Extended Sunset Set - SF Rooftop Fundraiser</span></button>
+<button class="vtile" data-yt="Bj4a3ZeAggo" type="button"><img src="https://i.ytimg.com/vi/Bj4a3ZeAggo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Spencer Brown | Anjunadeep Malta 2025</span></button>
+<button class="vtile" data-yt="L2dqSDkEqw0" type="button"><img src="https://i.ytimg.com/vi/L2dqSDkEqw0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Behind The Scenes Look At Spencer Brown&#x27;s American Dream Journey! | Buffalo Bills Beyond Blue &amp; Red</span></button>
+<button class="vtile" data-yt="8Mb1dsthisc" type="button"><img src="https://i.ytimg.com/vi/8Mb1dsthisc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Spencer Brown: Group Therapy 350 live from O2 Arena, Prague (Official 4K Set) #ABGT350</span></button>
+<button class="vtile" data-yt="VfaxRGkQZpg" type="button"><img src="https://i.ytimg.com/vi/VfaxRGkQZpg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">diviine mixseries 10: Spencer Brown Live @TheConcourseProject Austin, TX [2026]</span></button>
+<button class="vtile" data-yt="xUv3lmufQBA" type="button"><img src="https://i.ytimg.com/vi/xUv3lmufQBA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Spencer Brown at The Concourse Project | Full Set (23 Sep 2023)</span></button>
+<button class="vtile" data-yt="IkijrpRCZw8" type="button"><img src="https://i.ytimg.com/vi/IkijrpRCZw8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Spencer Brown | Progressive &amp; Techno | UNDERCITY | Seoul | August 15 2025</span></button>
+<button class="vtile" data-yt="fQMSWZn7B_M" type="button"><img src="https://i.ytimg.com/vi/fQMSWZn7B_M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">diviine mixseries 07: Spencer Brown Live @ Stereo Montreal [01.25.25] 03:30am - 07:30am</span></button>
+<button class="vtile" data-yt="ZandTrB1xh0" type="button"><img src="https://i.ytimg.com/vi/ZandTrB1xh0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">diviine mixseries 12: Spencer Brown Live in Buenos Aires @ La Biblioteca 2026</span></button>
+<button class="vtile" data-yt="y_NlH7UM8HY" type="button"><img src="https://i.ytimg.com/vi/y_NlH7UM8HY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">EP:09 | Spencer Brown - The Good, The Bad, and The Funny</span></button>
+<button class="vtile" data-yt="u6eWDgyqkOk" type="button"><img src="https://i.ytimg.com/vi/u6eWDgyqkOk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Josh Allen, Dawson Knox, Spencer Brown And More Face-Off On The Golf Course | Buffalo Bills</span></button>
+<button class="vtile" data-yt="fIqWqgoaYHw" type="button"><img src="https://i.ytimg.com/vi/fIqWqgoaYHw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Spencer Brown: Before The Show (Documentary)</span></button>
+<button class="vtile" data-yt="xAU6D2lk14A" type="button"><img src="https://i.ytimg.com/vi/xAU6D2lk14A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Phish Bittersweet Motel (Full Movie - 1080p)</span></button>
+<button class="vtile" data-yt="EfnENiQ9LLg" type="button"><img src="https://i.ytimg.com/vi/EfnENiQ9LLg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Long Lost Family | Former Rugby Star Spencer Brown Meets His Long Lost Sister | ITV</span></button>
+<button class="vtile" data-yt="Z_m3vdPLQ68" type="button"><img src="https://i.ytimg.com/vi/Z_m3vdPLQ68/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Andy Griffith Predicts Trump</span></button>
+<button class="vtile" data-yt="mf3RyyFRrfc" type="button"><img src="https://i.ytimg.com/vi/mf3RyyFRrfc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jimmy Butler Claps Rachel Nichols Cheeks in the Bubble #shorts</span></button>
+<button class="vtile" data-yt="krfcq5pF8u8" type="button"><img src="https://i.ytimg.com/vi/krfcq5pF8u8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">13TH | FULL FEATURE | Netflix</span></button>
+<button class="vtile" data-yt="VS6xOVGKOSg" type="button"><img src="https://i.ytimg.com/vi/VS6xOVGKOSg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Decades After Brown v. Board, Revisit ‘Separate and Unequal’ (full documentary) | FRONTLINE</span></button>
+<button class="vtile" data-yt="D3GpSBeAuu0" type="button"><img src="https://i.ytimg.com/vi/D3GpSBeAuu0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Relive the Buffalo Bills 2025 Regular Season! | Mini Movie</span></button>
+<button class="vtile" data-yt="AWclMLWpTEs" type="button"><img src="https://i.ytimg.com/vi/AWclMLWpTEs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bridesmaid Cult Documentary - SNL</span></button>
+<button class="vtile" data-yt="Sp8ClwhpcY0" type="button"><img src="https://i.ytimg.com/vi/Sp8ClwhpcY0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Exron Exclusive Interview: Spencer Brown at Seismic Dance Event</span></button>
+<button class="vtile" data-yt="f1NYx122eTc" type="button"><img src="https://i.ytimg.com/vi/f1NYx122eTc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">A Lifetime of Fiddling| A Spencer and Rains Documentary</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Spencer Brown is a name shared by several individuals across various fields including sports, music, and academia. Notable figures include an American professional football offensive tackle for the Buffalo Bills, an American electronic dance music artist and producer, and histori</p>
+<p>Spencer Brown is a name shared by several individuals across various fields including sports, music, and academia. Notable figures include an American professional football offensive tackle for the Buffalo Bills, an American electronic dance music artist and producer, and historical or academic figures such as Spencer Wharton Brown.</p>
+<h3>electronic dance music artist</h3>
+<p>Onofrio Spencer Jeffrey Bruno, professionally known as Spencer Brown, is an American EDM artist, DJ, and producer. Born in Los Gatos, CA, he began DJing at age 12 to avoid school party music selections. He graduated from Duke University&#x27;s Pratt School of Engineering with a distinction in Electrical &amp; Computer Engineering and a minor in Computer Science, writing his thesis on omnidirectional speakers. His career progressed through collaborations with artists like deadmau5, Above &amp; Beyond, and John Digweed, and he launched his own label, diviine, in 2022. He has released three continuous mix albums: &#x27;Illusion of Perfection&#x27; (2018), &#x27;Stream of Consciousness&#x27; (2020), and &#x27;Equanimity&#x27; (2023). In 2024, he began a residency at Stereo Montreal and released music on Bedrock and Global Underground.</p>
+<h3>professional football player</h3>
+<p>Spencer Brown is an American professional football offensive tackle for the Buffalo Bills of the National Football League (NFL). Born February 28, 1998, he grew up in Lenox, Iowa, and played college football for the Northern Iowa Panthers. After moving from tight end to offensive tackle during his redshirt freshman season, he was selected by the Buffalo Bills in the third round of the 2021 NFL draft with the 93rd overall pick. Following two injury-prone seasons, he started all 17 games in the 2023 season, which earned him a high play-based pay incentive. He signed a four-year contract extension with the Bills on September 6, 2024, keeping him under contract through 2028.</p>
+<h3>other notable figures</h3>
+<p>Additional individuals named Spencer Brown include an English comedian, actor and writer; a Scottish fighter; an American musician born in 1994; an American Civil War spy named Spencer Kellogg Brown (1842–1863); and an American professor and cyto-geneticist named Spencer Wharton Brown (1918–1977). There is also a G. Spencer-Brown, an English polymath and author of Laws of Form.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Full Name (Musician):</strong> Onofrio Spencer Jeffrey Bruno</li>
+<li><strong>NFL Team:</strong></li>
+<li><strong>NFL Draft Pick:</strong> 93rd overall pick, 2021 NFL draft</li>
+<li><strong>label: Musician&#x27;s Label:</strong> diviine</li>
+<li><strong>Musician&#x27;s Education:</strong> Duke University – Pratt School of Engineering</li>
+<li><strong>Football Player&#x27;s College:</strong> University of Northern Iowa</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Spencer_Brown" rel="noopener">https://en.wikipedia.org/wiki/Spencer_Brown</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Spencer_Brown_(musician" rel="noopener">https://en.wikipedia.org/wiki/Spencer_Brown_(musician</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Spencer_Brown_(offensive_tackle" rel="noopener">https://en.wikipedia.org/wiki/Spencer_Brown_(offensive_tackle</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Spencer Brown">
+        <input type="hidden" name="slug" value="spencer-brown">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Spencer Brown</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

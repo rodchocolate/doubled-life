@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Massey Hall — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">place</div>
+      <h1>Massey Hall</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">12</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1093</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="67JZWK7j7OU" type="button"><img src="https://i.ytimg.com/vi/67JZWK7j7OU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Inside Toronto&#x27;s newly renovated Massey Hall</span></button>
+<button class="vtile" data-yt="9xqEXjqrl7g" type="button"><img src="https://i.ytimg.com/vi/9xqEXjqrl7g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The importance of Massey Hall explained | If These Walls Could talk</span></button>
+<button class="vtile" data-yt="9lbsliyO7Pw" type="button"><img src="https://i.ytimg.com/vi/9lbsliyO7Pw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Live at Massey Hall: Bahamas</span></button>
+<button class="vtile" data-yt="_Tm2oFOEtV0" type="button"><img src="https://i.ytimg.com/vi/_Tm2oFOEtV0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Live at Massey Hall: Geddy Lee</span></button>
+<button class="vtile" data-yt="9H0kELSFUR4" type="button"><img src="https://i.ytimg.com/vi/9H0kELSFUR4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tears For Fears | Live At Massey Hall, Toronto, Canada | May 30, 1985 (Audio Only)</span></button>
+<button class="vtile" data-yt="7laYN7h3fK4" type="button"><img src="https://i.ytimg.com/vi/7laYN7h3fK4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Live at Massey Hall: The Glorious Sons</span></button>
+<button class="vtile" data-yt="F8zPpwfONGE" type="button"><img src="https://i.ytimg.com/vi/F8zPpwfONGE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Herbie Hancock - Toronto - Massey Hall - 26 July, 2026</span></button>
+<button class="vtile" data-yt="8tEbanzXXuw" type="button"><img src="https://i.ytimg.com/vi/8tEbanzXXuw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Live at Massey Hall: Blue Rodeo</span></button>
+<button class="vtile" data-yt="oMWJbBw73ZU" type="button"><img src="https://i.ytimg.com/vi/oMWJbBw73ZU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Live at Massey Hall: Adam Baldwin</span></button>
+<button class="vtile" data-yt="IA_xPya9FMk" type="button"><img src="https://i.ytimg.com/vi/IA_xPya9FMk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">I̲m̲m̲o̲r̲t̲a̲l̲ ̲C̲o̲n̲c̲e̲r̲t̲s̲–̲ ̲Toronto,̲ Massey Hall,̲ ̲May 15̲, 1953̲</span></button>
+<button class="vtile" data-yt="vfa6SGprbok" type="button"><img src="https://i.ytimg.com/vi/vfa6SGprbok/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Live at Massey Hall: Ocie Elliott</span></button>
+<button class="vtile" data-yt="YdVMGKOFIwY" type="button"><img src="https://i.ytimg.com/vi/YdVMGKOFIwY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Neil Young - Ohio [Live At Massey Hall 1971] (Video)</span></button>
+<button class="vtile" data-yt="uLWTYWXgj_o" type="button"><img src="https://i.ytimg.com/vi/uLWTYWXgj_o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Spirit Unforgettable - When Music, Friendship and Courage is the only Medicine Left</span></button>
+<button class="vtile" data-yt="bkhKxnd4tLM" type="button"><img src="https://i.ytimg.com/vi/bkhKxnd4tLM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Live at Massey Hall: This Is Our Life - In Conversation With The Tragically Hip</span></button>
+<button class="vtile" data-yt="36sbCC4Facs" type="button"><img src="https://i.ytimg.com/vi/36sbCC4Facs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ROYAL WOOD: THE ROAD TO MASSEY HALL (MINI DOC)</span></button>
+<button class="vtile" data-yt="DlPpfRIcKi8" type="button"><img src="https://i.ytimg.com/vi/DlPpfRIcKi8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Getting a special look inside the historic Massey Hall before the doors close | Your Morning</span></button>
+<button class="vtile" data-yt="dcipZgj4XEk" type="button"><img src="https://i.ytimg.com/vi/dcipZgj4XEk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Behind the scenes of the massive renovations at Massey Hall</span></button>
+<button class="vtile" data-yt="o8Kv2Xaxl7w" type="button"><img src="https://i.ytimg.com/vi/o8Kv2Xaxl7w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Gord Downie with Blue Rodeo and the Sadies || Lost Together</span></button>
+<button class="vtile" data-yt="HKxewqkL4Xk" type="button"><img src="https://i.ytimg.com/vi/HKxewqkL4Xk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Legendary Canadian musicians reflect on Massey Hall</span></button>
+<button class="vtile" data-yt="f7JXb4rm5mw" type="button"><img src="https://i.ytimg.com/vi/f7JXb4rm5mw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Neil Young Live 1971 - BBC &quot;In Concert&quot;</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Massey Hall is a performing arts auditorium located in Toronto, Ontario, Canada, within the Garden District. Opened in 1894, it is recognized for its outstanding acoustics and served as the long-time hall of the Toronto Symphony Orchestra and the Toronto Mendelssohn Choir.</p>
+<p>Massey Hall is a performing arts auditorium located in Toronto, Ontario, Canada, within the Garden District. Opened in 1894, it is recognized for its outstanding acoustics and served as the long-time hall of the Toronto Symphony Orchestra and the Toronto Mendelssohn Choir.</p>
+<h3>history and architecture</h3>
+<p>Massey Hall was a gift to the people of Toronto from industrialist Hart Massey, who sought to create a secular meeting place for choral music in memory of his son Charles. Designed by architect Sidney Badgley and completed in 1894 at a cost of CA$152,390.75, the building features a Palladian exterior with a neoclassical facade preferred by Massey&#x27;s daughter Lillian. The interior is Moorish Revival architecture inspired by the Alhambra Palace in Spain and Louis Sullivan&#x27;s Chicago Auditorium, featuring Moorish arches and thirty stained glass windows depicting famous composers created by the Faircloth Brothers glass firm. The foyer is finished in Art Deco style. After the 1904 Toronto Great Fire, fire escape staircases were installed along the front face of the building, which later became iconic before being removed. In 1933, the Massey Foundation undertook renovations that reduced the capacity from 3,500 to 2,765 and simplified the venue&#x27;s name from Massey Music Hall to Massey Hall.</p>
+<h3>renovations and facilities</h3>
+<p>The hall closed in July 2018 for a two-year renovation and restoration project titled &quot;Massey Hall Forever,&quot; which included an expanded stage, a new retractable seating system, and the addition of the Allied Music Centre. The Allied Music Centre is a seven-storey building containing a performance studio on the seventh floor, a smaller theatre space on the sixth floor, and a new concert space on the fourth floor (TD Music Hall). The hall re-opened in 2021 after delays caused by the COVID-19 pandemic. Current capacity for the main hall is 2,534 seated and 2,800 standing, while TD Music Hall has a capacity of 245 seated and 450 standing. In 1994, the basement was refurbished to include Centuries, a bar with a capacity of 220 people that hosts post-show parties and CD releases, featuring decor consisting of hundreds of photos and autographs of artists who have performed there.</p>
+<h3>performances and events</h3>
+<p>While primarily used for musical performances, the hall has hosted public memorials, boxing matches, speaking tours and political speeches. Notable performers include operatic singers such as Luciano Pavarotti, Maria Callas and Enrico Caruso, and classical musicians like Arturo Toscanini and Glenn Gould. Until 1984, the Toronto Symphony Orchestra and the Toronto Mendelssohn Choir were the primary performers. The hall also hosted a May 15, 1953 concert by &#x27;the Quintet&#x27; (Dizzy Gillespie, Charlie Parker, Bud Powell, Charles Mingus, and Max Roach), which was recorded as the album Jazz at Massey Hall. This recording was later inducted into the Grammy Hall of Fame in 1995.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Location:</strong> Toronto, Ontario, Canada</li>
+<li><strong>Opened:</strong> 1894</li>
+<li><strong>Cofounder/Donor:</strong> Hart Massey</li>
+<li><strong>Current Main Hall Capacity:</strong> 2,534 seated / 2,800 standing</li>
+<li><strong>Architect:</strong> value own&#x27;s Sidney Badgley</li>
+<li><strong>Cost of Construction:</strong> CA$152,390.75</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Jazz_at_Massey_Hall" rel="noopener">https://en.wikipedia.org/wiki/Jazz_at_Massey_Hall</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Massey_Hall" rel="noopener">https://en.wikipedia.org/wiki/Massey_Hall</a></li>
+          <li><a href="https://www.setlist.fm/setlist/america/2026/massey-hall-toronto-on-canada-3b754418.html" rel="noopener">https://www.setlist.fm/setlist/america/2026/massey-hall-toronto-on-canada-3b754418.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/blood-brothers/2026/massey-hall-toronto-on-canada-5b73df94.html" rel="noopener">https://www.setlist.fm/setlist/blood-brothers/2026/massey-hall-toronto-on-canada-5b73df94.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/buddy-guy/2026/massey-hall-toronto-on-canada-434b1fd3.html" rel="noopener">https://www.setlist.fm/setlist/buddy-guy/2026/massey-hall-toronto-on-canada-434b1fd3.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/herbie-hancock/2026/massey-hall-toronto-on-canada-5349a391.html" rel="noopener">https://www.setlist.fm/setlist/herbie-hancock/2026/massey-hall-toronto-on-canada-5349a391.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/josh-johnson/2026/massey-hall-toronto-on-canada-237374db.html" rel="noopener">https://www.setlist.fm/setlist/josh-johnson/2026/massey-hall-toronto-on-canada-237374db.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/josh-johnson/2026/massey-hall-toronto-on-canada-2b7374da.html" rel="noopener">https://www.setlist.fm/setlist/josh-johnson/2026/massey-hall-toronto-on-canada-2b7374da.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/josh-johnson/2026/massey-hall-toronto-on-canada-2b7374de.html" rel="noopener">https://www.setlist.fm/setlist/josh-johnson/2026/massey-hall-toronto-on-canada-2b7374de.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/josh-johnson/2026/massey-hall-toronto-on-canada-337374d9.html" rel="noopener">https://www.setlist.fm/setlist/josh-johnson/2026/massey-hall-toronto-on-canada-337374d9.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/josh-johnson/2026/massey-hall-toronto-on-canada-3b7374d8.html" rel="noopener">https://www.setlist.fm/setlist/josh-johnson/2026/massey-hall-toronto-on-canada-3b7374d8.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/mon-laferte/2026/massey-hall-toronto-on-canada-7b4966a4.html" rel="noopener">https://www.setlist.fm/setlist/mon-laferte/2026/massey-hall-toronto-on-canada-7b4966a4.html</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Massey Hall">
+        <input type="hidden" name="slug" value="massey-hall">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Massey Hall</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

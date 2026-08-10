@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Miles Davis — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Miles Davis</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">887</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="vuE4TiCmV6U" type="button"><img src="https://i.ytimg.com/vi/vuE4TiCmV6U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Miles Davis - In a silent way -1969- FULL ALBUM</span></button>
+<button class="vtile" data-yt="zqNTltOGh5c" type="button"><img src="https://i.ytimg.com/vi/zqNTltOGh5c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Miles Davis - So What (Official Video)</span></button>
+<button class="vtile" data-yt="TLDflhhdPCg" type="button"><img src="https://i.ytimg.com/vi/TLDflhhdPCg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Miles Davis - Blue In Green (Official Audio)</span></button>
+<button class="vtile" data-yt="8VE_dP90V84" type="button"><img src="https://i.ytimg.com/vi/8VE_dP90V84/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Miles Davis with John Coltrane- March 21, 1960 Olympia Theatre, Paris</span></button>
+<button class="vtile" data-yt="sUG0P7tcCto" type="button"><img src="https://i.ytimg.com/vi/sUG0P7tcCto/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Miles Davis angry at Herbie Hancock</span></button>
+<button class="vtile" data-yt="edyadk0cWB0" type="button"><img src="https://i.ytimg.com/vi/edyadk0cWB0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Miles Davis with John Coltrane- April 8, 1960 Kongresshaus, Zürich</span></button>
+<button class="vtile" data-yt="38zRx9AYDHQ" type="button"><img src="https://i.ytimg.com/vi/38zRx9AYDHQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Miles Davis - Sketches of Spain (1960) (Full Album)</span></button>
+<button class="vtile" data-yt="fBoHkB92SU0" type="button"><img src="https://i.ytimg.com/vi/fBoHkB92SU0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Miles Davis Quintet, Teatro dell&#x27;Arte, Milan, Italy, October 11th, 1964 (Colorized)</span></button>
+<button class="vtile" data-yt="vDqULFUg6CY" type="button"><img src="https://i.ytimg.com/vi/vDqULFUg6CY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">M I L E S D A V I S - Kind Of Blue - Full Album</span></button>
+<button class="vtile" data-yt="WR1bOE3Fszo" type="button"><img src="https://i.ytimg.com/vi/WR1bOE3Fszo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Miles Davis - Summertime (with Quincy Jones &amp; Orchestra Live At Montreux 1991) ~ 1080p HD</span></button>
+<button class="vtile" data-yt="-UT3qeqzejI" type="button"><img src="https://i.ytimg.com/vi/-UT3qeqzejI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Great Expectations (2022 Remaster)</span></button>
+<button class="vtile" data-yt="eJk48-8rSh8" type="button"><img src="https://i.ytimg.com/vi/eJk48-8rSh8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">&#x27;Round Miles : A Miles Davis Documentary</span></button>
+<button class="vtile" data-yt="111pXhlSofs" type="button"><img src="https://i.ytimg.com/vi/111pXhlSofs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Miles Davis - Echoes of a Genius (1992 DOCUMENTARY)</span></button>
+<button class="vtile" data-yt="XUmDXHE7QW0" type="button"><img src="https://i.ytimg.com/vi/XUmDXHE7QW0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">#Miles #Davis #Ahead #2015 #full #movie</span></button>
+<button class="vtile" data-yt="dou3aSZmEg0" type="button"><img src="https://i.ytimg.com/vi/dou3aSZmEg0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">1959 The Year that Changed Jazz</span></button>
+<button class="vtile" data-yt="6WsRe8EOlo8" type="button"><img src="https://i.ytimg.com/vi/6WsRe8EOlo8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">‘Round Miles: Quincy Troupe on the Life and Music of Miles Davis</span></button>
+<button class="vtile" data-yt="edbeyKJgza4" type="button"><img src="https://i.ytimg.com/vi/edbeyKJgza4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Official Trailer | Miles Davis: Birth of the Cool | American Masters | PBS</span></button>
+<button class="vtile" data-yt="m1MzAGjcktI" type="button"><img src="https://i.ytimg.com/vi/m1MzAGjcktI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Making of Kind of Blue 2004 Miles Davis</span></button>
+<button class="vtile" data-yt="86pcwu4KI0M" type="button"><img src="https://i.ytimg.com/vi/86pcwu4KI0M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Miles Davis &amp; Betty Davis: The Tragic Love Story Columbia Records Tried to Keep Hidden</span></button>
+<button class="vtile" data-yt="pM1eutdHp5A" type="button"><img src="https://i.ytimg.com/vi/pM1eutdHp5A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Miles Davis - Bitches Brew: How One Album Betrayed and Birthed a Genre</span></button>
+<button class="vtile" data-yt="9waBvimjV3A" type="button"><img src="https://i.ytimg.com/vi/9waBvimjV3A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dick Gregory Breaks Down The Miles Davis Film (2016)</span></button>
+<button class="vtile" data-yt="H7tn4yIyOAs" type="button"><img src="https://i.ytimg.com/vi/H7tn4yIyOAs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Official Trailer | Miles Davis: Birth of the Cool | American Masters | PBS</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Miles Davis was an American trumpeter, bandleader, composer, and painter who is considered one of the most influential figures in 20th-century music and jazz history. Over a career spanning nearly five decades, he led several major stylistic developments in jazz, including bebop,</p>
+<p>Miles Davis was an American trumpeter, bandleader, composer, and painter who is considered one of the most influential figures in 20th-century music and jazz history. Over a career spanning nearly five decades, he led several major stylistic developments in jazz, including bebop, cool jazz, hard bop, modal jazz, and jazz fusion.</p>
+<h3>early life and education</h3>
+<p>Born into an affluent African-American family in Alton, Illinois, Davis began playing the trumpet in his early teens. He studied at the Juilliard School in New York City before dropping out to make his professional debut as a member of Charlie Parker&#x27;s bebop quintet from 1944 to 1948. His early musical education was heavily influenced by Elwood Buchanan, who stressed the importance of playing without vibrato and encouraged a clear, mid-range tone.</p>
+<h3>musical evolution and discography</h3>
+<p>Davis&#x27;s career is marked by a variety of régulière stylistic shifts. He recorded the Birth of the Cool sessions for Capitol Records, which were instrumental to the development of cool jazz. In the early 1950s, he recorded hard bop music under Prestige Records. After signing with Columbia Records in 1955, he led the First Great Quintet and later the Second Great Quintet, leading to the album Kind of Blue (1959), which is one of the most popular jazz albums of all time. In the 1970s, he transitioned into an electric period characterized by experiments with rock, funk, and electronic music technology, including the platinum-certified Bitches Brew (1970).</p>
+<h3>later career and legacy</h3>
+<p>After a five-year retirement due to poor health, Davis resumed his career in the 1980s with albums such as Tutu (1986) and Doo-Bop, which combined jazz with hip-hop. He also branched out into visual arts, film and television work before his death in 1991 from a stroke, pneumonia, and respiratory failure. In 2006, he was inducted into the Rock and Roll Hall of Fame.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Born:</strong> May 26, 1926</li>
+<li><strong>Died:</strong> value: September 28, 1991</li>
+<li><strong> :</strong> -</li>
+<li><strong> :</strong> -</li>
+<li><strong> :</strong> -</li>
+<li><strong>label: Most popular jazz album:</strong> Kind of Blue (1959)</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Miles_Davis" rel="noopener">https://en.wikipedia.org/wiki/Miles_Davis</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Miles_Davis_Quintet" rel="noopener">https://en.wikipedia.org/wiki/Miles_Davis_Quintet</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Miles_Davis_discography" rel="noopener">https://en.wikipedia.org/wiki/Miles_Davis_discography</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Miles Davis">
+        <input type="hidden" name="slug" value="miles-davis">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Miles Davis</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Dubstep — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">concept</div>
+      <h1>Dubstep</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1006</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="JQ1txLdu6qg" type="button"><img src="https://i.ytimg.com/vi/JQ1txLdu6qg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Best Dubstep Mix 2020 [Brutal Dubstep Drops]</span></button>
+<button class="vtile" data-yt="LXO-jKksQkM" type="button"><img src="https://i.ytimg.com/vi/LXO-jKksQkM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">PUMPED UP KICKS|DUBSTEP</span></button>
+<button class="vtile" data-yt="Hl0W5kPRpA0" type="button"><img src="https://i.ytimg.com/vi/Hl0W5kPRpA0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Best Female Vocal Dubstep Mix 3 HOURS January 2015</span></button>
+<button class="vtile" data-yt="dLyH94jNau0" type="button"><img src="https://i.ytimg.com/vi/dLyH94jNau0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Top Dubstep Drops - Epic Motivational Mix (Powered edition)</span></button>
+<button class="vtile" data-yt="RRDavrjyxik" type="button"><img src="https://i.ytimg.com/vi/RRDavrjyxik/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Excision b2b Subtronics Live @ Lost Lands 2025 - Full Set</span></button>
+<button class="vtile" data-yt="MddQzsC13Qg" type="button"><img src="https://i.ytimg.com/vi/MddQzsC13Qg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">BEST DUBSTEP MIX 2025 🚨 SPAG HEDDY Edition 🚨 Brutal Dubstep Drops 🚨</span></button>
+<button class="vtile" data-yt="xuULncxbMEo" type="button"><img src="https://i.ytimg.com/vi/xuULncxbMEo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Best Dubstep Ever</span></button>
+<button class="vtile" data-yt="a4JlkKNA3yw" type="button"><img src="https://i.ytimg.com/vi/a4JlkKNA3yw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Best Brutal Dubstep Mix 2014</span></button>
+<button class="vtile" data-yt="BXvgM39G7io" type="button"><img src="https://i.ytimg.com/vi/BXvgM39G7io/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Best Dubstep mix 2013 New Free Download Songs, 2 Hours, Full playlist, High Audio Quality)</span></button>
+<button class="vtile" data-yt="NPcN_7z81r4" type="button"><img src="https://i.ytimg.com/vi/NPcN_7z81r4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Melodic Dubstep Mix 2026 (ft. Seven Lions, MitiS, RUNN, Jason Ross &amp; More)</span></button>
+<button class="vtile" data-yt="LfSqvEzz2Ek" type="button"><img src="https://i.ytimg.com/vi/LfSqvEzz2Ek/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Invasion(BEST DUBSTEP MIX 2025)</span></button>
+<button class="vtile" data-yt="YSIZBngEB_Y" type="button"><img src="https://i.ytimg.com/vi/YSIZBngEB_Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Melodic Dubstep Mix 2025 (ft. Seven Lions, MitiS, HALIENE, Abandoned &amp; More) // EDM 2025</span></button>
+<button class="vtile" data-yt="YVcX0Oc5j5E" type="button"><img src="https://i.ytimg.com/vi/YVcX0Oc5j5E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bassweight: A Dubstep Documentary - 2010</span></button>
+<button class="vtile" data-yt="-hLlVVKRwk0" type="button"><img src="https://i.ytimg.com/vi/-hLlVVKRwk0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">All My Homies Hate Skrillex | A story about what happened with dubstep.</span></button>
+<button class="vtile" data-yt="tFTu33uW8gA" type="button"><img src="https://i.ytimg.com/vi/tFTu33uW8gA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dubfiles - Dubstep Documentary (2008)</span></button>
+<button class="vtile" data-yt="a3PjeY8kaOY" type="button"><img src="https://i.ytimg.com/vi/a3PjeY8kaOY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">5.3) That UK Sound - The Sound of Dubstep</span></button>
+<button class="vtile" data-yt="4aHbrdrvT7M" type="button"><img src="https://i.ytimg.com/vi/4aHbrdrvT7M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">James Blake: The Dubstep GOAT | a post-dubstep retrospective</span></button>
+<button class="vtile" data-yt="vTrjv3pE3IY" type="button"><img src="https://i.ytimg.com/vi/vTrjv3pE3IY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Full Documentary: The History of Skream and Benga</span></button>
+<button class="vtile" data-yt="-X-oXlUVAHo" type="button"><img src="https://i.ytimg.com/vi/-X-oXlUVAHo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Why MALA is the REAL king of DUBSTEP</span></button>
+<button class="vtile" data-yt="cz1TfcAdpP0" type="button"><img src="https://i.ytimg.com/vi/cz1TfcAdpP0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dubstep Documentary (2010)</span></button>
+<button class="vtile" data-yt="nNHSQjNO4lc" type="button"><img src="https://i.ytimg.com/vi/nNHSQjNO4lc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How SUBTRONICS became the KING of Dubstep</span></button>
+<button class="vtile" data-yt="vgaOnsCBd4s" type="button"><img src="https://i.ytimg.com/vi/vgaOnsCBd4s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">&quot;Living Inside the Speaker - The Bristol Dubstep Scene&quot; - Documentary</span></button>
+<button class="vtile" data-yt="APt5lBuuWIE" type="button"><img src="https://i.ytimg.com/vi/APt5lBuuWIE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">From Finance Bro to Dubstep DJ - The Story of WOOLI</span></button>
+<button class="vtile" data-yt="IItwd33uj_0" type="button"><img src="https://i.ytimg.com/vi/IItwd33uj_0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">SKRILLEX: The Rise, Fall &amp; Rise Again (from emo to dubstep)</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Dubstep is a genre of electronic dance music that originated in South London in the early 2000s. Its roots trace back to the Jamaican sound system party scene of the early 1980s and it emerged as an offshoot of UK garage, blending 2-step rhythms and sparse dub production.</p>
+<p>Dubstep is a genre of electronic dance music that originated in South London in the early 2000s. Its roots trace back to the Jamaican sound system party scene of the early 1980s and it emerged as an offshoot of UK garage, blending 2-step rhythms and sparse dub production.</p>
+<h3>characteristics</h3>
+<p>Dubstep is generally characterized by syncopated rhythmic patterns, prominent basslines, and a dark tone. It is typically instrumental and often uses a minor key or the Phrygian mode. The tempo is usually between 132–142 beats per minute, with a clap or snare on every third beat in a bar; because of this, the genre is sometimes referred to as &quot;140&quot;. A notable feature is the &#x27;wobble bass&#x27; (or &#x27;wub&#x27;), where a low-frequency oscillator is used to manipulate a synthesizer&#x27;s parameters to create rhythmic variations in volume, filter cutoff, or distortion. Some tracks also incorporate &#x27;bass drops&#x27;, inherited from drum and bass, where percussion pauses before resuming with more intensity and dominant sub-bass.</p>
+<h3>history and growth</h3>
+<p>The sound began to be promoted at the London nightclub Plastic People during the &quot;Forward&quot; night and on the pirate radio station Rinse FM in 2001. The term &#x27;dubstep&#x27; first appeared in 2001, and was used by labels Big Apple and Tempa from 2002 to describe remixes distinct from grime and 2-step. BBC Radio 1 DJ John Peel started playing the genre in 2003, and later Mary Anne Hobbs launched her &quot;Dubstep Warz&quot; show in January 2006. Dubstep entered mainstream British popular culture in late 2005 and early 2006, aided by websites like dubstepforum, Barefiles, and blogs such as gutterbreakz, as well as coverage in publications like The Wire and Pitchfork. Towards the end of the 2000s and into the early 2010s, it became more commercially successful in the UK, and its influence was noted in pop artists&#x27; work.</p>
+<h3>variants and offshoots</h3>
+<p>AllMusic describes the sound as &quot;tightly coiled productions with overwhelming bass lines and reverberant drum patterns, clipped samples, and occasional vocals.&quot; Other variants include chillstep, a softer and more melodic offshoot that incorporates ambient and chill out music. The harsher electro-house and heavy metal-influenced variant brostep, led by American producers such as Skrillex, boosted the genre&#x27;s popularity in the United States. Additionally, post-dubstep is an umbrella term for styles influenced by the same sparse rhythms and heavy sub-bass of the UK dubstep scene, but with a more minimal, mature sound featuring soulful vocals and piano. Post-dubstep was associated with artists like James Blake and Mount Kimbie.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Origin:</strong> South London, early 2000s</li>
+<li><strong>Tempo:</strong> 132–142 beats per minute</li>
+<li><strong>label: Typical Tempo:</strong> 140bpm</li>
+<li><strong>Key Characteristics:</strong> Syncopated rhythms, prominent basslines, and a dark tone</li>
+<li><strong>Nightclub:</strong> Plastic People (London)</li>
+<li><strong> uma own: Pirate Radio Station:</strong> Rinse FM</li>
+<li><strong>Influences:</strong> Jamaican sound system party scene, UK garage, broken beat, grime, and drum and bass</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Dubstep" rel="noopener">https://en.wikipedia.org/wiki/Dubstep</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/List_of_dubstep_musicians" rel="noopener">https://en.wikipedia.org/wiki/List_of_dubstep_musicians</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Post-dubstep" rel="noopener">https://en.wikipedia.org/wiki/Post-dubstep</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Dubstep">
+        <input type="hidden" name="slug" value="dubstep">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Dubstep</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

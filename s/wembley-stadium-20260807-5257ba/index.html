@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Wembley Stadium — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">place</div>
+      <h1>Wembley Stadium</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-07</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">12</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1041</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="Zk1vbMrb0Ds" type="button"><img src="https://i.ytimg.com/vi/Zk1vbMrb0Ds/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Wembley Stadium | FIFA World Cup</span></button>
+<button class="vtile" data-yt="9shByOh8fVE" type="button"><img src="https://i.ytimg.com/vi/9shByOh8fVE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Michael Jackson - Live At Wembley (July 16, 1988)</span></button>
+<button class="vtile" data-yt="ueXcyXI0ph0" type="button"><img src="https://i.ytimg.com/vi/ueXcyXI0ph0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">I Found What&#x27;s Left of Old Wembley Stadium</span></button>
+<button class="vtile" data-yt="_td7RhCzhtQ" type="button"><img src="https://i.ytimg.com/vi/_td7RhCzhtQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">THE HOME OF FOOTBALL | Wembley Stadium Tour</span></button>
+<button class="vtile" data-yt="RraYG2MytLk" type="button"><img src="https://i.ytimg.com/vi/RraYG2MytLk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">⚽ Wembley Stadium Tour - The Home of England Football - Travel Vlog</span></button>
+<button class="vtile" data-yt="vpVuN5ery5Q" type="button"><img src="https://i.ytimg.com/vi/vpVuN5ery5Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The ICONIC WEMBLEY STADIUM &amp; Our Guide To Getting Around</span></button>
+<button class="vtile" data-yt="VK8Ljk5RsLo" type="button"><img src="https://i.ytimg.com/vi/VK8Ljk5RsLo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">We Played &#x27;Wembley&#x27; at Wembley</span></button>
+<button class="vtile" data-yt="yRXkmNSlTzU" type="button"><img src="https://i.ytimg.com/vi/yRXkmNSlTzU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Exploring Wembley Stadium – Why It’s Still a Modern Icon</span></button>
+<button class="vtile" data-yt="iNW-9vUCFRg" type="button"><img src="https://i.ytimg.com/vi/iNW-9vUCFRg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Wembley Stadium From Above… You Don’t See This Angle Often</span></button>
+<button class="vtile" data-yt="NWU33fvPxd0" type="button"><img src="https://i.ytimg.com/vi/NWU33fvPxd0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Foo Fighters - Everlong (Live At Wembley Stadium, 2008)</span></button>
+<button class="vtile" data-yt="Q4auQP1qEh8" type="button"><img src="https://i.ytimg.com/vi/Q4auQP1qEh8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Exploring LONDON Wembley Stadium and the surrounding area 🇬🇧🗺️📍🏟️</span></button>
+<button class="vtile" data-yt="poiwqYcFqYY" type="button"><img src="https://i.ytimg.com/vi/poiwqYcFqYY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Queen: Live at Wembley Stadium | Full Concert</span></button>
+<button class="vtile" data-yt="sYH7gRgJ2Bc" type="button"><img src="https://i.ytimg.com/vi/sYH7gRgJ2Bc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Final: Attack on Wembley | Official Trailer | Netflix</span></button>
+<button class="vtile" data-yt="ubQf6kP0e7s" type="button"><img src="https://i.ytimg.com/vi/ubQf6kP0e7s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Richard Hammond&#x27;s Engineering Connections | S02E01 - Wembley Stadium | DocumentaryHub</span></button>
+<button class="vtile" data-yt="MQgyA8EROrs" type="button"><img src="https://i.ytimg.com/vi/MQgyA8EROrs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Colloseum vs Wembley | Legends vs Modern Icons | FD Engineering</span></button>
+<button class="vtile" data-yt="_F-IcugXhog" type="button"><img src="https://i.ytimg.com/vi/_F-IcugXhog/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">100 Years of Wembley Stadium 🏟️ | Where It Will Always Matter More</span></button>
+<button class="vtile" data-yt="WyE55sCTNx8" type="button"><img src="https://i.ytimg.com/vi/WyE55sCTNx8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Wembley Stadium tour | Football | Wish you were here | 1980</span></button>
+<button class="vtile" data-yt="eYP4OyXzWfk" type="button"><img src="https://i.ytimg.com/vi/eYP4OyXzWfk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Behind The Scenes: Queen at Wembley Stadium, 1986</span></button>
+<button class="vtile" data-yt="hlMlsXagIDI" type="button"><img src="https://i.ytimg.com/vi/hlMlsXagIDI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Wembley Was Built &amp; The History Of Sport In London | Our History</span></button>
+<button class="vtile" data-yt="Vri2t1lsDJc" type="button"><img src="https://i.ytimg.com/vi/Vri2t1lsDJc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Colosseum vs Wembley - Which Stadium Is the Greatest Ever Built?</span></button>
+<button class="vtile" data-yt="uhxQClBH40A" type="button"><img src="https://i.ytimg.com/vi/uhxQClBH40A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The history of iconic Wembley Stadium</span></button>
+<button class="vtile" data-yt="MmVdWs4VVhE" type="button"><img src="https://i.ytimg.com/vi/MmVdWs4VVhE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How the Wembley breach happened</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Wembley Stadium is an association football stadium located in Wembley, London, England. It serves as the national football stadium of England and hosts the majority of the England national team&#x27;s home matches and the FA Cup Final.</p>
+<p>Wembley Stadium is an association football stadium located in Wembley, London, England. It serves as the national football stadium of England and hosts the majority of the England national team&#x27;s home matches and the FA Cup Final.</p>
+<h3>original stadium (1923-2000)</h3>
+<p>The first Wembley Stadium, originally known as the Empire Stadium, Empire Stadium was opened in 1923 and demolished in 2002. It was constructed by Sir Robert McAlpine at a cost of £750,000 on the site of Watkin&#x27;s Tower. The stadium&#x27;s distinctive Twin Towers became its trademark and nickname. It hosted the 1948 Summer Olympics, the 1966 World Cup final, and the 1985 Live Aid charity concert, as well as the inaugural FA Cup final in 1923 known as the &#x27;White Horse Final&#x27;. The stadium closed in October 2000 and demolition began in December 2002.</p>
+<h3>modern stadium (2007-present)</h3>
+<p>The current Wembley Stadium, currently branded as Wembley Stadium connected by EE for sponsorship reasons, opened in 2007 on the site of the original stadium. Designed by Populous and Foster + Partners, it is the largest stadium in the UK and second-largest in Europe behind Barcelona&#x27;s Camp Nou. With a capacity of 90,000 seats, all-seater bowl design, and a signature 134-metre-high Wembley Arch,emboied by the architecture of Populous and Foster + Partners, it is the satu//tation of the world&#x27;s longest unsupported roof structure. The stadium was built by Multiplex at a cost of £798 million.</p>
+<h3>title</h3>
+<p>The stadium hosts a wide range of events including England home games, FA Cup finals, and various other English football competitions such as the FA Community Shield, EFL Cup and EFL Trophy finals, and Women&#x27;s FA Cup finals. It also hosts NFL London Games, Rugby Football League&#x27;s Challenge Cup, Women&#x27;s Challenge Cup, and 1895 Cup finals. in addition to various music concerts.</p>
+<h3>construction challenges</h3>
+<p>The construction of the new stadium was delayed by financial and legal difficulties. In 2003, subcontractors Cleveland Bridge &amp; Engineering Company withdrew from the project and were replaced by Dutch firm Hollandia. In 2004, a fatal accident involving carpenter Patrick O&#x27;Sullivan occurred, which led to PC Harrington Contractors being fined £150,000. In February 2006, due to construction delays, the FA moved the FA Cup final to Cardiff&#x27;s Millennium Stadium.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Opening Date (Original):</strong> 1923</li>
+<li><strong>Capacity (Modern):</strong> 90,000 seats</li>
+<li><strong>Crowning Feature:</strong> Wembley Arch</li>
+<li><strong> gratitude-based sponsorship:</strong> Wembley Stadium connected by EE</li>
+<li><strong>Cost (Modern):</strong> value: £798 million</li>
+<li><strong>label: Original cost:</strong> £750,000</li>
+<li><strong>Architects (Modern):</strong> Foster + Partners and Populous</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Wembley_Stadium" rel="noopener">https://en.wikipedia.org/wiki/Wembley_Stadium</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Wembley_Stadium_(1923" rel="noopener">https://en.wikipedia.org/wiki/Wembley_Stadium_(1923</a></li>
+          <li><a href="https://www.setlist.fm/setlist/luke-combs/2026/wembley-stadium-london-england-34ea957.html" rel="noopener">https://www.setlist.fm/setlist/luke-combs/2026/wembley-stadium-london-england-34ea957.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/luke-combs/2026/wembley-stadium-london-england-6b4e32da.html" rel="noopener">https://www.setlist.fm/setlist/luke-combs/2026/wembley-stadium-london-england-6b4e32da.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/luke-combs/2026/wembley-stadium-london-england-734e32d9.html" rel="noopener">https://www.setlist.fm/setlist/luke-combs/2026/wembley-stadium-london-england-734e32d9.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/the-castellows/2026/wembley-stadium-london-england-334eec59.html" rel="noopener">https://www.setlist.fm/setlist/the-castellows/2026/wembley-stadium-london-england-334eec59.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/the-castellows/2026/wembley-stadium-london-england-3b4e049c.html" rel="noopener">https://www.setlist.fm/setlist/the-castellows/2026/wembley-stadium-london-england-3b4e049c.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/thomas-rhett/2026/wembley-stadium-london-england-1b4ea950.html" rel="noopener">https://www.setlist.fm/setlist/thomas-rhett/2026/wembley-stadium-london-england-1b4ea950.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/thomas-rhett/2026/wembley-stadium-london-england-2b4e049e.html" rel="noopener">https://www.setlist.fm/setlist/thomas-rhett/2026/wembley-stadium-london-england-2b4e049e.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/ty-myers/2026/wembley-stadium-london-england-334e049d.html" rel="noopener">https://www.setlist.fm/setlist/ty-myers/2026/wembley-stadium-london-england-334e049d.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/ty-myers/2026/wembley-stadium-london-england-334eec5d.html" rel="noopener">https://www.setlist.fm/setlist/ty-myers/2026/wembley-stadium-london-england-334eec5d.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/ty-myers/2026/wembley-stadium-london-england-3b4e0498.html" rel="noopener">https://www.setlist.fm/setlist/ty-myers/2026/wembley-stadium-london-england-3b4e0498.html</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Wembley Stadium">
+        <input type="hidden" name="slug" value="wembley-stadium">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Wembley Stadium</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

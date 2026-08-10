@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Led Zeppelin&#x27;s career and signature sound — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">concept</div>
+      <h1>Led Zeppelin&#x27;s career and signature sound</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">961</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="OS_l9n9WBQA" type="button"><img src="https://i.ytimg.com/vi/OS_l9n9WBQA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jimmy Page on Led Zeppelin&#x27;s Remastered Albums</span></button>
+<button class="vtile" data-yt="i1kWgExI3zM" type="button"><img src="https://i.ytimg.com/vi/i1kWgExI3zM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">John Paul Jones - Led Zeppelin - Life and Career</span></button>
+<button class="vtile" data-yt="k-WSbMW7BPc" type="button"><img src="https://i.ytimg.com/vi/k-WSbMW7BPc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Led Zeppelin: Live on TV BYEN/Danmarks Radio [Full Performance]</span></button>
+<button class="vtile" data-yt="0LLkk56UJ8U" type="button"><img src="https://i.ytimg.com/vi/0LLkk56UJ8U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Mystical Journey of Jimmy Page&#x27;s &#x27;59 Telecaster | Fender</span></button>
+<button class="vtile" data-yt="-2ccaDGJleY" type="button"><img src="https://i.ytimg.com/vi/-2ccaDGJleY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Led Zeppelin IV | Full Documentary | Jimmy Page | Robert Plant | John Bonham | John Paul Jones</span></button>
+<button class="vtile" data-yt="IC6SwzXvyzw" type="button"><img src="https://i.ytimg.com/vi/IC6SwzXvyzw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Led Zeppelin - Dazed and Confused (London 1969 Live Good Quality)</span></button>
+<button class="vtile" data-yt="s31MQ2HEAtk" type="button"><img src="https://i.ytimg.com/vi/s31MQ2HEAtk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Led Zeppelin&#x27;s most original song: Kashmir [Guitar Lesson | Song Breakdown | Music Theory]</span></button>
+<button class="vtile" data-yt="BSPaNUarcm4" type="button"><img src="https://i.ytimg.com/vi/BSPaNUarcm4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jimmy Page reflects on Led Zeppelin&#x27;s legacy and its sound</span></button>
+<button class="vtile" data-yt="4gT63xovuWE" type="button"><img src="https://i.ytimg.com/vi/4gT63xovuWE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Led Zeppelin - Since I&#x27;ve Been Loving You (Live at Madison Square Garden 1973) [Official Video]</span></button>
+<button class="vtile" data-yt="6XIQR4p30Wo" type="button"><img src="https://i.ytimg.com/vi/6XIQR4p30Wo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Led Zeppelin - The Ocean (Live at Madison Square Garden 1973) [Official Video] [HD[</span></button>
+<button class="vtile" data-yt="PeKDcYWd32U" type="button"><img src="https://i.ytimg.com/vi/PeKDcYWd32U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How JIMMY PAGE Records Guitar: Led Zeppelin Engineer Stuart Epps Discusses</span></button>
+<button class="vtile" data-yt="UOSf9f5_qZ8" type="button"><img src="https://i.ytimg.com/vi/UOSf9f5_qZ8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Led Zeppelin - Moby Dick Drum Solo (Madison Square Garden 1973)</span></button>
+<button class="vtile" data-yt="y-8zWJMmsbg" type="button"><img src="https://i.ytimg.com/vi/y-8zWJMmsbg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jimmy Page: The Architect of Light and Shade | GEP03</span></button>
+<button class="vtile" data-yt="cd_1HVfAOBo" type="button"><img src="https://i.ytimg.com/vi/cd_1HVfAOBo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How LED ZEPPELIN Wrote Music: Led Zeppelin Engineer Terry Manning Discusses</span></button>
+<button class="vtile" data-yt="UvOm2oZRQIk" type="button"><img src="https://i.ytimg.com/vi/UvOm2oZRQIk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What Makes John Bonham Such a Good Drummer?</span></button>
+<button class="vtile" data-yt="uR2mr4WrLU0" type="button"><img src="https://i.ytimg.com/vi/uR2mr4WrLU0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Genius Of John Bonham</span></button>
+<button class="vtile" data-yt="wtEXfEwJf4M" type="button"><img src="https://i.ytimg.com/vi/wtEXfEwJf4M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jimmy Page Grades other Guitarists out of 10.</span></button>
+<button class="vtile" data-yt="z2LhoY-Pj4k" type="button"><img src="https://i.ytimg.com/vi/z2LhoY-Pj4k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Led Zeppelin Was Almost SHOT On Stage Led Zeppelin Engineer Terry Manning Discusses</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Led Zeppelin was an English rock band formed in London in 1968. The group consisted of vocalist Robert Plant, guitarist Jimmy Page, bass-guitarist and keyboardist John Paul Jones, and drummer John Bonham. Their sound combined heavy electric-guitar sound with elements of folk and </p>
+<p>Led Zeppelin was an English rock band formed in London in 1968. The group consisted of vocalist Robert Plant, guitarist Jimmy Page, bass-guitarist and keyboardist John Paul Jones, and drummer John Bonham. Their sound combined heavy electric-guitar sound with elements of folk and blues music.</p>
+<h3>formation and early career</h3>
+<p>Led Zeppelin evolved from the Yardbirds, originally being named &#x27;the New Yardbirds&#x27;. Jimmy Page, a session guitarist, joined the Yardbirds in 1966 to replace bassist Paul Samwell-Smith. After the Yardbirds disbanded in 1968, Page sought to form a new group with Robert Plant, John Bonham, and John Paul Jones. The band&#x27;s first studio track featuring all four members was &#x27;Jim&#x27;s Blues&#x27; on the P. J. Proby album Three Week Hero. They completed their first tour as the New Yardbirds in Scandinavia.</p>
+<h3>musical style and signature sound</h3>
+<p>The band is considered a progenitor of hard rock and heavy metal, popularising stadium rock and album-oriented rock. Jimmy Page composed most of the music, while Robert Plant wrote most of the lyrics. John Paul Jones occasionally originated songs with keyboard parts. The song &#x27;Dazed and Confused&#x27;, originally written by Jake Holmes in 1967, was reworked by the Yardbirds before being recorded by Led Zeppelin for their debut album, becoming a signature song and concert staple.</p>
+<h3>discography and commercial success</h3>
+<p>Over ten years, the band released eight studio albums. Their 1969 debut, Led Zeppelin, was a top-ten album in several countries. Led Zeppelin II (1969) was their first number-one album. Their untitled fourth album, commonly known as Led Zeppelin IV (1971), is one of the best-selling albums in history with 37 million copies sold and includes &#x27;Stairway to Heaven&#x27;. Other notable albums include Houses of the Holy (1973), Physical Graffiti (1975), Presence (1976), and In Through the Out Door (1979). They achieved eight consecutive UK number-one albums and six number-one albums on the US Billboard 200.</p>
+<h3>later years and disbandment</h3>
+<p>During the first half of the 1970s, they performed record-breaking tours known for hedonism. In the second half of the 1970s, the quality and frequency of touring declined due to Jimmy Page&#x27;s heroin addiction. The band disbanded after John Bonham&#x27;s death from alcoholism in 1980. The surviving members have sporadically collaborated for concerts, including the 2007 Ahmet Ertegun Tribute Concert with Jason Bonham on drums.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Formed:</strong> 1968 in London</li>
+<li><strong>Members:</strong> Robert Plant, Jimmy Page, and John Paul Jones, and John Bonham</li>
+<li><strong>Records Sold:</strong> Estimated 200 to 300 million worldwide</li>
+<li><strong> :</strong> -</li>
+<li><strong>Inducted into Rock and Roll Hall of Fame:</strong> 1995</li>
+<li><strong>US Billboard 200 Number-One Albums:</strong> 6</li>
+<li><strong>RIAA Diamond Certification:</strong> value own</li>
+<li><strong>Best Rock Band of All Time:</strong> Ranked by Forbes magazine in 2025</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Dazed_and_Confused_(Jake_Holmes_song" rel="noopener">https://en.wikipedia.org/wiki/Dazed_and_Confused_(Jake_Holmes_song</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Jason_Bonham" rel="noopener">https://en.wikipedia.org/wiki/Jason_Bonham</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Led_Zeppelin" rel="noopener">https://en.wikipedia.org/wiki/Led_Zeppelin</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Led Zeppelin&#x27;s career and signature sound">
+        <input type="hidden" name="slug" value="led-zeppelin-s-career-and-signature-sound">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Led Zeppelin&#x27;s career and signature sound</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

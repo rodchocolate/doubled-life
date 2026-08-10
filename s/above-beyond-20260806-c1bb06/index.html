@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Above &amp; Beyond — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>Above &amp; Beyond</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-06</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1035</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="gM1up6Gk-9s" type="button"><img src="https://i.ytimg.com/vi/gM1up6Gk-9s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Group Therapy 688 with Above &amp; Beyond and Soundprank</span></button>
+<button class="vtile" data-yt="kE7poZLnudo" type="button"><img src="https://i.ytimg.com/vi/kE7poZLnudo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Above &amp; Beyond: Anjunabeats Volume 17 Live from London (Official Full Set)</span></button>
+<button class="vtile" data-yt="MEzU1HvBo6Y" type="button"><img src="https://i.ytimg.com/vi/MEzU1HvBo6Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Above &amp; Beyond for Cercle in Guatape, Colombia</span></button>
+<button class="vtile" data-yt="OI02QgEA1Zw" type="button"><img src="https://i.ytimg.com/vi/OI02QgEA1Zw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Above &amp; Beyond: Live from EDC Las Vegas 2026 (Official Full Set)</span></button>
+<button class="vtile" data-yt="IvuwTft-0cM" type="button"><img src="https://i.ytimg.com/vi/IvuwTft-0cM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Anjunabeats Radio ⦁ Live 24/7 ⦁ Best of Trance and Progressive ⦁ Work From Home</span></button>
+<button class="vtile" data-yt="eZL4AgKNvVI" type="button"><img src="https://i.ytimg.com/vi/eZL4AgKNvVI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Above &amp; Beyond: Live from Coachella 2025 (Official Full Set)</span></button>
+<button class="vtile" data-yt="O9F_drLehU0" type="button"><img src="https://i.ytimg.com/vi/O9F_drLehU0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Above &amp; Beyond Deep Warm Up Set #ABGT300 Live on Victoria Harbour, Hong Kong (Full 4K Ultra HD Set)</span></button>
+<button class="vtile" data-yt="UI2nWJPk6pY" type="button"><img src="https://i.ytimg.com/vi/UI2nWJPk6pY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Above &amp; Beyond: Group Therapy 600 Deep Warm Up Set | Xochimilco, Mexico City #ABGT600</span></button>
+<button class="vtile" data-yt="cS6Hi2Avoww" type="button"><img src="https://i.ytimg.com/vi/cS6Hi2Avoww/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Above &amp; Beyond Live at Ziggo Dome, Amsterdam (Full 4K HD Set) #ABGT200</span></button>
+<button class="vtile" data-yt="p_TkwNLJn68" type="button"><img src="https://i.ytimg.com/vi/p_TkwNLJn68/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Above &amp; Beyond presents OceanLab - Sirens Of The Sea (Continuous Mix)</span></button>
+<button class="vtile" data-yt="n5ZhKyOxZns" type="button"><img src="https://i.ytimg.com/vi/n5ZhKyOxZns/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Above &amp; Beyond: Group Therapy 350 Deep Warm-up Set, Prague (Full 4K Live Set)</span></button>
+<button class="vtile" data-yt="CNUTlKqSO-I" type="button"><img src="https://i.ytimg.com/vi/CNUTlKqSO-I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Above &amp; Beyond Acoustic - Full Concert Film Live from Porchester Hall (Official)</span></button>
+<button class="vtile" data-yt="PhK12A2CGOQ" type="button"><img src="https://i.ytimg.com/vi/PhK12A2CGOQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Above &amp; Beyond | Stepping In: The Making of ‘Bigger Than All Of Us’ (Official Documentary)</span></button>
+<button class="vtile" data-yt="x9zO4fKOVq4" type="button"><img src="https://i.ytimg.com/vi/x9zO4fKOVq4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Above and Beyond - Trailer</span></button>
+<button class="vtile" data-yt="p3hnHcaiQrk" type="button"><img src="https://i.ytimg.com/vi/p3hnHcaiQrk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Full Documentary: The History of Above &amp; Beyond</span></button>
+<button class="vtile" data-yt="mGiPcOz_gqU" type="button"><img src="https://i.ytimg.com/vi/mGiPcOz_gqU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Extended Interview: 20 Years of Anjunabeats as told by Above &amp; Beyond</span></button>
+<button class="vtile" data-yt="QQJYLeCLeZg" type="button"><img src="https://i.ytimg.com/vi/QQJYLeCLeZg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Above and Beyond WWII Foundation Film</span></button>
+<button class="vtile" data-yt="odsrPRJwmPw" type="button"><img src="https://i.ytimg.com/vi/odsrPRJwmPw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ALL WE HAD</span></button>
+<button class="vtile" data-yt="L6w5lHrPFlI" type="button"><img src="https://i.ytimg.com/vi/L6w5lHrPFlI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">&#x27;Above and Beyond&#x27; Trailer (2015)</span></button>
+<button class="vtile" data-yt="nLNuGPAHrwQ" type="button"><img src="https://i.ytimg.com/vi/nLNuGPAHrwQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nancy Spielberg&#x27;s &#x27;Above and Beyond&#x27; Documentary</span></button>
+<button class="vtile" data-yt="uz_JRNbt-QU" type="button"><img src="https://i.ytimg.com/vi/uz_JRNbt-QU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Above and Beyond</span></button>
+<button class="vtile" data-yt="bOpkJi4QOgs" type="button"><img src="https://i.ytimg.com/vi/bOpkJi4QOgs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Above and Beyond: Birth of the Israeli Air Force</span></button>
+<button class="vtile" data-yt="VGRKyioSAPI" type="button"><img src="https://i.ytimg.com/vi/VGRKyioSAPI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Stepping In: The Making of ‘Bigger Than All Of Us’ | Official Trailer</span></button>
+<button class="vtile" data-yt="9bv8UFo9a1s" type="button"><img src="https://i.ytimg.com/vi/9bv8UFo9a1s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Medal of Honor: Above and Beyond gallery documentary</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Above &amp; Beyond is a term associated with both an electronic music group and an American science fiction television series. The music group consists of English musicians Jono Grant and Tony McGuinness, and Finnish musician Paavo Siljamäki, while the television show created by Glen</p>
+<p>Above &amp; Beyond is a term associated with both an electronic music group and an American science fiction television series. The music group consists of English musicians Jono Grant and Tony McGuinness, and Finnish musician Paavo Siljamäki, while the television show created by Glen Morgan and James Wong focuses on the same name as a title phrase.</p>
+<h3>electronic music group</h3>
+<p>Above &amp; Beyond is an electronic music group formed in 2000 consisting of Jono Grant, Tony McGuinness, and Paavo Siljamäki. They are the owners of London-based electronic dance music labels Anjunabeats, Anjunadeep, and Anjunachill, and host a weekly radio show called Group Therapy Radio. The group has released five studio albums, including Tri-State (2006), Group Therapy (2011), We Are All We Need (2015), Common Ground (2018), and Flow State (2019). Their work has been consistently ranked among DJ Magazine&#x27;s Top 100 DJs Poll. Two of their singles, &quot;//&quot; and &quot;Northern Soul&quot;, have been nominated for Grammy Awards.</p>
+<h3>science fiction television series</h3>
+<p>Space: Above and Beyond is an American science fiction television series created and written by Glen Morgan and James Wong that aired on Fox from 1995 to 1996. Set in the years 2063–2064, the show focuses on the &quot;Wildcards&quot;, members of the United States Marine Corps 58th Squadron of the Space Aviator Cavalry. The series depicts their battle against an invading force of extraterrestrials known as the Chigs, who are humanoid, bipedal aliens that require methane to breathe. The show was nominated for two Emmy Awards and one Saturn Award, but was canceled due to low ratings after one season.</p>
+<h3>music group history and production</h3>
+<p>The group&#x27;s formation began with Jono Grant and Paavo Siljamäki meeting at the University of Westminster. They founded the Anjunabeats label in 1999 to release their own music under aliases such as Dirt Devils and Free State. After a successful remix of Chakra&#x27;s &quot;Home&quot;, which reached number one in the UK club charts, they were joined by Tony McGuinness, a former marketing director and manager of Warner Music Group. The trio also established the vocal trance group OceanLab with Justine Suissa. Other early collaborators include Andy Moor, Carrie Skipper, Ashley Tomberlin, Zoé Johnston, and Richard Bedford.</p>
+<h3>career milestones</h3>
+<p>The group has performed at major festivals such as Glastonbury, Creamfields, and Amnesia in Ibiza. They once played a show on Barra Beach in Rio de Janeiro on December 31, 2007, which is reportedly estimated to have had one million people in attendance. In 2009, they performed at the official launch of Virgin Galactic&#x27;s SpaceShipTwo in the Mojave Desert, an event hosted by Sir Richard Branson and attended by Arnold Schwarzenegger.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Members:</strong> Jono Grant, Tony McGuinness, Paavo Siljamäki</li>
+<li><strong>Founded:</strong> 2000</li>
+<li><strong> uma own labels:</strong> Anjunabeats, Anjunadeep, Anjunachill</li>
+<li><strong>TV Series Creator:</strong> Glen Morgan and James Wong</li>
+<li><strong>TV Series Network:</strong> value own Fox</li>
+<li><strong>label: TV Series Duration:</strong> One season (1995-1996)</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Above_%26_Beyond_(band" rel="noopener">https://en.wikipedia.org/wiki/Above_%26_Beyond_(band</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Above_%26_Beyond_discography" rel="noopener">https://en.wikipedia.org/wiki/Above_%26_Beyond_discography</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Space:_Above_and_Beyond" rel="noopener">https://en.wikipedia.org/wiki/Space:_Above_and_Beyond</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Above &amp; Beyond">
+        <input type="hidden" name="slug" value="above-beyond">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Above &amp; Beyond</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

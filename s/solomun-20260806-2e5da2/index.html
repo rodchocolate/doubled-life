@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Solomun — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Solomun</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-06</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">899</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="S46Bs4pZ_I4" type="button"><img src="https://i.ytimg.com/vi/S46Bs4pZ_I4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Solomun – Live at Alexandra Palace, London (2026) (Official Film)</span></button>
+<button class="vtile" data-yt="bk6Xst6euQk" type="button"><img src="https://i.ytimg.com/vi/bk6Xst6euQk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Solomun | Boiler Room: Tulum</span></button>
+<button class="vtile" data-yt="g1vH9C_o-vo" type="button"><img src="https://i.ytimg.com/vi/g1vH9C_o-vo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Solomun Live at EDC Las Vegas 2026 (Official Full Set)</span></button>
+<button class="vtile" data-yt="Zdgz66W0yLg" type="button"><img src="https://i.ytimg.com/vi/Zdgz66W0yLg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Solomun WE2 | Tomorrowland 2025</span></button>
+<button class="vtile" data-yt="QHDRRxKlimY" type="button"><img src="https://i.ytimg.com/vi/QHDRRxKlimY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Solomun @ Théâtre Antique d&#x27;Orange in France for Cercle</span></button>
+<button class="vtile" data-yt="bITUYNXK1oc" type="button"><img src="https://i.ytimg.com/vi/bITUYNXK1oc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dom Dolla b2b Solomun Live @ The Wool Store Melbourne, 2024</span></button>
+<button class="vtile" data-yt="6KmOUYeNS9o" type="button"><img src="https://i.ytimg.com/vi/6KmOUYeNS9o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Solomun live at Dance Arena | EXIT 2025</span></button>
+<button class="vtile" data-yt="uIknGJpSu9M" type="button"><img src="https://i.ytimg.com/vi/uIknGJpSu9M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Solomun live at Parc Du Cinquantenaire, Brussels (pres. by hangar) - June 2024</span></button>
+<button class="vtile" data-yt="1TN78OJjJT0" type="button"><img src="https://i.ytimg.com/vi/1TN78OJjJT0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Anyma b2b Solomun [Live at Ultra Music Festival Miami 2025]</span></button>
+<button class="vtile" data-yt="Vn79OGK0I74" type="button"><img src="https://i.ytimg.com/vi/Vn79OGK0I74/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Solomun Solo + b4b w/ Chloé Caillet, Four Tet, Mau P @ Diynamic Takeover | Ultra Miami 2025</span></button>
+<button class="vtile" data-yt="iLt2-89TDcc" type="button"><img src="https://i.ytimg.com/vi/iLt2-89TDcc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Solomun at the Ibiza Port 2023</span></button>
+<button class="vtile" data-yt="fooLvUhx89E" type="button"><img src="https://i.ytimg.com/vi/fooLvUhx89E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Anyma b2b Solomun: Till I Die | Ultra Music Festival Miami 2025</span></button>
+<button class="vtile" data-yt="60AzuGENX10" type="button"><img src="https://i.ytimg.com/vi/60AzuGENX10/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">THE RISE OF SOLOMUN - a Short Documentary</span></button>
+<button class="vtile" data-yt="zYNNRFSGLYY" type="button"><img src="https://i.ytimg.com/vi/zYNNRFSGLYY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Solomun - Nobody Is Not Loved (Interview Part 1/3)</span></button>
+<button class="vtile" data-yt="m9k4ANZEhB8" type="button"><img src="https://i.ytimg.com/vi/m9k4ANZEhB8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">burn #residency - Masterclass: Solomun</span></button>
+<button class="vtile" data-yt="vOYhXqMmWyI" type="button"><img src="https://i.ytimg.com/vi/vOYhXqMmWyI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Who is Solomun? The House Music Icon Redefining Global Club Culture</span></button>
+<button class="vtile" data-yt="KiKvpjZbYAY" type="button"><img src="https://i.ytimg.com/vi/KiKvpjZbYAY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">SOLOMUN | From War to the World&#x27;s Biggest Stages</span></button>
+<button class="vtile" data-yt="5Fc9A6mLHJU" type="button"><img src="https://i.ytimg.com/vi/5Fc9A6mLHJU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Solomun - Home (Official Video)</span></button>
+<button class="vtile" data-yt="9tBOtSPrNik" type="button"><img src="https://i.ytimg.com/vi/9tBOtSPrNik/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Solomun - Kackvogel (music video)</span></button>
+<button class="vtile" data-yt="19ogcW0Y0SA" type="button"><img src="https://i.ytimg.com/vi/19ogcW0Y0SA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">A la découverte de...SOLOMUN</span></button>
+<button class="vtile" data-yt="ffupyM8mHBA" type="button"><img src="https://i.ytimg.com/vi/ffupyM8mHBA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">10 YEARS DIYNAMIC: Solomun, Stimming, HOSH &amp; more</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Mladen Solomun is a Bosnian-German DJ, producer and remixer known by his stage name Solomun. He has won the DJ Awards for Best Producer, Best DJ, and Best Melodic House four times.</p>
+<p>Mladen Solomun is a Bosnian-German DJ, producer and remixer known by his stage name Solomun. He has won the DJ Awards for Best Producer, Best DJ, and Best Melodic House four times.</p>
+<h3>early life and career beginnings</h3>
+<p>Born in Travnik, Yugoslavia (now Bosnia and Herzegovina), Solomun grew up in Hamburg, Germany. As a child, he worked for his father&#x27;s construction company and later spent five years working in film production. He was introduced to music beyond commercial radio through cassette tapes provided by his cousin. At age 16, he began playing at House of Youth for other teenagers; he started producing music at age 23. To gain production skills, he learned from a friend who ran a hip-hop label for approximately one year.</p>
+<h3>musical production and labels</h3>
+<p>In 2005, Solomun began producing music and co-founded the record label Diynamic with partner Adriano Trolio. The label&#x27;s motto is &quot;Do It Yourself&quot;. His first EP on Diynamic, the Solomun EP, was released in 2006, followed by various EPs, compilations, and the 2009 album Dance Baby. In December 2010, he launched a second, more experimental label called 2DIY4.</p>
+<h3>professional achievements and awards</h3>
+<p>Solomun has received numerous industry awards, including being named Mixmag&#x27;s &quot;DJ of the Year&quot; in 2012 and winning Best International DJ at the Cool Awards in Brazil in 2012 and 2019. He also won the DJ Awards Ibiza for Category: Deep House in 2013 and 2015, and Category: Melodic House and Techno kind of in 2018. In 2011, his remix of Noir &amp; Haze&#x27;s &quot;Around&quot; was named Remix of the Year by Resident Advisor. He also collaborated with singer Inéz on the 2021 singles &quot;Tuk Tuk&quot; and &quot;Prospect&quot;.</p>
+<h3>other ventures and media</h3>
+<p>Until June 2014, Solomun co-owned the Hamburg-based club Ego with his sister and Adriano Trolio. He held two residencies in Ibiza at Pacha and Destino under the name &quot;Solomun +1&quot; from at least 2015 to 2016. In 2018, he appeared as an in-residence DJ for the videogame Grand Theft Auto Online (After Hours DLC) and created a music video for &quot;Customer is King&quot; using the Grand Theft Auto V engine in collaboration with Rockstar Games.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Full Name:</strong> Mladen Solomun</li>
+<li><strong>Date of Birth:</strong> December 27, 1975</li>
+<li><strong>Nationality:</strong> Bosnian-German</li>
+<li><strong>label: Record Labels Founded:</strong> Diynamic and 2DIY4</li>
+<li><strong>Musical Roots:</strong> Hip-hop, soul, funk, and R&amp;B</li>
+<li><strong>First EP on Diynamic:</strong> Solomun EP (2006)</li>
+<li><strong>label: First Album:</strong> Dance Baby (2009)</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/In%C3%A9z_(singer" rel="noopener">https://en.wikipedia.org/wiki/In%C3%A9z_(singer</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Solomun" rel="noopener">https://en.wikipedia.org/wiki/Solomun</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Solomun_(musician" rel="noopener">https://en.wikipedia.org/wiki/Solomun_(musician</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Solomun">
+        <input type="hidden" name="slug" value="solomun">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Solomun</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

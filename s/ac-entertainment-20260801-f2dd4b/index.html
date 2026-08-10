@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>AC Entertainment — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>AC Entertainment</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-01</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">790</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="6hhxezKV_PM" type="button"><img src="https://i.ytimg.com/vi/6hhxezKV_PM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">A.C. Entertainment Technologies</span></button>
+<button class="vtile" data-yt="LCzDMrlHnw0" type="button"><img src="https://i.ytimg.com/vi/LCzDMrlHnw0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Introducing you to A.C. Entertainment Technologies</span></button>
+<button class="vtile" data-yt="3WCcRiplo20" type="button"><img src="https://i.ytimg.com/vi/3WCcRiplo20/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">AC Entertainment / Aloompa - Project Overview</span></button>
+<button class="vtile" data-yt="cYGaTOo-sI4" type="button"><img src="https://i.ytimg.com/vi/cYGaTOo-sI4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ISE 2019: A.C. Entertainment Technologies Demos VISTA Lighting &amp; Media Control Platform</span></button>
+<button class="vtile" data-yt="kzVy4wELUFw" type="button"><img src="https://i.ytimg.com/vi/kzVy4wELUFw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The AC Entertainment Show Intro</span></button>
+<button class="vtile" data-yt="jGqwl-Llgnk" type="button"><img src="https://i.ytimg.com/vi/jGqwl-Llgnk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">AC Entertainment - Harlem Shake</span></button>
+<button class="vtile" data-yt="ByVaelOhmLo" type="button"><img src="https://i.ytimg.com/vi/ByVaelOhmLo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">SB19 &#x27;LAWLESS&#x27; Music Video</span></button>
+<button class="vtile" data-yt="EwSFG9ijzEU" type="button"><img src="https://i.ytimg.com/vi/EwSFG9ijzEU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Green Hippo Boreal+ MK2 Media Server</span></button>
+<button class="vtile" data-yt="JZjqaR9QhoM" type="button"><img src="https://i.ytimg.com/vi/JZjqaR9QhoM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Centauri Stage Deck</span></button>
+<button class="vtile" data-yt="Y5IRYqLr3FE" type="button"><img src="https://i.ytimg.com/vi/Y5IRYqLr3FE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pandora with the Aventive Group - portrait orientation</span></button>
+<button class="vtile" data-yt="ArAyNDlH3iw" type="button"><img src="https://i.ytimg.com/vi/ArAyNDlH3iw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The AC Entertainment Show S1 EP9 AC Goes to Burger King</span></button>
+<button class="vtile" data-yt="6Vghu4nNNx4" type="button"><img src="https://i.ytimg.com/vi/6Vghu4nNNx4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">National Guitar Day - Appreciating Our Guitarists</span></button>
+<button class="vtile" data-yt="KSlVfnpALR4" type="button"><img src="https://i.ytimg.com/vi/KSlVfnpALR4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">AC Entertainment • Summer Movie Magic • West Side Story • Knoxville, TN</span></button>
+<button class="vtile" data-yt="NurFIE8GQyc" type="button"><img src="https://i.ytimg.com/vi/NurFIE8GQyc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">AC Entertainment Summer Movie Magic North by Northwest • Knoxville, TN</span></button>
+<button class="vtile" data-yt="UoUusDQoWKE" type="button"><img src="https://i.ytimg.com/vi/UoUusDQoWKE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">AC Entertainment • Summer Movie Magic • The Sound of Music • Knoxville, TN</span></button>
+<button class="vtile" data-yt="mX_xiuywlKI" type="button"><img src="https://i.ytimg.com/vi/mX_xiuywlKI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cold Trail teaser trailer</span></button>
+<button class="vtile" data-yt="ZRe_abBwBQ4" type="button"><img src="https://i.ytimg.com/vi/ZRe_abBwBQ4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">AC Entertainment • Summer Movie Magic • Gone with the Wind • Knoxville, TN</span></button>
+<button class="vtile" data-yt="a2gc0qiC2RI" type="button"><img src="https://i.ytimg.com/vi/a2gc0qiC2RI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The AC Ballet Story</span></button>
+<button class="vtile" data-yt="LuXaLlsWF_c" type="button"><img src="https://i.ytimg.com/vi/LuXaLlsWF_c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The AC Entertainment Show S1 EP10: R.I.P. Bluestone 2018-2020</span></button>
+<button class="vtile" data-yt="Dy-yIrJEVgs" type="button"><img src="https://i.ytimg.com/vi/Dy-yIrJEVgs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tivoli Foundation Chooses AC Entertainment to Op</span></button>
+<button class="vtile" data-yt="yJ5cT1Xj0Xo" type="button"><img src="https://i.ytimg.com/vi/yJ5cT1Xj0Xo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Char·ac·ter (2013) Documentary</span></button>
+<button class="vtile" data-yt="CSqL2z9lSvU" type="button"><img src="https://i.ytimg.com/vi/CSqL2z9lSvU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">#001 CineGear 2012 with AC&#x27;s Jon Witmer</span></button>
+<button class="vtile" data-yt="FK1NkHEvGTg" type="button"><img src="https://i.ytimg.com/vi/FK1NkHEvGTg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">AC Entertainment • Young Frankenstein • Tennessee Theatre • Knoxville, TN</span></button>
+<button class="vtile" data-yt="c1UimG-ufrE" type="button"><img src="https://i.ytimg.com/vi/c1UimG-ufrE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">AC Entertainment • Monty Python&#x27;s Spamalot • Tennessee Theatre • Knoxville, TN</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">AC Entertainment is a music promotion company based in Knoxville, Tennessee. The company specializes in venue management and services, event booking and production, and event marketing and sponsorships.</p>
+<p>AC Entertainment is a music promotion company based in Knoxville, Tennessee. The company specializes in venue management and services, event booking and production, and event marketing and sponsorships.</p>
+<h3>company overview</h3>
+<p>Founded in 1991 by Ashley Capps, AC Entertainment produces and promotes a variety of music and performing arts events across the United States, with an emphasis on the Southeast. The company also serves as talent-buyers for several venues throughout the Southeast region. In addition to its event production, the company was involved in starting the alternative weekly Metro Pulse, though the two entities are now independent.</p>
+<h3>festival production</h3>
+<p>AC Entertainment is a co-producer of the Bonnaroo Music &amp; Arts Festival alongside Superfly Productions. They maintain the Great Stage Park festival ground where Bonnaroo is hosted annually. Other festivals produced by the company include the Forecastle Festival in Louisville, Kentucky, WayHome Music &amp; Arts in Barrie, Ontario, and the Big Ears Festival in Knoxville, Tennessee. AC Entertainment also produced the Sloss Music &amp; Arts Festival from 2015 to 2018 and the Mountain Oasis Electronic Music Summit in Asheville, North Carolina in 2013.</p>
+<h3>festival details</h3>
+<p>Bonnaroo is a four-day festival at Great Stage Park on a 750-acre farm in Manchester, Tennessee, featuring diverse musical styles such as Americana, folk, indie rock, hip hop, electronica and reggae. Forecastle is a three-day event in Louisville&#x27;s Waterfront Park with an annual attendance of over 65,000 fans, focusing on music, art, and environmental activism. WayHome Music and Arts Festival is a three-day event held at Burl&#x27;s Creek Event Grounds near Barrie, Ontario. Big Ears is described as an avant-garde boutique festival taking place in historic locations around downtown Knoxville.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Founder:</strong> Ashley Capps</li>
+<li><strong>Headquarters:</strong> Knoxville, Tennessee</li>
+<li><strong>Halleys/Partnership:</strong> Superfly Productions (Bonnaroo co-producer)</li>
+<li><strong>Capps&#x27; Early Career:</strong> Music promoter in Knoxville during the 1970s</li>
+<li><strong>Year Founded:</strong> value: 1991</li>
+<li><strong>// a previous club owned by Capps:</strong> Ella Guru&#x27;s</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/AC" rel="noopener">https://en.wikipedia.org/wiki/AC</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/AC/DC" rel="noopener">https://en.wikipedia.org/wiki/AC/DC</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/AC_Entertainment" rel="noopener">https://en.wikipedia.org/wiki/AC_Entertainment</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="AC Entertainment">
+        <input type="hidden" name="slug" value="ac-entertainment">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — AC Entertainment</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

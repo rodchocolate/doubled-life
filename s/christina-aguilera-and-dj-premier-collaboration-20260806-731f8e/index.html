@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Christina Aguilera and DJ Premier collaboration — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Christina Aguilera and DJ Premier collaboration</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-06</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">906</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="dg8QgUIKXHw" type="button"><img src="https://i.ytimg.com/vi/dg8QgUIKXHw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Christina Aguilera - Can&#x27;t Hold Us Down (Official HD Video)</span></button>
+<button class="vtile" data-yt="5jlI4uzZGjU" type="button"><img src="https://i.ytimg.com/vi/5jlI4uzZGjU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pitbull - Feel This Moment (Official Video) ft. Christina Aguilera</span></button>
+<button class="vtile" data-yt="E-YrLiQWzZY" type="button"><img src="https://i.ytimg.com/vi/E-YrLiQWzZY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">(Subtitulado) Phat Gary on how Christina Aguilera and Dj Premier met each other</span></button>
+<button class="vtile" data-yt="kDwnVOBFzxs" type="button"><img src="https://i.ytimg.com/vi/kDwnVOBFzxs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Diddy [feat. Christina Aguilera] - Tell Me (Official Music Video)</span></button>
+<button class="vtile" data-yt="nkFjRlHu78I" type="button"><img src="https://i.ytimg.com/vi/nkFjRlHu78I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Phat Gary on Managing DJ Premier and Facilitating the Christina Aguilera Collaboration</span></button>
+<button class="vtile" data-yt="sEUEFct7FUY" type="button"><img src="https://i.ytimg.com/vi/sEUEFct7FUY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Christina Aguilera-Standout tracks of 2024-Premier Songs Selection-Fundamental</span></button>
+<button class="vtile" data-yt="LDvhbBjZe6o" type="button"><img src="https://i.ytimg.com/vi/LDvhbBjZe6o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Christina Aguilera-Year&#x27;s blockbuster hits roundup-Premier Tracks Playlist-Esteemed</span></button>
+<button class="vtile" data-yt="5q4FEpE_vuM" type="button"><img src="https://i.ytimg.com/vi/5q4FEpE_vuM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Christina Aguilera-Year&#x27;s chart-topping sensations-Premier Tunes Lineup-Assimilated</span></button>
+<button class="vtile" data-yt="Mf3DgMzdAtA" type="button"><img src="https://i.ytimg.com/vi/Mf3DgMzdAtA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Christina Aguilera-Premier hits roundup for 2024-Premier Songs Mix-Stimulating</span></button>
+<button class="vtile" data-yt="q1uSifgSAhY" type="button"><img src="https://i.ytimg.com/vi/q1uSifgSAhY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Christina Aguilera-Essential hits compilation of 2024-Premier Songs Selection-Significant</span></button>
+<button class="vtile" data-yt="fBW9I6JCKIA" type="button"><img src="https://i.ytimg.com/vi/fBW9I6JCKIA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Christina Aguilera-Hits that captured hearts in 2024-Premier Tracks Collection-Detached</span></button>
+<button class="vtile" data-yt="8YAwh25RDLI" type="button"><img src="https://i.ytimg.com/vi/8YAwh25RDLI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Christina Aguilera-Hit music roundup for 2024-Premier Songs Mix-Irresistible</span></button>
+<button class="vtile" data-yt="Tm-jsmBeAas" type="button"><img src="https://i.ytimg.com/vi/Tm-jsmBeAas/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">[HD] Back To Basics - Making Of - Special DVD Edition - 2006 - UPSCALE</span></button>
+<button class="vtile" data-yt="dysHF-iAnNU" type="button"><img src="https://i.ytimg.com/vi/dysHF-iAnNU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DJ Premier on Gang Starr, Jay-Z, Biggie, and Becoming One of Music’s Biggest Producers</span></button>
+<button class="vtile" data-yt="jd7YBiFRgsQ" type="button"><img src="https://i.ytimg.com/vi/jd7YBiFRgsQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Christina Aguilera - Working On A New Album [READ DESCRIPTION]</span></button>
+<button class="vtile" data-yt="FJFtl3ftCtg" type="button"><img src="https://i.ytimg.com/vi/FJFtl3ftCtg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Off The Record: DJ Premier on D&#x27;Angelo&#x27;s &quot;Devil&#x27;s Pie&quot;</span></button>
+<button class="vtile" data-yt="gsnLkW7_lE8" type="button"><img src="https://i.ytimg.com/vi/gsnLkW7_lE8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DJ Premier Breaks Down His Classics With Nas, JAY-Z, Biggie &amp; Gang Starr | Genius Level</span></button>
+<button class="vtile" data-yt="jpBEdh51Xc8" type="button"><img src="https://i.ytimg.com/vi/jpBEdh51Xc8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Gang Starr - Skills (Explicit)</span></button>
+<button class="vtile" data-yt="kMCGvtlL4fw" type="button"><img src="https://i.ytimg.com/vi/kMCGvtlL4fw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mariah Carey, JAY-Z - Heartbreaker (Official HD Video)</span></button>
+<button class="vtile" data-yt="aWtAMFPJl7E" type="button"><img src="https://i.ytimg.com/vi/aWtAMFPJl7E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DJ Premier on Gang Starr, Creating His Sound and Longevity | Red Bull Music Academy</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Christina Aguilera and DJ Premier are musical collaborators who worked together on Aguilera&#x27;s fifth studio album, Back to Basics. Their partnership was a result of Aguilera recruiting the producer for his jazz-influenced work with Gang Starr.</p>
+<p>Christina Aguilera and DJ Premier are musical collaborators who worked together on Aguilera&#x27;s fifth studio album, Back to Basics. Their partnership was a result of Aguilera recruiting the producer for his jazz-influenced work with Gang Starr.</p>
+<h3>collaboration on back to basics</h3>
+<p>In 2006, Christina Aguilera recruited DJ Premier to produce for her album Back to Basics. Aguilera had known of his jazz-influenced work with Gang Starr in the late 1980s and early 1990s and wanted her album to draw inspirations from his song &#x27;Jazz Thing&#x27;. This collaboration marked DJ Premier&#x27;s first time venturing into the pop world. According to DJ Premier, he was surprised by the call because of the differences in their audiences, but he was open to challenges and trying something new. He noted that Aguilera sent him CDs of music she was grew up on in the early &#x27;70s—including artists like Aretha Franklin, Etta James, and Marvin Gaye—to establish the vibe she wanted.</p>
+<h3>production of &#x27;ain&#x27;t no other man&#x27;</h3>
+<p>DJ Premier produced and co-wrote &#x27;Ain&#x27;t No Other Man&#x27;, the lead single from Back to Basics. He described the track as a &#x27;sassy&#x27; recording similar to Aretha Franklin&#x27;s &#x27;Respect&#x27; and noted its fast pace, which was at 132 beats per minute, differing from his earlier projects. Aguilera was &#x27;in love&#x27; with the high energy of the track when she first heard it, and consequently chose it as the lead single. The song is a pop, funk and R&amp;B song incorporating elements of soul, blues and jazz, featuring a brass sample from &#x27;Hippy Skippy Moon Strut&#x27; by Dave Cortez &amp; The Moon People and a vocal sample from &#x27;The Cissy&#x27;s Thang&#x27; by the Soul Seven.</p>
+<h3>further work</h3>
+<p>DJ Premier Premier explained that while some people expressed reservations about the collaboration, they were later impressed by records like &#x27;Ain&#x27;t No Other Man&#x27; and &#x27;Back In The Day&#x27;. He revealed in an early 2014 interview with New Zealand&#x27;s Rip It Up magazine that he was working with Aguilera again.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Collaborating Album:</strong> Back to Basics (2006)</li>
+<li><strong>Lead Single Produced:</strong> Ain&#x27;t No Other Man</li>
+<li><strong>Key Influence:</strong> DJ Premier&#x27;s song &#x27;Jazz Thing&#x27;</li>
+<li><strong>Genre Blend:</strong> Pop, funk, R&amp;B, soul, blues, and jazz</li>
+<li><strong>Lead Single Tempo:</strong> 132 beats per minute</li>
+<li><strong> :</strong> -</li>
+<li><strong>First Pop Venture:</strong> DJ Premier&#x27;s first time working with pop music</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Ain%27t_No_Other_Man" rel="noopener">https://en.wikipedia.org/wiki/Ain%27t_No_Other_Man</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Back_to_Basics_(Christina_Aguilera_album" rel="noopener">https://en.wikipedia.org/wiki/Back_to_Basics_(Christina_Aguilera_album</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/DJ_Premier" rel="noopener">https://en.wikipedia.org/wiki/DJ_Premier</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Christina Aguilera and DJ Premier collaboration">
+        <input type="hidden" name="slug" value="christina-aguilera-and-dj-premier-collaboration">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Christina Aguilera and DJ Premier collaboration</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Disco — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">concept</div>
+      <h1>Disco</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1169</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="Rmk28nnHASQ" type="button"><img src="https://i.ytimg.com/vi/Rmk28nnHASQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">70s Disco Hits 🪩 Non-Stop Classics That Never Get Old | Stayin&#x27; Alive, Funkytown, Dancing Queen</span></button>
+<button class="vtile" data-yt="wXtqfTd6D8Y" type="button"><img src="https://i.ytimg.com/vi/wXtqfTd6D8Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Golden Disco Era | Bee Gees, ABBA, CHIC, Earth, Wind &amp; Fire, Michael Jackson, Donna Summer, Boney M.</span></button>
+<button class="vtile" data-yt="TsuVAQkfCes" type="button"><img src="https://i.ytimg.com/vi/TsuVAQkfCes/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Disco Music 70s - Video Mix</span></button>
+<button class="vtile" data-yt="XqXcCmFUXXk" type="button"><img src="https://i.ytimg.com/vi/XqXcCmFUXXk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Surf Curse - Disco (Lyrics)</span></button>
+<button class="vtile" data-yt="swtX6w7rwpI" type="button"><img src="https://i.ytimg.com/vi/swtX6w7rwpI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">THE CRAZIEST Disco Music of 2026! Non-Stop Party Music &amp; Party Lights (4K)</span></button>
+<button class="vtile" data-yt="bSrqmge_vyo" type="button"><img src="https://i.ytimg.com/vi/bSrqmge_vyo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ultimate 70s &amp; 80s Disco Classics | Bee Gees, ABBA, Donna Summer, Michael Jackson</span></button>
+<button class="vtile" data-yt="Yc8o4564K3k" type="button"><img src="https://i.ytimg.com/vi/Yc8o4564K3k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DISCO FEVER FOREVER ✨ | The Greatest 70s Party Hits</span></button>
+<button class="vtile" data-yt="EsV9Xwz2u0w" type="button"><img src="https://i.ytimg.com/vi/EsV9Xwz2u0w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Disco Funky House #10 (Gloria Estefan, Kool &amp; The Gang, The Emotions, D Train, Michael Gray...)</span></button>
+<button class="vtile" data-yt="K9G3OSrAT-E" type="button"><img src="https://i.ytimg.com/vi/K9G3OSrAT-E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Golden Hits of Disco 80/90 Vol. 1 (Various artists)</span></button>
+<button class="vtile" data-yt="qizKODkJVdY" type="button"><img src="https://i.ytimg.com/vi/qizKODkJVdY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">70&#x27;s Best Disco, Funk &amp; R&#x27;n&#x27;B Hits Vol.1 (Serega Bolonkin Video Mix) │ Лучшие танцевальные хиты 70-х</span></button>
+<button class="vtile" data-yt="nSREc0Wqzf0" type="button"><img src="https://i.ytimg.com/vi/nSREc0Wqzf0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">PURE 70s &amp; 80s DISCO GOLD: The Ultimate Dance Floor Classics</span></button>
+<button class="vtile" data-yt="aEELsfjJ7pw" type="button"><img src="https://i.ytimg.com/vi/aEELsfjJ7pw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Disco Mix 1 - 70s 80s | 🎵 Bee Gees, Boney M, Abba, Donna Summer Etc</span></button>
+<button class="vtile" data-yt="FFWWnbWMYbc" type="button"><img src="https://i.ytimg.com/vi/FFWWnbWMYbc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">(Disco Music Documentary/Film) The Secret Disco Revolution (Full HQ 2012 Movie)</span></button>
+<button class="vtile" data-yt="8YgPG8Ikg2g" type="button"><img src="https://i.ytimg.com/vi/8YgPG8Ikg2g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">When Disco Ruled The World (DISCO DocuMENTARY)</span></button>
+<button class="vtile" data-yt="bpGBXELNCRE" type="button"><img src="https://i.ytimg.com/vi/bpGBXELNCRE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">&quot;Studio 54: The Documentary&quot; (2018) @DrDocRP</span></button>
+<button class="vtile" data-yt="oeKUZbGNeIk" type="button"><img src="https://i.ytimg.com/vi/oeKUZbGNeIk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Studio 54 Behind The Scenes Documentary</span></button>
+<button class="vtile" data-yt="5kunzv5Gs-A" type="button"><img src="https://i.ytimg.com/vi/5kunzv5Gs-A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Disco Diva&#x27;s: The Queens of Disco (BBC music documentary 2012)</span></button>
+<button class="vtile" data-yt="q_c2dCO5WLo" type="button"><img src="https://i.ytimg.com/vi/q_c2dCO5WLo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Untold History of Disco</span></button>
+<button class="vtile" data-yt="2-MDun9lyDk" type="button"><img src="https://i.ytimg.com/vi/2-MDun9lyDk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">When Disco Ruled The World (BBC 2002)</span></button>
+<button class="vtile" data-yt="ZmbhyH-3_5g" type="button"><img src="https://i.ytimg.com/vi/ZmbhyH-3_5g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Rhythm Divine - The Story Of Disco 1991 Documentary</span></button>
+<button class="vtile" data-yt="h6i-em3Le50" type="button"><img src="https://i.ytimg.com/vi/h6i-em3Le50/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The rise and fall of disco | What the History?!</span></button>
+<button class="vtile" data-yt="kKMC4iX7DTw" type="button"><img src="https://i.ytimg.com/vi/kKMC4iX7DTw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">70&#x27;s Disco Explosion VH1</span></button>
+<button class="vtile" data-yt="HmkVdpJrQoo" type="button"><img src="https://i.ytimg.com/vi/HmkVdpJrQoo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The War on Disco | Chapter 1 | AMERICAN EXPERIENCE | PBS</span></button>
+<button class="vtile" data-yt="tp8K_vwI9u4" type="button"><img src="https://i.ytimg.com/vi/tp8K_vwI9u4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How House Music Was Born (Music Documentary)</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Disco is a genre of dance music and a subculture that emerged from the urban nightlife scene of the United States in the late 1960s. Its sound is characterized by four-on-the-floor beats, syncopated basslines, and various instruments including synthesizers, electric pianos, and b</p>
+<p>Disco is a genre of dance music and a subculture that emerged from the urban nightlife scene of the United States in the late 1960s. Its sound is characterized by four-on-the-floor beats, syncopated basslines, and various instruments including synthesizers, electric pianos, and brass. The term &#x27;disco&#x27; is shorthand for discotheque, a French word meaning &#x27;library of phonograph records&#x27;.</p>
+<h3>origins and development</h3>
+<p>Disco music began as a mixture of music from venues popular among Italian Americans, Latino Americans, and African Americans in Philadelphia, Baltimore, and New York City (specifically Brooklyn) during the late 1960s to mid-to-late 1970s. It was developed further by artists and record producers from Europe and the United Kingdom, and later became a reaction by the 1960s counterculture against the dominance of rock music and the stigmatization of dance music. The genre&#x27;s popularity in the United States grew with the help of hit films such as Thank God It&#x27;s Friday (1978) and Saturday Night Fever (1977), which helped popularize the genre mainstreamly. In New York, WKTU became the most popular station in the country after switching to disco in 1978.</p>
+<h3>musical characteristics</h3>
+<p>Disco typically features soaring, often-reverberated vocals over a background &#x27;pad&#x27; of electric pianos and &#x27;chicken-scratch&#x27; rhythm guitars. The rhythm is driven by a steady four-on-the-floor beat set by a bass drum, a heavy syncopated bass line, and hi-hat patterns with an open hissing hi-hat on the off-beat. In Philly dance and Salsoul disco, the sound was enriched with orchestral instruments such as flute, violin, viola, cello, trumpet, saxophone, trombone, flugelhorn, French horn, English horn, oboe and timpani. Other backing keyboard instruments include string synthesizers, electric organ, piano, and electromechanical keyboards like the Hohner Clavinet, Wurlitzer electric piano, and Fender Rhodes electric piano. Donna Summer&#x27;s 1977 song &#x27;I Feel Love&#x27;, produced by Giorgio Moroder, was one of the first disco tracks to use the synthesizer.</p>
+<h3>subculture and decline</h3>
+<p>The disco subculture included nightclubs known as discotheques, which were a French invention imported to the US by Olivier Coquelin with the opening of Le Club in Manhattan on New Year&#x27;s Eve 1960. Popular venues like Studio 54 in Manhattan were frequented by celebrities and attendees often wore extravagant, expensive outfits consisting of loose flowing pants or dresses. The scene was also associated with promiscuity and a drug subculture involving cocaine and quaaludes (nicknamed &#x27;disco biscuits&#x27;). Disco declined as a major trend in the US following the July 12, 1979, Disco Demolition Night at Comiskey Park in Chicago, which ended in a riot. While it sharply declined in popularity in the US during the early 1980s, it remained popular in Italy and some European countries throughout the 1980s, and later became trendy in India and the Middle East where it was blended with regional folk styles like belly dancing and ghazals.</p>
+<h3>legacy and revivals</h3>
+<p>Disco would eventually become a key influence in the development of house music, electronic dance music, hip-hop, new wave, dance-punk, and post-disco. The style has had several revivals since the 1990s, and a revival that began in the early 2010s gained great popularity in the early 2020s.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Etymology:</strong> Shorthand for discotheque, a French word meaning &#x27;library of phonograph records&#x27;.</li>
+<li><strong>Mainstream Popularity Drivers:</strong> Films such as Saturday Night Fever (1977) and Thank God It&#x27;s Friday (1978).</li>
+<li><strong>Key Instruments:</strong> Four-on-the-floor beats, syncopated basslines, string sections, brass and horns, electric pianos, synthesizers, and electric rhythm guitars.</li>
+<li><strong>label own:</strong> The &#x27;rooster scratch&#x27; sound is achieved by lightly pressing guitar strings against the fretboard and then quickly releasing them to get a slightly muted poker sound while strumming close to the bridge.</li>
+<li><strong>US Decline Event:</strong> Disco Demolition Night on July 12, 1979.</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Disco" rel="noopener">https://en.wikipedia.org/wiki/Disco</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Disco_(disambiguation" rel="noopener">https://en.wikipedia.org/wiki/Disco_(disambiguation</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Disco_Demolition_Night" rel="noopener">https://en.wikipedia.org/wiki/Disco_Demolition_Night</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Disco">
+        <input type="hidden" name="slug" value="disco">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Disco</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

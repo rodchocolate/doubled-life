@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>The Chemical Brothers — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">artist</div>
+      <h1>The Chemical Brothers</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1046</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="LO2RPDZkY88" type="button"><img src="https://i.ytimg.com/vi/LO2RPDZkY88/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Chemical Brothers - Go (Official Music Video) ft. Q-Tip</span></button>
+<button class="vtile" data-yt="tpKCqp9CALQ" type="button"><img src="https://i.ytimg.com/vi/tpKCqp9CALQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Chemical Brothers - Hey Boy Hey Girl (Official Music Video)</span></button>
+<button class="vtile" data-yt="Xu3FTEmN-eg" type="button"><img src="https://i.ytimg.com/vi/Xu3FTEmN-eg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Chemical Brothers - Galvanize</span></button>
+<button class="vtile" data-yt="iTxOKsyZ0Lw" type="button"><img src="https://i.ytimg.com/vi/iTxOKsyZ0Lw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Chemical Brothers - Block Rockin&#x27; Beats (Official Music Video)</span></button>
+<button class="vtile" data-yt="s5FyfQDO5g0" type="button"><img src="https://i.ytimg.com/vi/s5FyfQDO5g0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Chemical Brothers - Let Forever Be ft. Noel Gallagher</span></button>
+<button class="vtile" data-yt="L0dxByaPWhM" type="button"><img src="https://i.ytimg.com/vi/L0dxByaPWhM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Chemical Brothers - Elektrobank (Official Music Video)</span></button>
+<button class="vtile" data-yt="BC2dRkm8ATU" type="button"><img src="https://i.ytimg.com/vi/BC2dRkm8ATU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Chemical Brothers - Wide Open ft. Beck</span></button>
+<button class="vtile" data-yt="yhS9LnDoo_w" type="button"><img src="https://i.ytimg.com/vi/yhS9LnDoo_w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Chemical Brothers - The Test (Official Music Video)</span></button>
+<button class="vtile" data-yt="0S43IwBF0uM" type="button"><img src="https://i.ytimg.com/vi/0S43IwBF0uM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Chemical Brothers - Star Guitar</span></button>
+<button class="vtile" data-yt="pxHELkeLz_0" type="button"><img src="https://i.ytimg.com/vi/pxHELkeLz_0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Chemical Brothers - Go (Lyrics)</span></button>
+<button class="vtile" data-yt="sXMhGADyMxE" type="button"><img src="https://i.ytimg.com/vi/sXMhGADyMxE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Chemical Brothers - Escape Velocity (Official Music Video)</span></button>
+<button class="vtile" data-yt="rSYwtllbweY" type="button"><img src="https://i.ytimg.com/vi/rSYwtllbweY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Chemical Brothers - Got To Keep On (Official Music Video)</span></button>
+<button class="vtile" data-yt="Tc0T0LWvDP0" type="button"><img src="https://i.ytimg.com/vi/Tc0T0LWvDP0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Chemical Brothers 2003 Documentary - 10 Years of Block Rockin Beats</span></button>
+<button class="vtile" data-yt="5J-69m4whdE" type="button"><img src="https://i.ytimg.com/vi/5J-69m4whdE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How The Chemical Brothers Sparked a Music REVOLUTION</span></button>
+<button class="vtile" data-yt="B1id_IABIYU" type="button"><img src="https://i.ytimg.com/vi/B1id_IABIYU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Acetate - BBC2 Documentary - Episode 01 (1999)</span></button>
+<button class="vtile" data-yt="hBK8PNp0BJc" type="button"><img src="https://i.ytimg.com/vi/hBK8PNp0BJc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Inside The Chemical Brothers Stage Performance: A Behind-the-Scenes Look with Matt From Gravity Rigs</span></button>
+<button class="vtile" data-yt="4Z_bf-NDMBo" type="button"><img src="https://i.ytimg.com/vi/4Z_bf-NDMBo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Chemical Brothers: &#x27;We Always Look For Instrumental Records With Strange Noises&#x27; | Interview</span></button>
+<button class="vtile" data-yt="dpInA6eF-H8" type="button"><img src="https://i.ytimg.com/vi/dpInA6eF-H8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Chemical Brothers &quot;Let Forever Be&quot; | One Song Podcast - Full Episode</span></button>
+<button class="vtile" data-yt="uptbJ4mhq1Q" type="button"><img src="https://i.ytimg.com/vi/uptbJ4mhq1Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Chemical Brothers Rare Interview</span></button>
+<button class="vtile" data-yt="jscXgPGPZds" type="button"><img src="https://i.ytimg.com/vi/jscXgPGPZds/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Beth Orton on the Chemical Brothers</span></button>
+<button class="vtile" data-yt="9NXhrs_CFFM" type="button"><img src="https://i.ytimg.com/vi/9NXhrs_CFFM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Chemical Brothers Dont Think Live Japan 2012 HD</span></button>
+<button class="vtile" data-yt="qM3G5i-oaU8" type="button"><img src="https://i.ytimg.com/vi/qM3G5i-oaU8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Noel Gallagher interview on the Chemical Brothers</span></button>
+<button class="vtile" data-yt="L7FC0cwrzi8" type="button"><img src="https://i.ytimg.com/vi/L7FC0cwrzi8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Chemical Brothers Interview 1995.</span></button>
+<button class="vtile" data-yt="Kk30nAVQr1M" type="button"><img src="https://i.ytimg.com/vi/Kk30nAVQr1M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">THE CHEMICAL BROTHERS @ CORONA CAPITAL 2023 (FULL CONCERT)</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The Chemical Brothers are an English electronic music duo consisting of Tom Rowlands and Ed Simons, formed in Manchester in 1992. They were pioneers of the big beat genre and achieved significant commercial success with several number one albums in the UK.</p>
+<p>The Chemical Brothers are an English electronic music duo consisting of Tom Rowlands and Ed Simons, formed in Manchester in 1992. They were pioneers of the big beat genre and achieved significant commercial success with several number one albums in the UK.</p>
+<h3>formation and early career</h3>
+<p>Ed Simons and Tom Rowlands met at the University of Manchester in 1989, where they shared an interest in raves and club-going. Before forming the duo, Rowlands was part of a band called Ariel, which signed to deConstruction records. After Ariel fell apart, Rowlands and Simons began DJing in 1992 at Naked Under Leather, using the same alias &#x27;237 Turbo Nutters&#x27;. They initially called themselves The Dust Brothers, taking the name from a US production duo. To avoid confusion with the same-named US group, they changed their name to the Chemical Brothers in 1995 after the track &#x27;Chemical Beats&#x27;.</p>
+<p>Early recordings were produced using a Hitachi hi-fi system, an Atari ST, a sampler, and a keyboard. Their first release, &#x27;Song to the Siren&#x27;, was released on their own label, Diamond Records, before being signed by Junior Boy&#x27;s Own. {// a bit more detail on early works like Fourteenth Century Sky EP and My Mercury Mouth EP}</p>
+<h3>musical evolution and albums</h3>
+<p>The duo&#x27;s debut album, Exit Planet Dust (1995), sold over a million copies worldwide and debuted at No. 9 on the UK Albums Chart. Following their signing to Virgin Records, they released several number one albums in the qualidade own hole (1997) and Surrender (1999). Dig Your Own Hole and Surrender explored various electronic styles, including house music and rave sounds. Their subsequent albums Come with Us (2003), Push the Button (2005), and We Are The Night (2007) all reached number one in the UK.</p>
+<p>Their third album, Surrender, was more experimental than previous efforts, featuring guest vocalists such as Noel Gallagher, Bernard Sumner, Hope Sandoval, and Jonathan Donahue. The album&#x27;s cover art, created by Kate Gibb, was a treatment of a photograph called &#x27;Jesus Amongst the Fans&#x27;.</p>
+<p>More recent work includes the 2015 album Born in the Echoes, which produced the single &#x27;Go&#x27;, written and produced with American rapper Q-Tip.</p>
+<h3>collaborations and achievements</h3>
+<p>The duo has collaborated with a wide range of guest vocalists including Beth Orton, Noel Gallagher, Bernard Sumner, Q-Tip, St. Vincent, Beck, and Aurora. Tom Rowlands has also formed a supergroup called Tomora with Aurora.</p>
+<p>In terms of achievements, they have won six Grammy Awards, including Best Rock Instrumental Performance, and Best Dance/Electronic Album for No Geography (2018).</p>
+<p>Their music has been featured in various media, usage in the racing video game Need for Speed (2015), the 2022 DreamWorks Animation film The Bad Guys, and the horror survivalist film Apex (2026).</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Formed:</strong> 1992 in Manchester</li>
+<li><strong> :</strong> -</li>
+<li><strong>Grammy Awards:</strong> 6</li>
+<li><strong>label: Debut Album:</strong> Exit Planet Dust (1995)</li>
+<li><strong>Chart-topping Albums:</strong> Dig Your Own Hole, Surrender, Come with Us, Push the Button, We Are The Night</li>
+<li><strong>label: Members:</strong> Tom Rowlands and Ed Simons</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Go_(The_Chemical_Brothers_song" rel="noopener">https://en.wikipedia.org/wiki/Go_(The_Chemical_Brothers_song</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Surrender_(The_Chemical_Brothers_album" rel="noopener">https://en.wikipedia.org/wiki/Surrender_(The_Chemical_Brothers_album</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/The_Chemical_Brothers" rel="noopener">https://en.wikipedia.org/wiki/The_Chemical_Brothers</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="The Chemical Brothers">
+        <input type="hidden" name="slug" value="the-chemical-brothers">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — The Chemical Brothers</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

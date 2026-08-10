@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>The Roxy Theatre — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">place</div>
+      <h1>The Roxy Theatre</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">12</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1026</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="pHopUpLmEzI" type="button"><img src="https://i.ytimg.com/vi/pHopUpLmEzI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Linkin Park - Los Angeles, The Roxy Theatre 2000 (Full Show)</span></button>
+<button class="vtile" data-yt="ScALtJXgWJ8" type="button"><img src="https://i.ytimg.com/vi/ScALtJXgWJ8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Roxy Theatre The Legendary Heart of Rock &amp; Roll in Los Angeles</span></button>
+<button class="vtile" data-yt="7WVtUTpd3_A" type="button"><img src="https://i.ytimg.com/vi/7WVtUTpd3_A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Avril Lavigne - Live at Roxy Theatre 2007 - Full concert HD</span></button>
+<button class="vtile" data-yt="1pJMEWXOqhM" type="button"><img src="https://i.ytimg.com/vi/1pJMEWXOqhM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Roxy Theatre Has Opened!</span></button>
+<button class="vtile" data-yt="lnDqHppWS_Q" type="button"><img src="https://i.ytimg.com/vi/lnDqHppWS_Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Frank Zappa at The Roxy Theatre - 1973 Video concert</span></button>
+<button class="vtile" data-yt="Afn39Dtvlnc" type="button"><img src="https://i.ytimg.com/vi/Afn39Dtvlnc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">One of the last remaining atmospheric theatres in North America, The Roxy Theatre, turns 90</span></button>
+<button class="vtile" data-yt="okHo6po_q74" type="button"><img src="https://i.ytimg.com/vi/okHo6po_q74/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ratt - You&#x27;re In Love [LIVE] 01.21.26 The Roxy Theatre - Hollywood, CA</span></button>
+<button class="vtile" data-yt="se2ghMONNso" type="button"><img src="https://i.ytimg.com/vi/se2ghMONNso/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ratt - Lay It Down [LIVE] 01.21.26 The Roxy Theatre - Hollywood, CA</span></button>
+<button class="vtile" data-yt="1PBACOVS-vU" type="button"><img src="https://i.ytimg.com/vi/1PBACOVS-vU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Large Crowd Outside of Roxy Theatre in WeHo Requires Police Dispersal</span></button>
+<button class="vtile" data-yt="UI_-BvcFYPw" type="button"><img src="https://i.ytimg.com/vi/UI_-BvcFYPw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bob marley - 76-05-26 Live at the roxy, Hollywood ( full concert )</span></button>
+<button class="vtile" data-yt="IE0lAfjoT9o" type="button"><img src="https://i.ytimg.com/vi/IE0lAfjoT9o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Time Concert | The Roxy Theater, guest Prince, Los Angeles (1982) ​⁠​⁠@duane.PrinceDMSR</span></button>
+<button class="vtile" data-yt="P1AkfLK8OEo" type="button"><img src="https://i.ytimg.com/vi/P1AkfLK8OEo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Roxy Theatre shows movies again after more than 15 months</span></button>
+<button class="vtile" data-yt="y0fnoB-haQk" type="button"><img src="https://i.ytimg.com/vi/y0fnoB-haQk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">A tour of the Roxy Theatre in 1991, shot by Jimi Fritz</span></button>
+<button class="vtile" data-yt="RjVeRCxbNUg" type="button"><img src="https://i.ytimg.com/vi/RjVeRCxbNUg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Mythic Frank Zappa Film That Was Lost For 40 Years</span></button>
+<button class="vtile" data-yt="YAe25_LW2lk" type="button"><img src="https://i.ytimg.com/vi/YAe25_LW2lk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Dark Story of America&#x27;s Most Luxurious Movie Palace: The Roxy</span></button>
+<button class="vtile" data-yt="AsFHaGKohkc" type="button"><img src="https://i.ytimg.com/vi/AsFHaGKohkc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Roxy: 50 and Still Rockin&#x27;</span></button>
+<button class="vtile" data-yt="oF1rjyGEzeM" type="button"><img src="https://i.ytimg.com/vi/oF1rjyGEzeM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">6 ABC Report on Philadelphia Film Society Takeover of Roxy Theater</span></button>
+<button class="vtile" data-yt="01wRom--FgY" type="button"><img src="https://i.ytimg.com/vi/01wRom--FgY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Roxy Theatre Sunset Strip in West Hollywood, California 4K</span></button>
+<button class="vtile" data-yt="FehYUiA9i_g" type="button"><img src="https://i.ytimg.com/vi/FehYUiA9i_g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The New Roxy Theater</span></button>
+<button class="vtile" data-yt="E3FuWXrZ2Zo" type="button"><img src="https://i.ytimg.com/vi/E3FuWXrZ2Zo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">History of the Roxy Theater</span></button>
+<button class="vtile" data-yt="r9xfck3OQ7E" type="button"><img src="https://i.ytimg.com/vi/r9xfck3OQ7E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nic Adler is owner of the legendary Roxy Theatre located on Los Angeles&#x27; Sunset Strip</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The Roxy Theatre is a nightclub located on the Sunset Strip in West Hollywood, California. It is currently owned by Lou Adler and his son, Nic.</p>
+<p>The Roxy Theatre is a nightclub located on the Sunset Strip in West Hollywood, California. It is currently owned by Lou Adler and his son, Nic.</p>
+<h3>history</h3>
+<p>Prior to 1969, the venue was known as the Largo, an upscale burlesque club. The Roxy Theatre opened on September 20, 1973, founded by Elmer Valentine and Lou Adler, along with original partners David Geffen, Elliot Roberts, and Peter Asher. In 1974, it hosted the first American run of the stage play The Rocky Horror Show. In January 2014, Goldenvoice became the exclusive promoter for the theatre, bringing in high-profile acts such as Foo Fighters and U2.</p>
+<h3>notable performances and recordings</h3>
+<p>The venue has hosted a wide array of performances and recordings. Neil Young recorded his live album Roxy: Tonight&#x27;s The Night Live during the first three days of the theatre&#x27;s opening in 1973. Bruce Springsteen &amp; the E Street Band recorded tracks for their Live/1975-85 album here, and Frank Zappa &amp; The Mothers of Invention recorded most of the Roxy and Elsewhere (1974) album in December 1973. Bob Marley &amp; The Wailers played several shows including a 1976 recording session for Live at the Roxy. The Ramones played their first California concert here on August 11, 1976, and filmed scenes for their movie Rock &#x27;n&#x27; Roll High School in December 1978. Genesis played six shows over three days in December 1973 and again in May 1980. Other notable recordings include live albums by The Tragically Hip (1991), NOFX (1995), and Social Distortion (1998). More recent performances include Adele&#x27;s debut concert tour &#x27;An Evening with Adele&#x27; on May 21, 2008.</p>
+<h3>comedy and other events</h3>
+<p>The Roxy Theatre has also served as a venue for comedy and residency-style runs. Paul Reubens introduced his Pee-wee Herman character in a revue in 1981, and Tom Eyen&#x27;s hit comedy Women Behind Bars enjoyed a long extended run. The theatre was the site of the first AIDS benefit held in Los Angeles on July 27, 1983.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Location:</strong> Sunset Strip, West Hollywood Strip, California</li>
+<li><strong>Opening Date:</strong> September 20, 1973</li>
+<li><strong>Owners:</strong> Lou Adler and Nic Adler</li>
+<li><strong>Former Name:</strong> Largo</li>
+<li><strong>Exclusive Promoter (since 2014):</strong> Goldenvoice</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Chris_Robinson_(singer" rel="noopener">https://en.wikipedia.org/wiki/Chris_Robinson_(singer</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Roxy_Theatre_(West_Hollywood,_California" rel="noopener">https://en.wikipedia.org/wiki/Roxy_Theatre_(West_Hollywood,_California</a></li>
+          <li><a href="https://www.setlist.fm/setlist/free-throw/2026/the-roxy-west-hollywood-ca-2b70d876.html" rel="noopener">https://www.setlist.fm/setlist/free-throw/2026/the-roxy-west-hollywood-ca-2b70d876.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/glom/2026/the-roxy-west-hollywood-ca-3370d871.html" rel="noopener">https://www.setlist.fm/setlist/glom/2026/the-roxy-west-hollywood-ca-3370d871.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/jesse-malin/2026/the-roxy-west-hollywood-ca-5b496780.html" rel="noopener">https://www.setlist.fm/setlist/jesse-malin/2026/the-roxy-west-hollywood-ca-5b496780.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/kylie-cantrall/2026/the-roxy-west-hollywood-ca-4b709b52.html" rel="noopener">https://www.setlist.fm/setlist/kylie-cantrall/2026/the-roxy-west-hollywood-ca-4b709b52.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/mack-keane/2026/the-roxy-west-hollywood-ca-b73d16e.html" rel="noopener">https://www.setlist.fm/setlist/mack-keane/2026/the-roxy-west-hollywood-ca-b73d16e.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/prima-donna/2026/the-roxy-west-hollywood-ca-4b496786.html" rel="noopener">https://www.setlist.fm/setlist/prima-donna/2026/the-roxy-west-hollywood-ca-4b496786.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/sincere-engineer/2026/the-roxy-west-hollywood-ca-4376c377.html" rel="noopener">https://www.setlist.fm/setlist/sincere-engineer/2026/the-roxy-west-hollywood-ca-4376c377.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/slow-joy/2026/the-roxy-west-hollywood-ca-23709c6b.html" rel="noopener">https://www.setlist.fm/setlist/slow-joy/2026/the-roxy-west-hollywood-ca-23709c6b.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/the-coverups/2026/the-roxy-west-hollywood-ca-73733211.html" rel="noopener">https://www.setlist.fm/setlist/the-coverups/2026/the-roxy-west-hollywood-ca-73733211.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/the-death-chat/2026/the-roxy-west-hollywood-ca-2373440f.html" rel="noopener">https://www.setlist.fm/setlist/the-death-chat/2026/the-roxy-west-hollywood-ca-2373440f.html</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="The Roxy Theatre">
+        <input type="hidden" name="slug" value="the-roxy-theatre">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — The Roxy Theatre</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

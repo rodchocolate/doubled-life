@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Amy Winehouse — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Amy Winehouse</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-06</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1055</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="TJAfLE39ZZ8" type="button"><img src="https://i.ytimg.com/vi/TJAfLE39ZZ8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Amy Winehouse - Back To Black</span></button>
+<button class="vtile" data-yt="KUmZp8pR1uc" type="button"><img src="https://i.ytimg.com/vi/KUmZp8pR1uc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Amy Winehouse - Rehab</span></button>
+<button class="vtile" data-yt="b-I2s5zRbHg" type="button"><img src="https://i.ytimg.com/vi/b-I2s5zRbHg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Amy Winehouse - You Know I&#x27;m No Good</span></button>
+<button class="vtile" data-yt="ojdbDYahiCQ" type="button"><img src="https://i.ytimg.com/vi/ojdbDYahiCQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Amy Winehouse - Tears Dry On Their Own</span></button>
+<button class="vtile" data-yt="AL-nv-7TIws" type="button"><img src="https://i.ytimg.com/vi/AL-nv-7TIws/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Amy Winehouse - Back To Black (Live at Other Voices, 2006)</span></button>
+<button class="vtile" data-yt="8Syj23n5k_w" type="button"><img src="https://i.ytimg.com/vi/8Syj23n5k_w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">amy winehouse being my favourite person ever for 15 minutes</span></button>
+<button class="vtile" data-yt="7CYE0DYIbaw" type="button"><img src="https://i.ytimg.com/vi/7CYE0DYIbaw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Amy Winehouse - Stronger Than Me</span></button>
+<button class="vtile" data-yt="6pAz9UpnRKw" type="button"><img src="https://i.ytimg.com/vi/6pAz9UpnRKw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Amy Winehouse - Valerie (Acoustic, Live, Best Quality)</span></button>
+<button class="vtile" data-yt="9PpWBS3mf7w" type="button"><img src="https://i.ytimg.com/vi/9PpWBS3mf7w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">I Heard It Through The Grapevine (Live On Jools Holland Hootenanny / 2006)</span></button>
+<button class="vtile" data-yt="10mtKRbipa4" type="button"><img src="https://i.ytimg.com/vi/10mtKRbipa4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Amy Winehouse’s final show was an unbelievable catastrophe</span></button>
+<button class="vtile" data-yt="xdi_yuSgQw8" type="button"><img src="https://i.ytimg.com/vi/xdi_yuSgQw8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Amy Winehouse - In My Bed</span></button>
+<button class="vtile" data-yt="jIx76YKwY-4" type="button"><img src="https://i.ytimg.com/vi/jIx76YKwY-4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Amy Winehouse - Isle Of Wight 2007</span></button>
+<button class="vtile" data-yt="xhpq885P_qE" type="button"><img src="https://i.ytimg.com/vi/xhpq885P_qE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fatal Addiction: Amy Winehouse (FULL MOVIE) Biopic, Biography, Documentary, Back to Black Movie</span></button>
+<button class="vtile" data-yt="OIYKDdsYsYs" type="button"><img src="https://i.ytimg.com/vi/OIYKDdsYsYs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Amy Winehouse: The Price of Fame (FULL DOCUMENTARY) Back to Black, Movie, Biography, Biopic</span></button>
+<button class="vtile" data-yt="djNWXp8ON3Y" type="button"><img src="https://i.ytimg.com/vi/djNWXp8ON3Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Amy Winehouse (Full) The Untold Story - Documentary Channel 5</span></button>
+<button class="vtile" data-yt="_2yCIwmNuLE" type="button"><img src="https://i.ytimg.com/vi/_2yCIwmNuLE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Amy | Official Trailer HD | A24</span></button>
+<button class="vtile" data-yt="3su4q5fVGQg" type="button"><img src="https://i.ytimg.com/vi/3su4q5fVGQg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Amy | In the Studio with Mark Ronson | Official Movie Clip HD | A24</span></button>
+<button class="vtile" data-yt="RBXV-n1JzH4" type="button"><img src="https://i.ytimg.com/vi/RBXV-n1JzH4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Amy Winehouse: a study into the most DISRESPECTFUL biopic</span></button>
+<button class="vtile" data-yt="H0yL9AAcTFA" type="button"><img src="https://i.ytimg.com/vi/H0yL9AAcTFA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Adele Speaks On Amy Winehouse</span></button>
+<button class="vtile" data-yt="8N50ejWJDuA" type="button"><img src="https://i.ytimg.com/vi/8N50ejWJDuA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Amy Winehouse: A Final Goodbye (FULL MOVIE) Back to Black, Documentary, Biography, Biopic</span></button>
+<button class="vtile" data-yt="ddRN5lYMTJY" type="button"><img src="https://i.ytimg.com/vi/ddRN5lYMTJY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Lady Gaga talks about Amy Winehouse and drug addiction (2011)</span></button>
+<button class="vtile" data-yt="q6vVCUPPg6I" type="button"><img src="https://i.ytimg.com/vi/q6vVCUPPg6I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Amy Winehouse Documentary</span></button>
+<button class="vtile" data-yt="TZqnWIxS81U" type="button"><img src="https://i.ytimg.com/vi/TZqnWIxS81U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Haunting Full Trailer for the Amy Winehouse Documentary &#x27;Amy&#x27; Debuts</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Amy Winehouse was a British singer, songwriter, musician, and businesswoman known for her distinctive contralto vocals and an eclectic blend of soul, rhythm and blues, and jazz. Her music, fashion, and highly publicised personal life made her an influential figure in popular cult</p>
+<p>Amy Winehouse was a British singer, songwriter, musician, and businesswoman known for her distinctive contralto vocals and an eclectic blend of soul, rhythm and blues, and jazz. Her music, fashion, and highly publicised personal life made her an influential figure in popular culture.</p>
+<h3>early life and education</h3>
+<p>Born to a Jewish family in Enfield, London, on 14 September 1983, Winehouse was raised in Southgate and attended Osidge Primary School and later Ashmole School. As a child, she attended a weekly cheder, though she grew up in a지 jazz-influenced household with parents Mitchell &quot;Mitch&quot; Winehouse and Janis Winehouse. Her father, an amateur singer and taxi driver, and her paternal grandmother, Cynthia, who had been a singer and dated jazz saxophonist Ronnie Scott, nurtured her early interest in jazz. In 1992, she attended the Susi Earnshaw Theatre School and later the Sylvia Young Theatre School, and briefly went to the BRIT School in Selhurst, Croydon. She also attended the Mount School in Mill Hill. After experimenting with her brother&#x27;s guitar, she purchased her own at age 15 and began writing music a year later. Before her professional career, she worked as an entertainment journalist for the World Entertainment News Network and was a vocalist for the National Youth Jazz Orchestra.</p>
+<h3>musical career</h3>
+<p>Winehouse&#x27;s professional career began in 2002 when she signed with Simon Fuller&#x27;s 19 Management. After being kept as a recording industry secret, she was signed to Island Records in 2002 by A&amp;R representative Darcus Beese. She worked with producer Salaam Remi for her debut studio album, Frank (2003), which received critical acclaim for its mature songwriting and jazz-imbued production. The album earned her an Ivor Novello Award for the lead single &quot;Stronger Than Me&quot;.</p>
+<p>Inspired by 1960s girl groups and soul music, Winehouse recorded her second studio album, Back to Black (2006), with Remi, Mark Ronson and the Dap-Kings. This album became an international critical and commercial success and one of the best-selling albums of all time, selling over 20 million copies worldwide. Its lead single, &quot;Rehab&quot;, won her a second Ivor Novello Award and three of the</p>
+<h3>later life and legacy</h3>
+<p>Winehouse&#x27;s career was often overshadowed by substance abuse, mental illness, and addiction, culminating in her death from alcohol poisoning. Her brother Alex believed bulimia was also a factor. In 2015, the documentary Amy was released to depict her life and career, and in 2024, her story was dramatised in the biopic Back to Black. In 2023, Rolling Stone included her on its list of the 200 Greatest Singers of All Time. Additionally, the album Back to Black was preserved in the National Recording Registry by the Library of Congress in 2025.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Born:</strong> 14 September 1983</li>
+<li><strong>Died:</strong> 23 July 2011</li>
+<li><strong>Succeeded in selling over:</strong> 30 million records worldwide</li>
+<li><strong>Grammy Awards won:</strong> Five awards at the 50th Annual Grammy Awards in 2008</li>
+<li><strong>Crtitically acclaimed albums:</strong> Frank (2003) and Back to Black (2006)</li>
+<li><strong>label: &quot;Grammy Awards won&quot;:</strong> Five awards in a single night, tying the record for most Grammys won by a female artist at the time</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Amy_Winehouse" rel="noopener">https://en.wikipedia.org/wiki/Amy_Winehouse</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Amy_Winehouse_discography" rel="noopener">https://en.wikipedia.org/wiki/Amy_Winehouse_discography</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Frank_(Amy_Winehouse_album" rel="noopener">https://en.wikipedia.org/wiki/Frank_(Amy_Winehouse_album</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Amy Winehouse">
+        <input type="hidden" name="slug" value="amy-winehouse">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Amy Winehouse</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

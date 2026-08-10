@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Talking Heads — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>Talking Heads</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1083</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="8al5cSQNmME" type="button"><img src="https://i.ytimg.com/vi/8al5cSQNmME/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Talking Heads - Life During Wartime (live)</span></button>
+<button class="vtile" data-yt="5IsSpAOD6K8" type="button"><img src="https://i.ytimg.com/vi/5IsSpAOD6K8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Talking Heads - Once in a Lifetime (Official Video)</span></button>
+<button class="vtile" data-yt="Fb2q141rMNE" type="button"><img src="https://i.ytimg.com/vi/Fb2q141rMNE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Talking Heads - This Must Be the Place (Naïve Melody) (Official Video)</span></button>
+<button class="vtile" data-yt="_3eC35LoF4U" type="button"><img src="https://i.ytimg.com/vi/_3eC35LoF4U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Talking Heads - Burning Down the House (Official Video)</span></button>
+<button class="vtile" data-yt="cl3B_FTDKD0" type="button"><img src="https://i.ytimg.com/vi/cl3B_FTDKD0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Talking Heads - And She Was (Official Video) [HD]</span></button>
+<button class="vtile" data-yt="616-QGQyx-I" type="button"><img src="https://i.ytimg.com/vi/616-QGQyx-I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Talking Heads - Wild Wild Life (Official Video)</span></button>
+<button class="vtile" data-yt="lLFPDPMfrUw" type="button"><img src="https://i.ytimg.com/vi/lLFPDPMfrUw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Talking Heads - Girlfriend Is Better (HD)</span></button>
+<button class="vtile" data-yt="CJ54eImz88w" type="button"><img src="https://i.ytimg.com/vi/CJ54eImz88w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Talking Heads - Psycho Killer (Official Video)</span></button>
+<button class="vtile" data-yt="Zfr3L0drhS8" type="button"><img src="https://i.ytimg.com/vi/Zfr3L0drhS8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Talking Heads - Burning Down the House [HD]</span></button>
+<button class="vtile" data-yt="LQiOA7euaYA" type="button"><img src="https://i.ytimg.com/vi/LQiOA7euaYA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Talking Heads - Road to Nowhere (Official Video)</span></button>
+<button class="vtile" data-yt="HpKsRq_Ba_0" type="button"><img src="https://i.ytimg.com/vi/HpKsRq_Ba_0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Best of The Talking Heads | Once in a Lifetime &amp; More</span></button>
+<button class="vtile" data-yt="KeDf-1Wr-Ks" type="button"><img src="https://i.ytimg.com/vi/KeDf-1Wr-Ks/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Well How Did We Get Here? A Brief History of Talking Heads</span></button>
+<button class="vtile" data-yt="eQ0oKlICHQc" type="button"><img src="https://i.ytimg.com/vi/eQ0oKlICHQc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Untold Truth Of David Byrne</span></button>
+<button class="vtile" data-yt="o7wF6NUG8Dc" type="button"><img src="https://i.ytimg.com/vi/o7wF6NUG8Dc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bill Burr on Stop Making Sense</span></button>
+<button class="vtile" data-yt="MT9E23trXDk" type="button"><img src="https://i.ytimg.com/vi/MT9E23trXDk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Talking Heads Documentary</span></button>
+<button class="vtile" data-yt="XlIdydFcaLI" type="button"><img src="https://i.ytimg.com/vi/XlIdydFcaLI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Talking Heads Vs Television - Once In A Lifetime. Documentary CH4 1984 (full)</span></button>
+<button class="vtile" data-yt="AaKTVbxhqjA" type="button"><img src="https://i.ytimg.com/vi/AaKTVbxhqjA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Talking Heads Meets Small Town America! Making of a Surreal Classic | True Stories (1986) 🎞️</span></button>
+<button class="vtile" data-yt="-rjMwSTeVeo" type="button"><img src="https://i.ytimg.com/vi/-rjMwSTeVeo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Stop Making Sense | Official Trailer HD | A24</span></button>
+<button class="vtile" data-yt="2nInQoboxh4" type="button"><img src="https://i.ytimg.com/vi/2nInQoboxh4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Talking Heads’ David Byrne Explains How He Came Up With The Giant Suit | Letterman</span></button>
+<button class="vtile" data-yt="f5EzLDD1D_Q" type="button"><img src="https://i.ytimg.com/vi/f5EzLDD1D_Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Talking Heads - South Bank Show (1979)</span></button>
+<button class="vtile" data-yt="R2gVgpHIDz0" type="button"><img src="https://i.ytimg.com/vi/R2gVgpHIDz0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Stop Making Sense - Official Promo</span></button>
+<button class="vtile" data-yt="4T7FuyqaBmE" type="button"><img src="https://i.ytimg.com/vi/4T7FuyqaBmE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Siskel &amp; Ebert Review Stop Making Sense (1984) - Talking Heads</span></button>
+<button class="vtile" data-yt="zywiGaKkplk" type="button"><img src="https://i.ytimg.com/vi/zywiGaKkplk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DEEP DISCOG DIVE: Talking Heads</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Talking Heads were an American rock band formed in New York City in 1975. The group consisted of lead vocalist and guitarist David Byrne, drummer Chris Frantz, bassist Tina Weymouth, and guitarist and keyboardist Jerry Harrison. They are described as one of the most acclaimed gro</p>
+<p>Talking Heads were an American rock band formed in New York City in 1975. The group consisted of lead vocalist and guitarist David Byrne, drummer Chris Frantz, bassist Tina Weymouth, and guitarist and keyboardist Jerry Harrison. They are described as one of the most acclaimed groups of the 1970s and 1980s and helped pioneer new wave music by blending punk, art rock, funk, and world music.</p>
+<h3>formation and early years</h3>
+<p>David Byrne, Chris Frantz, and Tina Weymouth met as freshmen at the Rhode Island School of Design. In 1973, Byrne and Frantz formed a prototype punk band called the Artistics. After the Artistics dissolved in 1974, the trio moved to New York City in 1975 and adopted the name Talking Heads. The name was inspired by a TV Guide issue that described head-and-shoulder shots of people talking as &#x27;all content, no action&#x27;. Tina Weymouth took up the role of bassist after the group was unable to find one, learning to play from Suzi Quatro albums. They played their first gig opening for the Ramones at CBGB on June 5, 1975. In November 1976, they signed a recording contract with Sire Records, which allowed them to make music their full-time career.</p>
+<h3>collaborations and musical evolution</h3>
+<p>The band&#x27;s debut album, Talking Heads: 77, was released in 1977 and produced the charting single &#x27;Psycho Killer&#x27;. They subsequently collaborated with British producer Brian Eno on the albums More Songs About Buildings and Food (1978), Fear of Music (1979), and Remain in Light (1980). These works blended their art school sensibilities with influences from Fela Kuti and Parliament-Funkadelic, exploring psychedelic funk, Afrobeat and West African polyrhythms. To perform these complex arrangements, the band toured with an expanded group including musicians such as Adrian Belew and Bernie Worrell. From the early 1980s, they included additional recording session musicians like Nona Hendryx and Busta Jones.</p>
+<h3>commercial peak and later years</h3>
+<p>Talking Heads reached their commercial peak in 1983 with the U.S. Top 10 hit &#x27;Burning Down the House&#x27; from the album Speaking in Tongues. In 1984, they released the concert film Stop Making Sense, directed by Jonathan Demme, and were joined by performances by Alex Weir, Steve Scales, Lynn Mabry and Ednah Holt. Their best-selling album, Little Creatures, was released in 1985. They produced a soundtrack for David Byrne&#x27;s film True Stories (1986) and their final album, the worldbeat-influenced Naked (1988). David Byrne left the band in 1991, and the remaining members performed as Shrunken Heads before releasing the album No Talking, Just Head (1996) as the Heads. The group eventually disbanded permanently.</p>
+<h3>critical acclaim</h3>
+<p>Four of their albums appeared on Rolling Stone&#x27;s 2003 list of the &#x27;500 Greatest Albums of All Time&#x27;. Additionally, &#x27;Psycho Killer&#x27;, &#x27;Life During Wartime&#x27;, and &#x27;Once in a Lifetime&#x27; were included among the Rock and Roll Hall of Fame&#x27;s 500 Songs that Shaped Rock and Roll. The band was ranked number 64 on VH1&#x27;s list of the &#x27;100 Greatest Artists of All Time&#x27; and number 100 on Rolling Stone&#x27;s 2011 update of the &#x27;100 Greatest Artists of All Time&#x27;.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Formed:</strong> 1975</li>
+<li><strong>Members:</strong> David Byrne, Chris Frantz, Tina Weymouth, and Jerry Harrison</li>
+<li><strong> thanked by :</strong> Sire Records</li>
+<li><strong>Commercial Peak Hit:</strong> Burning Down the House (1983)</li>
+<li><strong>Final Album:</strong> value: Naked (1988)</li>
+<li><strong>Concert Film:</strong> Stop Making Sense (1984)</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Talking_Heads" rel="noopener">https://en.wikipedia.org/wiki/Talking_Heads</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Talking_Heads:_77" rel="noopener">https://en.wikipedia.org/wiki/Talking_Heads:_77</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Talking_Heads_discography" rel="noopener">https://en.wikipedia.org/wiki/Talking_Heads_discography</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Talking Heads">
+        <input type="hidden" name="slug" value="talking-heads">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Talking Heads</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

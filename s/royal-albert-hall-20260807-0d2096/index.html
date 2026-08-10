@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Royal Albert Hall — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">place</div>
+      <h1>Royal Albert Hall</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-07</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">12</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1063</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="nEPMpwefI-s" type="button"><img src="https://i.ytimg.com/vi/nEPMpwefI-s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">HAUSER - Classic Gala Concert LIVE at the Royal Albert Hall 2024 - FULL Concert</span></button>
+<button class="vtile" data-yt="aU3EUlHByi0" type="button"><img src="https://i.ytimg.com/vi/aU3EUlHByi0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Royal Albert Hall Concert PART 1| Javed Akhtar| Pratibha Singh Baghel | Deepak Pandit| Live Concert</span></button>
+<button class="vtile" data-yt="IbxPoaTdrz0" type="button"><img src="https://i.ytimg.com/vi/IbxPoaTdrz0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dua Lipa and Elton John - Cold Heart (Live from the Royal Albert Hall)</span></button>
+<button class="vtile" data-yt="PbtJi1-v8h8" type="button"><img src="https://i.ytimg.com/vi/PbtJi1-v8h8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">David Gilmour - Live at the Royal Albert Hall 2006 Full Concert</span></button>
+<button class="vtile" data-yt="fn-4RbxXThE" type="button"><img src="https://i.ytimg.com/vi/fn-4RbxXThE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bonobo Live At Royal Albert Hall</span></button>
+<button class="vtile" data-yt="6maMr1TOQic" type="button"><img src="https://i.ytimg.com/vi/6maMr1TOQic/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">CONCERT FOR GEORGE Royal Albert Hall 2002 (complete concert part (3/3) of the Harrison songs)</span></button>
+<button class="vtile" data-yt="3DcoC8p9az8" type="button"><img src="https://i.ytimg.com/vi/3DcoC8p9az8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dua Lipa - Training Season (Live from the Royal Albert Hall) [Official Performance Video]</span></button>
+<button class="vtile" data-yt="OVkbxe6WaBU" type="button"><img src="https://i.ytimg.com/vi/OVkbxe6WaBU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dua Lipa Live Concert at The Royal Albert Hall - An Evening With Dua Lipa</span></button>
+<button class="vtile" data-yt="BQzXoe3hcpI" type="button"><img src="https://i.ytimg.com/vi/BQzXoe3hcpI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Prom Praise: Wonder – Live from London&#x27;s Royal Albert Hall</span></button>
+<button class="vtile" data-yt="tiorwW7B-9Y" type="button"><img src="https://i.ytimg.com/vi/tiorwW7B-9Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">‘Pirates of the Caribbean’ - Liverpool Philharmonic at the Royal Albert Hall | Classic FM Live</span></button>
+<button class="vtile" data-yt="Ri7-vnrJD3k" type="button"><img src="https://i.ytimg.com/vi/Ri7-vnrJD3k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Adele - Set Fire To The Rain (Live at The Royal Albert Hall)</span></button>
+<button class="vtile" data-yt="-15v9iworAU" type="button"><img src="https://i.ytimg.com/vi/-15v9iworAU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">To God Be The Glory ( Royal Albert Hall, London)</span></button>
+<button class="vtile" data-yt="zZJSkNEi0Qk" type="button"><img src="https://i.ytimg.com/vi/zZJSkNEi0Qk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Royal Albert Hall | A Documentary</span></button>
+<button class="vtile" data-yt="q3LuZeekVX4" type="button"><img src="https://i.ytimg.com/vi/q3LuZeekVX4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">This is the most interesting roof in London.</span></button>
+<button class="vtile" data-yt="GA3iWawWs7M" type="button"><img src="https://i.ytimg.com/vi/GA3iWawWs7M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Royal Albert Hall | Making History Episode 09 | Global Entertainment</span></button>
+<button class="vtile" data-yt="dT1g0XlgXdI" type="button"><img src="https://i.ytimg.com/vi/dT1g0XlgXdI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Royal Albert Hall - 150th Anniversary</span></button>
+<button class="vtile" data-yt="rLU0EZTe2aQ" type="button"><img src="https://i.ytimg.com/vi/rLU0EZTe2aQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">AAA Explores: The Royal Albert Hall - London&#x27;s most famous stage turns 150 this year</span></button>
+<button class="vtile" data-yt="pbd-IHjxFto" type="button"><img src="https://i.ytimg.com/vi/pbd-IHjxFto/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">In the Archive with Stephen Fry | Royal Albert Hall</span></button>
+<button class="vtile" data-yt="XqgK0L2owwQ" type="button"><img src="https://i.ytimg.com/vi/XqgK0L2owwQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Killers - Live at Royal Albert Hall Documentary, 2009</span></button>
+<button class="vtile" data-yt="sIFZqvZ3FtI" type="button"><img src="https://i.ytimg.com/vi/sIFZqvZ3FtI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cream Farewell Concert Royal Albert Hall 1968 (DVD)</span></button>
+<button class="vtile" data-yt="_7bu7cemzjk" type="button"><img src="https://i.ytimg.com/vi/_7bu7cemzjk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mick Jagger narrates tribute film for Royal Albert Hall&#x27;s 150th year</span></button>
+<button class="vtile" data-yt="4Q2YBKFDXjQ" type="button"><img src="https://i.ytimg.com/vi/4Q2YBKFDXjQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Hans Zimmer - Interstellar (Royal Albert Hall Organ)</span></button>
+<button class="vtile" data-yt="aSgjNffYBdo" type="button"><img src="https://i.ytimg.com/vi/aSgjNffYBdo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Travelin&#x27; Band: Creedence Clearwater Revival at the Royal Albert Hall (Official Film Trailer)</span></button>
+<button class="vtile" data-yt="qGz6QHhTMso" type="button"><img src="https://i.ytimg.com/vi/qGz6QHhTMso/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Time capsule buried by Queen Victoria unearthed during Royal Albert Hall dig</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The Royal Albert Hall is a concert hall located on the northern edge of South Kensington, London, England. It has a seating capacity of 5,272 and was opened by Queen Victoria in 1871.</p>
+<p>The Royal Albert Hall is a concert hall located on the northern edge of South Kensington, London, England. It has a seating capacity of 5,272 and was opened by Queen Victoria in 1871.</p>
+<h3>overview</h3>
+<p>The hall is the venue for the BBC Proms concerts, which have been held there every summer since 1941. It hosts more than 390 shows in its main auditorium annually, including rock and pop concerts, classical music, opera, ballet, and charity performances. Additionally, 1,000 events are held each year in non-auditorium spaces. Over its history, the hall has hosted a wide variety of events such as speeches by Albert Einstein and Winston Churchill, meetings of suffragettes, and boxing matches featuring Muhammad Ali and Lennox Lewis.</p>
+<h3>history</h3>
+<p>Originally intended to be called the Central Hall of Arts and Sciences, Queen Victoria changed the name to the Royal Albert Hall of Arts and Sciences in 1867 to memorialize her husband, Prince Albert. The hall was designed by civil engineers Major-General Henry Y. D. Scott and Captain Francis Fowke of the Royal Engineers and built by Lucas Brothers. Its construction used Fareham Red brick and terra cotta block decoration. The dome, made of wrought iron and glazed, was designed by Rowland Mason Ordish. The official opening ceremony took place on 29 March 1871.</p>
+<h3>the grand organ</h3>
+<p>The hall&#x27;s Grand Organ, known as &#x27;The Voice of Jupiter&#x27;, is the second largest pipe organ in the United Kingdom. Originally built by Henry &#x27;Father&#x27; Willis in 1871, it has undergone several rebuilds by Harrison &amp; Harrison and Mander Organs. Since its restoration in 2004, it features 9,999 pipes and 147 stops. Anna Lapwood became the hall&#x27;s first official organist in 2025.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Seating Capacity:</strong> 5,272</li>
+<li><strong>Opened by:</strong> Queen Victoria</li>
+<li><strong> :</strong> -</li>
+<li><strong>Opening Date:</strong> 29 March 1871</li>
+<li><strong>Opening Ceremony Speech:</strong> Edward, the Prince of Wales</li>
+<li><strong> a own :</strong> -</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Royal_Albert_Hall" rel="noopener">https://en.wikipedia.org/wiki/Royal_Albert_Hall</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Royal_Albert_Hall_Organ" rel="noopener">https://en.wikipedia.org/wiki/Royal_Albert_Hall_Organ</a></li>
+          <li><a href="https://www.setlist.fm/setlist/aurora-orchestra/2026/royal-albert-hall-london-england-b778506.html" rel="noopener">https://www.setlist.fm/setlist/aurora-orchestra/2026/royal-albert-hall-london-england-b778506.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/bbc-national-orchestra-of-wales/2026/royal-albert-hall-london-england-1b7785fc.html" rel="noopener">https://www.setlist.fm/setlist/bbc-national-orchestra-of-wales/2026/royal-albert-hall-london-england-1b7785fc.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/bbc-symphony-orchestra/2026/royal-albert-hall-london-england-137785e9.html" rel="noopener">https://www.setlist.fm/setlist/bbc-symphony-orchestra/2026/royal-albert-hall-london-england-137785e9.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/fantasia-orchestra/2026/royal-albert-hall-london-england-1b7785dc.html" rel="noopener">https://www.setlist.fm/setlist/fantasia-orchestra/2026/royal-albert-hall-london-england-1b7785dc.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/ladysmith-black-mambazo/2026/royal-albert-hall-london-england-1b7785f4.html" rel="noopener">https://www.setlist.fm/setlist/ladysmith-black-mambazo/2026/royal-albert-hall-london-england-1b7785f4.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/national-youth-orchestra-of-great-britain/2026/royal-albert-hall-london-england-1b7785d8.html" rel="noopener">https://www.setlist.fm/setlist/national-youth-orchestra-of-great-britain/2026/royal-albert-hall-london-england-1b7785d8.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/orchestra-of-the-age-of-enlightenment/2026/royal-albert-hall-london-england-b7785ca.html" rel="noopener">https://www.setlist.fm/setlist/orchestra-of-the-age-of-enlightenment/2026/royal-albert-hall-london-england-b7785ca.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/orchestre-revolutionnaire-et-romantique/2026/royal-albert-hall-london-england-b7785ea.html" rel="noopener">https://www.setlist.fm/setlist/orchestre-revolutionnaire-et-romantique/2026/royal-albert-hall-london-england-b7785ea.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/royal-scottish-national-orchestra/2026/royal-albert-hall-london-england-37785ff.html" rel="noopener">https://www.setlist.fm/setlist/royal-scottish-national-orchestra/2026/royal-albert-hall-london-england-37785ff.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/the-halle-orchestra/2026/royal-albert-hall-london-england-137785f1.html" rel="noopener">https://www.setlist.fm/setlist/the-halle-orchestra/2026/royal-albert-hall-london-england-137785f1.html</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Royal Albert Hall">
+        <input type="hidden" name="slug" value="royal-albert-hall">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Royal Albert Hall</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

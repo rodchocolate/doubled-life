@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Prince — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Prince</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1119</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="UG3VcCAlUgE" type="button"><img src="https://i.ytimg.com/vi/UG3VcCAlUgE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Prince and the Revolution - When Doves Cry (Official Music Video)</span></button>
+<button class="vtile" data-yt="v0KpfrJE4zw" type="button"><img src="https://i.ytimg.com/vi/v0KpfrJE4zw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Prince - Little Red Corvette (Official Video)</span></button>
+<button class="vtile" data-yt="l7vRSu_wsNc" type="button"><img src="https://i.ytimg.com/vi/l7vRSu_wsNc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Prince and the Revolution - Raspberry Beret (Official 4K Music Video)</span></button>
+<button class="vtile" data-yt="LNrAFb3I2js" type="button"><img src="https://i.ytimg.com/vi/LNrAFb3I2js/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Prince Live - Play that funky Music - Hollywood Swinging - Fantastic Voyage 4/28/11</span></button>
+<button class="vtile" data-yt="Rp8WL621uGM" type="button"><img src="https://i.ytimg.com/vi/Rp8WL621uGM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Prince - I Wanna Be Your Lover (Official Video)</span></button>
+<button class="vtile" data-yt="H9tEvfIsDyo" type="button"><img src="https://i.ytimg.com/vi/H9tEvfIsDyo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Prince and the Revolution - Kiss (Official Music Video)</span></button>
+<button class="vtile" data-yt="_jCuroTbqBI" type="button"><img src="https://i.ytimg.com/vi/_jCuroTbqBI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Prince - U Got The Look (Official Music Video)</span></button>
+<button class="vtile" data-yt="rblt2EtFfC4" type="button"><img src="https://i.ytimg.com/vi/rblt2EtFfC4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Prince - 1999 (Official Video)</span></button>
+<button class="vtile" data-yt="aXJhDltzYVQ" type="button"><img src="https://i.ytimg.com/vi/aXJhDltzYVQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Prince and the Revolution - Let&#x27;s Go Crazy (Official Music Video)</span></button>
+<button class="vtile" data-yt="1NarDEEhOsM" type="button"><img src="https://i.ytimg.com/vi/1NarDEEhOsM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Prince - Nothing Compares 2 U (Live At Paisley Park, 1999)</span></button>
+<button class="vtile" data-yt="TvnYmWpD_T8" type="button"><img src="https://i.ytimg.com/vi/TvnYmWpD_T8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Prince - Purple Rain (Official Video)</span></button>
+<button class="vtile" data-yt="4gazNwzC4H0" type="button"><img src="https://i.ytimg.com/vi/4gazNwzC4H0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Prince - Controversy (Official Video)</span></button>
+<button class="vtile" data-yt="qU2BCZM9SLY" type="button"><img src="https://i.ytimg.com/vi/qU2BCZM9SLY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Prince Documentary 2018</span></button>
+<button class="vtile" data-yt="3AdHfkOgcBE" type="button"><img src="https://i.ytimg.com/vi/3AdHfkOgcBE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">PRINCE THE MAN BEHIND THE MUSIC ~ FULL DOCUMENTARY</span></button>
+<button class="vtile" data-yt="LlTwe9LxZ8w" type="button"><img src="https://i.ytimg.com/vi/LlTwe9LxZ8w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Prince, A Purple Reign (Documentary)</span></button>
+<button class="vtile" data-yt="gG1HE6KGswc" type="button"><img src="https://i.ytimg.com/vi/gG1HE6KGswc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Slave Trade - Prince Documentary</span></button>
+<button class="vtile" data-yt="7brPHujeDbE" type="button"><img src="https://i.ytimg.com/vi/7brPHujeDbE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">FULL BIOGRAPHY of PRINCE | Childhood, music career, last years of life | Documentary</span></button>
+<button class="vtile" data-yt="lGweoKd4kGw" type="button"><img src="https://i.ytimg.com/vi/lGweoKd4kGw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Slave Trade: Prince&#x27;s Epic Battle Against The Music Industry (Full Documentary) | Amplified</span></button>
+<button class="vtile" data-yt="oHeHjVNj5F8" type="button"><img src="https://i.ytimg.com/vi/oHeHjVNj5F8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Untold Story of Prince - Genius, Tragedy, and Musical Legacy</span></button>
+<button class="vtile" data-yt="36-PlU2EWQE" type="button"><img src="https://i.ytimg.com/vi/36-PlU2EWQE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Last 24 Hours: Prince</span></button>
+<button class="vtile" data-yt="3Qi6x3QF-v8" type="button"><img src="https://i.ytimg.com/vi/3Qi6x3QF-v8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Inside the Secret Netflix Prince Movie You&#x27;re Not Allowed To See | PTFO</span></button>
+<button class="vtile" data-yt="78p4wbtIdBw" type="button"><img src="https://i.ytimg.com/vi/78p4wbtIdBw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">British Royal Documentary - Prince Eddy - The King We Never Had</span></button>
+<button class="vtile" data-yt="K_ui701za0w" type="button"><img src="https://i.ytimg.com/vi/K_ui701za0w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Artist Who Made the Industry Blink First</span></button>
+<button class="vtile" data-yt="rq667-DkWQg" type="button"><img src="https://i.ytimg.com/vi/rq667-DkWQg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Prince | Child Star To Opioid Victim | Purple Reign | Full Music Documentary | Inside The Music</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Prince is a term used to describe a male ruler ranked below a king, grand prince, and grand duke, or a male member of a monarch&#x27;s family. The title can be hereditary or granted by popes and secular monarchs in some European states. The female equivalent is a princess.</p>
+<p>Prince is a term used to describe a male ruler ranked below a king, grand prince, and grand duke, or a male member of a monarch&#x27;s family. The title can be hereditary or granted by popes and secular monarchs in some European states. The female equivalent is a princess.</p>
+<h3>etymology and historical background</h3>
+<p>The English word &#x27;prince&#x27; derives from the French word prince, which comes from the Latin noun prīnceps, meaning &#x27;the first, foremost, the chief, most distinguished, noble ruler, prince&#x27;. The Latin term prīnceps was used as a title for the informal leader of the Roman senate (princeps senatus) and later adopted by Emperor Augustus to establish the formal position of monarch. In medieval and early modern Europe, &#x27;prince&#x27; was used as a generic term for any sovereign or quasi-sovereign ruler of a territory, regardless of their actual title or rank, a usage found in Niccolò Machiavelli&#x27;s work Il Principe and the United States Declaration of Independence.</p>
+<h3>types of princely titles</h3>
+<p>The title of prince can be used generically to refer to members of a family that ruled by hereditary right or non-reigning descendants. As a substantive title, it was the lowest rank of monarch in post-Napoleonic Europe, such as the Princes of Monaco and Andorra. Additionally, popes and secular monarchs granted the title substantively to specific individuals and heads of high-ranking European families who did not exercise dynastic sovereignty. In some monarchies, heirs apparent use a specific princely title associated with a territory within the realm, such as the Prince of Wales in the U.K. or the Prince of Asturias in Spain.</p>
+<h3>cultures and legalities</h3>
+<p>In parts of the Holy Roman Empire where primogeniture did not prevail, all legitimate agnates had an equal right to they family&#x27;s hereditary titles. This led to a Minneapolis sound pioneer, Minneapolis Genius - The Historic 1977 Recordings album, Minneapolis sound pioneer, and American singer-songwriter Prince Rogers Nelson. He achieved critical success with albums like Dirty Mind, Controversy, and 1999, and later became the first singer to simultaneously have a number-one film, album and single in the United States with Purple Rain. He sold more than 100 million records worldwide and was inducted into the Rock and Roll Hall of Fame in 2004.</p>
+<h3>other uses of &#x27;prince&#x27;</h3>
+<p>The word &#x27;prince&#x27; is also used as a variety of other names for places, people, and products. This includes electoral districts in Canada, an unincorporated census-designated place in West Virginia, and the same name for various films, songs, and fictional characters. It also refers to a variety of brands and products, such as Prince spaghetti, Prince cigarettes, and the Daewoo Prince luxury car.</p>
+<h3>the musician prince</h3>
+<p>Prince Rogers Nelson (1958–2016) was an American singer-songwriter, musician, dancer, actor, and filmmaker who pioneered the Minneapolis sound. He signed with Warner Bros. Records at age 18 and released 39 albums during his life, including For You, Purple Rain, and Sign o&#x27; the Times. In 1993, he changed his stage name to an unpronounceable symbol known as the &#x27;Love Symbol&#x27;, becoming known as the Artist Formerly Known as Prince (TAFKAP). He died in 2016 after accidentally overdosing on counterfeit hydrocodone/paracetamol pills laced with fentanyl.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Etymology:</strong> Derived from Latin prīnceps, meaning &#x27;the first&#x27; or &#x27;head&#x27;</li>
+<li><strong>Female Equivalent:</strong> Princess</li>
+<li><strong>Hereditary Title:</strong> Yes</li>
+<li><strong>label own&#x27;s name:</strong> Prince Rogers Nelson</li>
+<li><strong>Musician&#x27;s Record Sales:</strong> Over 100 million records worldwide</li>
+<li><strong>Hereditary Title:</strong></li>
+<li><strong>// a fact about the musician Prince:</strong> Pioneered the Minneapolis sound</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Prince" rel="noopener">https://en.wikipedia.org/wiki/Prince</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Prince_(disambiguation" rel="noopener">https://en.wikipedia.org/wiki/Prince_(disambiguation</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Prince_(musician" rel="noopener">https://en.wikipedia.org/wiki/Prince_(musician</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Prince">
+        <input type="hidden" name="slug" value="prince">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Prince</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>The Gorge Amphitheatre — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">place</div>
+      <h1>The Gorge Amphitheatre</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">12</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1065</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="COFQho-mdkE" type="button"><img src="https://i.ytimg.com/vi/COFQho-mdkE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Enormous: The Gorge Story | Official Trailer</span></button>
+<button class="vtile" data-yt="9s1x9eHoEBE" type="button"><img src="https://i.ytimg.com/vi/9s1x9eHoEBE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ODESZA - THE FINALE - LIVE FROM THE GORGE</span></button>
+<button class="vtile" data-yt="PpbxEQzxfzE" type="button"><img src="https://i.ytimg.com/vi/PpbxEQzxfzE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Gorge Amphitheater - Cresting the Hill</span></button>
+<button class="vtile" data-yt="ZDlVQf5qzK8" type="button"><img src="https://i.ytimg.com/vi/ZDlVQf5qzK8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dave Matthews Band - August 31, 2024 Live at The Gorge N2 Full Show Webcast</span></button>
+<button class="vtile" data-yt="CMXiCR2gQw0" type="button"><img src="https://i.ytimg.com/vi/CMXiCR2gQw0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Above &amp; Beyond #ABGT250 Live at The Gorge Amphitheatre, Washington State (Full 4K Ultra HD Set)</span></button>
+<button class="vtile" data-yt="Glcuy4qWtvk" type="button"><img src="https://i.ytimg.com/vi/Glcuy4qWtvk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">RÜFÜS DU SOL - On My Knees (Live At The Gorge)</span></button>
+<button class="vtile" data-yt="2CNItzg8xO4" type="button"><img src="https://i.ytimg.com/vi/2CNItzg8xO4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Concertgoers wait 15+ hours at Gorge Amphitheatre as alleged security changes cause mass slowdowns</span></button>
+<button class="vtile" data-yt="A8Mz713rkE4" type="button"><img src="https://i.ytimg.com/vi/A8Mz713rkE4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">RÜFÜS DU SOL (DJ SET) Backstage at The Gorge, May 2026</span></button>
+<button class="vtile" data-yt="O9JZ925Rtz0" type="button"><img src="https://i.ytimg.com/vi/O9JZ925Rtz0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">sitting in the lawn at The Gorge Amphitheatre</span></button>
+<button class="vtile" data-yt="5EHyWsihsJk" type="button"><img src="https://i.ytimg.com/vi/5EHyWsihsJk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The #ABGT250 Aftermovie: Above &amp; Beyond at The Gorge Amphitheatre, WA 2017</span></button>
+<button class="vtile" data-yt="h_IKM4182M0" type="button"><img src="https://i.ytimg.com/vi/h_IKM4182M0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">THE GORGE vs. RED ROCKS Amphitheater | Which venue is better?</span></button>
+<button class="vtile" data-yt="47jVgqCopvM" type="button"><img src="https://i.ytimg.com/vi/47jVgqCopvM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Documentary looks into Gorge Amphitheatre&#x27;s history</span></button>
+<button class="vtile" data-yt="bYr64WC96pw" type="button"><img src="https://i.ytimg.com/vi/bYr64WC96pw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Enormous: The Gorge Story | Teaser Trailer | In US Cinemas 28 April</span></button>
+<button class="vtile" data-yt="LaYG08mX2ak" type="button"><img src="https://i.ytimg.com/vi/LaYG08mX2ak/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dave Matthews Band talks about the Gorge ampitheater in Washington State.</span></button>
+<button class="vtile" data-yt="sGU3Vo2lSgU" type="button"><img src="https://i.ytimg.com/vi/sGU3Vo2lSgU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">SBIFF 2019: Director, Producer, &quot;Enormous: The Gorge Story&quot;</span></button>
+<button class="vtile" data-yt="ueskNw1YwPI" type="button"><img src="https://i.ytimg.com/vi/ueskNw1YwPI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Enormous: The Gorge Story | Pearl Jam 93 (Clip)</span></button>
+<button class="vtile" data-yt="GGBd03kXQf8" type="button"><img src="https://i.ytimg.com/vi/GGBd03kXQf8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jimmy Page Robert Plant Live Gorge Amphitheatre Washington State 1995</span></button>
+<button class="vtile" data-yt="PDwaghJXVXw" type="button"><img src="https://i.ytimg.com/vi/PDwaghJXVXw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Enormous: The Gorge Story (Official Teaser)</span></button>
+<button class="vtile" data-yt="8XZZShBvTS4" type="button"><img src="https://i.ytimg.com/vi/8XZZShBvTS4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Enormous: The Gorge Story Interview</span></button>
+<button class="vtile" data-yt="LP5ETIJKGF4" type="button"><img src="https://i.ytimg.com/vi/LP5ETIJKGF4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Enormous - The Gorge Story</span></button>
+<button class="vtile" data-yt="5uHmteUho6E" type="button"><img src="https://i.ytimg.com/vi/5uHmteUho6E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Enormous: The Gorge Story - Trailer 1</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The Gorge Amphitheatre is an outdoor concert venue located in Grant County, Washington, United States. It is situated near the Columbia River and is managed by Live Nation.</p>
+<p>The Gorge Amphitheatre is an outdoor concert venue located in Grant County, Washington, United States. It is situated near the Columbia River and is managed by Live Nation.</p>
+<h3>history and development</h3>
+<p>Originally known as Champs de Brionne Music Theatre, the venue opened in 1986 with a capacity of 3,000 people. It was owned and operated by Dr. Vincent Bryan and Carol Bryan along with the adjoining Champs de Brionne winery. In 1993, MCA purchase the venue, which had expanded to 19,000 seats; it was then renamed The Gorge and expanded further through landscaping and rock blasting. The first show at the renamed venue was Tina Turner with Lindsey Buckingham as her opening act. Live Nation acquired the amphitheatre in 2006.</p>
+<h3>location and facilities</h3>
+<p>The venue is located north of Interstate 90, nine miles west of George and 150 miles east of Seattle, approximately 130 miles west of Spokane. It offers views of the Columbia Gorge canyon, the Columbia River, and eastern Kittitas and western Grant counties. The land was originally planned for growing grapes for wine. The on-site campground provides potable water, flush toilets, hot showers, a convenience store, and 24-hour security. Camping tickets are required; sites are assigned first-come, first-served. Alternatively, the Wildhorse Campground is located less than two miles away and offers a shuttle service to the venue.</p>
+<h3>performances and festivals</h3>
+<p>The Gorge has hosted numerous music festivals including Lollapalooza, Ozzfest, Lilith Fair, Vans Warped Tour, and Watershed Music Festival. Dave Matthews Band has played 79 shows at the venue as of 2025, with a few of their performances being released as albums or DVDs. Phish has performed there 22 times since 1997. Other notable headliners have included Joni Mitchell, who headlined an event on June 10, 2023, her first ticketed event in over 20 years. Electronic music festivals such as Bass Canyon and Beyond Wonderland have also used the venue.</p>
+<h3>safety incident</h3>
+<p>On June 17, 2023, during the Beyond Wonderland music festival, a mass shooting occurred at a nearby campground. The shooter, 26-year-old U.S. Army personnel James M. Kelly, killed two women from the Seattle area and wounded two others. A security guard was also injured by a deflected bullet. Police shot and arrested the suspect.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Management:</strong> Live Nation</li>
+<li><strong>Awards:</strong> Nine-time winner of Pollstar&#x27;s &#x27;Best Outdoor Music Venue&#x27;</li>
+<li><strong>// a fact about the same thing as above:</strong> Voted one of the &#x27;Best Outdoor Concert Venues in America&#x27; by ConcertBoom</li>
+<li><strong>Attendance (2013):</strong> Approximately 400,000 people</li>
+<li><strong>First show at renamed venue:</strong> Tina Turner with Lindsey Buckingham</li>
+<li><strong>First owner/operator:</strong> -</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/The_Gorge_(album" rel="noopener">https://en.wikipedia.org/wiki/The_Gorge_(album</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/The_Gorge_Amphitheatre" rel="noopener">https://en.wikipedia.org/wiki/The_Gorge_Amphitheatre</a></li>
+          <li><a href="https://www.setlist.fm/setlist/chris-stapleton/2026/the-gorge-amphitheatre-george-wa-b4ab9d6.html" rel="noopener">https://www.setlist.fm/setlist/chris-stapleton/2026/the-gorge-amphitheatre-george-wa-b4ab9d6.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/chris-stapleton/2026/the-gorge-amphitheatre-george-wa-b70f566.html" rel="noopener">https://www.setlist.fm/setlist/chris-stapleton/2026/the-gorge-amphitheatre-george-wa-b70f566.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/fisher/2026/the-gorge-amphitheatre-george-wa-3375903d.html" rel="noopener">https://www.setlist.fm/setlist/fisher/2026/the-gorge-amphitheatre-george-wa-3375903d.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/grace-potter/2026/the-gorge-amphitheatre-george-wa-34ab997.html" rel="noopener">https://www.setlist.fm/setlist/grace-potter/2026/the-gorge-amphitheatre-george-wa-34ab997.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/grace-potter/2026/the-gorge-amphitheatre-george-wa-3b734048.html" rel="noopener">https://www.setlist.fm/setlist/grace-potter/2026/the-gorge-amphitheatre-george-wa-3b734048.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/jack-j/2026/the-gorge-amphitheatre-george-wa-b75055e.html" rel="noopener">https://www.setlist.fm/setlist/jack-j/2026/the-gorge-amphitheatre-george-wa-b75055e.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/kaskade/2026/the-gorge-amphitheatre-george-wa-1b4b192c.html" rel="noopener">https://www.setlist.fm/setlist/kaskade/2026/the-gorge-amphitheatre-george-wa-1b4b192c.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/maribou-state/2026/the-gorge-amphitheatre-george-wa-237500cb.html" rel="noopener">https://www.setlist.fm/setlist/maribou-state/2026/the-gorge-amphitheatre-george-wa-237500cb.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/peces-raros/2026/the-gorge-amphitheatre-george-wa-7b49bef8.html" rel="noopener">https://www.setlist.fm/setlist/peces-raros/2026/the-gorge-amphitheatre-george-wa-7b49bef8.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/rufus-du-sol/2026/the-gorge-amphitheatre-george-wa-5b4bf300.html" rel="noopener">https://www.setlist.fm/setlist/rufus-du-sol/2026/the-gorge-amphitheatre-george-wa-5b4bf300.html</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="The Gorge Amphitheatre">
+        <input type="hidden" name="slug" value="the-gorge-amphitheatre">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — The Gorge Amphitheatre</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Cassidy — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Cassidy</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-06</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1044</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="jLJkTMe0HRo" type="button"><img src="https://i.ytimg.com/vi/jLJkTMe0HRo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">This is what PEAK Cassidy Gameplay looks like in Overwatch</span></button>
+<button class="vtile" data-yt="8ZOia2aKUHU" type="button"><img src="https://i.ytimg.com/vi/8ZOia2aKUHU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Grateful Dead - Cassidy (Live at Radio City Music Hall, 10/31/80) [Official Video]</span></button>
+<button class="vtile" data-yt="ypo677kw6Pk" type="button"><img src="https://i.ytimg.com/vi/ypo677kw6Pk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cassidy - I&#x27;m A Hustla (Official Video - Edited)</span></button>
+<button class="vtile" data-yt="hIdxdvOUqMs" type="button"><img src="https://i.ytimg.com/vi/hIdxdvOUqMs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Grateful Dead - Cassidy (Shoreline Amphitheatre; Mountain View, CA 6/16/90)</span></button>
+<button class="vtile" data-yt="6v7sblQdwms" type="button"><img src="https://i.ytimg.com/vi/6v7sblQdwms/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Before the Fame: How Cassidy Battled His Way Out of Philadelphia</span></button>
+<button class="vtile" data-yt="MKOT6teSarY" type="button"><img src="https://i.ytimg.com/vi/MKOT6teSarY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cassidy - Hotel (Official Video) ft. R.Kelly</span></button>
+<button class="vtile" data-yt="vXDZp06ekM0" type="button"><img src="https://i.ytimg.com/vi/vXDZp06ekM0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cassidy- Grinding Freestyle Video on Cosmic Kev Come up show (2011)</span></button>
+<button class="vtile" data-yt="Lo23zR9FRSg" type="button"><img src="https://i.ytimg.com/vi/Lo23zR9FRSg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cassidy - Get No Better (Official Video) ft. Mashonda</span></button>
+<button class="vtile" data-yt="WsG2FRnt3g0" type="button"><img src="https://i.ytimg.com/vi/WsG2FRnt3g0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cassidy Performs His Biggest Hit “Hotel” Inside the Caddy | Cadillac Chronicles</span></button>
+<button class="vtile" data-yt="pUOjGcOz0bU" type="button"><img src="https://i.ytimg.com/vi/pUOjGcOz0bU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cassidy &quot;MMM! Freestyle&quot; feat. Fred Money (WSHH Exclusive - Official Music Video)</span></button>
+<button class="vtile" data-yt="oTXSlvv4SCY" type="button"><img src="https://i.ytimg.com/vi/oTXSlvv4SCY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cassidy - I&#x27;m A Hustla (Official Video)</span></button>
+<button class="vtile" data-yt="CS-hiY9EysU" type="button"><img src="https://i.ytimg.com/vi/CS-hiY9EysU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Educational Unranked To GM CASSIDY (93% Winrate)</span></button>
+<button class="vtile" data-yt="qcwIvVrHLyY" type="button"><img src="https://i.ytimg.com/vi/qcwIvVrHLyY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">CASSIDY DOCUMENTARY (plus 15 minutes of FREESTYLES)</span></button>
+<button class="vtile" data-yt="IdWxKY7u8Wc" type="button"><img src="https://i.ytimg.com/vi/IdWxKY7u8Wc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Murder Case That Shattered Cassidy’s Rap Career</span></button>
+<button class="vtile" data-yt="i65Xb2Jdzz0" type="button"><img src="https://i.ytimg.com/vi/i65Xb2Jdzz0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Raising Cassidy: From Addiction to Redemption | Real Families</span></button>
+<button class="vtile" data-yt="ZBAffBZtaBo" type="button"><img src="https://i.ytimg.com/vi/ZBAffBZtaBo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The David Cassidy Story</span></button>
+<button class="vtile" data-yt="BoYMgjVa-iI" type="button"><img src="https://i.ytimg.com/vi/BoYMgjVa-iI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Neal Cassady &amp; Jack Kerouac Documentary</span></button>
+<button class="vtile" data-yt="tKowGakjJQI" type="button"><img src="https://i.ytimg.com/vi/tKowGakjJQI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Musical Story Of Eva Cassidy - Nightline Profile 2001</span></button>
+<button class="vtile" data-yt="XEqzTlZdfSo" type="button"><img src="https://i.ytimg.com/vi/XEqzTlZdfSo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Eva Cassidy - One Night That Changed Everything (documentary)</span></button>
+<button class="vtile" data-yt="OzdL0mic_iU" type="button"><img src="https://i.ytimg.com/vi/OzdL0mic_iU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DOCUMENTARY DAVID CASSIDY: THE LAST SESSION</span></button>
+<button class="vtile" data-yt="utjNm2QZRc8" type="button"><img src="https://i.ytimg.com/vi/utjNm2QZRc8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cassady in the Backhouse (1972)</span></button>
+<button class="vtile" data-yt="my9W-rohxVk" type="button"><img src="https://i.ytimg.com/vi/my9W-rohxVk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Cassidy Collection.</span></button>
+<button class="vtile" data-yt="nCPS1-Erv_A" type="button"><img src="https://i.ytimg.com/vi/nCPS1-Erv_A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DAVID CASSIDY Full Life Documentary Biography of a Legend Remastered Rare footage In Loving Memory.</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The name Cassidy refers to several prominent American figures, including a rapper, two actresses, and members of their respective families. These individuals range from across the different entertainment industries of music and film and television.</p>
+<p>The name Cassidy refers to several prominent American figures, including a rapper, two actresses, and members of their respective families. These individuals range from across the different entertainment industries of music and film and television.</p>
+<h3>cassidy (rapper)</h3>
+<p>Barry Adrian Reese, known as Cassidy, is an American rapper who first gained attention in the late 1990s as a battle rapper. He was discovered by producer Swizz Beatz and signed to Full Surface Records in a joint venture with J Records. His debut studio album, Split Personality (2004), was certified gold by the RIAA and peaked at number two on the U.S. Billboard 200. His second album, I&#x27;m a Hustla (2005), reached number five on the Billboard 200 and featured a platinum-certified lead single of the same name. His third album, B.A.R.S. The Barry Adrian Reese Story (2007) peaked at number ten on the Billboard 200. After leaving major labels, he released his fourth album, C.A.S.H. (2010), through Carmelo Anthony&#x27;s Kross Over Entertainment and later released independent albums under his imprint, Mayhem Music.</p>
+<h3>joanna cassidy</h3>
+<p>Joanna Virginia Caskey, known as Joanna Cassidy, is an American actress and former model who began her career in the 1960s. She has appeared in numerous films such as The Outfit (1973), Blade Runner (1982), where she played Zhora Salome, and Who Framed Roger Rabbit (1988). She also starred in the NBC comedy series Buffalo Bill (1983-1984), for which she won a Golden Globe Award. Her television work includes recurring roles on Six Feet Under (2001-2005) as Margaret Chenowith and Body of Proof (2011-2013) as Joan Hunt, as well as starring in the lead role of CIA operative Liz &quot;Foxfire&quot; Towne in Code Name: Foxfire (1985).</p>
+<h3>katie cassidy</h3>
+<p>Katherine Evelyn Anita Cassidy, born in 1986, is an American actress known for her former role as Laurel Lance / Black Canary and later Laurel Lance / Black Siren in the Arrowverse series Arrow, The Flash, and Legends of Tomorrow. She began her career with minor television roles and horror films such as When a Stranger Calls (2006) and Black Christmas (2006), earning her the label of &quot;Scream Queen.&quot; She also had leading roles in the slasher series Harper&#x27;s Island (2009) and the remake of Melrose Place (2009-2010). Other notable works include a recurring role as Juliet Sharp in Gossip Girl (2010-2012) and a role as Kris Fowles in A Nightmare on Elm Street (2010).</p>
+<h3>legal and personal matters</h3>
+<p>Barry Adrian Reese (Cassidy the rapper) resides in Philadelphia, and was involved in a murder case in 2005. On April 15, 2005, three men including Cassidy fired on three unarmed men during an argument in West Oak Lane, Philadelphia. This resulted in the the death of Desmond Hawkins. A warrant for his arrest was later issued on June 9, 2005, and he surrendered to the afternoon of June 17. He was denied bail and sent to Philadelphia&#x27;s Curran-Fromhold Correctional Facility. Later, a primary witness withdrew their confession, which led to the judge to state that Cassidy would stand trial for third-degree murder.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Barry Adrian Reese:</strong> Stage name: Cassidy (Rapper)</li>
+<li><strong>Joanna Virginia Caskey:</strong> Stage name: Joanna Cassidy (Actress)</li>
+<li><strong>église own imprint:</strong> Mayhem Music</li>
+<li><strong>Joanna Cassidy&#x27;s breakthrough film role:</strong> Zhora Salome in Blade Runner (1982)</li>
+<li><strong>label: Katie Cassidy&#x27;s father:</strong> David Cassidy</li>
+<li><strong>label: Katie Cassidy&#x27;s biological father:</strong> value: David Cassidy</li>
+<li><strong>label: Katie Cassidy&#x27;s mother:</strong> value: Sherry Williams</li>
+<li><strong>Katie Cassidy&#x27;s breakthrough role:</strong> Laurel Lance / Black Canary in Arrow (2012)</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Cassidy_(rapper" rel="noopener">https://en.wikipedia.org/wiki/Cassidy_(rapper</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Joanna_Cassidy" rel="noopener">https://en.wikipedia.org/wiki/Joanna_Cassidy</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Katie_Cassidy" rel="noopener">https://en.wikipedia.org/wiki/Katie_Cassidy</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Cassidy">
+        <input type="hidden" name="slug" value="cassidy">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Cassidy</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

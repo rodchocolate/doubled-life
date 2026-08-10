@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Winterland Ballroom — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">place</div>
+      <h1>Winterland Ballroom</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-07</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">12</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1104</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="zc4ns8c5p5c" type="button"><img src="https://i.ytimg.com/vi/zc4ns8c5p5c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Winterland Ballroom San Francisco’s Lost Rock and Roll Cathedral</span></button>
+<button class="vtile" data-yt="eJRXRCOqfiQ" type="button"><img src="https://i.ytimg.com/vi/eJRXRCOqfiQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Exploring the Past of the Winterland Ballroom in San Francisco</span></button>
+<button class="vtile" data-yt="A-CqDFfJ0Rc" type="button"><img src="https://i.ytimg.com/vi/A-CqDFfJ0Rc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Grateful Dead - The Closing of Winterland (Live in San Francisco, CA 12/31/78) [Full Concert]</span></button>
+<button class="vtile" data-yt="vV4uGNZmPTI" type="button"><img src="https://i.ytimg.com/vi/vV4uGNZmPTI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Grateful Dead - October 1974 (Winterland) Pro-Shot &quot;Full set&quot; [Set 2] -- 1080p Remaster.</span></button>
+<button class="vtile" data-yt="8qopPS-RRL0" type="button"><img src="https://i.ytimg.com/vi/8qopPS-RRL0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Doors – Winterland Ballroom (Dec 28, 1967) [Remastered Audio]</span></button>
+<button class="vtile" data-yt="V_b8nDHRNno" type="button"><img src="https://i.ytimg.com/vi/V_b8nDHRNno/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">1978 STYX - COME SAIL AWAY - Winterland Ballroom, San Francisco</span></button>
+<button class="vtile" data-yt="llj0S_GFddE" type="button"><img src="https://i.ytimg.com/vi/llj0S_GFddE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">1978 STYX - Mademoiselle - Winterland Ballroom, San Francisco</span></button>
+<button class="vtile" data-yt="UqCfZIyljVk" type="button"><img src="https://i.ytimg.com/vi/UqCfZIyljVk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Y&amp;T - Full Concert - 11/19/74 - Winterland (OFFICIAL)</span></button>
+<button class="vtile" data-yt="lX486UOFoZY" type="button"><img src="https://i.ytimg.com/vi/lX486UOFoZY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">KISS - Winterland Ballroom, San Francisco 1975 (Full Concert)</span></button>
+<button class="vtile" data-yt="Gl32uhoZlOs" type="button"><img src="https://i.ytimg.com/vi/Gl32uhoZlOs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Blues Brothers: New Year&#x27;s Eve 1978 Winterland Ballroom performance (live concert, Dec. 1978)</span></button>
+<button class="vtile" data-yt="bCyPEYDwnsw" type="button"><img src="https://i.ytimg.com/vi/bCyPEYDwnsw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What Was The Winterland Ballroom Venue Like? - Rock and Roll Wizards</span></button>
+<button class="vtile" data-yt="QBVDSz5Qd6g" type="button"><img src="https://i.ytimg.com/vi/QBVDSz5Qd6g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Sex Pistols – Live at Winterland (1/14/1978) | The Final Concert</span></button>
+<button class="vtile" data-yt="UvWTcMmOgmg" type="button"><img src="https://i.ytimg.com/vi/UvWTcMmOgmg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What Is The History Behind San Francisco&#x27;s Winterland Ballroom? - Rock and Roll Wizards</span></button>
+<button class="vtile" data-yt="8Apjl6SW44A" type="button"><img src="https://i.ytimg.com/vi/8Apjl6SW44A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Winterland. Welcome to Bill Graham’s Dreamland.</span></button>
+<button class="vtile" data-yt="TIXXnhmuXq0" type="button"><img src="https://i.ytimg.com/vi/TIXXnhmuXq0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">My Story of Winterland. A Classic San Francisco Music Venue</span></button>
+<button class="vtile" data-yt="CXEmb_4TvA8" type="button"><img src="https://i.ytimg.com/vi/CXEmb_4TvA8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">3 interview for documentary,</span></button>
+<button class="vtile" data-yt="eXwB6dYDc-M" type="button"><img src="https://i.ytimg.com/vi/eXwB6dYDc-M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Last Waltz -- Official Trailer</span></button>
+<button class="vtile" data-yt="FNtf1R2Ons8" type="button"><img src="https://i.ytimg.com/vi/FNtf1R2Ons8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Grateful Dead Winterland 1974 Compilation (Movie) -- part 1</span></button>
+<button class="vtile" data-yt="XoOULcvEZng" type="button"><img src="https://i.ytimg.com/vi/XoOULcvEZng/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">&quot;The Last Waltz&quot;: Driving to Winterland, with Robbie Robertson commentary.</span></button>
+<button class="vtile" data-yt="86t_jVVCiAY" type="button"><img src="https://i.ytimg.com/vi/86t_jVVCiAY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Eric B’s Daily Vlogs #589 - San Francisco’s Almost Forgotten Bill Graham’s Winterland</span></button>
+<button class="vtile" data-yt="a2YloEPt_ko" type="button"><img src="https://i.ytimg.com/vi/a2YloEPt_ko/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Who - Winterland 1976 - 8mm film!</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Winterland Ballroom was an ice-skating rink and music venue located in San Francisco that operated from 1928 to 1979. It was built at the corner of Post Street and Steiner Street and was demolished in 1986.</p>
+<p>Winterland Ballroom was an ice-skating rink and music venue located in San Francisco that operated from 1928 to 1979. It was built at the corner of Post Street and Steiner Street and was demolished in 1986.</p>
+<h3>history and development</h3>
+<p>The venue opened on June 29, 1928, as New Dreamland Auditorium, a skating rink that could be converted into a seated entertainment venue. The building cost $1 million, which is equivalent to $18.8 million in 2025. It was built on the site of the Dreamland Rink and Sid Grauman&#x27;s National Theatre. In the late 1930s, the name was changed to Winterland. The venue successfully operated through the Great Depression and hosted opera, boxing, tennis matches, and the Shipstads and Johnson Ice Follies starting in 1936. In November 1944, impresario Clifford C. Fischer staged an authorized production of the Folies Bergère.</p>
+<h3>music venue operations</h3>
+<p>Beginning on September 23, 1966, concert promoter Bill Graham began renting the venue for larger concerts that his nearby Fillmore Auditorium could not accommodate. After closing the Fillmore West in 1971, Graham converted the building for exclusive use as a music venue and took over operations. His related merchandising company, Winterland Productions, sold memorabilia, concert shirts, and sports-team merchandise. The venue had an audience capacity of 5,400.</p>
+<h3>notable performances and recordings</h3>
+<p>Numerous popular rock acts played at Winterland, including the Rolling Stones, Jimi Hendrix, Pink Floyd, Queen, and the Grateful Dead. The Grateful Dead made the venue their home base, playing 73 times between March 3, 1967, and December 31, 1978. Peter Frampton recorded parts of his live album Frampton Comes Alive! there. The Band&#x27;s final show on Thanksgiving Day 1976 was filmed by Martin Scorsese as The Last Waltz. The Sex Pistols played their final show there on January 14, 1978. The Jimi Hendrix Experience recorded six performances between October 10 and 12, 1968, which were posthumously released in the box set Winterland.</p>
+<h3>closure and demolition</h3>
+<p>During its final month of existence, shows were booked nearly every night. The venue closed on New Year&#x27;s Eve 1978 / New Year&#x27;s Day 1979 with a concert featuring the Grateful Dead, New Riders of the Purple Sage, and the Blues Brothers. This final show lasted over eight hours, and the Grateful Dead&#x27;s performance began at midnight with &quot;Sugar Magnolia&quot;. The building was eventually razed in 1985 and replaced by apartments.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Location:</strong> Corner of Post Street and Steiner Street, San Francisco</li>
+<li><strong>Operational Period:</strong> 1928-1979</li>
+<li><strong>_// This is a wrong fact. I will correct it now. //_:</strong> 5,400</li>
+<li><strong>Audience Capacity:</strong> 5,400</li>
+<li><strong>Demolition Date:</strong> 1986</li>
+<li><strong>Promoter:</strong> Bill Graham</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Winterland_(The_Jimi_Hendrix_Experience_album" rel="noopener">https://en.wikipedia.org/wiki/Winterland_(The_Jimi_Hendrix_Experience_album</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Winterland_Ballroom" rel="noopener">https://en.wikipedia.org/wiki/Winterland_Ballroom</a></li>
+          <li><a href="https://www.setlist.fm/setlist/blues-brothers/1978/winterland-arena-san-francisco-ca-3c47ddb.html" rel="noopener">https://www.setlist.fm/setlist/blues-brothers/1978/winterland-arena-san-francisco-ca-3c47ddb.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/firefall/1978/winterland-arena-san-francisco-ca-1bdfed38.html" rel="noopener">https://www.setlist.fm/setlist/firefall/1978/winterland-arena-san-francisco-ca-1bdfed38.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/grateful-dead/1978/winterland-arena-san-francisco-ca-3d60593.html" rel="noopener">https://www.setlist.fm/setlist/grateful-dead/1978/winterland-arena-san-francisco-ca-3d60593.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/greg-kihn-band/1978/winterland-arena-san-francisco-ca-7bdf3e8c.html" rel="noopener">https://www.setlist.fm/setlist/greg-kihn-band/1978/winterland-arena-san-francisco-ca-7bdf3e8c.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/jack-tempchin/1978/winterland-arena-san-francisco-ca-1bdfed28.html" rel="noopener">https://www.setlist.fm/setlist/jack-tempchin/1978/winterland-arena-san-francisco-ca-1bdfed28.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/new-riders-of-the-purple-sage/1978/winterland-arena-san-francisco-ca-23ca8ce3.html" rel="noopener">https://www.setlist.fm/setlist/new-riders-of-the-purple-sage/1978/winterland-arena-san-francisco-ca-23ca8ce3.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/ramones/1978/winterland-arena-san-francisco-ca-33d5d855.html" rel="noopener">https://www.setlist.fm/setlist/ramones/1978/winterland-arena-san-francisco-ca-33d5d855.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/svt/1978/winterland-arena-san-francisco-ca-139c75a1.html" rel="noopener">https://www.setlist.fm/setlist/svt/1978/winterland-arena-san-francisco-ca-139c75a1.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/the-tubes/1978/winterland-arena-san-francisco-ca-73df3e8d.html" rel="noopener">https://www.setlist.fm/setlist/the-tubes/1978/winterland-arena-san-francisco-ca-73df3e8d.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/tom-petty-and-the-heartbreakers/1978/winterland-arena-san-francisco-ca-53d47ba9.html" rel="noopener">https://www.setlist.fm/setlist/tom-petty-and-the-heartbreakers/1978/winterland-arena-san-francisco-ca-53d47ba9.html</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Winterland Ballroom">
+        <input type="hidden" name="slug" value="winterland-ballroom">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Winterland Ballroom</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

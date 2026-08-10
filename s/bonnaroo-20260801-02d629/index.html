@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Bonnaroo — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">event</div>
+      <h1>Bonnaroo</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-01</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">12</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1058</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="C6CMhhsHPO8" type="button"><img src="https://i.ytimg.com/vi/C6CMhhsHPO8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bonnaroo: EVERYTHING You Need To Know (2025 Guide)</span></button>
+<button class="vtile" data-yt="1hgXZAHonLs" type="button"><img src="https://i.ytimg.com/vi/1hgXZAHonLs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Radiohead - Live at Bonnaroo (June 2006)</span></button>
+<button class="vtile" data-yt="Jb2w1dLkFOM" type="button"><img src="https://i.ytimg.com/vi/Jb2w1dLkFOM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bonnaroo For Goats - Funky Bass House DJ Mix - OSHE</span></button>
+<button class="vtile" data-yt="NffPMQPGCO0" type="button"><img src="https://i.ytimg.com/vi/NffPMQPGCO0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Noah Kahan ¦ Bonnaroo Music Festival 2026 ¦ Full Set</span></button>
+<button class="vtile" data-yt="druVsNS2Qdk" type="button"><img src="https://i.ytimg.com/vi/druVsNS2Qdk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bonnaroo Music Festival | Daily Highlights Vlog</span></button>
+<button class="vtile" data-yt="KLpgzqS1o28" type="button"><img src="https://i.ytimg.com/vi/KLpgzqS1o28/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">SIDEPIECE LIVE AT BONNAROO 2026</span></button>
+<button class="vtile" data-yt="QM18t11aMbE" type="button"><img src="https://i.ytimg.com/vi/QM18t11aMbE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Eating at a Music Festival For 24 Hours…(Bonnaroo)</span></button>
+<button class="vtile" data-yt="ILuvxqypKps" type="button"><img src="https://i.ytimg.com/vi/ILuvxqypKps/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Wet Leg ¦ Bonnaroo Music Festival 2026 ¦ Full Set</span></button>
+<button class="vtile" data-yt="mIwdPLnzaQM" type="button"><img src="https://i.ytimg.com/vi/mIwdPLnzaQM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bonnaroo 2026 Vlog</span></button>
+<button class="vtile" data-yt="UM2LhB_-OXI" type="button"><img src="https://i.ytimg.com/vi/UM2LhB_-OXI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">GRiZ ¦ Bonnaroo Music Festival 2026 ¦ Full Set</span></button>
+<button class="vtile" data-yt="bfj67EbDywo" type="button"><img src="https://i.ytimg.com/vi/bfj67EbDywo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How To Roo | Tips &amp; Tricks to Camping at Bonnaroo!</span></button>
+<button class="vtile" data-yt="-Ctylz7Yi90" type="button"><img src="https://i.ytimg.com/vi/-Ctylz7Yi90/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">GRiZ - Chasing The Golden Hour (Full Set) - Live at Bonnaroo 2023</span></button>
+<button class="vtile" data-yt="HZVYbQXhoCY" type="button"><img src="https://i.ytimg.com/vi/HZVYbQXhoCY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bonnaroo at 15: The Masterminds Behind the Festival</span></button>
+<button class="vtile" data-yt="cD0IRc_35Ds" type="button"><img src="https://i.ytimg.com/vi/cD0IRc_35Ds/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">A Bonnaroo 2019 Documentary</span></button>
+<button class="vtile" data-yt="90PKBz6jB2M" type="button"><img src="https://i.ytimg.com/vi/90PKBz6jB2M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The entire Bonnaroo 2002 DVD (disc 1)</span></button>
+<button class="vtile" data-yt="mVk8TA2M_E4" type="button"><img src="https://i.ytimg.com/vi/mVk8TA2M_E4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Bonnaroo Experience - A Short Film By Already Alive</span></button>
+<button class="vtile" data-yt="ynVLn5n1r2U" type="button"><img src="https://i.ytimg.com/vi/ynVLn5n1r2U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sorry You Live Here (2025) | Bonnaroo Disaster Documentary</span></button>
+<button class="vtile" data-yt="keU_h60lblE" type="button"><img src="https://i.ytimg.com/vi/keU_h60lblE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The first Bonnaroo started with an epic traffic jam</span></button>
+<button class="vtile" data-yt="YYgKZeHKwSc" type="button"><img src="https://i.ytimg.com/vi/YYgKZeHKwSc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">&quot;Bonnaroo: Four Days at the Farm&quot; A Short Musical Documentary</span></button>
+<button class="vtile" data-yt="049hR9ZqOZI" type="button"><img src="https://i.ytimg.com/vi/049hR9ZqOZI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bonnaroo 2010 Experience - Mini Documentary of Our Journey</span></button>
+<button class="vtile" data-yt="9nbI47AQu3k" type="button"><img src="https://i.ytimg.com/vi/9nbI47AQu3k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bonaroo Experience 2013 (Misha Does Bonnaroo)</span></button>
+<button class="vtile" data-yt="q2vEyoNimTU" type="button"><img src="https://i.ytimg.com/vi/q2vEyoNimTU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Road To Bonnaroo: Molly Grace - A Mini Documentary</span></button>
+<button class="vtile" data-yt="aJWx990j0Pc" type="button"><img src="https://i.ytimg.com/vi/aJWx990j0Pc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bonnaroo: A Love Story</span></button>
+<button class="vtile" data-yt="_0JZdwb7Qx0" type="button"><img src="https://i.ytimg.com/vi/_0JZdwb7Qx0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bonnaroo 2026: Why the EDM Lineup Feels Different (Where Stage)</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Bonnaroo (or the Bonnaroo Music and Arts Festival) is an annual four-day American music festival founded in 2002 by Superfly Presents and AC Entertainment. It takes place at Great Stage Park, a farm in Manchester, Tennessee.</p>
+<p>Bonnaroo (or the Bonnaroo Music and Arts Festival) is an annual four-day American music festival founded in 2002 by Superfly Presents and AC Entertainment. It takes place at Great Stage Park, a farm in Manchester, Tennessee.</p>
+<h3>history and origins</h3>
+<p>Bonnaroo was developed by Ashley Capps of AC Entertainment following the permanent suspension of the Hot Summer Nights rock music festival in Knoxville, Tennessee. The festival&#x27;s name is derived from Creole slang for a &#x27;really good time&#x27; and was inspired by the the same-named 1974 Dr. John album. Its spiritual predecessor was the Itchycoo Park Festival, which took place at the future site of Bonnaroo in 1999. The festival has faced several cancellations: the 2020 event was cancelled due to COVID-19 pandemic health concerns, the 2021 event was cancelled due to torrential rainfall from Hurricane Ida, and the 2025 event was cancelled due to severe weather. In 2019, Live Nation bought out Superfly&#x27;s share of the festival.</p>
+<h3>festival layout and activities</h3>
+<p>The festival takes place at Great Stage Park, which is described as a 650- to 700-acre outdoor event space. The venue area is called &#x27;Centeroo&#x27; and the campground area is called &#x27;Outeroo&#x27;. Centeroo stages include the What Stage, Which Stage, That Tent, This Tent, and The Other Stage. The What Stage is the largest stage and can accommodate up to 80,000 fans. Outeroo features a variety of stages that vary year-to-year, including the Where in the Woods Stage since 2018 for late-night electronic music. The festival offers stylistically diverse music across multiple stages,-including indie rock, hip hop, jazz, Americana, bluegrass, country, folk, gospel, reggae, pop, electronic, and other alternative music. Beyond music, the festival provides artistic, environmental, and community activities such as yoga, a 5k run, sustainability lessons, and vendor markets.</p>
+<h3>economic and environmental impact</h3>
+<p>The Bonnaroo Works Fund, a 501(c)(3) nonprofit organization created in 2009, awards grants to local schools and non-profits. la owns the festival since its inception up to 2013, the direct and indirect economic impact was estimated at $51 million. By 2023, Bonnaroo contributed $339.8 million to the regional economy, including over $5.1 million in tax revenue and supporting 4,163 full-time job equivalents. Regarding environmentalism, Bonnaroo supports recycling and sustainability through initiatives like Planet Roo. In 2004, the festival stated it prevented 120 tons of trash from being collected by encouraging recycling. In 2011, A Greener Festival recognized these efforts with an award.</p>
+<h3>notable performances</h3>
+<p>The Beastie Boys played their final show ever at the festival in 2009. R&amp;B singer D&#x27;Angelo performed a surprise set at the annual Superjam in 2012, marking his return to American stages for the first time in over 12 years. Recent performances include acts such as Modest Mouse, Noah Kahan, Clipse, and ROLE MODEL on June 14, 2026.</p>
+<h3>title own&#x27;s history</h3>
+<p>// a section on Manchester, Tennessee</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Founded:</strong> 2002</li>
+<li><strong>Location:</strong> Great Stage Park, Manchester, Tennessee</li>
+<li><strong>label own&#x27;s History:</strong> Creole slang for a &#x27;really good time&#x27;</li>
+<li><strong>Economic Impact (2023):</strong> $339.8 million to the regional economy</li>
+<li><strong>label own&#x27;s History:</strong> What Stage capacity</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Bonnaroo" rel="noopener">https://en.wikipedia.org/wiki/Bonnaroo</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Manchester,_Tennessee" rel="noopener">https://en.wikipedia.org/wiki/Manchester,_Tennessee</a></li>
+          <li><a href="https://www.setlist.fm/setlist/audrey-hobert/2026/great-stage-park-manchester-tn-734c3235.html" rel="noopener">https://www.setlist.fm/setlist/audrey-hobert/2026/great-stage-park-manchester-tn-734c3235.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/clipse/2026/great-stage-park-manchester-tn-7b4c3238.html" rel="noopener">https://www.setlist.fm/setlist/clipse/2026/great-stage-park-manchester-tn-7b4c3238.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/daily-bread/2026/great-stage-park-manchester-tn-6b4c323e.html" rel="noopener">https://www.setlist.fm/setlist/daily-bread/2026/great-stage-park-manchester-tn-6b4c323e.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/fcukers/2026/great-stage-park-manchester-tn-7b4c3234.html" rel="noopener">https://www.setlist.fm/setlist/fcukers/2026/great-stage-park-manchester-tn-7b4c3234.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/lszee/2026/great-stage-park-manchester-tn-734c3239.html" rel="noopener">https://www.setlist.fm/setlist/lszee/2026/great-stage-park-manchester-tn-734c3239.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/modest-mouse/2026/great-stage-park-manchester-tn-734c323d.html" rel="noopener">https://www.setlist.fm/setlist/modest-mouse/2026/great-stage-park-manchester-tn-734c323d.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/motifv/2026/great-stage-park-manchester-tn-734c322d.html" rel="noopener">https://www.setlist.fm/setlist/motifv/2026/great-stage-park-manchester-tn-734c322d.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/noah-kahan/2026/great-stage-park-manchester-tn-734c3245.html" rel="noopener">https://www.setlist.fm/setlist/noah-kahan/2026/great-stage-park-manchester-tn-734c3245.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/role-model/2026/great-stage-park-manchester-tn-7b4c3244.html" rel="noopener">https://www.setlist.fm/setlist/role-model/2026/great-stage-park-manchester-tn-7b4c3244.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/san-holo/2026/great-stage-park-manchester-tn-734c3231.html" rel="noopener">https://www.setlist.fm/setlist/san-holo/2026/great-stage-park-manchester-tn-734c3231.html</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Bonnaroo">
+        <input type="hidden" name="slug" value="bonnaroo">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Bonnaroo</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

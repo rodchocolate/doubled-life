@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Pearl Jam — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">artist</div>
+      <h1>Pearl Jam</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">882</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="qgaRVvAKoqQ" type="button"><img src="https://i.ytimg.com/vi/qgaRVvAKoqQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pearl Jam - Black (Official Audio)</span></button>
+<button class="vtile" data-yt="CxKWTzr-k6s" type="button"><img src="https://i.ytimg.com/vi/CxKWTzr-k6s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pearl Jam - Even Flow (Official Video)</span></button>
+<button class="vtile" data-yt="MS91knuzoOA" type="button"><img src="https://i.ytimg.com/vi/MS91knuzoOA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pearl Jam - Jeremy (Official 4K Video)</span></button>
+<button class="vtile" data-yt="tvLF_WIDpuw" type="button"><img src="https://i.ytimg.com/vi/tvLF_WIDpuw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pearl Jam - Setting Sun (First Official Performance)</span></button>
+<button class="vtile" data-yt="qM0zINtulhM" type="button"><img src="https://i.ytimg.com/vi/qM0zINtulhM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pearl Jam - Alive (Official Video)</span></button>
+<button class="vtile" data-yt="PM_VIATPYQc" type="button"><img src="https://i.ytimg.com/vi/PM_VIATPYQc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">PEARL JAM PINKPOP 1992</span></button>
+<button class="vtile" data-yt="iYtBMgLfqKQ" type="button"><img src="https://i.ytimg.com/vi/iYtBMgLfqKQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pearl Jam - Yellow Ledbetter (Official Audio)</span></button>
+<button class="vtile" data-yt="Eo-UKCxCglg" type="button"><img src="https://i.ytimg.com/vi/Eo-UKCxCglg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">&quot;Just Breathe&quot; - Live At Austin City Limits - Pearl Jam</span></button>
+<button class="vtile" data-yt="3g1Tu2Ulrk0" type="button"><img src="https://i.ytimg.com/vi/3g1Tu2Ulrk0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jeremy (Live) - MTV Unplugged - Pearl Jam</span></button>
+<button class="vtile" data-yt="Nkgv3LoQY2o" type="button"><img src="https://i.ytimg.com/vi/Nkgv3LoQY2o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pearl Jam - I Am Mine (Live at Chop Suey - Official HD Video)</span></button>
+<button class="vtile" data-yt="4YFYNUu_sqE" type="button"><img src="https://i.ytimg.com/vi/4YFYNUu_sqE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pearl Jam - Elderly Woman Behind the Counter in a Small Town (Official Audio)</span></button>
+<button class="vtile" data-yt="DGHo6g-IsSo" type="button"><img src="https://i.ytimg.com/vi/DGHo6g-IsSo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pearl Jam - Yellow Ledbetter (Live Barcelona 2024) - Official Bootleg Audio</span></button>
+<button class="vtile" data-yt="LFHPs9CuX7M" type="button"><img src="https://i.ytimg.com/vi/LFHPs9CuX7M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pearl Jam: The Trials And Success Of The Grunge Titans (Full Documentary) | Amplified</span></button>
+<button class="vtile" data-yt="Nhh0Uk77WlA" type="button"><img src="https://i.ytimg.com/vi/Nhh0Uk77WlA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Story of...Pearl Jam (2003)</span></button>
+<button class="vtile" data-yt="8HWV4CegsNs" type="button"><img src="https://i.ytimg.com/vi/8HWV4CegsNs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Hype! | FULL MOVIE | Sub Pop, Pearl Jam, Nirvana, Soundgarden | Seattle Grunge Music Documentary</span></button>
+<button class="vtile" data-yt="OY8DcHqWyZY" type="button"><img src="https://i.ytimg.com/vi/OY8DcHqWyZY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Complete Pearl Jam Iceberg</span></button>
+<button class="vtile" data-yt="tIKDjZuAYuk" type="button"><img src="https://i.ytimg.com/vi/tIKDjZuAYuk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Eddie Vedder &amp; Chris Cornell - Pearl Jam Twenty</span></button>
+<button class="vtile" data-yt="A-GCzMRVtDc" type="button"><img src="https://i.ytimg.com/vi/A-GCzMRVtDc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Tragic Real-Life Story Of Pearl Jam</span></button>
+<button class="vtile" data-yt="HkOra1eT3Yc" type="button"><img src="https://i.ytimg.com/vi/HkOra1eT3Yc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pearl Jam - Ten Revisited (2009 TV Special)</span></button>
+<button class="vtile" data-yt="D-ZSN0h8di8" type="button"><img src="https://i.ytimg.com/vi/D-ZSN0h8di8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Untold Story of Pearl Jam - From Grunge Legends to Rock Icons</span></button>
+<button class="vtile" data-yt="gn5B6N0-U_g" type="button"><img src="https://i.ytimg.com/vi/gn5B6N0-U_g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Eddie Vedder on the Death of Kurt Cobain</span></button>
+<button class="vtile" data-yt="K3rWjEEnowI" type="button"><img src="https://i.ytimg.com/vi/K3rWjEEnowI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">A Rare Glimpse into Eddie Vedder&#x27;s World | Pearl Jam 20 Documentary</span></button>
+<button class="vtile" data-yt="-r0ClMM2sNc" type="button"><img src="https://i.ytimg.com/vi/-r0ClMM2sNc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Pearl Jam Survived When Grunge Died | Music Documentary | Pearl Jam: Under Review</span></button>
+<button class="vtile" data-yt="MfCrA3vKsxs" type="button"><img src="https://i.ytimg.com/vi/MfCrA3vKsxs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Why Pearl Jam Tried To Prevent &quot;Black&quot; From Becoming A Hit</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Pearl Jam is an American rock band formed in Seattle, Washington, in 1990. As one of the key bands in the grunge movement of the early 1990s, they are considered one of the most influential bands of that decade.</p>
+<p>Pearl Jam is an American rock band formed in Seattle, Washington, in 1990. As one of the key bands in the grunge movement of the early 1990s, they are considered one of the most influential bands of that decade.</p>
+<h3>formation and early history</h3>
+<p>Pearl Jam was formed after the dissolution of Stone Gossard and Jeff Ament&#x27;s previous bands, Green River and Mother Love Bone. Following the death of vocalist Andrew Wood in 1990, Gossard began practicing with guitarist Mike McCready. The trio then recorded a five-song instrumental demo tape to find a singer and drummer. This demo was passed to Eddie Vedder, who recorded vocals for three songs and was flown to Seattle for an audition. With the addition of Dave Krusen on drums, the band initially took the name Mookie Blaylock before signing to Epic Records and renaming themselves Pearl Jam.</p>
+<h3>commercial success and discography</h3>
+<p>The band&#x27;s debut album, Ten (1991), became one of the highest-selling rock albums ever, being certified 13× platinum by the RIAA. Their second album, Vs. (1993), set a record for most copies sold in its first week of release at the time, and their third album, Vitalogy (1994), became the second-fastest-selling CD in history at that time. By 2012, Pearl Jam had sold more than 100 million albums worldwide. The band&#x27;s discography includes 12 studio albums, 23 live albums and 3 compilation albums. Their most recent studio album mentioned is Gigaton (2020).</p>
+<h3>industry practices and advocacy</h3>
+<p>Pearl Jam members often avoided popular music industry practices such as interviews and music videos. In 1994, the band unsuccessfully sued Ticketmaster for monopolizing the concert-ticket market. The band and vocalist Eddie Vedder have also promoted social and political issues, including opposition to George W. Bush&#x27;s presidency and abortion rights sentiments.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Origin:</strong> Seattle, Washington</li>
+<li><strong>Founding Members:</strong> Stone Gossard, Mike McCready, and Jeff Ament</li>
+<li><strong>lead vocalist:</strong> Eddie Vedder</li>
+<li><strong>World Sales:</strong> Over 100 million albums worldwide</li>
+<li><strong>Rock and Roll Hall of Fame Induction:</strong> 2017</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Pearl_Jam" rel="noopener">https://en.wikipedia.org/wiki/Pearl_Jam</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Pearl_Jam_discography" rel="noopener">https://en.wikipedia.org/wiki/Pearl_Jam_discography</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Ten_(Pearl_Jam_album" rel="noopener">https://en.wikipedia.org/wiki/Ten_(Pearl_Jam_album</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Pearl Jam">
+        <input type="hidden" name="slug" value="pearl-jam">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Pearl Jam</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

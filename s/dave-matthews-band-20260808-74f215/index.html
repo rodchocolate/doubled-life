@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Dave Matthews Band — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>Dave Matthews Band</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">948</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="k7in-9E3ImQ" type="button"><img src="https://i.ytimg.com/vi/k7in-9E3ImQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dave Matthews Band - Crash Into Me (Official Video)</span></button>
+<button class="vtile" data-yt="ZDlVQf5qzK8" type="button"><img src="https://i.ytimg.com/vi/ZDlVQf5qzK8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dave Matthews Band - August 31, 2024 Live at The Gorge N2 Full Show Webcast</span></button>
+<button class="vtile" data-yt="me6SHdT5XOg" type="button"><img src="https://i.ytimg.com/vi/me6SHdT5XOg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dave Matthews Band Saratoga Performing Arts Center - July 18, 2026</span></button>
+<button class="vtile" data-yt="MNgJBIx-hK8" type="button"><img src="https://i.ytimg.com/vi/MNgJBIx-hK8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dave Matthews Band - Ants Marching (Official Video)</span></button>
+<button class="vtile" data-yt="FoezrZ-DCJw" type="button"><img src="https://i.ytimg.com/vi/FoezrZ-DCJw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dave Matthews Band - Ants Marching (Live At Piedmont Park)</span></button>
+<button class="vtile" data-yt="GAamgBPebsk" type="button"><img src="https://i.ytimg.com/vi/GAamgBPebsk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dave Matthews Band - Satellite (Official Video)</span></button>
+<button class="vtile" data-yt="LsXMjil99CM" type="button"><img src="https://i.ytimg.com/vi/LsXMjil99CM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">&quot;Don&#x27;t Drink The Water&quot; - Dave Matthews (LIVE on The Late Show)</span></button>
+<button class="vtile" data-yt="elUwSHjfA94" type="button"><img src="https://i.ytimg.com/vi/elUwSHjfA94/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dave Matthews Band - Crush (Official HD Video)</span></button>
+<button class="vtile" data-yt="ieoiAeL-uow" type="button"><img src="https://i.ytimg.com/vi/ieoiAeL-uow/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dave Matthews: NPR Music Tiny Desk Concert</span></button>
+<button class="vtile" data-yt="NTC__g12xPs" type="button"><img src="https://i.ytimg.com/vi/NTC__g12xPs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dave Matthews Band - Two Step (Live from Central Park)</span></button>
+<button class="vtile" data-yt="f-jaSbiwWGU" type="button"><img src="https://i.ytimg.com/vi/f-jaSbiwWGU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dave Matthews Band - Grey Street (Live from Central Park)</span></button>
+<button class="vtile" data-yt="oIQuQqhnLHw" type="button"><img src="https://i.ytimg.com/vi/oIQuQqhnLHw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dave Matthews Band - #41 (Live from New Jersey, 1999)</span></button>
+<button class="vtile" data-yt="rydDQLFFEBE" type="button"><img src="https://i.ytimg.com/vi/rydDQLFFEBE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">[Upgrade] - Dave Matthews Driven Documentary - (Biography) - (Early Life) - ( DMB History ) - (2004)</span></button>
+<button class="vtile" data-yt="VUR_cJXB300" type="button"><img src="https://i.ytimg.com/vi/VUR_cJXB300/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dave Matthews Band Documentary</span></button>
+<button class="vtile" data-yt="0c6H7KOUGAI" type="button"><img src="https://i.ytimg.com/vi/0c6H7KOUGAI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dave Matthews Band - The Road To Big Whiskey (2009)</span></button>
+<button class="vtile" data-yt="rpfgZ2Lp1eY" type="button"><img src="https://i.ytimg.com/vi/rpfgZ2Lp1eY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Making of &quot;Before These Crowded Streets&quot; - Dave Matthews Band documentary - BTCS (1998)</span></button>
+<button class="vtile" data-yt="KfFqukR9WlA" type="button"><img src="https://i.ytimg.com/vi/KfFqukR9WlA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The SAD Story of Dave Matthews Life &amp; How He Got So Popular</span></button>
+<button class="vtile" data-yt="Lz33OZf4Yx0" type="button"><img src="https://i.ytimg.com/vi/Lz33OZf4Yx0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dave Matthews Breaks Down His Most Iconic Tracks | GQ</span></button>
+<button class="vtile" data-yt="vsC8iZ6jvyc" type="button"><img src="https://i.ytimg.com/vi/vsC8iZ6jvyc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dave Matthews Storytellers 1999 HD First Gen VHS 2022 Remaster Tim Reynolds USA cable TV DMB VH1</span></button>
+<button class="vtile" data-yt="Dx-BYB06Hns" type="button"><img src="https://i.ytimg.com/vi/Dx-BYB06Hns/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dave Matthews Band - 60 Minutes II (2001)</span></button>
+<button class="vtile" data-yt="D4ljA2suzxI" type="button"><img src="https://i.ytimg.com/vi/D4ljA2suzxI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ryan Gosling Ruined Dave Matthews&#x27; Only Karaoke Experience</span></button>
+<button class="vtile" data-yt="O_sq3eR8Nys" type="button"><img src="https://i.ytimg.com/vi/O_sq3eR8Nys/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">From Pete Seeger To David Byrne: The Artists Dave Matthews Looks To For Inspiration</span></button>
+<button class="vtile" data-yt="bHfaMKm-A54" type="button"><img src="https://i.ytimg.com/vi/bHfaMKm-A54/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Why Guitar Players HATE Dave Matthews</span></button>
+<button class="vtile" data-yt="oMqA0R7zR7A" type="button"><img src="https://i.ytimg.com/vi/oMqA0R7zR7A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Trepidation of the Dave Matthews Fan</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Dave Matthews Band (DMB) is an American rock band formed in Charlottesville, Virginia, in 1991. The group is known for its live shows and the practice of playing songs differently in each performance.</p>
+<p>Dave Matthews Band (DMB) is an American rock band formed in Charlottesville, Virginia, in 1991. The group is known for its live shows and the practice of playing songs differently in each performance.</p>
+<h3>formation and early history</h3>
+<p>The band was formed in 1991 by singer-songwriter and guitarist Dave Matthews, drummer Carter Beauford, and saxophonist LeRoi Moore. After an initial period of &#x27;trial and incubation&#x27; where the trio first played together, they added bassist Stefan Lessard and keyboardist Peter Griesar. Violinist Boyd Tinsley joined as a full-time member in 1992 to solidify the band&#x27;s sound. The group&#x27;s first public show was on March 14, 1991, at Trax Nightclub in Charlottesville, Virginia, as part of a benefit for the Middle East Children&#x27;s Alliance.</p>
+<h3>musical career and achievements</h3>
+<p>DMB signed with RCA Records and released their debut studio album, Under the Table and Dreaming (1994), which was certified six times platinum. The band has since released 10 studio albums, including Crash (1996) and These Crowded Streets (1998). They are known for having seven consecutive studio albums debut at number one on the Billboard 200, a record extended with the release of Come Tomorrow (2018). The band won the 1996 Grammy Award for Best Rock Vocal Performance by a Duo or Group for &#x27;So Much to Say&#x27; and was inducted into the Rock and Roll Hall of Fame in 2024.</p>
+<h3>live performances and discography</h3>
+<p>The band is a jam band renowned for its live shows, having sold more than 25 million concert tickets as of 2018. They have released 85 live albums (as of the date of the source material), though another source mentions 96 live albums as of August 2021. This includes series such as Live Trax and DMBlive to combat illegal distribution of fan recordings. Their first concert album, Live at Red Rocks 8.15.95, was released in October 1997.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Founding Members:</strong> Dave Matthews, Stefan Lessard, and Carter Beauford (remaining founding members as of 2026)</li>
+<li><strong> :</strong> -</li>
+<li><strong>Debut Album:</strong> Under the Table and Dreaming (1994)</li>
+<li><strong>Grammy Award:</strong> Best Rock Vocal Performance by a Duo or Group for &#x27;So Much to Say&#x27; (1996)</li>
+<li><strong>Hall of Fame Induction:</strong> Rock and Roll Hall of Fame (2024)</li>
+<li><strong>Billboard 200 Record:</strong> Seven consecutive studio albums debuting at number one</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Dave_Matthews" rel="noopener">https://en.wikipedia.org/wiki/Dave_Matthews</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Dave_Matthews_Band" rel="noopener">https://en.wikipedia.org/wiki/Dave_Matthews_Band</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Dave_Matthews_Band_discography" rel="noopener">https://en.wikipedia.org/wiki/Dave_Matthews_Band_discography</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Dave Matthews Band">
+        <input type="hidden" name="slug" value="dave-matthews-band">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Dave Matthews Band</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

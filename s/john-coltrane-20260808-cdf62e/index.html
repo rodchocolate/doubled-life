@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>John Coltrane — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>John Coltrane</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1003</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="4tncD1oA6i4" type="button"><img src="https://i.ytimg.com/vi/4tncD1oA6i4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">John Coltrane &quot;My Favorite Things&quot; - Full Album ...</span></button>
+<button class="vtile" data-yt="UJ1Iaquxyyg" type="button"><img src="https://i.ytimg.com/vi/UJ1Iaquxyyg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Best John Coltrane Songs - John Coltrane Greatest Hits Playlist</span></button>
+<button class="vtile" data-yt="hULsPRAANc4" type="button"><img src="https://i.ytimg.com/vi/hULsPRAANc4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">John Contrane Greatest Hits Collection - Best Saxophone Songs Of John Coltrane Playlist</span></button>
+<button class="vtile" data-yt="xy_fxxj1mMY" type="button"><img src="https://i.ytimg.com/vi/xy_fxxj1mMY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">John Coltrane - Giant Steps (2020 Remaster) [Full Album]</span></button>
+<button class="vtile" data-yt="3VGp_qBtZbg" type="button"><img src="https://i.ytimg.com/vi/3VGp_qBtZbg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Miles Davis and John Coltrane, &quot;So What,&quot; 1959</span></button>
+<button class="vtile" data-yt="8VE_dP90V84" type="button"><img src="https://i.ytimg.com/vi/8VE_dP90V84/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Miles Davis with John Coltrane- March 21, 1960 Olympia Theatre, Paris</span></button>
+<button class="vtile" data-yt="r594pxUjcz4" type="button"><img src="https://i.ytimg.com/vi/r594pxUjcz4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">John Coltrane - In A Sentimental Mood</span></button>
+<button class="vtile" data-yt="tVyQngRG2kk" type="button"><img src="https://i.ytimg.com/vi/tVyQngRG2kk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">John Coltrane - Olé Coltrane - 1962 (LP / Atlantic / SD 1373 / 1962 US)</span></button>
+<button class="vtile" data-yt="vtZyDuU06eE" type="button"><img src="https://i.ytimg.com/vi/vtZyDuU06eE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">John Coltrane - Live At The Village Gate (1961 / Full Album / Visualizer) ft. Eric Dolphy</span></button>
+<button class="vtile" data-yt="ehYM_cg2DHI" type="button"><img src="https://i.ytimg.com/vi/ehYM_cg2DHI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">John Coltrane Quartet My Favorite Things Live in Comblain-La-Tour 1965</span></button>
+<button class="vtile" data-yt="bci4dGbmBFk" type="button"><img src="https://i.ytimg.com/vi/bci4dGbmBFk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ballads / John Coltrane Quartet</span></button>
+<button class="vtile" data-yt="JI3lOBOtuZI" type="button"><img src="https://i.ytimg.com/vi/JI3lOBOtuZI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How John Coltrane Made &quot;A Love Supreme&quot; (Chasing Trane doc.)</span></button>
+<button class="vtile" data-yt="vEKDwT5L67Q" type="button"><img src="https://i.ytimg.com/vi/vEKDwT5L67Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">&quot;Chasing Trane&quot; The John Coltrane Documentary 2016</span></button>
+<button class="vtile" data-yt="Vq81R8h140U" type="button"><img src="https://i.ytimg.com/vi/Vq81R8h140U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">[Jazz Documentary] Chasing Trane: The John Coltrane Documentary</span></button>
+<button class="vtile" data-yt="8VoSdcrx3RQ" type="button"><img src="https://i.ytimg.com/vi/8VoSdcrx3RQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">JOHN COLTRANE DOCUMENTARY</span></button>
+<button class="vtile" data-yt="MXKPONrVt3c" type="button"><img src="https://i.ytimg.com/vi/MXKPONrVt3c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">CHASING TRANE: THE JOHN COLTRANE DOCUMENTARY | Trailer</span></button>
+<button class="vtile" data-yt="BPyWCkoOXYM" type="button"><img src="https://i.ytimg.com/vi/BPyWCkoOXYM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Saint John Coltrane</span></button>
+<button class="vtile" data-yt="FXbHsnvrd28" type="button"><img src="https://i.ytimg.com/vi/FXbHsnvrd28/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Tragic Story Of John Coltrane</span></button>
+<button class="vtile" data-yt="Yaf6TNfuDuk" type="button"><img src="https://i.ytimg.com/vi/Yaf6TNfuDuk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">John Coltrane&#x27;s Work Ethic - Jimmy Heath</span></button>
+<button class="vtile" data-yt="L5TOz562GAY" type="button"><img src="https://i.ytimg.com/vi/L5TOz562GAY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The World According to John Coltrane (Documentary) | Qwest TV</span></button>
+<button class="vtile" data-yt="AI0kZ3i6cyc" type="button"><img src="https://i.ytimg.com/vi/AI0kZ3i6cyc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">John Coltrane Documentary part 1</span></button>
+<button class="vtile" data-yt="JzRsOBRWoI0" type="button"><img src="https://i.ytimg.com/vi/JzRsOBRWoI0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Henry Rollins Recommends: John Coltrane</span></button>
+<button class="vtile" data-yt="62tIvfP9A2w" type="button"><img src="https://i.ytimg.com/vi/62tIvfP9A2w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The most feared song in jazz, explained</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">John Coltrane (1926–1967) was an American jazz saxophonist, bandleader, and composer who is considered one of the most influential figures in 20th-century music. Born in North Carolina and later moving to Philadelphia, he pioneered the use of modes and was at the forefront of fre</p>
+<p>John Coltrane (1926–1967) was an American jazz saxophonist, bandleader, and composer who is considered one of the most influential figures in 20th-century music. Born in North Carolina and later moving to Philadelphia, he pioneered the use of modes and was at the forefront of free jazz.</p>
+<h3>early life and military service</h3>
+<p>Coltrane was born on September 23, 1926, in Hamlet, North Carolina, and grew up in High Point. He played clarinet and alto horn in a community band before switching to the saxophone. After graduating high school, he moved to Philadelphia in 1943 where he took saxophone lessons at the Ornstein School of Music. In 1945, to avoid the Army draft, he enlisted in the Navy, where he was stationed at Pearl Harbor and played with the Melody Masters swing band. He was discharged from the Navy on August 8, 1946, and received several medals including the World War II Victory Medal.</p>
+<h3>musical career and development</h3>
+<p>After his discharge, Coltrane studied music theory with Dennis Sandole at the Granoff School of Music. He switched from alto to tenor saxophone in 1947. Influenced by by musicians such as Charlie Parker, Coleman Hawkins, Ben Webster, and Tab Smith, he became fanatical about practicing. In the early to mid-1950s, he was a member of groups led by Dizzy Gillespie, Earl Bostic, and Johnny Hodges. By 1955, he joined the &#x27;First Great Quintet&#x27; of Miles Davis, with whom he played from October 1955 to April 1957.</p>
+<h3>recording career and labels</h3>
+<p>Coltrane signed a contract with Prestige Records in April 1957, releasing his debut album Coltrane. He also recorded Blue Train for Blue Note Records in 1958. In April 1959, he signed with Atlantic Records, producing albums such as Giant Steps and My Favorite Things. In April 1961, he became the first artist to sign with Impulse! Records, where he recorded A Love Supreme (1965) and Ascension. He also appeared on several recordings led by Miles Davis and Thelonious Monk.</p>
+<h3>spiritual dimension and legacy</h3>
+<p>C و a career, Coltrane&#x27;s music took on an increasingly spiritual dimension, as seen in A Love Supreme. He was canonized by the African Orthodox Church and posthumously awarded a special Pulitzer Prize. In San Francisco, the St. John Will-I-Am Coltrane African Orthodox Church was founded in 1969 by Franzo and Marina King, who initially viewed him as an incarnation of the Christian god and his album A Love Supreme as a sacred text.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Born:</strong> September 23, 1926</li>
+<li><strong>Died:</strong> July 17, 1967</li>
+<li><strong>label own children:</strong> John Jr., Ravi, and Oran</li>
+<li><strong>First professional work:</strong> A cocktail lounge trio with piano and guitar in 1945</li>
+<li><strong>First recording sessions:</strong> Informal session in Hawaii with Navy musicians on July 13, 1946</li>
+<li><strong>Most acclaimed album:</strong> A Love Supreme (1965)</li>
+<li><strong>label own children:</strong> John Jr., Ravi, and Oran</li>
+<li><strong>First saxophone:</strong> Alto saxophone bought by his mother in September 1943</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/John_Coltrane" rel="noopener">https://en.wikipedia.org/wiki/John_Coltrane</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/John_Coltrane_discography" rel="noopener">https://en.wikipedia.org/wiki/John_Coltrane_discography</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/St._John_Coltrane_African_Orthodox_Church" rel="noopener">https://en.wikipedia.org/wiki/St._John_Coltrane_African_Orthodox_Church</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="John Coltrane">
+        <input type="hidden" name="slug" value="john-coltrane">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — John Coltrane</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

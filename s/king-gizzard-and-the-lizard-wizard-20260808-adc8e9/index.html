@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>King Gizzard and the Lizard Wizard — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>King Gizzard and the Lizard Wizard</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">964</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="U72rbtrufws" type="button"><img src="https://i.ytimg.com/vi/U72rbtrufws/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">King Gizzard &amp; The Lizard Wizard - Sleep Drifter (Live on KEXP)</span></button>
+<button class="vtile" data-yt="Q-i1XZc8ZwA" type="button"><img src="https://i.ytimg.com/vi/Q-i1XZc8ZwA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">King Gizzard &amp; The Lizard Wizard - Rattlesnake (Official Video)</span></button>
+<button class="vtile" data-yt="Jb8UMmrBlC8" type="button"><img src="https://i.ytimg.com/vi/Jb8UMmrBlC8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">King Gizzard &amp; The Lizard Wizard - Full Performance (Live on KEXP)</span></button>
+<button class="vtile" data-yt="H9zkrhzWxwc" type="button"><img src="https://i.ytimg.com/vi/H9zkrhzWxwc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">King Gizzard and the Lizard Wizard - Live at Field of Vision 2025 (Night 1)</span></button>
+<button class="vtile" data-yt="mp-HWukUDSE" type="button"><img src="https://i.ytimg.com/vi/mp-HWukUDSE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">King Gizzard &amp; the Lizard Wizard - Level 5 [Official Video]</span></button>
+<button class="vtile" data-yt="YQX2CsMCB9M" type="button"><img src="https://i.ytimg.com/vi/YQX2CsMCB9M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">King Gizzard &amp; The Lizard Wizard - Gila Monster</span></button>
+<button class="vtile" data-yt="rdQyYsl_rDs" type="button"><img src="https://i.ytimg.com/vi/rdQyYsl_rDs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">King Gizzard &amp; the Lizard Wizard - Alien Metal [Visualiser]</span></button>
+<button class="vtile" data-yt="MLlNDtF_qrA" type="button"><img src="https://i.ytimg.com/vi/MLlNDtF_qrA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">King Gizzard &amp; The Lizard Wizard - Gumboot Soup (Full Album)</span></button>
+<button class="vtile" data-yt="9p_Si21ig7c" type="button"><img src="https://i.ytimg.com/vi/9p_Si21ig7c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">King Gizzard &amp; The Lizard Wizard - Robot Stop (Official Video)</span></button>
+<button class="vtile" data-yt="Ik-gBAlEbQY" type="button"><img src="https://i.ytimg.com/vi/Ik-gBAlEbQY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">King Gizzard &amp; The Lizard Wizard - Le Risque (Official Video)</span></button>
+<button class="vtile" data-yt="ntbNRUycbD4" type="button"><img src="https://i.ytimg.com/vi/ntbNRUycbD4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">King Gizzard &amp; The Lizard Wizard - If Not Now, Then When? (Official Video)</span></button>
+<button class="vtile" data-yt="IRTZqVtzJvg" type="button"><img src="https://i.ytimg.com/vi/IRTZqVtzJvg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">A BRIEF HISTORY OF KING GIZZARD &amp; THE LIZARD WIZARD</span></button>
+<button class="vtile" data-yt="CA6fMwidRW0" type="button"><img src="https://i.ytimg.com/vi/CA6fMwidRW0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">25 Albums in One Decade: The King Gizzard Phenomenon</span></button>
+<button class="vtile" data-yt="hjjCW6_fuXU" type="button"><img src="https://i.ytimg.com/vi/hjjCW6_fuXU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Introduction to KING GIZZARD &amp; THE LIZARD WIZARD</span></button>
+<button class="vtile" data-yt="P9ijbTzSwpE" type="button"><img src="https://i.ytimg.com/vi/P9ijbTzSwpE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">King Gizzard &amp; The Lizard Wizard&#x27;s Road To Nonagon Infinity</span></button>
+<button class="vtile" data-yt="Em_nBcGqbBs" type="button"><img src="https://i.ytimg.com/vi/Em_nBcGqbBs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How King Gizzard &amp; The Lizard Wizard Began</span></button>
+<button class="vtile" data-yt="IHCyIh9ZGnI" type="button"><img src="https://i.ytimg.com/vi/IHCyIh9ZGnI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The $0 Album That Broke The Industry</span></button>
+<button class="vtile" data-yt="ITMKcuZUSpU" type="button"><img src="https://i.ytimg.com/vi/ITMKcuZUSpU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">King Gizzard &amp; The Lizard Wizard on trash metal, setlists and the end of the world</span></button>
+<button class="vtile" data-yt="tkmITa2Dlik" type="button"><img src="https://i.ytimg.com/vi/tkmITa2Dlik/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">King Gizzard PetroDragonic Apocalypse Behind the Scenes from Instagram</span></button>
+<button class="vtile" data-yt="NBvkp5sm3sk" type="button"><img src="https://i.ytimg.com/vi/NBvkp5sm3sk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How King Gizzard &amp; The Lizard Wizard Made Their First Albums</span></button>
+<button class="vtile" data-yt="zIZOm-fgdM8" type="button"><img src="https://i.ytimg.com/vi/zIZOm-fgdM8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How King Gizzard &amp; The Lizard Wizard Released 5 Albums In 2017</span></button>
+<button class="vtile" data-yt="DbYSte-bMT4" type="button"><img src="https://i.ytimg.com/vi/DbYSte-bMT4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">King Gizzard &amp; The Lizard Wizard on Phantom Island, orchestra shows and leaving Spotify | Interview</span></button>
+<button class="vtile" data-yt="CuOlJXeM5RQ" type="button"><img src="https://i.ytimg.com/vi/CuOlJXeM5RQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">1063 Days: A King Gizzard Mini Fan Documentary</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">King Gizzard &amp; the Lizard Wizard (KGLW) are an Australian rock band formed in 2010 in Melbourne, Victoria. They are known for their prolific discography, energetic live shows and exploration of multiple genres.</p>
+<p>King Gizzard &amp; the Lizard Wizard (KGLW) are an Australian rock band formed in 2010 in Melbourne, Victoria. They are known for their prolific discography, energetic live shows and exploration of multiple genres.</p>
+<h3>formation and early career</h3>
+<p>The band members grew up in the Deniliquin, Melbourne, and Geelong areas of Australia. Stu Mackenzie, Cook Craig, and Joey Walker met while studying music industry at RMIT University, while others were in bands called Revolver &amp; Sun, Sambrose Automobile, and The Houses. After a fluid lineup that fluctuated between three and 11 members, the current lineup consists of Stu Mackenzie, Ambrose Kenny-Smith, Cook Craig, Joey Walker, Lucas Harwood, and Michael Cavanagh. The band&#x27;s name was chosen because it was considered absurd and nonsense. Album art and most music videos are created by Melbourne artist Jason Galea.</p>
+<h3>musical evolution and discography</h3>
+<p>KGLW has released 27 studio albums, including early garage rock releases like 12 Bar Bruise (2012), a &#x27;cult western audio book&#x27; album Eyes Like the Sky (2013), and folk-inspired Paper Mâché Dream Balloon. They have explored jazz fusion on Quarters! and incorporated heavy metal, synth-pop, and progressive rock. In 2017 and 2022, they released five studio albums in a single calendar year. In 2025, they released their 27th album, Phantom Island, followed by tours featuring orchestral, rock and rave shows. Their upcoming 28th album, Alien Metal, is described as having a &#x27;techno&#x27; sound with heavy use of synths.</p>
+<h3>the silver cord</h3>
+<p>Released on 27 October 2023, The Silver Cord is the band&#x27;s twenty-fifth studio album. It focuses on synthesizer-based music rather than guitar-based rock, inspired by Michael Cavanagh&#x27;s purchase of a Simmons electronic drum kit. The project consists of two versions: one lasting 28 minutes and another lasting 88 minutes. This release was part of a &#x27;Yin and Yang&#x27; concept with the album PetroDragonic Apocalypse.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Origin:</strong> Melbourne, Victoria, Australia</li>
+<li><strong>First Studio Album:</strong> 12 Bar Bruise (2012)</li>
+<li><strong>Most Recent Album:</strong> Phantom Island (2025)</li>
+<li><strong>label own label:</strong> Flightless</li>
+<li><strong>ARIA Award:</strong> Best Hard Rock or Heavy Metal Album for Nonagon Infinity</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/King_Gizzard_%26_the_Lizard_Wizard" rel="noopener">https://en.wikipedia.org/wiki/King_Gizzard_%26_the_Lizard_Wizard</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/King_Gizzard_%26_the_Lizard_Wizard_discography" rel="noopener">https://en.wikipedia.org/wiki/King_Gizzard_%26_the_Lizard_Wizard_discography</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/The_Silver_Cord_(King_Gizzard_%26_the_Lizard_Wizard_album" rel="noopener">https://en.wikipedia.org/wiki/The_Silver_Cord_(King_Gizzard_%26_the_Lizard_Wizard_album</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="King Gizzard and the Lizard Wizard">
+        <input type="hidden" name="slug" value="king-gizzard-and-the-lizard-wizard">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — King Gizzard and the Lizard Wizard</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

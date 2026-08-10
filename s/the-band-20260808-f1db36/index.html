@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>The Band — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>The Band</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">933</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="jREUrbGGrgM" type="button"><img src="https://i.ytimg.com/vi/jREUrbGGrgM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Band - The Night They Drove Old Dixie Down</span></button>
+<button class="vtile" data-yt="FFqb1I-hiHE" type="button"><img src="https://i.ytimg.com/vi/FFqb1I-hiHE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Weight - The Band (lyrics)</span></button>
+<button class="vtile" data-yt="q-w9OclUnns" type="button"><img src="https://i.ytimg.com/vi/q-w9OclUnns/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Band - The Weight</span></button>
+<button class="vtile" data-yt="NKu0OTDvQ-w" type="button"><img src="https://i.ytimg.com/vi/NKu0OTDvQ-w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Band &quot;Up On Cripple Creek&quot; on The Ed Sullivan Show</span></button>
+<button class="vtile" data-yt="xe7y7ByOrwQ" type="button"><img src="https://i.ytimg.com/vi/xe7y7ByOrwQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Band - &quot;Ophelia&quot; (The Last Waltz)</span></button>
+<button class="vtile" data-yt="TaKD1Vdarnw" type="button"><img src="https://i.ytimg.com/vi/TaKD1Vdarnw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">King Harvest - The Band (720p HD Quality High Def sound)</span></button>
+<button class="vtile" data-yt="6dDbnwQlCek" type="button"><img src="https://i.ytimg.com/vi/6dDbnwQlCek/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Last Waltz (1978) - The Night They Drove Old Dixie Down Scene (5/7) | Movieclips</span></button>
+<button class="vtile" data-yt="64JdzV4_rDI" type="button"><img src="https://i.ytimg.com/vi/64JdzV4_rDI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Band - The Weight [Woodstock]</span></button>
+<button class="vtile" data-yt="ZjbAppJtx7E" type="button"><img src="https://i.ytimg.com/vi/ZjbAppJtx7E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Don&#x27;t Do It │ The Band │ Live At The Academy Of Music, NYC, 1971</span></button>
+<button class="vtile" data-yt="Z2eTW8qZBtk" type="button"><img src="https://i.ytimg.com/vi/Z2eTW8qZBtk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Last Waltz (1978) - The Weight Scene (4/7) | Movieclips</span></button>
+<button class="vtile" data-yt="QFxXTO1t5yo" type="button"><img src="https://i.ytimg.com/vi/QFxXTO1t5yo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Atlantic City</span></button>
+<button class="vtile" data-yt="dyMOrYFDaIw" type="button"><img src="https://i.ytimg.com/vi/dyMOrYFDaIw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Band on Letterman doing their version of Atlantic City (Bruce Springsteen) 1994</span></button>
+<button class="vtile" data-yt="GLpfbgpozUE" type="button"><img src="https://i.ytimg.com/vi/GLpfbgpozUE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Band: The Authorized Video Biography 1/5</span></button>
+<button class="vtile" data-yt="ZYTpMZjZxwI" type="button"><img src="https://i.ytimg.com/vi/ZYTpMZjZxwI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Once Were Brothers: Robbie Robertson and The Band - Official Trailer</span></button>
+<button class="vtile" data-yt="wLCmxMrgfDA" type="button"><img src="https://i.ytimg.com/vi/wLCmxMrgfDA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Band - The Making of &quot;Up On Cripple Creek&quot;</span></button>
+<button class="vtile" data-yt="vzKetSL-kAU" type="button"><img src="https://i.ytimg.com/vi/vzKetSL-kAU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Before His Death, Robbie Robertson Reveals Shocking Truth About Levon Helm</span></button>
+<button class="vtile" data-yt="uHabUwIlzh8" type="button"><img src="https://i.ytimg.com/vi/uHabUwIlzh8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bob Dylan and The Band - The Basement Tapes - The Legendary Tales</span></button>
+<button class="vtile" data-yt="E1zcge-GZ1o" type="button"><img src="https://i.ytimg.com/vi/E1zcge-GZ1o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Richard Manuel’s Final Days Were Absolutely Terrifying</span></button>
+<button class="vtile" data-yt="rcmJCxJF3AM" type="button"><img src="https://i.ytimg.com/vi/rcmJCxJF3AM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Band: The Authorized Video Biography 3/5</span></button>
+<button class="vtile" data-yt="2Ps3kyQBy_0" type="button"><img src="https://i.ytimg.com/vi/2Ps3kyQBy_0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Once Were Brothers: Robbie Robertson &amp; The Band (2020) Official Trailer - Magnolia Selects</span></button>
+<button class="vtile" data-yt="wrWFzPUmCc8" type="button"><img src="https://i.ytimg.com/vi/wrWFzPUmCc8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Why did the Last Waltz Lead to The Band’s Fallout?</span></button>
+<button class="vtile" data-yt="zLTZGTlRTus" type="button"><img src="https://i.ytimg.com/vi/zLTZGTlRTus/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Band - The Making of &quot;Rockin&#x27; Chair&quot; &amp; Commentary On Vocals</span></button>
+<button class="vtile" data-yt="vrIlRe7GTVc" type="button"><img src="https://i.ytimg.com/vi/vrIlRe7GTVc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Why Did The Band&#x27;s Drummer End Up BROKE While Others Got RICH?</span></button>
+<button class="vtile" data-yt="HZfDKZuCWX0" type="button"><img src="https://i.ytimg.com/vi/HZfDKZuCWX0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">From the archives: Robbie Robertson of The Band</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The Band was a Canadian-American rock band formed in Toronto, Ontario. The group&#x27;s music combined elements of country, jazz, R&amp;B, folk, and Americana. Their sound influenced artists such as Wilco, Eric Clapton, Elton John, and George Harrison.</p>
+<p>The Band was a Canadian-American rock band formed in Toronto, Ontario. The group&#x27;s music combined elements of country, jazz, R&amp;B, folk, and Americana. Their sound influenced artists such as Wilco, Eric Clapton, Elton John, and George Harrison.</p>
+<h3>early history and the hawks</h3>
+<p>Between 1958 and 1963, the group were known as the Hawks and served as the backing band for Toronto-based rockabilly singer Ronnie Hawkins. During this time, they developed their instrumental skills through all-night rehearsals. Members included Levon Helm, Robbie Robertson, Rick Danko, Richard Manuel, and Garth Hudson. Stan Szelest was also a member during this period. The group eventually split from Ronnie Hawkins over personal differences and heavy-handed leadership, including fines for smoking marijuana or bringing girlfriends to clubs.</p>
+<h3>collaboration with bob dylan</h3>
+<p>In late summer 1965, the group (then known as Levon and the Hawks) were hired by Bob Dylan as his backing band for his first U.S. &#x27;electric&#x27; tour in 1965 and world tour in 1966. Following the tour, they moved to Saugerties, New York, with help from Dylan and manager Albert Grossman. There, they made the informal 1967 recordings that became The Basement Tapes. This period of collaboration led to the group adopting the official name &#x27;The Band&#x27; starting in 1968.</p>
+<h3>career and later years</h3>
+<p>The Band&#x27;s debut album, Music from Big Pink (1968), and their eponymous 1969 album, The Band, received critical acclaim and commercial success. Their most popular songs include &quot;The Weight&quot; (1968) and &quot;Up on Cripple Creek&quot; (1969). They released several other albums including Stage Fright (1970), Cahoots (1971), Rock of Ages (1972), Moondog Matinee (1973), and Northern Lights – Southern Cross (1975). The group performed a farewell concert on November 25, 1976, which was released as the film The Last Waltz directed by Martin Scorsese. After a reunion tour in 1983 without Robbie Robertson, Danko, Hudson, Helm, and Manuel reunited. The band broke up for good after Rick Danko&#x27;s death in 1999.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Formed in:</strong> Toronto, Ontario</li>
+<li><strong>Members:</strong> Rick Danko, Garth Hudson, Richard Manuel, and Robbie Robertson (Canadian), Levon Helm (American)</li>
+<li><strong>Inductions:</strong> Canadian Music Hall of Fame (1989) and Rock and Roll Hall of Fame (1994)</li>
+<li><strong>Rolling Stone Ranking:</strong> 50th on the 100 Greatest Artists of All Time list (2004)</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Band" rel="noopener">https://en.wikipedia.org/wiki/Band</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Nirvanna_the_Band_the_Show" rel="noopener">https://en.wikipedia.org/wiki/Nirvanna_the_Band_the_Show</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/The_Band" rel="noopener">https://en.wikipedia.org/wiki/The_Band</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="The Band">
+        <input type="hidden" name="slug" value="the-band">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — The Band</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
