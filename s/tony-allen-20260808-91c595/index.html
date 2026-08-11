@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Tony Allen — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Tony Allen</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">899</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="jfBoAUNl44c" type="button"><img src="https://i.ytimg.com/vi/jfBoAUNl44c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tony Allen - Lockdown</span></button>
+<button class="vtile" data-yt="v2ki_-zv4_U" type="button"><img src="https://i.ytimg.com/vi/v2ki_-zv4_U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tony Allen Was a Defensive Nightmare for the NBA</span></button>
+<button class="vtile" data-yt="oCBpJkG6ngE" type="button"><img src="https://i.ytimg.com/vi/oCBpJkG6ngE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tony Allen - Wolf Eats Wolf</span></button>
+<button class="vtile" data-yt="GiWduWEtma4" type="button"><img src="https://i.ytimg.com/vi/GiWduWEtma4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Gorillaz – How Far? Ft. Tony Allen &amp; Skepta</span></button>
+<button class="vtile" data-yt="22tRKwbyNHA" type="button"><img src="https://i.ytimg.com/vi/22tRKwbyNHA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Zach Randolph &amp; Tony Allen: Viral Out The Mud Moment &amp; Untold Grit and Grind Stories</span></button>
+<button class="vtile" data-yt="nOpO5qZOER0" type="button"><img src="https://i.ytimg.com/vi/nOpO5qZOER0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tony Allen teaches Tim Jonze how to drum Afrobeat</span></button>
+<button class="vtile" data-yt="K4FUWEd0NkM" type="button"><img src="https://i.ytimg.com/vi/K4FUWEd0NkM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tony Allen 2015 Season Defensive Highlights</span></button>
+<button class="vtile" data-yt="BnMMAKk4RIs" type="button"><img src="https://i.ytimg.com/vi/BnMMAKk4RIs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The NBA Star Who Couldn&#x27;t Score But Still Outplayed Everyone</span></button>
+<button class="vtile" data-yt="eWz6C996PSc" type="button"><img src="https://i.ytimg.com/vi/eWz6C996PSc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jeff Teague tells HILARIOUS STORY of Tony Allen LOCKING UP Josh Smith | Club 520</span></button>
+<button class="vtile" data-yt="7cZh0L0tO7Q" type="button"><img src="https://i.ytimg.com/vi/7cZh0L0tO7Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tony Allen says he misspoke on the LeBron hunted but DOUBLES DOWN on the Defensive conversation</span></button>
+<button class="vtile" data-yt="fEfw7fNuEfI" type="button"><img src="https://i.ytimg.com/vi/fEfw7fNuEfI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tony Allen LOCKS UP Paul Pierce in $10K 1-on-1 👀</span></button>
+<button class="vtile" data-yt="8-hMkHkoFrU" type="button"><img src="https://i.ytimg.com/vi/8-hMkHkoFrU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tony Allen - Go Back (feat. Damon Albarn) [Official Music Video] directed by Bernard Benant</span></button>
+<button class="vtile" data-yt="4Vb1BPlBg6c" type="button"><img src="https://i.ytimg.com/vi/4Vb1BPlBg6c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tony Allen: The Grindfather Trailer</span></button>
+<button class="vtile" data-yt="cPYb768Vj7M" type="button"><img src="https://i.ytimg.com/vi/cPYb768Vj7M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tony Allen should do every post-game interview</span></button>
+<button class="vtile" data-yt="W1KtuDbTM_g" type="button"><img src="https://i.ytimg.com/vi/W1KtuDbTM_g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tony Allen on Being a Lockdown Defender, Winning with Boston in 2008, Being a Memphis Legend &amp; More</span></button>
+<button class="vtile" data-yt="9RDfvRIYBrc" type="button"><img src="https://i.ytimg.com/vi/9RDfvRIYBrc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tony Allen: Afrobeat’s Impossible Drummer</span></button>
+<button class="vtile" data-yt="zElXKaKI1qk" type="button"><img src="https://i.ytimg.com/vi/zElXKaKI1qk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Playing Under a Fake Name 😂 | Tony Allen Documentary Bonus Content</span></button>
+<button class="vtile" data-yt="xCXSK8a5ml8" type="button"><img src="https://i.ytimg.com/vi/xCXSK8a5ml8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Tony Allen Would Lock Up SGA &amp; Jokic + Untold Kobe Stories &amp; Being ROBBED for DPOY</span></button>
+<button class="vtile" data-yt="8tJ9nhInUx4" type="button"><img src="https://i.ytimg.com/vi/8tJ9nhInUx4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tony Allen - Black Voices Documentary</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Tony Allen was a Nigerian drummer, composer, and songwriter who co-founded the Afrobeat genre. He served as the musical director of Fela Kuti&#x27;s band Africa &#x27;70 from 1968 to 1979. He is widely regarded by Brian Eno as perhaps the greatest drummer who has ever lived.</p>
+<p>Tony Allen was a Nigerian drummer, composer, and songwriter who co-founded the Afrobeat genre. He served as the musical director of Fela Kuti&#x27;s band Africa &#x27;70 from 1968 to 1979. He is widely regarded by Brian Eno as perhaps the greatest drummer who has ever lived.</p>
+<h3>early career and influences</h3>
+<p>Born in Lagos, Nigeria, Allen began playing drums at age 18 while working as a radio station engineer. He was influenced by American jazz, Jùjú music, and the highlife scene in Nigeria and Ghana. To develop his style, he studied recordings of Ghanaian drummer Guy Warren (Kofi Ghanaba) and jazz drummers Max Roach and Art Blakey. Allen&#x27;s early professional work included playing claves for Sir Victor Olaiya&#x27;s highlife band, the Cool Cats, before filling the drum set chair. He also played with the Melody Makers, the Nigerian Messengers, and and Agu Norris and the Heatwaves.</p>
+<h3>collaboration with fela kuti</h3>
+<p>In 1964, Allen joined Fela Kuti&#x27;s &#x27;Koola Lobitos&#x27; highlife-jazz band. By 1969, he became the musical director of Africa &#x27;70, where he and Kuti developed a militant African sound that blended soul, jazz, highlife, and Yoruba polyrhythmic templates. Allen recorded over 30 albums with Fela and Africa &#x27;70. He released three solo recordings during this period: Progress (1977), Jealousy (1975), and No Accommodation For Lagos (1979). Allen left the band in 1979 due to tensions regarding royalties, recognition, and the músicasia&#x27;s surrounding parasites.</p>
+<h3>later work and global collaborations</h3>
+<p>After leaving Africa &#x27;70, Allen emigrated to London in 1984 and later moved to Paris. His work expanded into genres such as alternative rock, electronic music, dub, Afro-funk, avant-garde hip-hop, and avant-garde hip-hop. He collaborated with Damon Albarn of Blur, joining the project Good, the Bad &amp; the Queen and Rocket Juice &amp; the Moon. He also worked with artists such as Charlotte Gainsbourg, Zap Mama, Flavia Coelho, and Malian singer Oumou Sangaré. In 2017, he released a four-song EP on Blue Note Records titled A Tribute to Art Blakey &amp; the Jazz Messengers. Posthumously, albums such as There Is No End (2021) and The Solution Is Restless were released.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Born:</strong> July 20, 1940</li>
+<li><strong>Date of Death:</strong> April 30, 2020</li>
+<li><strong>Nationality:</strong> Nigerian</li>
+<li><strong>label own:</strong> Afrobeat</li>
+<li><strong>Primary Instrument:</strong> Drums</li>
+<li><strong>C NBA All-Defensive Team selections:</strong> 6</li>
+<li><strong>NBA Championship:</strong> value own</li>
+<li><strong>// a mistake in the same fact list, I will correct it now:</strong> Correcting: The basketball player Tony Allen is a separate person from the musician Tony Allen. I must only include facts for the musician as the lede describes him.</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Tony_Allen" rel="noopener">https://en.wikipedia.org/wiki/Tony_Allen</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Tony_Allen_(basketball" rel="noopener">https://en.wikipedia.org/wiki/Tony_Allen_(basketball</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Tony_Allen_(musician" rel="noopener">https://en.wikipedia.org/wiki/Tony_Allen_(musician</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Tony Allen">
+        <input type="hidden" name="slug" value="tony-allen">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Tony Allen</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

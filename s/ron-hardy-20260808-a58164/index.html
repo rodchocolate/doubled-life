@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Ron Hardy — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Ron Hardy</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">861</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="EqtFl2AXy9M" type="button"><img src="https://i.ytimg.com/vi/EqtFl2AXy9M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ron Hardy - Live @ Muzic Box, Chicago 1986 (HQ Sound)</span></button>
+<button class="vtile" data-yt="-GOnm0rbpl4" type="button"><img src="https://i.ytimg.com/vi/-GOnm0rbpl4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ron Hardy @ Classic House &amp; Disco!</span></button>
+<button class="vtile" data-yt="H7eEdpWgOsc" type="button"><img src="https://i.ytimg.com/vi/H7eEdpWgOsc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">First Choice - Let No Man Put Asunder (Ron Hardy Re-Edit)</span></button>
+<button class="vtile" data-yt="kYViotLiiEY" type="button"><img src="https://i.ytimg.com/vi/kYViotLiiEY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ron Hardy @ C.O.D.&#x27;s (1987)</span></button>
+<button class="vtile" data-yt="KTL6wXtI0Sc" type="button"><img src="https://i.ytimg.com/vi/KTL6wXtI0Sc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Robert Williams on Ron Hardy part 1</span></button>
+<button class="vtile" data-yt="yLlVAMnjF9Y" type="button"><img src="https://i.ytimg.com/vi/yLlVAMnjF9Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ron Hardy - Hardy Classic Mix Tape (1986)</span></button>
+<button class="vtile" data-yt="wufhIjKWFVg" type="button"><img src="https://i.ytimg.com/vi/wufhIjKWFVg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ron Hardy Tribute Marathon</span></button>
+<button class="vtile" data-yt="y8VUSG2J0VY" type="button"><img src="https://i.ytimg.com/vi/y8VUSG2J0VY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">First Choice - Let No Man Put Asunder (Ron Hardy Dub)</span></button>
+<button class="vtile" data-yt="niL5i_sPoAY" type="button"><img src="https://i.ytimg.com/vi/niL5i_sPoAY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Who Is Ron Hardy</span></button>
+<button class="vtile" data-yt="pnvxrTIkeDo" type="button"><img src="https://i.ytimg.com/vi/pnvxrTIkeDo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Best of Ron Hardy Dj Live@Music Box, Chicago 1987.3</span></button>
+<button class="vtile" data-yt="3aKoxoWqrcg" type="button"><img src="https://i.ytimg.com/vi/3aKoxoWqrcg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ron Hardy - Live @ US Studio 12/15/83 Part 1</span></button>
+<button class="vtile" data-yt="bRO7kEGOfxU" type="button"><img src="https://i.ytimg.com/vi/bRO7kEGOfxU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ron Hardy - Live @ the Muzic Box, 1985</span></button>
+<button class="vtile" data-yt="MXJkxcG_0NI" type="button"><img src="https://i.ytimg.com/vi/MXJkxcG_0NI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Bastard Child: Exploring Chicago House Music (Documentary Short)</span></button>
+<button class="vtile" data-yt="QDBpXSMOBiA" type="button"><img src="https://i.ytimg.com/vi/QDBpXSMOBiA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Pump up the volume: A history of House music [Documentary] • 2001, Channel 4</span></button>
+<button class="vtile" data-yt="QLX65A1MvdA" type="button"><img src="https://i.ytimg.com/vi/QLX65A1MvdA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The King Of House Farley &quot;Jackmaster&quot; Funk talks... &quot;How Ron Hardy changed the scene&quot;</span></button>
+<button class="vtile" data-yt="YWgoK2D_LGU" type="button"><img src="https://i.ytimg.com/vi/YWgoK2D_LGU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Music documentary Summer Dance Forever 2021 | Origin Of House Music | Frankie Knuckles, Ron Hardy</span></button>
+<button class="vtile" data-yt="kFpsjD8elcU" type="button"><img src="https://i.ytimg.com/vi/kFpsjD8elcU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">RON HARDY: THE GODFATHER OF CHICAGO HOUSE MUSIC</span></button>
+<button class="vtile" data-yt="KoUHmLDfPOQ" type="button"><img src="https://i.ytimg.com/vi/KoUHmLDfPOQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Gene Hunt talks about how he got started as a DJ and how Ron Hardy influenced him.</span></button>
+<button class="vtile" data-yt="vDU9ItwiN5I" type="button"><img src="https://i.ytimg.com/vi/vDU9ItwiN5I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Robert Williams on Ron Hardy part 2</span></button>
+<button class="vtile" data-yt="iCG5eBPBUx8" type="button"><img src="https://i.ytimg.com/vi/iCG5eBPBUx8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Music Box. (Chicago House Music). @chicagohousemusicfestival</span></button>
+<button class="vtile" data-yt="2nzT_osRm7k" type="button"><img src="https://i.ytimg.com/vi/2nzT_osRm7k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">House Music History - Chicago</span></button>
+<button class="vtile" data-yt="UtgTmoUaJ9Q" type="button"><img src="https://i.ytimg.com/vi/UtgTmoUaJ9Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What does Chicago really sound like? Chicago house mini documentary</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Ron Hardy was an American DJ and record producer based in Chicago, Illinois, who played a pivotal role in the early house music scene. He is particularly well known for his residency at the Muzic Box club, uma a pioneer of the same genre.</p>
+<p>Ron Hardy was an American DJ and record producer based in Chicago, Illinois, who played a pivotal role in the early house music scene. He is particularly well known for his residency at the Muzic Box club, uma a pioneer of the same genre.</p>
+<h3>career and residency</h3>
+<p>Ron Hardy began his career in 1974 at Den One, a gay club in Chicago. He later worked in Los Angeles around 1977 before returning to Chicago to DJ at the Warehouse&#x27;s new location, which was eventually renamed The Music Box (or Muzic Box). In 1986, producer Chip E. introduced him to recording music, leading to the mix of &quot;Donnie&quot; by The It. He maintained a successful residency at The Music Box until the end of the the 1980s.</p>
+<h3>mixing style and techniques</h3>
+<p>Unlike the smooth style of Frankie Knuckles, Hardy&#x27;s approach was characterized by manic energy, loud volume, and a lack of regard for sound quality. He frequently pitched records up significantly—sometimes as much as +8—and used reel-to-reel edits and EQ tweaking. A trademark technique involved playing tracks backwards; some sources suggest he did this by turning the needle upside down on a cylinder, while others claim he used a reel-to-reel. His sets included a variety of genres including Philadelphia disco classics, Italo disco imports, new wave, rock, and electronic body music acts like Nitzer Ebb.</p>
+<h3>influence on house music</h3>
+<p>Hardy is considered a pioneer of house music due to his experimentation with new music and his combative DJ style. He later became known for the early promotion of acid house, specifically Phuture&#x27;s &quot;Acid Tracks.&quot; After playing it four times in one night at The Music Box, he helped turn the track into a hit. He also collaborated with Gene Hunt on the production &quot;Throwback 87.&quot;</p>
+<h3>later life and death</h3>
+<p>The Music Box closed in 1987 due to a city law requiring after-hours clubs to close at the same time as bars. Following this, Hardy continued to DJing around Chicago while battling heroin addiction. He died of an AIDS-related illness on March 2, 1992. Posthumously, his edits have been released via bootlegs and authentic releases from Partehardy Records.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Born:</strong> May 8, 1958</li>
+<li><strong>Date of Death:</strong> March 2, 1992</li>
+<li><strong>Primary Location:</strong> Chicago, Illinois</li>
+<li><strong>Genre:</strong> Early house music</li>
+<li><strong>Trademark Technique:</strong> Playing tracks backwards</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Chicago_house" rel="noopener">https://en.wikipedia.org/wiki/Chicago_house</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/House_music" rel="noopener">https://en.wikipedia.org/wiki/House_music</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Ron_Hardy" rel="noopener">https://en.wikipedia.org/wiki/Ron_Hardy</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Ron Hardy">
+        <input type="hidden" name="slug" value="ron-hardy">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Ron Hardy</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

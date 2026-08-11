@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Juan Atkins — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Juan Atkins</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">868</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="EeiSjr6MNFs" type="button"><img src="https://i.ytimg.com/vi/EeiSjr6MNFs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Juan Atkins Boiler Room Detroit DJ Set</span></button>
+<button class="vtile" data-yt="9SuKJ-dbmbg" type="button"><img src="https://i.ytimg.com/vi/9SuKJ-dbmbg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">JUAN ATKINS in The Lab LDN</span></button>
+<button class="vtile" data-yt="pt4aQEXqMRw" type="button"><img src="https://i.ytimg.com/vi/pt4aQEXqMRw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Juan Atkins, Derrick May + Kevin Saunderson in Conversation</span></button>
+<button class="vtile" data-yt="9NShc78_5Ro" type="button"><img src="https://i.ytimg.com/vi/9NShc78_5Ro/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">JUAN ATKINS TRESOR BERLIN SOLID LOVEPARADE GLOBUS 2002</span></button>
+<button class="vtile" data-yt="ef2U0ggJ1UQ" type="button"><img src="https://i.ytimg.com/vi/ef2U0ggJ1UQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Juan Atkins Boiler Room DJ Set at Dollop Detroit Series</span></button>
+<button class="vtile" data-yt="RSX_r0u3uzE" type="button"><img src="https://i.ytimg.com/vi/RSX_r0u3uzE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Universal Techno Pt.1 - Juan Atkins &amp; Derrick May</span></button>
+<button class="vtile" data-yt="8J1e2lkDUmc" type="button"><img src="https://i.ytimg.com/vi/8J1e2lkDUmc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Juan Atkins LIVE DJ Set from DJ Mag HQ</span></button>
+<button class="vtile" data-yt="skFExhvVugw" type="button"><img src="https://i.ytimg.com/vi/skFExhvVugw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Juan Atkins Live From DJ Mag @Work</span></button>
+<button class="vtile" data-yt="yxWzoYQb5gU" type="button"><img src="https://i.ytimg.com/vi/yxWzoYQb5gU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Juan Atkins - Techno City</span></button>
+<button class="vtile" data-yt="ZXdzjxEnBnc" type="button"><img src="https://i.ytimg.com/vi/ZXdzjxEnBnc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Juan Atkins on the Intersection of Techno, Physics and the Future</span></button>
+<button class="vtile" data-yt="GckizH0FeHA" type="button"><img src="https://i.ytimg.com/vi/GckizH0FeHA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Juan Atkins - Live @ Studio Martin, Bucharest, Private Party 10-04-2008</span></button>
+<button class="vtile" data-yt="_l8hlkqSZdY" type="button"><img src="https://i.ytimg.com/vi/_l8hlkqSZdY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Juan Atkins - Live @ Tresor, Berlin Globus Floor 14/07/2002</span></button>
+<button class="vtile" data-yt="YQgKrc1ClAI" type="button"><img src="https://i.ytimg.com/vi/YQgKrc1ClAI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Techno was born: From Detroit to Berlin and back</span></button>
+<button class="vtile" data-yt="zyVedSNxOaY" type="button"><img src="https://i.ytimg.com/vi/zyVedSNxOaY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Feature: Juan Atkins (Electronic Beats TV)</span></button>
+<button class="vtile" data-yt="v6O__kB8Nc8" type="button"><img src="https://i.ytimg.com/vi/v6O__kB8Nc8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Detroit Techno - The Creation of Techno Music</span></button>
+<button class="vtile" data-yt="c5MCr9n2Qjs" type="button"><img src="https://i.ytimg.com/vi/c5MCr9n2Qjs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Juan Atkins Documentary for Avantgarde Diaries by Oddiseefilms</span></button>
+<button class="vtile" data-yt="a2gr73FQ9-s" type="button"><img src="https://i.ytimg.com/vi/a2gr73FQ9-s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Techno City: What is Detroit Techno?</span></button>
+<button class="vtile" data-yt="9AJgKphg5w0" type="button"><img src="https://i.ytimg.com/vi/9AJgKphg5w0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Detroit Created the World&#x27;s Loudest Music</span></button>
+<button class="vtile" data-yt="u8xMxv56P8k" type="button"><img src="https://i.ytimg.com/vi/u8xMxv56P8k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">TECHNONACHT: The Origin Of Techno Music (Documentary)</span></button>
+<button class="vtile" data-yt="SYSagw7v4dU" type="button"><img src="https://i.ytimg.com/vi/SYSagw7v4dU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Detroit The Blueprint Of Techno</span></button>
+<button class="vtile" data-yt="Hc1rHXnpbls" type="button"><img src="https://i.ytimg.com/vi/Hc1rHXnpbls/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">High Tech Soul: The Creation of Techno Music (2006) Documentary</span></button>
+<button class="vtile" data-yt="tPoGeHbkpRM" type="button"><img src="https://i.ytimg.com/vi/tPoGeHbkpRM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">👉 How Techno Took Over the World | From Detroit to 2025</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Juan Atkins is an American record producer and DJ from Detroit, Michigan, known as the original pioneer of Detroit techno. He has been a member of the Belleville Three, Cybotron, and Borderland.</p>
+<p>Juan Atkins is an American record producer and DJ from Detroit, Michigan, known as the original pioneer of Detroit techno. He has been a member of the Belleville Three, Cybotron, and Borderland.</p>
+<h3>early life and influences</h3>
+<p>Born on September 12, 1962, in Detroit, Atkins grew up in a musical family with a father who was a concert promoter. He initially played guitar and bass guitar in funk/garage bands before moving to Belleville, Michigan, where he bought his first synthesizer, a Korg MS-10, at age 15. His musical awakening was influenced by George Clinton&#x27;s Parliament and Funkadelic, as well as Kraftwerk and the radio shows of The Electrifying Mojo. He also drew upon dystopian science fiction narratives and the techno-futurist possibilities described by sociologist Alvin Toffler to construct his sonic landscapes.</p>
+<h3>career and collaborations</h3>
+<p>In 1980, Atkins formed Cybotron with Richard Davis. The duo released the studio album Enter in 1983 and singles such as &quot;Korg MS-10&quot; and &quot;Clear&quot;. After splitting in 1985, Atkins founded the record label Metroplex, where he began recording solo under the alias Model 500. As Model 500, he released landmark tracks like &quot;No UFO&#x27;s&quot; (1985), which is frequently described as the first techno record. He later collaborated with Moritz von Oswald to form the duo Borderland, releasing albums such as Borderland (2013) and Transport (2016). He has also worked with Thomas Fehlmann and Moritz von Oswald as 3MB Featuring Magic Juan Atkins.</p>
+<h3>artistry and legacy</h3>
+<p>John Bush of AllMusic has called him the &quot;godfather of techno,&quot; describing his discography as perhaps the most influential body of work in the field. The 1982 electro track &quot;Clear&quot; is often cited as the a precise genesis for techno. Mixmag has described him as the</p>
+<h3>detroit techno and the belleville three</h3>
+<p>The birth of Detroit techno was closely associated with the Belleville Three—Juan Atkins, Kevin Saunderson, and Derrick May. These high school friends from Belleville, Michigan, synthesized dance music with mechanical sounds to reflect post-industrialist Detroit. Their work contributed to the discourse of Afrofuturism by repurposing technology to create a new form of music for marginalized underground populations. They also DJed at The Music Institute in downtown Detroit.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Born:</strong> September 12, 1962</li>
+<li><strong>Birthplace:</strong> Detroit, Michigan</li>
+<li><strong>Citing as:</strong> Model 500 and Infiniti</li>
+<li><strong>First Synthesizer:</strong> Korg MS-10</li>
+<li><strong>First Record Label:</strong> Metroplex</li>
+<li><strong>Record Label Founded:</strong> Metroplex</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Detroit_techno" rel="noopener">https://en.wikipedia.org/wiki/Detroit_techno</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Juan_Atkins" rel="noopener">https://en.wikipedia.org/wiki/Juan_Atkins</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/No_UFO%27s" rel="noopener">https://en.wikipedia.org/wiki/No_UFO%27s</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Juan Atkins">
+        <input type="hidden" name="slug" value="juan-atkins">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Juan Atkins</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

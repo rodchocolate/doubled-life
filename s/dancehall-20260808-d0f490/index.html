@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Dancehall — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">concept</div>
+      <h1>Dancehall</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1042</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="8Z2bSqCOhN4" type="button"><img src="https://i.ytimg.com/vi/8Z2bSqCOhN4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">90s &amp; 2000s Dancehall Classics 🔥 1-Hour DJ Blackout Set | #party #vibes #dancehall #90sdancehall</span></button>
+<button class="vtile" data-yt="tcEFkqD9cx0" type="button"><img src="https://i.ytimg.com/vi/tcEFkqD9cx0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Vybz Kartel, Shenseea - PANIC (Official Music Video)</span></button>
+<button class="vtile" data-yt="8VO7oe6HNkk" type="button"><img src="https://i.ytimg.com/vi/8VO7oe6HNkk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Old School Dancehall Mix | The Best of Old School Dancehall by OSOCITY</span></button>
+<button class="vtile" data-yt="bX19d--zP70" type="button"><img src="https://i.ytimg.com/vi/bX19d--zP70/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Latest Dancehall Mix 2026: WUL UP² - Armanii, Shaneil Muir, Popcaan, Skeng,Valiant,Masicka</span></button>
+<button class="vtile" data-yt="9U1oskShCW8" type="button"><img src="https://i.ytimg.com/vi/9U1oskShCW8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The best old school dancehall party mix. No DJ talking! Just hit play!</span></button>
+<button class="vtile" data-yt="jA8yFCRlqXU" type="button"><img src="https://i.ytimg.com/vi/jA8yFCRlqXU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Old School Dancehall Mix | The Best of Old School Dancehall by OSOCITY</span></button>
+<button class="vtile" data-yt="o8EmAjt147Y" type="button"><img src="https://i.ytimg.com/vi/o8EmAjt147Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dancehall Mix 2025 Vol 2 || Ft: Vybz Kartel, Popcaan, Skillibeng, Shenseea and more! || DJPreddie</span></button>
+<button class="vtile" data-yt="F5e-ZAWc6ak" type="button"><img src="https://i.ytimg.com/vi/F5e-ZAWc6ak/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Aidonia - Le Le Le | Official Music Video</span></button>
+<button class="vtile" data-yt="LYRDMnME4Y8" type="button"><img src="https://i.ytimg.com/vi/LYRDMnME4Y8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Kybba x Basshall Mix #8 | Best of Dancehall, Shatta &amp; Afro 2025</span></button>
+<button class="vtile" data-yt="L_f8JYtMtBI" type="button"><img src="https://i.ytimg.com/vi/L_f8JYtMtBI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">OLDSCHOOL DANCEHALL RAGGA VIDEO MIX 2025 | DJ DEESKUL FT SEAN PAUL, SHAGGY, T.O.K</span></button>
+<button class="vtile" data-yt="YS-qVAiw-1I" type="button"><img src="https://i.ytimg.com/vi/YS-qVAiw-1I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ultimate Dancehall &amp; Reggae Love Mix 2026| Sean Paul, Mavado, Rihanna Inspired Caribbean Party Album</span></button>
+<button class="vtile" data-yt="d2BJRWwmVU0" type="button"><img src="https://i.ytimg.com/vi/d2BJRWwmVU0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Valiant x Shenseea x Rvssian - My Turn (Official Music Video) | ISLAND VILLA RIDDIM</span></button>
+<button class="vtile" data-yt="YmFyEVE1hDI" type="button"><img src="https://i.ytimg.com/vi/YmFyEVE1hDI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dancehall Documentary - Ep.1 : &quot;Back to basics&quot; SUB (sous-titres): 🇫🇷 🇷🇺 🇺🇸🇪🇸🇭🇺</span></button>
+<button class="vtile" data-yt="3l-XiyFygzI" type="button"><img src="https://i.ytimg.com/vi/3l-XiyFygzI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">WTF is Dancehall? The Insanely Influential Genre That Inspired Sampling, Hip Hop, Dubstep &amp; More</span></button>
+<button class="vtile" data-yt="fSkx-Us3Rzs" type="button"><img src="https://i.ytimg.com/vi/fSkx-Us3Rzs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Out There Without Fear- Jamaica&#x27;s Dancehall</span></button>
+<button class="vtile" data-yt="44kwy4bs4PE" type="button"><img src="https://i.ytimg.com/vi/44kwy4bs4PE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dancehall Documentary - Ep. 2.1 &quot;Rapid Burst (Daggaring)&quot; SUB (sous-titres): 🇫🇷 🇺🇸🇷🇺🇪🇦🇭🇺</span></button>
+<button class="vtile" data-yt="-TrNJhdbW4s" type="button"><img src="https://i.ytimg.com/vi/-TrNJhdbW4s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sean Paul: A Life In Riddims (Full Documentary)</span></button>
+<button class="vtile" data-yt="PQ1BNJpVS5M" type="button"><img src="https://i.ytimg.com/vi/PQ1BNJpVS5M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Roots, Reggae, Rebellion Full BBC Documentary</span></button>
+<button class="vtile" data-yt="CO6VavvQZtw" type="button"><img src="https://i.ytimg.com/vi/CO6VavvQZtw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mr. Maragh - A Dancehall Story [Super Cat Documentary]</span></button>
+<button class="vtile" data-yt="723cZgHAoB4" type="button"><img src="https://i.ytimg.com/vi/723cZgHAoB4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Noisey Jamaica VOSTFR Traduction - 2016</span></button>
+<button class="vtile" data-yt="eJ6B1OD_w4g" type="button"><img src="https://i.ytimg.com/vi/eJ6B1OD_w4g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Film That Made Dancehall Global – Dancehall Queen (1997)</span></button>
+<button class="vtile" data-yt="f3GmuhSflqQ" type="button"><img src="https://i.ytimg.com/vi/f3GmuhSflqQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Vybz Kartel Biography: The Untold Dancehall Documentary</span></button>
+<button class="vtile" data-yt="ZnZzv5g2AbA" type="button"><img src="https://i.ytimg.com/vi/ZnZzv5g2AbA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dancehall Dark Star - Vybz Kartel - 2014 Documentary</span></button>
+<button class="vtile" data-yt="RSNVTwmfGXU" type="button"><img src="https://i.ytimg.com/vi/RSNVTwmfGXU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dancehall Queen</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Dancehall is a genre of Jamaican popular music that originated in the late 1970s. It refers to both a music and dance style, and was not officially named until the 1980s. The genre is characterized by its use of Jamaican Patois and a focus on track instrumentals known as riddims.</p>
+<p>Dancehall is a genre of Jamaican popular music that originated in the late 1970s. It refers to both a music and dance style, and was not officially named until the 1980s. The genre is characterized by its use of Jamaican Patois and a focus on track instrumentals known as riddims.</p>
+<h3>origins and development</h3>
+<p>Dancehall emerged in the late 1970s among lower and working-class people from Kingston&#x27;s inner city who were unable to participate in uptown dances. It was originally called Bashment music and grew out of political turbulence and social upheaval. In contrast to roots reggae, which sought international recognition, dancehall focused on the day-to-day realities of average Jamaicans, often observing society in a provocative, gritty, and vulgar manner. Themes of social injustice and Rastafari movement themes were replaced by lyrics about sexuality, violence, and dancing. Because radio was conservative and failed to the play &#x27;people&#x27;s music&#x27;, sound systems filled this gap, providing accessibility to music for those who could not afford radios.</p>
+<h3>musical characteristics and evolution</h3>
+<p>Initially a more sparse version of reggae, dancehall evolved with the prevalence of digital instrumentation in the 1980s. This led to the creation of &#x27;ragga&#x27;, which is characterized by artistically faster rhythms and deejays Toasting over digital (electrical) rhythms. Early dancehall used prerecorded rhythm tracks or &#x27;dub&#x27; from reggae songs of the 1960s and 1970s. The genre also pioneered the concept of remixing. Production level and sound system quality were critical to the industry, as sound systems allowed people to listen to music without having to buy a radio.</p>
+<h3>title la own</h3>
+<p>The term &#x27;Dancehall&#x27; originally referred to physical open-air venues where DJs and Toasters performed original mixes and songs via sound systems. These venues allowed performers to to come to the people in inner city communities. The culture grew as technology and sound systems improved, and women were able toconfront gender ideologies to enact change through the use of video light. The genre saw initial mainstream success in Jamaica in the 1980s, became popular in diaspora communities in the 1990s, and experienced worldwide mainstream in the 2000s. By the 2010s, it began to heavily influence Western artists and producers.</p>
+<h3>notes</h3>
+<p>Prominent figures in the own music scene include Vybz Kartel (known as &#x27;King of Dancehall&#x27;) and Spice (known as the &#x27;Queen of Dancehall&#x27;). Vybz Kartel is known for his provocative lyrics and has been an inspiration for Western artists like Drake. Vybz Kartel and Spice collaborated on the controversial 2009 single &#x27;Romping Shop&#x27;, which was banned by the Jamaica Broadcasting Corporation due to its explicit lyrical content.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Origin:</strong> Late 1970s, Jamaica</li>
+<li><strong>Language:</strong> Jamaican Patois</li>
+<li><strong>value own:</strong> Riddims (track instrumentals)</li>
+<li><strong>Mainstream Success:</strong> Jamaica (1980s), Diaspora communities (1990s), Worldwide (2000s)</li>
+<li><strong>label own:</strong> Sound systems</li>
+<li><strong>Alternative Name:</strong> Bashment music or Ragga</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Dancehall" rel="noopener">https://en.wikipedia.org/wiki/Dancehall</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Spice_(musician" rel="noopener">https://en.wikipedia.org/wiki/Spice_(musician</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Vybz_Kartel" rel="noopener">https://en.wikipedia.org/wiki/Vybz_Kartel</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Dancehall">
+        <input type="hidden" name="slug" value="dancehall">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Dancehall</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>André Cymone — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>André Cymone</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">868</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="6UgDQip2ZsM" type="button"><img src="https://i.ytimg.com/vi/6UgDQip2ZsM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Andre Cymone on The Resurrection of Funk, Prince &amp; the Minneapolis Sound</span></button>
+<button class="vtile" data-yt="dlxIuBKqx1Q" type="button"><img src="https://i.ytimg.com/vi/dlxIuBKqx1Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dick Clark Interviews Andre Cymone - American Bandstand 1985</span></button>
+<button class="vtile" data-yt="NWtlEnGfC74" type="button"><img src="https://i.ytimg.com/vi/NWtlEnGfC74/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Interview: Andre Cymone</span></button>
+<button class="vtile" data-yt="2ls_CQ1vkhM" type="button"><img src="https://i.ytimg.com/vi/2ls_CQ1vkhM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">He Was The Love of My Life, Andre Cymone Confirms The Rumors of The Decades</span></button>
+<button class="vtile" data-yt="Yn_erRjLh5Q" type="button"><img src="https://i.ytimg.com/vi/Yn_erRjLh5Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Stone In Love</span></button>
+<button class="vtile" data-yt="4ipOM80kVfc" type="button"><img src="https://i.ytimg.com/vi/4ipOM80kVfc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">André Cymone Reveals How Pepe Willie Helped Shape Prince &amp; Grand Central</span></button>
+<button class="vtile" data-yt="rdsVZ7vs-ss" type="button"><img src="https://i.ytimg.com/vi/rdsVZ7vs-ss/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">André Cymone on Jody Watley</span></button>
+<button class="vtile" data-yt="Ks8GP5uPyew" type="button"><img src="https://i.ytimg.com/vi/Ks8GP5uPyew/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ANDRE CYMONE - &quot;What Are We Doing Here&quot; (1983) official video</span></button>
+<button class="vtile" data-yt="7XKIv_G5bw0" type="button"><img src="https://i.ytimg.com/vi/7XKIv_G5bw0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Apollonia Studio 6- Season 1 / Episode 5- André Cymone</span></button>
+<button class="vtile" data-yt="Zahm_ve4N_8" type="button"><img src="https://i.ytimg.com/vi/Zahm_ve4N_8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Dance Electric (Long Version)</span></button>
+<button class="vtile" data-yt="ZR4jb6xiIp8" type="button"><img src="https://i.ytimg.com/vi/ZR4jb6xiIp8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Apollonia Studio 6: Andre Cymone - The Day I Found Out That I Lost My Best Friend Prince - Podcast</span></button>
+<button class="vtile" data-yt="tSN2hi-zL8A" type="button"><img src="https://i.ytimg.com/vi/tSN2hi-zL8A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">André Cymone on Prince and &quot;The Dance Electric&quot;</span></button>
+<button class="vtile" data-yt="Xf0Vg2bi7xA" type="button"><img src="https://i.ytimg.com/vi/Xf0Vg2bi7xA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Andre Cymone&#x27;s, Prince, Morris Day, Grand Central &amp; the Minneapolis Sound true story 1982</span></button>
+<button class="vtile" data-yt="Sid_-MJSgjE" type="button"><img src="https://i.ytimg.com/vi/Sid_-MJSgjE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">André Cymone&#x27;s Best Stories About Prince, Rick James, and Changing Music Forever</span></button>
+<button class="vtile" data-yt="t5xk5GrQeg8" type="button"><img src="https://i.ytimg.com/vi/t5xk5GrQeg8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DM40GB30 Keynote with André Cymone and Jill Jones</span></button>
+<button class="vtile" data-yt="QPA1EXoxIBc" type="button"><img src="https://i.ytimg.com/vi/QPA1EXoxIBc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Apollonia Studio 6 / Andre Cymone- Prince, Morris Day, and Grand Central</span></button>
+<button class="vtile" data-yt="asGI53AAlhA" type="button"><img src="https://i.ytimg.com/vi/asGI53AAlhA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Did André Cymone Feel About Prince&#x27;s Sign O&#x27; The Times?</span></button>
+<button class="vtile" data-yt="6sQAr2hcD2M" type="button"><img src="https://i.ytimg.com/vi/6sQAr2hcD2M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ANDRE CYMONE INTERVIEW ON VIDEO SOUL</span></button>
+<button class="vtile" data-yt="HvelyKdgyvg" type="button"><img src="https://i.ytimg.com/vi/HvelyKdgyvg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Prince Took Andre Cymone’s Mic — What He Did in the Next 48 Hours Made History</span></button>
+<button class="vtile" data-yt="XPeXotfhyxI" type="button"><img src="https://i.ytimg.com/vi/XPeXotfhyxI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Little Giant: An Intimate Look at Prince&#x27;s Legendary Career</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">André Cymone is an American record producer, songwriter and bassist born in Minneapolis, Minnesota. He is regarded as an unsung architect of Minneapolis&#x27; identity as a music capital and was a bass guitarist for Prince&#x27;s touring band before launching a solo career.</p>
+<p>André Cymone is an American record producer, songwriter and bassist born in Minneapolis, Minnesota. He is regarded as an unsung architect of Minneapolis&#x27; identity as a music capital and was a bass guitarist for Prince&#x27;s touring band before launching a solo career.</p>
+<h3>early life and musical beginnings</h3>
+<p>Cymone was the youngest of six children born to Fred Anderson, a musician, and Bernadette Anderson, a social worker. In 1975, he was a member of the funk band 94 East with Prince. He also played in the band Grand Central, which later changed its name to Champagne due to confusion with Graham Central Station, and included members Morris Day and Cymone&#x27;s sister Linda.</p>
+<h3>solo career and production work</h3>
+<p>Cymone released three early solo albums: Livin&#x27; in the New Wave (1982), Survivin&#x27; in the 80&#x27;s (1983), and A.C. (1985). These albums explored a fusion of new wave and funk, producing half a dozen hit R&amp;B singles. His most successful single, &quot;The Dance Electric,&quot; was written by Prince and reached #10 on the R&amp;B charts in 1985. After stepping away from the spotlight in the late 1980s to raise his children, he returned to music with a digital single titled &quot;America&quot; in 2012 and released the albums The Stone (2014) and 1969 (2017).</p>
+<h3>production and collaborations</h3>
+<p>Cymone became a producer for several artists, including his then wife Jody Watley, producing hit songs like &quot;Looking for a New Love&quot; and &quot;Real Love&quot;. He also produced and wrote songs for Pebbles, Jermaine Stewart, Evelyn &quot;Champagne&quot; King, The Girls, Pretty Poison, and Adam Ant. For Adam Ant&#x27;s 1990 album Manners &amp; Physique, Cymone provided production and a Minneapolis sound. Additionally, he wrote songs featured on the Beverly Hills Cop II soundtrack in 1987, performed by James Ingram and Pebbles. In 2024, he provided engineering and arrangement for track 12 of Vanessa Williams&#x27; album Survivor.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Birth Name:</strong> Andre Simon Anderson</li>
+<li><strong>Date of Birth:</strong> June 27, 1958</li>
+<li><strong>Stage Name Origin:</strong> A variation of his middle name, Simon</li>
+<li><strong>Notable Solo Albums:</strong> Livin&#x27; in the New Wave, Survivin&#x27; in the 80&#x27;s, A.C., The Stone, 1969</li>
+<li><strong>Chart Success:</strong> The Dance Electric reached #10 on the R&amp;B charts in 1985</li>
+<li><strong>Notable Production Credits:</strong> Jody Watley, Adam Ant, Vanessa Williams</li>
+<li><strong>Career Hiatus:</strong> value: 27-year singing hiatus ending in 2012</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Adam_Ant" rel="noopener">https://en.wikipedia.org/wiki/Adam_Ant</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Andr%C3%A9_Cymone" rel="noopener">https://en.wikipedia.org/wiki/Andr%C3%A9_Cymone</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Survivor_(Vanessa_Williams_album" rel="noopener">https://en.wikipedia.org/wiki/Survivor_(Vanessa_Williams_album</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="André Cymone">
+        <input type="hidden" name="slug" value="andr-cymone">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — André Cymone</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

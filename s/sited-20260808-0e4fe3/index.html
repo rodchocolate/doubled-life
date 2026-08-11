@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>sited — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">concept</div>
+      <h1>sited</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1080</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="TIptAElHZZo" type="button"><img src="https://i.ytimg.com/vi/TIptAElHZZo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Real Boston Richey &quot;On Site&quot; (Official Video)</span></button>
+<button class="vtile" data-yt="e3I36mpb86k" type="button"><img src="https://i.ytimg.com/vi/e3I36mpb86k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">French Montana Explosive SITED Interview: Drake, Rick Ross &amp; A Walkout</span></button>
+<button class="vtile" data-yt="qQbPKiiZMtY" type="button"><img src="https://i.ytimg.com/vi/qQbPKiiZMtY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">SITE Official Trailer (2025)</span></button>
+<button class="vtile" data-yt="HFxEYlyt0po" type="button"><img src="https://i.ytimg.com/vi/HFxEYlyt0po/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Crash Site | A Sci-Fi Short Film Starring Steven Yeun and Sam Richardson</span></button>
+<button class="vtile" data-yt="yI840l3GGxM" type="button"><img src="https://i.ytimg.com/vi/yI840l3GGxM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Real Boston Richey - On Site (Official Audio)</span></button>
+<button class="vtile" data-yt="QjZPDEkh5og" type="button"><img src="https://i.ytimg.com/vi/QjZPDEkh5og/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">SCP-1730 - What Happened to Site-13? FULL STORY &amp; EXPLANATION</span></button>
+<button class="vtile" data-yt="jh2Vw4du5kc" type="button"><img src="https://i.ytimg.com/vi/jh2Vw4du5kc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Reconstruction Site</span></button>
+<button class="vtile" data-yt="ia8Q51ouA_s" type="button"><img src="https://i.ytimg.com/vi/ia8Q51ouA_s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Positive Affirmations for Site Reliability Engineers</span></button>
+<button class="vtile" data-yt="LaxxsqW8f7M" type="button"><img src="https://i.ytimg.com/vi/LaxxsqW8f7M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">2nd body found at site of deadly Bronx apartment building fire, FDNY says</span></button>
+<button class="vtile" data-yt="XT4MMTIFtH8" type="button"><img src="https://i.ytimg.com/vi/XT4MMTIFtH8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ukraine takes out Russian drone control site in Black Sea strike</span></button>
+<button class="vtile" data-yt="Gs9Z-XP57Hk" type="button"><img src="https://i.ytimg.com/vi/Gs9Z-XP57Hk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Black Site | Official Trailer (HD) | Vertical Entertainment</span></button>
+<button class="vtile" data-yt="ztIIcXNzMN4" type="button"><img src="https://i.ytimg.com/vi/ztIIcXNzMN4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What is Site Reliability Engineering (SRE)?</span></button>
+<button class="vtile" data-yt="x4dEfxj_Ttk" type="button"><img src="https://i.ytimg.com/vi/x4dEfxj_Ttk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">RIDE TO THE TOP - Germany&#x27;s Highest Construction Site | Full Documentary</span></button>
+<button class="vtile" data-yt="iF6qv1CC5_4" type="button"><img src="https://i.ytimg.com/vi/iF6qv1CC5_4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">BARABAR, THE ARCHAEOLOGICAL SITE OF THE FUTURE - Documentary, History, Civilizations</span></button>
+<button class="vtile" data-yt="jTMcn2UaABU" type="button"><img src="https://i.ytimg.com/vi/jTMcn2UaABU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tracking the Butcher (Full Episode) | Inside the CIA: Secrets and Spies | National Geographic</span></button>
+<button class="vtile" data-yt="hvDPZE-XUcM" type="button"><img src="https://i.ytimg.com/vi/hvDPZE-XUcM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Building Site (2019) - full movie</span></button>
+<button class="vtile" data-yt="Mp8IXI1kzvQ" type="button"><img src="https://i.ytimg.com/vi/Mp8IXI1kzvQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Wheel Loaders, Heavy Transports, Excavators And Construction Sites - Heavy Machinery Movie</span></button>
+<button class="vtile" data-yt="I2PtHQDd1O8" type="button"><img src="https://i.ytimg.com/vi/I2PtHQDd1O8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sci-Fi Short Film &quot;Crash Site&quot; | DUST | Starring Steven Yeun &amp; Sam Richardson</span></button>
+<button class="vtile" data-yt="KlDB03dnNYQ" type="button"><img src="https://i.ytimg.com/vi/KlDB03dnNYQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">I Made The Worst Rated Movie on a Streaming Site</span></button>
+<button class="vtile" data-yt="O1E_4OJBevU" type="button"><img src="https://i.ytimg.com/vi/O1E_4OJBevU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">BARABAR, le site archéologique du futur - Film complet HD en français (Documentaire, Archéologie)</span></button>
+<button class="vtile" data-yt="HyB1n5VDXpc" type="button"><img src="https://i.ytimg.com/vi/HyB1n5VDXpc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ancient Mysteries 3HR DOCUMENTARY BOXSET Historical Sites, Bizarre CIVILIZATIONS Advanced Technology</span></button>
+<button class="vtile" data-yt="6la4hN4dGVo" type="button"><img src="https://i.ytimg.com/vi/6la4hN4dGVo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Go Tell The Spartans! // On site at Thermopylae FULL DOCUMENTARY / the last stand of Leonidas</span></button>
+<button class="vtile" data-yt="p69SNq2UrRs" type="button"><img src="https://i.ytimg.com/vi/p69SNq2UrRs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Construction Site Scene - Up Movie</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The term &#x27;site&#x27; most often refers to a location on the Earth&#x27;s surface or elsewhere, as well as archaeological, construction, and campsites. In the digital realm, it is commonly used to describe a website, which is a set of related web pages with a common domain name.</p>
+<p>The term &#x27;site&#x27; most often refers to a location on the Earth&#x27;s surface or elsewhere, as well as archaeological, construction, and campsites. In the digital realm, it is commonly used to describe a website, which is a set of related web pages with a common domain name.</p>
+<h3>websites</h3>
+<p>A website is any web page whose content is identified by a common domain name and published on at least one web server. These sites are typically dedicated to a particular topic or purpose, such as commerce, education, entertainment, news, or social media. Navigation is guided by hyperlinking between pages, often starting with a home page. Publicly-accessible websites collectively form the World Wide Web, which was created in 1989 by Tim Berners-Lee. While &#x27;web site&#x27; was the original spelling, &#x27;website&#x27; has become the standard. The number of websites globally has fluctuated; for example, in 2009 Netcraft reported 215,675,903 sites, and by January 2020, there were 1,295,973,827 websites. An estimated 85 percent of all websites are inactive.</p>
+<h3>types of websites</h3>
+<p>Websites are categorized as either static or dynamic. A static website is primarily coded in HTML and CSS, providing consistent, standard information to all visitors over an extended period. Examples include brochure websites or simple marketing examples. Static sites may use server side includes (SSI) for editing convenience. Dynamic websites change or customize themselves automatically and frequently. They are generated &#x27;on the fly&#x27; by computer code using software systems like Java Server Pages (JSP), ColdFusion (CFML), and CGI, or frameworks for languages such as PHP, Python, Ruby, and Perl. Dynamic sites can be interactive, using HTML forms, browser cookies, or JavaScript to modify page contents.</p>
+<h3>site a</h3>
+<p>Site A was a World War II research facility near Chicago operated by the University of Chicago&#x27;s Metallurgical Laboratory for the Manhattan Project. It was the site of Chicago Pile-2 (a reconstructed and enlarged version of the world&#x27;s first nuclear reactor) and the first heavy-water reactor, Chicago Pile-3. Research was conducted under contract to the United States&#x27; Office of Scientific Research and Development. After the war, it became the first home of Argonne National Laboratory. The site was returned to the public forest agency in 1956, but continues to be managed by the Department of Energy&#x27;s Office of Legacy Management as the Site A/Plot M Disposal Site.</p>
+<h3>الماضى (history) and decommissioning of site a</h3>
+<p>Site A was acquired in 1942 after Professor Arthur Compton identified a suitable location in the Argonne Forest. The U.S. Army Corps of Engineers leased 1,025 acres from the forest preserve district. After the first self-sustaining chain reaction demonstration at the University of Chicago, Enrico Fermi&#x27;s research group moved to Site A in March 1943, bringing CP-1, which was reconfigured as Chicago Pile-2. In May 1944, the heavy water-moderated reactor CP-3 was operated. The reactors operated until 1954 and were then defueled and demolished. Plot M served as a dump for low-level radioactive waste from 1943 to 1949, including tritium, uranium, and fission products. While buried remnants remain, the site has been certified safe for ordinary public access by the EPA and Illinois since the late 1980s.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>World Wide Web Creator:</strong> Tim Berners-Lee</li>
+<li><strong>Site A Location:</strong> Red Gate Woods in the Palos Forest Preserves, Illinois</li>
+<li><strong> uma l&#x27; a :</strong> 1,295,973,827 websites (January 2020)</li>
+<li><strong>Site A Reactors:</strong> Chicago Pile-2 and Chicago Pile-3</li>
+<li><strong>Plot M Purpose:</strong> Disposal ground for low-level radioactive waste</li>
+<li><strong>Website Standard Spelling:</strong> website</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Site" rel="noopener">https://en.wikipedia.org/wiki/Site</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Site_A" rel="noopener">https://en.wikipedia.org/wiki/Site_A</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Website" rel="noopener">https://en.wikipedia.org/wiki/Website</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="sited">
+        <input type="hidden" name="slug" value="sited">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — sited</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

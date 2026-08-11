@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Charlie Parker — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Charlie Parker</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">832</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="8OqSnuwaiyQ" type="button"><img src="https://i.ytimg.com/vi/8OqSnuwaiyQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Charlie Parker Greatest Hits Full Album - The Best Songs Of Charlie Parker - Best Saxophone Music</span></button>
+<button class="vtile" data-yt="abqGAyjcrHM" type="button"><img src="https://i.ytimg.com/vi/abqGAyjcrHM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Complete Charlie Parker at Royal Roost</span></button>
+<button class="vtile" data-yt="TFCUlXEFY28" type="button"><img src="https://i.ytimg.com/vi/TFCUlXEFY28/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Charlie Parker - Jam Session (1952) (Full Album) HQ</span></button>
+<button class="vtile" data-yt="Tf_t-LVnOUE" type="button"><img src="https://i.ytimg.com/vi/Tf_t-LVnOUE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">BBC4 Legends The Charlie Parker Story</span></button>
+<button class="vtile" data-yt="XIwhV-xGFAg" type="button"><img src="https://i.ytimg.com/vi/XIwhV-xGFAg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Best Classics Charlie Parker, Dizzy Gillespie The Legendary Town Hall Concert New York 1945</span></button>
+<button class="vtile" data-yt="C14KfysnCz0" type="button"><img src="https://i.ytimg.com/vi/C14KfysnCz0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">CHARLIE PARKER LIVE AT THE FINALE CLUB 1946 FULL ALBUM</span></button>
+<button class="vtile" data-yt="YGo0sJJJ46I" type="button"><img src="https://i.ytimg.com/vi/YGo0sJJJ46I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Charlie Parker - Celebrity (&amp; Buddy Rich). [Live 1950]</span></button>
+<button class="vtile" data-yt="oIoE5ZSSbHU" type="button"><img src="https://i.ytimg.com/vi/oIoE5ZSSbHU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Charlie Parker &amp; Coleman Hawkins 1950</span></button>
+<button class="vtile" data-yt="dGZLGf5Il64" type="button"><img src="https://i.ytimg.com/vi/dGZLGf5Il64/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Char̲l̲i̲e ̲P̲a̲r̲k̲e̲r – A̲t̲ S̲t̲o̲r̲y̲v̲i̲lle̲ (̲1̲9̲5̲3̲)̲</span></button>
+<button class="vtile" data-yt="VInmvMEEb-w" type="button"><img src="https://i.ytimg.com/vi/VInmvMEEb-w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Charlie Parker with Miles Davis- December 11, 1948 Royal Roost, New York City</span></button>
+<button class="vtile" data-yt="4PiKHAEcEvM" type="button"><img src="https://i.ytimg.com/vi/4PiKHAEcEvM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Charlie Parker &amp; Dizzy Gillespie, &quot;Hot House&quot; at DuMont Television, February 24, 1952 (in color)</span></button>
+<button class="vtile" data-yt="KXP84ijiLbg" type="button"><img src="https://i.ytimg.com/vi/KXP84ijiLbg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Charlie Parker - Jam Session (1952) {Full Album}</span></button>
+<button class="vtile" data-yt="W1LBGTBjf9k" type="button"><img src="https://i.ytimg.com/vi/W1LBGTBjf9k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bird: Not Out Of Nowhere | Charlie Parker&#x27;s Kansas City Legacy #BirdLives</span></button>
+<button class="vtile" data-yt="ecq1WbPz2RY" type="button"><img src="https://i.ytimg.com/vi/ecq1WbPz2RY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Celebrating Bird The Triumph Of Charlie Parker 2009</span></button>
+<button class="vtile" data-yt="q6_kbDGIBdc" type="button"><img src="https://i.ytimg.com/vi/q6_kbDGIBdc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Genius of Charlie Parker</span></button>
+<button class="vtile" data-yt="ccHAyw17XDs" type="button"><img src="https://i.ytimg.com/vi/ccHAyw17XDs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Parker laughing at Hawkins&#x27;s attempt to do playback on his own recorded improvisation</span></button>
+<button class="vtile" data-yt="gtx1aNLA60o" type="button"><img src="https://i.ytimg.com/vi/gtx1aNLA60o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">In love with the saxophone at 11, so why was Charlie Parker dead at 34?</span></button>
+<button class="vtile" data-yt="ccmhxZ_iTpI" type="button"><img src="https://i.ytimg.com/vi/ccmhxZ_iTpI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Birdsong : The Charlie Parker Story - BBC Radio (2005)</span></button>
+<button class="vtile" data-yt="SCerNb5S7yE" type="button"><img src="https://i.ytimg.com/vi/SCerNb5S7yE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">&quot;I Knew the Real Charlie Parker&quot; - Sonny Rollins</span></button>
+<button class="vtile" data-yt="HqhcAi5zIkc" type="button"><img src="https://i.ytimg.com/vi/HqhcAi5zIkc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ira Sullivan&#x27;s story about Charlie Parker and Jaco Pastorius</span></button>
+<button class="vtile" data-yt="hOOwvEPUPss" type="button"><img src="https://i.ytimg.com/vi/hOOwvEPUPss/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Charlie Parker: The Jazz Legend&#x27;s Remarkable Life Story</span></button>
+<button class="vtile" data-yt="bY79iN9H0lc" type="button"><img src="https://i.ytimg.com/vi/bY79iN9H0lc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Know The Legend, CHARLIE PARKER</span></button>
+<button class="vtile" data-yt="UvsqYo9r_dE" type="button"><img src="https://i.ytimg.com/vi/UvsqYo9r_dE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Charlie Parker Reveals His Secrets to Musical Greatness | Rare Interview with Paul Desmond</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Charlie Parker, also known as &quot;Bird&quot; or &quot;Yardbird&quot;, was an American jazz saxophonist, composer and bandleader. He was a leading figure in the development of bebop, a style of jazz characterized by advanced harmonies, virtuosic technique and fast tempos.</p>
+<p>Charlie Parker, also known as &quot;Bird&quot; or &quot;Yardbird&quot;, was an American jazz saxophonist, composer and bandleader. He was a leading figure in the development of bebop, a style of jazz characterized by advanced harmonies, virtuosic technique and fast tempos.</p>
+<h3>early life and education</h3>
+<p>Charles Parker Jr. was born on August 29, 1920, in Kansas City, Kansas, to Charles Parker Sr. and Adelaide &quot;Addie&quot; Bailey. He began playing the saxophone at age 11 and joined the Lincoln High School band under bandmaster Alonzo Lewis at age 14. His early musical influence was a young trombone player named Robert Simpson, who taught him basics of improvisation. Parker withdrew from high school in December 1935 to pursue his musical career full-time.</p>
+<h3>development of bebop</h3>
+<p>While living in New York City in 1939, Parker achieved a musical breakthrough by developing a new improvisational vocabulary known as bebop. This occurred during a practice session with guitarist William &quot;Biddy&quot; Fleet, while playing the song &quot;Cherokee&quot;, where he realized that the 12 semitones of the chromatic scale could lead melodically to any key. He later joined after-hours clubs in Harlem venues such as Clark Monroe&#x27;s Uptown House, experimenting with other musicians including Thelonious Monk and Dizzy Gillespie.</p>
+<h3>recording career</h3>
+<p>Parker primarily recorded for the labels Savoy, Dial, and Verve. He also recorded a series of popular sessions with strings, produced by Norman Granz, which placed him in the context of a {// a small classical string section and a jazz rhythm section rather than his standard bebop quintet. These recordings were his most popular sellers during his lifetime and were admitted to the Grammy Hall of Fame in 1988.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Born:</strong> August 29, 1920</li>
+<li><strong>Died:</strong> March 12, 1955</li>
+<li><strong>Nicknames:</strong> &quot;Bird&quot; or &quot;Yardbird&quot;</li>
+<li><strong>Primary Recording Labels:</strong> Savoy, Dial, and Verve</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Charlie_Parker" rel="noopener">https://en.wikipedia.org/wiki/Charlie_Parker</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Charlie_Parker_discography" rel="noopener">https://en.wikipedia.org/wiki/Charlie_Parker_discography</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Charlie_Parker_with_Strings" rel="noopener">https://en.wikipedia.org/wiki/Charlie_Parker_with_Strings</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Charlie Parker">
+        <input type="hidden" name="slug" value="charlie-parker">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Charlie Parker</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

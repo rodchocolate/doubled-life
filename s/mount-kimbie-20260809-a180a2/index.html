@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Mount Kimbie — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>Mount Kimbie</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-09</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">924</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="PjaDGMRgXU0" type="button"><img src="https://i.ytimg.com/vi/PjaDGMRgXU0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mount Kimbie - The Sunset Violent (Full Album)</span></button>
+<button class="vtile" data-yt="tgXSbdfIyZw" type="button"><img src="https://i.ytimg.com/vi/tgXSbdfIyZw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mount Kimbie - Empty And Silent (feat. King Krule) (Official Video)</span></button>
+<button class="vtile" data-yt="IuMoXaeY6sw" type="button"><img src="https://i.ytimg.com/vi/IuMoXaeY6sw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mount Kimbie - Love What Survives 2017 (full album)</span></button>
+<button class="vtile" data-yt="tOHtTRJRNIo" type="button"><img src="https://i.ytimg.com/vi/tOHtTRJRNIo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mount Kimbie - Dumb Guitar</span></button>
+<button class="vtile" data-yt="J1kzMFnFSh0" type="button"><img src="https://i.ytimg.com/vi/J1kzMFnFSh0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mount Kimbie - Blue Train Lines (Official Video) ft. King Krule</span></button>
+<button class="vtile" data-yt="ElOIDGXR1KI" type="button"><img src="https://i.ytimg.com/vi/ElOIDGXR1KI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mount Kimbie - Four Years and One Day</span></button>
+<button class="vtile" data-yt="dBUt75lqb5Y" type="button"><img src="https://i.ytimg.com/vi/dBUt75lqb5Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mount Kimbie - The Sunset Violent (Live in Heidelberg) [Full Album]</span></button>
+<button class="vtile" data-yt="-x1TFxao0oI" type="button"><img src="https://i.ytimg.com/vi/-x1TFxao0oI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mount Kimbie - Before I Move Off (Official Video)</span></button>
+<button class="vtile" data-yt="-YDoLuPm6Qk" type="button"><img src="https://i.ytimg.com/vi/-YDoLuPm6Qk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mount Kimbie - Fishbrain</span></button>
+<button class="vtile" data-yt="GRVwtSmgKP8" type="button"><img src="https://i.ytimg.com/vi/GRVwtSmgKP8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mount Kimbie - Carbonated (Official Video)</span></button>
+<button class="vtile" data-yt="0_2lD0hSnTU" type="button"><img src="https://i.ytimg.com/vi/0_2lD0hSnTU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">MOUNT KIMBIE Live @ Aéroport de Paris Orly – ARTE Concert</span></button>
+<button class="vtile" data-yt="VjSKEyR2vDo" type="button"><img src="https://i.ytimg.com/vi/VjSKEyR2vDo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mount Kimbie - Marilyn ft. Micachu</span></button>
+<button class="vtile" data-yt="qSRtJftci_s" type="button"><img src="https://i.ytimg.com/vi/qSRtJftci_s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Four World Set (Documentary)</span></button>
+<button class="vtile" data-yt="Tqz6kQOS6BI" type="button"><img src="https://i.ytimg.com/vi/Tqz6kQOS6BI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mount Kimbie discuss guitars experimentations, new members, and influences for Qobuz</span></button>
+<button class="vtile" data-yt="DV3VpZ0fb5E" type="button"><img src="https://i.ytimg.com/vi/DV3VpZ0fb5E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mount Kimbie - &quot;.... but those are the dirty secrets&quot;</span></button>
+<button class="vtile" data-yt="wWJFXAXEDWM" type="button"><img src="https://i.ytimg.com/vi/wWJFXAXEDWM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mount Kimbie Live (EB.TV Studio Session)</span></button>
+<button class="vtile" data-yt="rrdR1eMe0sg" type="button"><img src="https://i.ytimg.com/vi/rrdR1eMe0sg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tracks: Record Box | ARTE.tv Culture</span></button>
+<button class="vtile" data-yt="n1htNKK_6hQ" type="button"><img src="https://i.ytimg.com/vi/n1htNKK_6hQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mount Kimbie: NPR Music Tiny Desk Concert</span></button>
+<button class="vtile" data-yt="cIZHVbTHRwc" type="button"><img src="https://i.ytimg.com/vi/cIZHVbTHRwc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mount Kimbie Interview 2013 | HUNOW TV (At The Fleece)</span></button>
+<button class="vtile" data-yt="lgDsc1iqyPQ" type="button"><img src="https://i.ytimg.com/vi/lgDsc1iqyPQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">RBMA pres. H∆SHTAG$+: Mount Kimbie</span></button>
+<button class="vtile" data-yt="YlU7eaY8oZs" type="button"><img src="https://i.ytimg.com/vi/YlU7eaY8oZs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ólafur Arnalds Old Skin ft Arnór Dan AND Carbonated Mount Kimbie - Helping Hand Chicago Film 2014</span></button>
+<button class="vtile" data-yt="leBbv6xLYIw" type="button"><img src="https://i.ytimg.com/vi/leBbv6xLYIw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">SXSW 2011: Mount Kimbie (London) - In Conversation with the AU review.</span></button>
+<button class="vtile" data-yt="2tp2cXo_I28" type="button"><img src="https://i.ytimg.com/vi/2tp2cXo_I28/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Liquid Dream / Short Film - Mount Kimbie</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Mount Kimbie is an English electronic music and indie rock group. The band consists of Dominic Maker, Kai Campos, Andrea Balency-Béarn and Marc Pell.</p>
+<p>Mount Kimbie is an English electronic music and indie rock group. The band consists of Dominic Maker, Kai Campos, Andrea Balency-Béarn and Marc Pell.</p>
+<h3>formation and early years</h3>
+<p>Mount Kimbie was formed in 2008 by Dominic Maker and Kai Campos. The duo met at Southbank University in London, where Maker was studying film and Campos was attending university for the second time. They began making music together at a home studio in Peckham. Their early work expanded on the UK dubstep scene&#x27;s musical template, releasing acclaimed early EPs such as Maybes and Sketch on Glass. Their debut album, Crooks &amp; Lovers, released on 19 June 2010, received critical acclaim and was listed by DJ Mag as one of the defining albums of the decade.</p>
+<h3>career progression</h3>
+<p>The duo signed with Warp Records in June 2012. They released their second album, Cold Spring Fault Less Youth, on 27 May 2013, which received universal acclaim and an average score of 81% on Metacritic. In September 2017, they released their third album, Love What Survives, which featured contributions from King Krule, James Blake, Micachu and Andrea Balency-Béarn. They later released a double album, MK 3.5: Die Cuts | City Planning, in November 2022. Drummer Marc Pell and keyboardist Andrea Balency-Béarn joined as live members in 2016 and became full members in 2023 ahead of the band&#x27;s fourth album, The Sunset Violent.</p>
+<h3>collaborations and other activities</h3>
+<p>Mount Kimbie has collaborated with artists such as James Blake, King Krule, and Micachu. They have produced remixes for artists including Kelis, Foals, The xx, Flume, Andreya Triana, The Big Pink, Nia Archives, DIIV, and Untold. They hosted weekly residencies on NTS Radio in September 2015 and again across April and May 2017. nts radio is a London-based online radio station. la own track &#x27;Feel Away&#x27; was collaborative single with Slowthai and James Blake released on 15 September 2020.</p>
+<h3>notes</h3>
+<p>In 2010, Mount Kimbie toured the UK, Europe and America. They performed at festivals such as Bestival, Field Day Festival, Glade Festival, Stag &amp; Dagger festival and The Great Escape Festival. In 2013, they performed a full tour across the US and Europe to tie in with the launch of Cold Spring Fault Less Youth. They toured extensively in 2017 and 2018 to support Love What Survives, including appearances at Pitchfork Music Festival, Primavera Sound and Electric Picnic.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Origin:</strong> London, England</li>
+<li><strong> :</strong> -</li>
+<li><strong>Formed:</strong> 2008</li>
+<li><strong> :</strong> -</li>
+<li><strong>Members:</strong> Dominic Maker, Kai Campos, Andrea Balency-Béarn and Marc Pell</li>
+<li><strong>Debut Album:</strong> Crooks &amp; Lovers (2010)</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Cold_Spring_Fault_Less_Youth" rel="noopener">https://en.wikipedia.org/wiki/Cold_Spring_Fault_Less_Youth</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Mount_Kimbie" rel="noopener">https://en.wikipedia.org/wiki/Mount_Kimbie</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Slowthai" rel="noopener">https://en.wikipedia.org/wiki/Slowthai</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Mount Kimbie">
+        <input type="hidden" name="slug" value="mount-kimbie">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Mount Kimbie</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

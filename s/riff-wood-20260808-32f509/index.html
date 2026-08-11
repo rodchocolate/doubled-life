@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Riff Wood — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Riff Wood</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">761</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="5TNM18lyA78" type="button"><img src="https://i.ytimg.com/vi/5TNM18lyA78/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Riff Wood - Blur (Official Music Video)</span></button>
+<button class="vtile" data-yt="F8ztMze8qUY" type="button"><img src="https://i.ytimg.com/vi/F8ztMze8qUY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Riff Wood - PUNK (Official Music Video)</span></button>
+<button class="vtile" data-yt="tcPk-9rOCGU" type="button"><img src="https://i.ytimg.com/vi/tcPk-9rOCGU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Riff Wood rocks Seattle to start their North American tour - New Day NW</span></button>
+<button class="vtile" data-yt="u_c6EA49GRk" type="button"><img src="https://i.ytimg.com/vi/u_c6EA49GRk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Riff Wood | Stay A Little Longer | Fan Contest Music Video</span></button>
+<button class="vtile" data-yt="s24_q-kERIQ" type="button"><img src="https://i.ytimg.com/vi/s24_q-kERIQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Green Day’s Basket Case (covered by Riff Wood)</span></button>
+<button class="vtile" data-yt="go48HDrP7uc" type="button"><img src="https://i.ytimg.com/vi/go48HDrP7uc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Riff Wood | Under the Rug</span></button>
+<button class="vtile" data-yt="w3J_ncIQ0MY" type="button"><img src="https://i.ytimg.com/vi/w3J_ncIQ0MY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Freshmen&#x27;s WIN at Utah battle of the bands!! (Full performance)- Riff Wood</span></button>
+<button class="vtile" data-yt="WGFbiDRGY3E" type="button"><img src="https://i.ytimg.com/vi/WGFbiDRGY3E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Riff Wood - Shy Guy (Official Lyric Video)</span></button>
+<button class="vtile" data-yt="gxrPg4IVR28" type="button"><img src="https://i.ytimg.com/vi/gxrPg4IVR28/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Riff Wood - And Now (Official Lyric Video)</span></button>
+<button class="vtile" data-yt="7CL5pCe6Yi4" type="button"><img src="https://i.ytimg.com/vi/7CL5pCe6Yi4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Riff Wood | SLC Loves LA Benefit Concert @ The Depot | Salt Lake City, UT</span></button>
+<button class="vtile" data-yt="R3M63wL-gqU" type="button"><img src="https://i.ytimg.com/vi/R3M63wL-gqU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Riff Wood - 2024 Utah Multi-Regional Battle of the Bands (1st Place Finish!)</span></button>
+<button class="vtile" data-yt="GkwhpZnFToo" type="button"><img src="https://i.ytimg.com/vi/GkwhpZnFToo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Riff Fest &#x27;97: A Documentary</span></button>
+<button class="vtile" data-yt="B2RYSXUO6DE" type="button"><img src="https://i.ytimg.com/vi/B2RYSXUO6DE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ed Wood&#x27;s Glen or Glenda Full Riff</span></button>
+<button class="vtile" data-yt="1M8DPSuYrCo" type="button"><img src="https://i.ytimg.com/vi/1M8DPSuYrCo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Keith Richards Delivers a Blistering Guitar Solo at the 2024 Country Music Awards</span></button>
+<button class="vtile" data-yt="r_F7aiOvdwE" type="button"><img src="https://i.ytimg.com/vi/r_F7aiOvdwE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">It Might Get Loud | &quot;Jack White Builds a Guitar Then Plays It&quot; Official Clip (2009)</span></button>
+<button class="vtile" data-yt="k6WzqB0X3c4" type="button"><img src="https://i.ytimg.com/vi/k6WzqB0X3c4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Riff Clip: Plan 9 From Outer Space</span></button>
+<button class="vtile" data-yt="8g8uehkU_5w" type="button"><img src="https://i.ytimg.com/vi/8g8uehkU_5w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ELO – Total Rock Review (Full Music Documentary)</span></button>
+<button class="vtile" data-yt="knAXQeKGVNg" type="button"><img src="https://i.ytimg.com/vi/knAXQeKGVNg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Steve Winwood Documentary - The Reluctant Superstar</span></button>
+<button class="vtile" data-yt="C71Oj68sN5M" type="button"><img src="https://i.ytimg.com/vi/C71Oj68sN5M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">MST3K 424: Manos The Hands of Fate (FULL MOVIE)</span></button>
+<button class="vtile" data-yt="n9TaJDnIp50" type="button"><img src="https://i.ytimg.com/vi/n9TaJDnIp50/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">“Glen or Glenda” - Matt McGinnis’s Movie Riffing Melee | All-Drag Riff</span></button>
+<button class="vtile" data-yt="mHOiwOanIBM" type="button"><img src="https://i.ytimg.com/vi/mHOiwOanIBM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Chuck Berry Hail! Hail! Rock &#x27;N&#x27; Roll (1987) - Bonus Clip: Chuck &amp; Keith Rehearse (HD)</span></button>
+<button class="vtile" data-yt="ChN_VoZ2sZ0" type="button"><img src="https://i.ytimg.com/vi/ChN_VoZ2sZ0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Riff Raff (2025) Official Trailer - Jennifer Coolidge, Gabrielle Union, Pete Davidson, Bill Murray</span></button>
+<button class="vtile" data-yt="VvUPJPFg4wM" type="button"><img src="https://i.ytimg.com/vi/VvUPJPFg4wM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Quartersawing Animation - Frank Miller Lumber</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Riff Wood is not explicitly mentioned as a single entity in the provided text. The sources discuss a song titled &quot;Wood&quot; featuring a guitar riff, and a rapper named Riff Raff, and a character named Riff from the film West Side Story.</p>
+<p>Riff Wood is not explicitly mentioned as a single entity in the provided text. The sources discuss a song titled &quot;Wood&quot; featuring a guitar riff, and a rapper named Riff Raff, and a character named Riff from the film West Side Story.</p>
+<h3>musical elements of &#x27;wood&#x27;</h3>
+<p>The song &quot;Wood,&quot; performed by Taylor Swift, is a 1960s Motown-inspired track that incorporates disco, dance, funk, soul, and synth-pop styles. Its instrumentation includes a prominent horn arrangement and a guitar riff, which some critics compared to the Jackson 5&#x27;s &quot;I Want You Back&quot;.</p>
+<h3>riff raff&#x27;s career</h3>
+<p>Horst Christian Simco, known as Riff Raff, is an American rapper from Katy, Texas. He began his career in 2005 by making homemade CDs and was influenced by Texas veteran rappers Devin the Dude and Paul Wall. After signing with various labels including Soulja Boy&#x27;s S.O.D. Money Gang Inc. and Diplo&#x27;s Mad Decent, he released studio albums such as Neon Icon (2014) and Peach Panther (2016).</p>
+<h3>the character riff</h3>
+<p>In the 1961 film West Side Story, Riff is the leader of the Jets gang. He is the best friend of Tony and is killed by Bernardo during a knife fight.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Related Song:</strong> Wood (song)</li>
+<li><strong>Rapper:</strong> Riff Raff</li>
+<li><strong>label: Riff (Character):</strong> Leader of the Jets in West Side Story</li>
+<li><strong>// a guitar riff in song &#x27;Wood&#x27;:</strong> Compared to &quot;I Want You Back&quot; by the Jackson 5</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Riff_Raff_(rapper" rel="noopener">https://en.wikipedia.org/wiki/Riff_Raff_(rapper</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/West_Side_Story_(1961_film" rel="noopener">https://en.wikipedia.org/wiki/West_Side_Story_(1961_film</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Wood_(song" rel="noopener">https://en.wikipedia.org/wiki/Wood_(song</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Riff Wood">
+        <input type="hidden" name="slug" value="riff-wood">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Riff Wood</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

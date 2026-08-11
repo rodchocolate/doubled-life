@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Snoop Dogg — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Snoop Dogg</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-09</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">984</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="GtUVQei3nX4" type="button"><img src="https://i.ytimg.com/vi/GtUVQei3nX4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Snoop Dogg - Drop It Like It&#x27;s Hot (Official Music Video) ft. Pharrell Williams</span></button>
+<button class="vtile" data-yt="_CL6n0FJZpk" type="button"><img src="https://i.ytimg.com/vi/_CL6n0FJZpk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dr. Dre - Still D.R.E. ft. Snoop Dogg</span></button>
+<button class="vtile" data-yt="fWCZse1iwE0" type="button"><img src="https://i.ytimg.com/vi/fWCZse1iwE0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Snoop Dogg - Gin And Juice</span></button>
+<button class="vtile" data-yt="rseqmSGH7xk" type="button"><img src="https://i.ytimg.com/vi/rseqmSGH7xk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Last Dance with Mary Jane ft. Tom Petty &amp; Jelly Roll (Official Music Video)</span></button>
+<button class="vtile" data-yt="2soGJXQAQec" type="button"><img src="https://i.ytimg.com/vi/2soGJXQAQec/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Snoop Dogg - Who Am I (What&#x27;s My Name)?</span></button>
+<button class="vtile" data-yt="ZU7xNmseSsw" type="button"><img src="https://i.ytimg.com/vi/ZU7xNmseSsw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Snoop Dogg Drops West Coast Anthems: “Nuthin’ But a ‘G’ Thang” &amp; “The Next Episode” | BET Awards &#x27;25</span></button>
+<button class="vtile" data-yt="QZXc39hT8t4" type="button"><img src="https://i.ytimg.com/vi/QZXc39hT8t4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dr. Dre - The Next Episode (Official Music Video) ft. Snoop Dogg, Kurupt, Nate Dogg</span></button>
+<button class="vtile" data-yt="jvepWwEHwlk" type="button"><img src="https://i.ytimg.com/vi/jvepWwEHwlk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Wild ‘N Out | Snoop Dogg Slays The Red Team | Wildstyle</span></button>
+<button class="vtile" data-yt="qbBvH2WaBZg" type="button"><img src="https://i.ytimg.com/vi/qbBvH2WaBZg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Snoop Dogg - Bitch Please ft. Xzibit</span></button>
+<button class="vtile" data-yt="9YXpN03KCCU" type="button"><img src="https://i.ytimg.com/vi/9YXpN03KCCU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Snoop Dogg shows Michael Phelps his swimming prowess in the pool | Paris Olympics | NBC Sports</span></button>
+<button class="vtile" data-yt="y3Lvh3wvYIA" type="button"><img src="https://i.ytimg.com/vi/y3Lvh3wvYIA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Snoop Dogg - Drop It Like It&#x27;s Hot ft. Pharrell (Lyrics)</span></button>
+<button class="vtile" data-yt="Y1PVmANeyAg" type="button"><img src="https://i.ytimg.com/vi/Y1PVmANeyAg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Snoop Dogg - Sensual Seduction (Official Music Video)</span></button>
+<button class="vtile" data-yt="jTZGfmlCe8w" type="button"><img src="https://i.ytimg.com/vi/jTZGfmlCe8w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">SNOOP DOGG narrating ‘Planet Earth’ is just the best..... #snake #lizard #funnyanimal</span></button>
+<button class="vtile" data-yt="rLt5yEcgp9M" type="button"><img src="https://i.ytimg.com/vi/rLt5yEcgp9M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The INSANE Story of Snoop Dogg | Documentary 2026</span></button>
+<button class="vtile" data-yt="LJmnuR0wAeo" type="button"><img src="https://i.ytimg.com/vi/LJmnuR0wAeo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">HILARIOUS! Snoop Dogg narrates Animal Planet Documentary</span></button>
+<button class="vtile" data-yt="AMmDr3xpxrM" type="button"><img src="https://i.ytimg.com/vi/AMmDr3xpxrM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Snoop Dogg Behind The Music</span></button>
+<button class="vtile" data-yt="8t-e-SFLXMM" type="button"><img src="https://i.ytimg.com/vi/8t-e-SFLXMM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Snoopumentary: The Story of Snoop Dogg (The Death Row Years) Documentary</span></button>
+<button class="vtile" data-yt="7owzJ28IH6Y" type="button"><img src="https://i.ytimg.com/vi/7owzJ28IH6Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Untold Stories of Snoop Dogg | Death Row, Dr. Dre, and Last Moments w/ Tupac | Big Boy Off Air</span></button>
+<button class="vtile" data-yt="SPTg_HIKNvE" type="button"><img src="https://i.ytimg.com/vi/SPTg_HIKNvE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Snoop Dogg Became Untouchable</span></button>
+<button class="vtile" data-yt="lEUi-Qvv_8M" type="button"><img src="https://i.ytimg.com/vi/lEUi-Qvv_8M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The controversial rise of Snoop Dogg (documentary)</span></button>
+<button class="vtile" data-yt="DM3pD23z544" type="button"><img src="https://i.ytimg.com/vi/DM3pD23z544/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Story of Snoopy: The Rolling 20s Crip Who Became Snoop Dogg</span></button>
+<button class="vtile" data-yt="jgg0y6m_FLs" type="button"><img src="https://i.ytimg.com/vi/jgg0y6m_FLs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">A Very Brief Recap Of Snoop Dogg’s Life As A Gangbanger | Death Row Chronicles</span></button>
+<button class="vtile" data-yt="NxV8Yviu00U" type="button"><img src="https://i.ytimg.com/vi/NxV8Yviu00U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Plizzanet Earth with Snoop Dogg – Bat vs. Scorpion</span></button>
+<button class="vtile" data-yt="_yni2fy-AnQ" type="button"><img src="https://i.ytimg.com/vi/_yni2fy-AnQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Matthew McConaughey &amp; Snoop Dogg on Getting High and Working Together</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Snoop Dogg is an American rapper, singer, record producer, songwriter, and actor known as a key figure in West Coast hip-hop. He helped define gangsta rap and G-funk, often regarded as one of the greatest rappers of all time. His lyrics frequently address social issues such as gu</p>
+<p>Snoop Dogg is an American rapper, singer, record producer, songwriter, and actor known as a key figure in West Coast hip-hop. He helped define gangsta rap and G-funk, often regarded as one of the greatest rappers of all time. His lyrics frequently address social issues such as gun violence and recreational drug use.</p>
+<h3>early life and musical beginnings</h3>
+<p>Born Calvin Cordozar Broadus Jr. on October 20, 1971, in Long Beach, California, Snoop Dogg was raised Baptist and began singing and playing piano at Golgotha Trinity Baptist Church. In sixth grade, he began rapping in school hallways, which drew large crowds. After graduating from Long Beach Polytechnic High School in 1989, he was arrested for possession of cocaine. Together with cousins Nate Dogg and Lil&#x27; ½ Dead, and friend Warren G, he recorded homemade tapes and a four-song demo at VIP Records store. A mixtape featuring one of his early solo freestyles over &quot;Hold On&quot; by En Vogue was eventually heard by producer Dr. Dre, who called him to audition for Death Row Records in 1991.</p>
+<h3>music career and commercial success</h3>
+<p>Snoop Dogg rose to prominence in 1992 through collaborations with Dr. Dre on the single &quot;Deep Cover&quot; and the album The Chronic, including the track &quot;Nuthin&#x27; but a &#x27;G&#x27; Thang&quot;. His debut album, Doggystyle (1993), debuted at number one on the Billboard 200, selling 806,000 copies in its first week and spawning hit singles such as &quot;Gin and Juice&quot; and &quot;What&#x27;s My Name?&quot;. Following his departure from Death Row Records, he signed with Master P&#x27;s No Limit Records, releasing albums like Da Game Is to Be Sold, Not to Be Told (1998) and No Limit Top Dogg (1999). In 2004, the single &quot;Drop It Like It&#x27;s Hot&quot; featuring Pharrell became his first Billboard Hot 100 number one. He later adopted the alias Snoop Lion for a reggae album, Reincarnated (2013), and released gospel album Bible of Love (2018).</p>
+<h3>accolades and other ventures</h3>
+<p>Snoop Dogg has sold over 35 million records worldwide and has received seventeen Grammy Award nominations, two Sports Emmy Awards, and a star on the Hollywood Walk of Fame. In 2022, he co-headlined the Super Bowl LVI halftime show, for which he earned a Primetime Emmy Award. Outside of music, he he has appeared in films such as Training Day and television series like The L Word, and served as a coach on The Voice.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Full Name:</strong> Calvin Cordozar Broadus Jr.</li>
+<li><strong>Born:</strong> October 20, 1971</li>
+<li><strong> idea :</strong> Long Beach, California</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Snoop_Dogg" rel="noopener">https://en.wikipedia.org/wiki/Snoop_Dogg</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Snoop_Dogg_discography" rel="noopener">https://en.wikipedia.org/wiki/Snoop_Dogg_discography</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Snoop_Dogg_filmography" rel="noopener">https://en.wikipedia.org/wiki/Snoop_Dogg_filmography</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Snoop Dogg">
+        <input type="hidden" name="slug" value="snoop-dogg">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Snoop Dogg</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

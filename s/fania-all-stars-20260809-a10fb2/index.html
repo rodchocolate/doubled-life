@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Fania All-Stars — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>Fania All-Stars</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-09</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">873</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="-NScSbZ-S7c" type="button"><img src="https://i.ytimg.com/vi/-NScSbZ-S7c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fania All Stars - &quot;Live&quot; in Puerto Rico &#x27;94 (Official Video)</span></button>
+<button class="vtile" data-yt="QBuueYkmYVI" type="button"><img src="https://i.ytimg.com/vi/QBuueYkmYVI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fania All Stars - Hector Lavoe - Mi Gente - Zaire, Africa 1974</span></button>
+<button class="vtile" data-yt="2nn-IuE04l4" type="button"><img src="https://i.ytimg.com/vi/2nn-IuE04l4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fania Salsa Exitos | Fania, Donde Nació La Salsa | Hector Lavoe, Cheo, Willie Colon, Ismael Miranda</span></button>
+<button class="vtile" data-yt="W5LAEYGuERo" type="button"><img src="https://i.ytimg.com/vi/W5LAEYGuERo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fania All Stars - Our Latin Thing (Nuestra Cosa Latina) - Full Movie - Restored!</span></button>
+<button class="vtile" data-yt="QmkUU8GBeD8" type="button"><img src="https://i.ytimg.com/vi/QmkUU8GBeD8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">LA FANIA ALL STAR 30 AÑOS</span></button>
+<button class="vtile" data-yt="EaHMG-6v2u8" type="button"><img src="https://i.ytimg.com/vi/EaHMG-6v2u8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fania All Stars - Live at Yankee Stadium (Anniversary Livestream)</span></button>
+<button class="vtile" data-yt="YkshIBFInME" type="button"><img src="https://i.ytimg.com/vi/YkshIBFInME/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Fania All Star New York 1971 ( extrait )</span></button>
+<button class="vtile" data-yt="LuqGyeJgT6E" type="button"><img src="https://i.ytimg.com/vi/LuqGyeJgT6E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fania All Stars ft Oscar D&#x27;Leon, Milly Quezada, El Canario and others - Quitate Tu (Yo Soy La Salsa)</span></button>
+<button class="vtile" data-yt="P-uvOriFxXI" type="button"><img src="https://i.ytimg.com/vi/P-uvOriFxXI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fania All Stars &quot;Live In Africa&quot; - Descarga/En Orbita</span></button>
+<button class="vtile" data-yt="9MCUwCDuX4Y" type="button"><img src="https://i.ytimg.com/vi/9MCUwCDuX4Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DESCARGA - FANIA ALL STARS - Bobby Valentin</span></button>
+<button class="vtile" data-yt="YLuYrWugfDY" type="button"><img src="https://i.ytimg.com/vi/YLuYrWugfDY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fania All Stars ( 1980 ) En Caracas, Venezuela</span></button>
+<button class="vtile" data-yt="BtiNsILXB4E" type="button"><img src="https://i.ytimg.com/vi/BtiNsILXB4E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fania All Stars - Descarga Fania (Yo Soy La Salsa)</span></button>
+<button class="vtile" data-yt="1edY29vKN_0" type="button"><img src="https://i.ytimg.com/vi/1edY29vKN_0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">fania</span></button>
+<button class="vtile" data-yt="fG27rqGmEDs" type="button"><img src="https://i.ytimg.com/vi/fG27rqGmEDs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fania All-Stars 30th Anniversary (Full Documentary)</span></button>
+<button class="vtile" data-yt="x32OoI4sey0" type="button"><img src="https://i.ytimg.com/vi/x32OoI4sey0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fania Records: The Unbelievable Story of the Most Important Salsa Record Label | El Malo</span></button>
+<button class="vtile" data-yt="R33UBoC018A" type="button"><img src="https://i.ytimg.com/vi/R33UBoC018A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Salsa - The Original 1974 Movie Starring The Fania All-Stars</span></button>
+<button class="vtile" data-yt="egbHXTLGT9s" type="button"><img src="https://i.ytimg.com/vi/egbHXTLGT9s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fania All Stars - Our Latin Thing (1972) Completo</span></button>
+<button class="vtile" data-yt="-SJfoBFjdnQ" type="button"><img src="https://i.ytimg.com/vi/-SJfoBFjdnQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fania All Stars Live in Africa - Full Movie</span></button>
+<button class="vtile" data-yt="OzUEAmq8pdM" type="button"><img src="https://i.ytimg.com/vi/OzUEAmq8pdM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Fania All Stars - (La Historia) Mini-Documental de 1996 para TV.</span></button>
+<button class="vtile" data-yt="NKqiVLZ03Cw" type="button"><img src="https://i.ytimg.com/vi/NKqiVLZ03Cw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fania Records still spreading the spirit of East Harlem after 60 years</span></button>
+<button class="vtile" data-yt="KdWgpS2WMTU" type="button"><img src="https://i.ytimg.com/vi/KdWgpS2WMTU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Historia de la Salsa (Documental Completo) #Faniaallstars #hectorlavoe #Celiacruz</span></button>
+<button class="vtile" data-yt="ZIfRvvlk8PQ" type="button"><img src="https://i.ytimg.com/vi/ZIfRvvlk8PQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ambition Destroyed the Fania All Stars</span></button>
+<button class="vtile" data-yt="wVshq2jnkIo" type="button"><img src="https://i.ytimg.com/vi/wVshq2jnkIo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fania All Stars in AFRICA: The HIDDEN history | Documentary | Salserísimo Perú</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The Fania All Stars is a musical group formed in 1968 as a showcase for musicians on Fania Records, the leading salsa music record label of the time.</p>
+<p>The Fania All Stars is a musical group formed in 1968 as a showcase for musicians on Fania Records, the leading salsa music record label of the time.</p>
+<h3>origins and formation</h3>
+<p>Fania Records was founded in New York City in 1964 by Jerry Masucci, an Italian-American lawyer, and Johnny Pacheco, a Dominican-born flutist, percussionist, and bandleader. The label&#x27;s name was inspired by a popular luncheonette in Havana, Cuba, that Masucci had frequented. Fania Records began as a small venture, selling records out of the car trunk of Johnny Pacheco, but grew after the success of Pacheco&#x27;s recording &#x27;Cañonazo&#x27;. This led to the uma expansion of talent base and the acquisition of musicians such as Larry Harlow, Ray Barretto, and Bobby Valentín.</p>
+<h3>the fania all-stars supergroup</h3>
+<p>In 1968, Fania Records created a continuously revolving line-up of entertainers known as the Fania All-Stars. Considered some of the best Latin Music performers in the world at that time, the original lineup included band leaders like Johnny Pacheco, Ray Barretto and Willie Colón, singers such as Héctor Lavoe and Ismael Miranda, and special guests including Tito Puente and Eddie Palmieri. The group recorded &#x27;Live at the Red Garter&#x27; and later a legendary 1971 performance at New York City&#x27;s Cheetah Lounge, captured in the documentary &#x27;Our Latin Thing&#x27;.</p>
+<h3>major performances and global reach</h3>
+<p>The All-Stars performed before more than 40,000 spectators at New York&#x27;s Yankee Stadium on August 24, 1973. This performance was included in the second set of 50 recordings preserved in the U.S. National Recording Registry. In 1974, they appeared at a music festival in Kinshasa, Zaire, alongside James Brown and others during the heavyweight title fight between Muhammad Ali and George Foreman, which was captured on film as &#x27;Live in Africa&#x27;. In 1976, Fania made a deal with Columbia Records for crossover albums, such as &#x27;Delicate and Jumpy&#x27;, featuring Steve Winwood. In 1979, they participated in the Havana Jam festival in Cuba, cùng với artists like Billy Joel and Weather Report.</p>
+<h3>later years and legacy</h3>
+<p>body:</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Founded:</strong> 1968</li>
+<li><strong>Associated Label:</strong> value:</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Fania_All-Stars" rel="noopener">https://en.wikipedia.org/wiki/Fania_All-Stars</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Fania_Records" rel="noopener">https://en.wikipedia.org/wiki/Fania_Records</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Southern_All_Stars" rel="noopener">https://en.wikipedia.org/wiki/Southern_All_Stars</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Fania All-Stars">
+        <input type="hidden" name="slug" value="fania-all-stars">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Fania All-Stars</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

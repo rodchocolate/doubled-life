@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>New Wave (music genre) — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">concept</div>
+      <h1>New Wave (music genre)</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">960</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="cLHvJhqveaY" type="button"><img src="https://i.ytimg.com/vi/cLHvJhqveaY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">🎧 Dive into the Ultimate 80&#x27;s New Wave Experience! | Non-Stop Hits Mix 🎶</span></button>
+<button class="vtile" data-yt="sN5RpJRtdBc" type="button"><img src="https://i.ytimg.com/vi/sN5RpJRtdBc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Finally Get New Wave Music: Learning to Love Punk’s Awkward Offshoot(with Recommendations)</span></button>
+<button class="vtile" data-yt="-hCH0kpJghs" type="button"><img src="https://i.ytimg.com/vi/-hCH0kpJghs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">NEW WAVE ALTERNAT!VE.. MIX VOL 5</span></button>
+<button class="vtile" data-yt="h_Yt9Y50l0I" type="button"><img src="https://i.ytimg.com/vi/h_Yt9Y50l0I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">New Wave / Synth Pop/80s alternative</span></button>
+<button class="vtile" data-yt="YVBFjYsPbek" type="button"><img src="https://i.ytimg.com/vi/YVBFjYsPbek/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">NEW WAVE ALTERNATIVE MiX vol.15</span></button>
+<button class="vtile" data-yt="z2hNW8RaJQ4" type="button"><img src="https://i.ytimg.com/vi/z2hNW8RaJQ4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">NEW WAVE ALTERNAT!VE.. MiX VOL 28</span></button>
+<button class="vtile" data-yt="BXhfzkH_u14" type="button"><img src="https://i.ytimg.com/vi/BXhfzkH_u14/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Punk &amp; The New Wave 1976-1978 ~ The Way They Were</span></button>
+<button class="vtile" data-yt="jMEj4_mz2ew" type="button"><img src="https://i.ytimg.com/vi/jMEj4_mz2ew/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">New Wave &amp; Pop Classics 80s - Depeche Mode, Simple Minds, New Order &amp; More - Full Length DJ Mixes.</span></button>
+<button class="vtile" data-yt="6HQANmlLS6M" type="button"><img src="https://i.ytimg.com/vi/6HQANmlLS6M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">NEW WAVE ALTERNAT!VE.. MiX VOL 27</span></button>
+<button class="vtile" data-yt="mn0rHONCKtE" type="button"><img src="https://i.ytimg.com/vi/mn0rHONCKtE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">NEW WAVE Documentary - Trailer</span></button>
+<button class="vtile" data-yt="rueFB85JhxM" type="button"><img src="https://i.ytimg.com/vi/rueFB85JhxM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">NEW WAVE 80&#x27;s MEGAMIX</span></button>
+<button class="vtile" data-yt="SsX9G6eTgM8" type="button"><img src="https://i.ytimg.com/vi/SsX9G6eTgM8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How New Wave Ruled The 1980&#x27;s</span></button>
+<button class="vtile" data-yt="_4xYdjB2QrY" type="button"><img src="https://i.ytimg.com/vi/_4xYdjB2QrY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Punk &amp; New Wave Years Documentary Rock &amp; Roll History Retro 70s 80s Damned Sex Pistols Joy Division</span></button>
+<button class="vtile" data-yt="izPpneZVVoo" type="button"><img src="https://i.ytimg.com/vi/izPpneZVVoo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">(2001) Difference between punk and 80s new wave</span></button>
+<button class="vtile" data-yt="R-RWyJ7-lh0" type="button"><img src="https://i.ytimg.com/vi/R-RWyJ7-lh0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What Made 80s New Wave So Legendary?</span></button>
+<button class="vtile" data-yt="kqCV3PEP3EU" type="button"><img src="https://i.ytimg.com/vi/kqCV3PEP3EU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">A Brief History of No Wave</span></button>
+<button class="vtile" data-yt="DoIzmIaN9kY" type="button"><img src="https://i.ytimg.com/vi/DoIzmIaN9kY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How New Wave Bands Changed Music: B-52s, Devo, and Pretenders Explained</span></button>
+<button class="vtile" data-yt="3ZE2dRRqu3E" type="button"><img src="https://i.ytimg.com/vi/3ZE2dRRqu3E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">A Brief History of New Wave</span></button>
+<button class="vtile" data-yt="jUXhnHjsKbY" type="button"><img src="https://i.ytimg.com/vi/jUXhnHjsKbY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">BBC The 80s, Musics Greatest Decade ?</span></button>
+<button class="vtile" data-yt="8zn8xfbnABM" type="button"><img src="https://i.ytimg.com/vi/8zn8xfbnABM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The World NEEDS To Hear Egyptian New Wave</span></button>
+<button class="vtile" data-yt="FyIChPKJuhQ" type="button"><img src="https://i.ytimg.com/vi/FyIChPKJuhQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">No Wave: The Music Of An Era</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">New wave is a music genre encompassing pop-oriented styles that emerged in the United States and United Kingdom in the mid- to late 1970s. It was initially synonymous with punk rock but later branched off into its own distinct style characterized by a lighter, more melodic broade</p>
+<p>New wave is a music genre encompassing pop-oriented styles that emerged in the United States and United Kingdom in the mid- to late 1970s. It was initially synonymous with punk rock but later branched off into its own distinct style characterized by a lighter, more melodic broadening of punk culture.</p>
+<h3>characteristics and etymology</h3>
+<p>The term &#x27;new wave&#x27; was popularized by Seymour Stein of Sire Records as a catch-all for styles emerging after punk rock, alluding to the French New Wave film movement. The genre is characterized by a humorous, quirky pop approach, the use of electronic sounds, and a distinctive visual style in fashion and music videos. Musically, it features choppy rhythm guitars with angular riffs, fast tempos, keyboards, synthesizers, and jerky rhythms with stop-start song structures. Vocalists often sound high-pitched, geeky, and suburban, while fans and acts like Talking Heads, Devo, and Elvis Costello adopted a nervous, nerdy persona involving robotic dancing and suits with big glasses.</p>
+<h3>history and influence</h3>
+<p>New wave commercially peaked from the late 1970s to mid-1980s, with MTV&#x27;s launch in 1981 heavily promoting new wave acts in the United States. In the Kingdom, the original movement was considered over by the early 1980s, succeeded by New Romantic and new pop movements. US popularity declined by the late 1980s as genres like alternative rock, dance-pop, and glam metal gained success. The genre influenced later internet microgenres such as synthwave, vaporwave, chillwave, new rave, bloghouse and devocore. It also inspired subgenres like darkwave and minimal wave.</p>
+<h3>regional scenes and crossovers</h3>
+<p>New wave developed regional scenes across Europe, including Yugoslav new wave, Germany&#x27;s Neue Deutsche Welle, the Netherlands&#x27; ultra, Spain&#x27;s La Movida Madrileña, and coldwave in France, Belgium, and Poland. Some acts embraced a crossover of pop and rock with African and African-American styles; for example, Adam and the Ants and Bow Wow Wow used Burundi-style drumming, while Talking Heads&#x27; album Remain in Light was marketed as a melding of new wave and African styles.</p>
+<h3>forerunners</h3>
+<p>The genre was influenced by the Velvet Underground, David Bowie, Iggy Pop, Brian Eno, and the glam and art rock style of Sparks and Roxy Music. Other influences include experimental rock artists like Frank Zappa, Captain Beefheart and the Residents, underground psychedelic bands such as Lothar and the Hand People, and Germany&#x27;s kosmische musik scene and krautrock, specifically Kraftwerk. Additionally, the visual aesthetic was influenced by avant-garde art movements like Cubism, Dada and the Bauhaus school.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Origin:</strong> United States and United Kingdom, mid- to late 1970s</li>
+<li><strong>Commercial Peak:</strong> Late 1970s to mid-1980s</li>
+<li><strong>Pioneering Acts:</strong> Talking Heads, Devo, Elvis Costello</li>
+<li><strong>label popularized term:</strong> Seymour Stein of Sire Records</li>
+<li><strong>Influence on later microgenres:</strong></li>
+<li><strong>MTV&#x27;s Role:</strong> 1981 launch promoted and popularized new wave acts in the US</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Music_genre" rel="noopener">https://en.wikipedia.org/wiki/Music_genre</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/New_wave_music" rel="noopener">https://en.wikipedia.org/wiki/New_wave_music</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Rage_(music_genre" rel="noopener">https://en.wikipedia.org/wiki/Rage_(music_genre</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="New Wave (music genre)">
+        <input type="hidden" name="slug" value="new-wave-music-genre">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — New Wave (music genre)</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

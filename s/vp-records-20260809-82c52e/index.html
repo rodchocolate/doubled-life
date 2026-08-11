@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>VP Records — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>VP Records</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-09</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">939</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="0PYx8TdWFIM" type="button"><img src="https://i.ytimg.com/vi/0PYx8TdWFIM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">VP records day 2025 - Sister Nancy live, Prince King Jammy, dancehall reggae</span></button>
+<button class="vtile" data-yt="O6SeD1xE7NA" type="button"><img src="https://i.ytimg.com/vi/O6SeD1xE7NA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Gyptian - Hold You | Official Music Video</span></button>
+<button class="vtile" data-yt="xAs4hlCHrww" type="button"><img src="https://i.ytimg.com/vi/xAs4hlCHrww/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Miss Pat Speaks On The History Of VP Records And How Reggae Music Spread Across The World</span></button>
+<button class="vtile" data-yt="E31vZN_6sCA" type="button"><img src="https://i.ytimg.com/vi/E31vZN_6sCA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Patricia Chin - Co-Founder, VP Records | TVJ Profile Interview</span></button>
+<button class="vtile" data-yt="3X1NjsSbaLE" type="button"><img src="https://i.ytimg.com/vi/3X1NjsSbaLE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">90s Dancehall Mix | Strictly The Best | Reggae Boyz Sound x VP Records</span></button>
+<button class="vtile" data-yt="riWe_ZTXJ5U" type="button"><img src="https://i.ytimg.com/vi/riWe_ZTXJ5U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">VP Records LIVE Session</span></button>
+<button class="vtile" data-yt="cUGLTQJQnc8" type="button"><img src="https://i.ytimg.com/vi/cUGLTQJQnc8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">King Jammy | King At The Controls Documentary | VP Records</span></button>
+<button class="vtile" data-yt="bmKnxZhDHRI" type="button"><img src="https://i.ytimg.com/vi/bmKnxZhDHRI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Buju Banton and I Wayne at VP records 2026</span></button>
+<button class="vtile" data-yt="ndK3T4S8HsU" type="button"><img src="https://i.ytimg.com/vi/ndK3T4S8HsU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Spice ft. Sean Paul &amp; Shaggy - Go Down Deh | Official Audio 🇯🇲🇯🇲🇯🇲</span></button>
+<button class="vtile" data-yt="q4MHrqKDfI4" type="button"><img src="https://i.ytimg.com/vi/q4MHrqKDfI4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">VP Records LIVE Session</span></button>
+<button class="vtile" data-yt="gSy6tqOM9WA" type="button"><img src="https://i.ytimg.com/vi/gSy6tqOM9WA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The VP Records Story</span></button>
+<button class="vtile" data-yt="F6d_ZxBIFb0" type="button"><img src="https://i.ytimg.com/vi/F6d_ZxBIFb0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">VP Records LIVE Session</span></button>
+<button class="vtile" data-yt="pZGcQlkaCEg" type="button"><img src="https://i.ytimg.com/vi/pZGcQlkaCEg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">THE V.P. RECORDS STORY</span></button>
+<button class="vtile" data-yt="T5otG4pJmnA" type="button"><img src="https://i.ytimg.com/vi/T5otG4pJmnA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">VP Records: The Powerhouse of Caribbean Music | A Deep Dive into the Legacy and Impact</span></button>
+<button class="vtile" data-yt="-RnyNA-pWdI" type="button"><img src="https://i.ytimg.com/vi/-RnyNA-pWdI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Busy Signal Documentaire VP Record</span></button>
+<button class="vtile" data-yt="U2PHW9VBlyM" type="button"><img src="https://i.ytimg.com/vi/U2PHW9VBlyM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mavado Documentaire VP Record</span></button>
+<button class="vtile" data-yt="gWwr6mdv_Nw" type="button"><img src="https://i.ytimg.com/vi/gWwr6mdv_Nw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Legendary Reggae Figure Miss Pat Chin (Co-Founder of VP Records) Keynote | A2IM Indie Week 2021</span></button>
+<button class="vtile" data-yt="SunK3hXuZa4" type="button"><img src="https://i.ytimg.com/vi/SunK3hXuZa4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Bobby Digital Story | Reggae Anthology: X-tra Wicked Documentary | Digital B Vol. 1</span></button>
+<button class="vtile" data-yt="z1eU5Ir09mo" type="button"><img src="https://i.ytimg.com/vi/z1eU5Ir09mo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Henry Junjo Lawes | Reggae Anthology: Volcano Eruption | Mini Documentary</span></button>
+<button class="vtile" data-yt="dm-H27ZJnso" type="button"><img src="https://i.ytimg.com/vi/dm-H27ZJnso/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">PAT CHIN THE JAMAICAN JOURNEY PART1 of 2</span></button>
+<button class="vtile" data-yt="KSR5oScEnI4" type="button"><img src="https://i.ytimg.com/vi/KSR5oScEnI4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">I-Wayne - Life Teachings Documentary</span></button>
+<button class="vtile" data-yt="FjTYxz39ev0" type="button"><img src="https://i.ytimg.com/vi/FjTYxz39ev0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bushman thinks companies like Vp Records are killing Reggae.</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">VP Records is an independent record label based in Queens, New York, specializing in Caribbean music such as reggae, dancehall, soca, and reggaeton. The label is known for releasing music by notable artists in these genres. It has established a presence in Australia and New Zeala</p>
+<p>VP Records is an independent record label based in Queens, New York, specializing in Caribbean music such as reggae, dancehall, soca, and reggaeton. The label is known for releasing music by notable artists in these genres. It has established a presence in Australia and New Zealand and maintains offices in New York City, Miami, London, Kingston, Tokyo, Johannesburg, Rio de Janeiro, and Toronto.</p>
+<h3>history</h3>
+<p>The label was founded in 1979 by Vincent &quot;Randy&quot; Chin and Patricia Chin, who owned Studio 17 recording studios and the Randy&#x27;s Records store in Kingston, Jamaica. The founders moved to New York City in the mid-1970s and opened a record store in Brooklyn in 1975, later relocating it to Jamaica, Queens in 1979. Following the success of the retail store, the record label was expanded in 1993. The name &#x27;VP&#x27; is derived from the first letters of the founders&#x27; names. After the acquisition of Greensleeves Records in 2008, which included a catalogue of over 12,000 songs, VP became the largest reggae label and publisher in the world. In 2007, the label began re-issuing classic albums from the 1970s and 1980s on the 17 North Parade label.</p>
+<h3>operations and recognition</h3>
+<p>VP Records operates as part of the VP Music Group, which owns and distributes four labels: VP Records, Greensleeves Records, Dub Rockers, and 17 North Parade. It also has a subsidiary called VP Associated Label Group (VPAL), which provides independent artists with access to its distribution channel for broader visibility. The label has been featured in publications such as Time magazine, Billboard, and The New York Times. It was awarded Billboard&#x27;s Best Independent Label for two consecutive years (2002 and 2003) and received the award for Best Reggae Imprint Label for three consecutive years.</p>
+<h3>artists and releases</h3>
+<p>The label&#x27;s artists include Shaggy, Spice, Beres Hammond, Richie Spice, and Christopher Martin. It has released a series of Riddim Driven albums and the compilation series Strictly the Best, which has reached over 50 volumes. The label achieved worldwide success for artists like Sean Paul through deals with Virgin Music Canada and Warner Music Group&#x27;s Atlantic Records. It is also credited with increasing the popularity of Elephant Man (the &#x27;Energy God&#x27;), via a deal with Bad Boy Records. Additionally, producer Kemar McGregor began licensing albums to VP Records in 2006, producing hit singles for albums such as Richie Spice&#x27;s &quot;Gideon Boot&quot; and Beres Hammond&#x27;s A Moment in Time.</p>
+<h3>founders and leadership</h3>
+<p>Vincent Chin died in 2003, and the label is now run by the Chins&#x27; sons, Randy and Christopher, with Patricia Chin continuing to assist in the maintenance of the company.</p>
+<h3>founders and leadership</h3>
+<p>Vincent Chin died in 2003,</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Founded:</strong> 1979</li>
+<li><strong>Headquarters:</strong> Queens, New York</li>
+<li><strong> :</strong> -</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Kemar_McGregor" rel="noopener">https://en.wikipedia.org/wiki/Kemar_McGregor</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/VP_Music_Group" rel="noopener">https://en.wikipedia.org/wiki/VP_Music_Group</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/VP_Records" rel="noopener">https://en.wikipedia.org/wiki/VP_Records</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="VP Records">
+        <input type="hidden" name="slug" value="vp-records">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — VP Records</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

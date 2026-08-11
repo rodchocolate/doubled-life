@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>The Belleville Three (Juan Atkins, Derrick May, Kevin… — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">concept</div>
+      <h1>The Belleville Three (Juan Atkins, Derrick May, Kevin…</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">772</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="1gDmEVWZ4sk" type="button"><img src="https://i.ytimg.com/vi/1gDmEVWZ4sk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Belleville 3: Kevin Saunderson &amp; Derrick May &amp; Juan Atkins @ Awakenings Festival 2010</span></button>
+<button class="vtile" data-yt="X_-5Qcdretg" type="button"><img src="https://i.ytimg.com/vi/X_-5Qcdretg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">THE VERY YOUNG AND EXTREMELY TALENTED BELLEVILLE THREE. JUAN ATKINS DERRICK MAY KEVIN SAUNDERSON1987</span></button>
+<button class="vtile" data-yt="4RIcEHzpFig" type="button"><img src="https://i.ytimg.com/vi/4RIcEHzpFig/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Techno Began in Detroit — From Members of the Belleville Three</span></button>
+<button class="vtile" data-yt="w1L4Ks6yoeI" type="button"><img src="https://i.ytimg.com/vi/w1L4Ks6yoeI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Derrick May on The Belleville Three, Strings Of Life and House Music | Red Bull Music Academy</span></button>
+<button class="vtile" data-yt="x688zfhzjtE" type="button"><img src="https://i.ytimg.com/vi/x688zfhzjtE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Belleville Three com Derrick May, Juan Atkins e Kevin Saunderson, Detroit EUA_1</span></button>
+<button class="vtile" data-yt="rdY3P0xLXGo" type="button"><img src="https://i.ytimg.com/vi/rdY3P0xLXGo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Belleville Three com Derrick May, Juan Atkins e Kevin Saunderson, Detroit EUA_2</span></button>
+<button class="vtile" data-yt="MHsCGRP6dtM" type="button"><img src="https://i.ytimg.com/vi/MHsCGRP6dtM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Universal Techno Pt.2 - Kevin Saunderson &amp; Derrick May</span></button>
+<button class="vtile" data-yt="X0fSUGXPGOU" type="button"><img src="https://i.ytimg.com/vi/X0fSUGXPGOU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Deep Techno &amp; Strange Music Vol 41 / The Belleville Three Respect Mix</span></button>
+<button class="vtile" data-yt="aOWDJ9Q-oIg" type="button"><img src="https://i.ytimg.com/vi/aOWDJ9Q-oIg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Awakeningsfestival 2010 Derrick May, Kevin Saunderson, Juan Atkins (Belleville 3)</span></button>
+<button class="vtile" data-yt="pt4aQEXqMRw" type="button"><img src="https://i.ytimg.com/vi/pt4aQEXqMRw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Juan Atkins, Derrick May + Kevin Saunderson in Conversation</span></button>
+<button class="vtile" data-yt="CpqdI5pZPKk" type="button"><img src="https://i.ytimg.com/vi/CpqdI5pZPKk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Belleville 3 : Juan Atkins, Derrick May and Kevin Saunderson at Awakenings 26/06/2010 1/2</span></button>
+<button class="vtile" data-yt="QcxpsPEmL4E" type="button"><img src="https://i.ytimg.com/vi/QcxpsPEmL4E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Belleville Three com Juan Atkins, Derrick May e Kevin Saunderson em Dretoit</span></button>
+<button class="vtile" data-yt="0tX-i50lucM" type="button"><img src="https://i.ytimg.com/vi/0tX-i50lucM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">(4/4) Detroit techno dokumentar fra Okay Tone</span></button>
+<button class="vtile" data-yt="RSX_r0u3uzE" type="button"><img src="https://i.ytimg.com/vi/RSX_r0u3uzE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Universal Techno Pt.1 - Juan Atkins &amp; Derrick May</span></button>
+<button class="vtile" data-yt="PXqXkG-Emxg" type="button"><img src="https://i.ytimg.com/vi/PXqXkG-Emxg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">(1/4) Detroit techno dokumentar fra Okay Tone</span></button>
+<button class="vtile" data-yt="a2gr73FQ9-s" type="button"><img src="https://i.ytimg.com/vi/a2gr73FQ9-s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Techno City: What is Detroit Techno?</span></button>
+<button class="vtile" data-yt="tPoGeHbkpRM" type="button"><img src="https://i.ytimg.com/vi/tPoGeHbkpRM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">👉 How Techno Took Over the World | From Detroit to 2025</span></button>
+<button class="vtile" data-yt="rjILncOUA6w" type="button"><img src="https://i.ytimg.com/vi/rjILncOUA6w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What Is The History Of Detroit Techno Music?</span></button>
+<button class="vtile" data-yt="MVo8ld3F-s4" type="button"><img src="https://i.ytimg.com/vi/MVo8ld3F-s4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Kevin Saunderson on the History of Techno | Red Bull Music Academy</span></button>
+<button class="vtile" data-yt="YQgKrc1ClAI" type="button"><img src="https://i.ytimg.com/vi/YQgKrc1ClAI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Techno was born: From Detroit to Berlin and back</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The Belleville Three are a trio of American electronic music pioneers consisting of Juan Atkins, Derrick May, and Kevin Saunderson. They are credited with pioneering techno music in the 1980s and helping to define Detroit techno, the earliest style of the genre.</p>
+<p>The Belleville Three are a trio of American electronic music pioneers consisting of Juan Atkins, Derrick May, and Kevin Saunderson. They are credited with pioneering techno music in the 1980s and helping to define Detroit techno, the earliest style of the genre.</p>
+<h3>origins and early life</h3>
+<p>Juan Atkins, Derrick May, and Kevin Saunderson met in junior high school or at Belleville High School in Belleville, Michigan. They formed a trio called Deep Space Soundworks to present their favorite music at parties and clubs. During high school, Atkins and Saunderson were fans of DJ Charles &#x27;The Electrifying Mojo&#x27; Johnson. All three artists grew up influenced by electronic music, with Juan Atkins buying his first synthesizer, a Korg MS-10, at age 15.</p>
+<h3>musical contributions and artistry</h3>
+<p>The trio&#x27;s work is described as pioneering the Detroit techno scene. Juan Atkins is referred to as the &#x27;godfather of techno&#x27; and the &#x27;original pioneer of Detroit techno,&#x27; with his 1982 electro track &#x27;Clear&#x27; being cited as a key early release. Kevin Saunderson is noted for his influential bassline in the 1988 track &#x27;Just Want Another Chance&#x27; (released under the Reese pseudonym), which became highly influential in jungle and drum and bass music. Derrick May, often called the &#x27;Miles Davis of techno,&#x27; produces what he calls &#x27;Hi-Tek Soul,&#x27; a style he describes as &#x27;George Clinton meeting Kraftwerk in an elevator.&#x27;</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Members:</strong> Juan Atkins, Derrick May, Kevin Saunderson</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Derrick_May_(musician" rel="noopener">https://en.wikipedia.org/wiki/Derrick_May_(musician</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Juan_Atkins" rel="noopener">https://en.wikipedia.org/wiki/Juan_Atkins</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Kevin_Saunderson" rel="noopener">https://en.wikipedia.org/wiki/Kevin_Saunderson</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="The Belleville Three (Juan Atkins, Derrick May, Kevin…">
+        <input type="hidden" name="slug" value="the-belleville-three-juan-atkins-derrick-may-kev">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — The Belleville Three (Juan Atkins, Derrick May, Kevin…</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

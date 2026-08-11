@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Sly and the Family Stone&#x27;s contribution to funk music — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">concept</div>
+      <h1>Sly and the Family Stone&#x27;s contribution to funk music</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-09</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">927</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="Jn2PNlhvy8E" type="button"><img src="https://i.ytimg.com/vi/Jn2PNlhvy8E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sly &amp; The Family Stone - Dance To The Music (Audio)</span></button>
+<button class="vtile" data-yt="wj5VODa-eTY" type="button"><img src="https://i.ytimg.com/vi/wj5VODa-eTY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sly &amp; The Family Stone Thank You (Falettinme Be Mice Elf Agin) HQ Audio</span></button>
+<button class="vtile" data-yt="4URogrXiKsI" type="button"><img src="https://i.ytimg.com/vi/4URogrXiKsI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">SLY &amp; THE FAMILY STONE - DANCE TO THE MUSIC.LIVE TV PERFORMANCE 1969</span></button>
+<button class="vtile" data-yt="YUUhDoCx8zc" type="button"><img src="https://i.ytimg.com/vi/YUUhDoCx8zc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sly &amp; The Family Stone - Everyday People (Official Video)</span></button>
+<button class="vtile" data-yt="2TptaHqAmvs" type="button"><img src="https://i.ytimg.com/vi/2TptaHqAmvs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Thank You - Sly and the Family Stone | The Midnight Special</span></button>
+<button class="vtile" data-yt="-T9vmaTI2LE" type="button"><img src="https://i.ytimg.com/vi/-T9vmaTI2LE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sly &amp; The Family Stone - Thank You (Falettinme Be Mice Elf Agin)</span></button>
+<button class="vtile" data-yt="N_LwJCxR7F4" type="button"><img src="https://i.ytimg.com/vi/N_LwJCxR7F4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">SLY &amp; FAMILY STONE Dance to the Music</span></button>
+<button class="vtile" data-yt="VgQOXeZC3KE" type="button"><img src="https://i.ytimg.com/vi/VgQOXeZC3KE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Play That Funky Music Whiteboy-Sly &amp; The Family Stone</span></button>
+<button class="vtile" data-yt="xag5RKD0VHk" type="button"><img src="https://i.ytimg.com/vi/xag5RKD0VHk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sly &amp; The Family Stone - Family Affair (Official Audio)</span></button>
+<button class="vtile" data-yt="BqWQzOzK3kw" type="button"><img src="https://i.ytimg.com/vi/BqWQzOzK3kw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sly &amp; The Family Stone - I Want to Take You Higher (Official Audio)</span></button>
+<button class="vtile" data-yt="Bg0tFRea0wA" type="button"><img src="https://i.ytimg.com/vi/Bg0tFRea0wA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sly &amp; The Family Stone - Hot Fun in the Summertime (Official Audio)</span></button>
+<button class="vtile" data-yt="42YGprrAOj0" type="button"><img src="https://i.ytimg.com/vi/42YGprrAOj0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sly &amp; The Family Stone - Sing a Simple Song (Official Audio)</span></button>
+<button class="vtile" data-yt="eJkPC5H6mtA" type="button"><img src="https://i.ytimg.com/vi/eJkPC5H6mtA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The PIONEERS Of FUNK | The Untold Truth Of Sly &amp; The Family Stone</span></button>
+<button class="vtile" data-yt="IaSF15OK2Io" type="button"><img src="https://i.ytimg.com/vi/IaSF15OK2Io/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">One Of The Greatest Pioneer FUNK Bands | The Untold Truth Of Sly &amp; The Family Stone</span></button>
+<button class="vtile" data-yt="WNo7Um58i-g" type="button"><img src="https://i.ytimg.com/vi/WNo7Um58i-g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sly and the Family Stone: How Epic Records and Drugs Destroyed an Entire Family</span></button>
+<button class="vtile" data-yt="Cusns4PcUcM" type="button"><img src="https://i.ytimg.com/vi/Cusns4PcUcM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sly &amp; The Family Stone&#x27;s Larry Graham&#x27;s Slap Bass | BBC The Story of Funk (2014 Documentary)</span></button>
+<button class="vtile" data-yt="Rb76CuIB_I8" type="button"><img src="https://i.ytimg.com/vi/Rb76CuIB_I8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">From Icon to Outcast: The Tragic Fall of Sly Stone</span></button>
+<button class="vtile" data-yt="El-MtfgPBUk" type="button"><img src="https://i.ytimg.com/vi/El-MtfgPBUk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Funk music pioneer Sly Stone dies at 82</span></button>
+<button class="vtile" data-yt="8YowO9AqWbk" type="button"><img src="https://i.ytimg.com/vi/8YowO9AqWbk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Finding the Funk ( Documental )</span></button>
+<button class="vtile" data-yt="NAoCe6yNdRg" type="button"><img src="https://i.ytimg.com/vi/NAoCe6yNdRg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Remembering Sly Stone with Rickey Vincent</span></button>
+<button class="vtile" data-yt="G_XZOK5ep-o" type="button"><img src="https://i.ytimg.com/vi/G_XZOK5ep-o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">SLY LIVES! aka The Burden of Black Genius : Official Trailer 2025 - Hulu</span></button>
+<button class="vtile" data-yt="N80dyBVY8Q0" type="button"><img src="https://i.ytimg.com/vi/N80dyBVY8Q0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Finding the Funk | Music 2013 | SXSW</span></button>
+<button class="vtile" data-yt="aAqSK8D8PUA" type="button"><img src="https://i.ytimg.com/vi/aAqSK8D8PUA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What Happened to Sly &amp; The Family Stone?</span></button>
+<button class="vtile" data-yt="IdKj3iHq7qE" type="button"><img src="https://i.ytimg.com/vi/IdKj3iHq7qE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sly Stone A Funk Legend&#x27;s Journey / Music Documentary Bio #rip</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Sly and the Family Stone was an American band formed in San Francisco, California, in 1966. Their music blended elements of funk, soul, psychedelic rock, gospel, and R&amp;B, becoming a pivotal influence on subsequent American popular music.</p>
+<p>Sly and the Family Stone was an American band formed in San Francisco, California, in 1966. Their music blended elements of funk, soul, psychedelic rock, gospel, and R&amp;B, becoming a pivotal influence on subsequent American popular music.</p>
+<h3>musical contributions and influence</h3>
+<p>Sly Stone, the band&#x27;s frontman, played a critical role in the development of funk and psychedelic soul. While James Brown is credited with inventing funk, AllMusic stated that Sly Stone perfected it. He was also credited by Crowdaddy! as the founder of the &#x27;progressive soul&#x27; movement. The band&#x27;s work influenced the sound of subsequent American funk, pop, soul, R&amp;B, and hip hop music, leading music critic Joel Selvin to state that there are two types of black music: &#x27;black music before Sly Stone, and black music after Sly Stone&#x27;.</p>
+<h3>genre synthesis and evolution</h3>
+<p>The group synthesized a variety of musical genres to pioneer the emerging &#x27;psychedelic soul&#x27; sound. In their early years, they released Top 10 Billboard Hot 100 hits such as &quot;Dance to the Music&quot; (1968), &quot;Everyday People&quot; (1968), and &quot;Thank You (Falettinme Be Mice Elf Agin)&quot; (1969). By the 1970s, the band transitioned into a darker and less commercial funk sound on albums such as There&#x27;s a Riot Goin&#x27; On (1971) and Fresh (1973).</p>
+<h3>band composition and social impact</h3>
+<p>Sly and the Family Stone was the first major American rock group to have a racially integrated, mixed-gender lineup. Their hit single &quot;Everyday People&quot; served as a protest against prejudice of all kinds and popularized the catchphrase &#x27;different strokes for different folks&#x27;.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Formed:</strong> 1966 in San Francisco, California</li>
+<li><strong>Frontman:</strong> Sly Stone (Sylvester Stewart)</li>
+<li><strong>Core Line-up:</strong> Sly Stone, Freddie Stone, Rose Stone, Cynthia Robinson, Greg Errico, Jerry Martini, and Larry Graham</li>
+<li><strong>Key Albums:</strong> Stand! (1969), There&#x27;s a Riot Goin&#x27; On (1971), and Fresh (1973)</li>
+<li><strong>Inducted into Rock and Roll Hall of Fame:</strong> 1993</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Sly_Stone" rel="noopener">https://en.wikipedia.org/wiki/Sly_Stone</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Sly_and_the_Family_Stone" rel="noopener">https://en.wikipedia.org/wiki/Sly_and_the_Family_Stone</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Sly_and_the_Family_Stone_discography" rel="noopener">https://en.wikipedia.org/wiki/Sly_and_the_Family_Stone_discography</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Sly and the Family Stone&#x27;s contribution to funk music">
+        <input type="hidden" name="slug" value="sly-and-the-family-stone-s-contribution-to-funk-">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Sly and the Family Stone&#x27;s contribution to funk music</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

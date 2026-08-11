@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Britpop — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">concept</div>
+      <h1>Britpop</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">938</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="kmhvFpsjLi8" type="button"><img src="https://i.ytimg.com/vi/kmhvFpsjLi8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">A. G. Cook - Britpop</span></button>
+<button class="vtile" data-yt="gHVGAyV5dw0" type="button"><img src="https://i.ytimg.com/vi/gHVGAyV5dw0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">[Playlist] Britpop Essentials | Oasis, Blur, Pulp, Suede &amp; Beyond</span></button>
+<button class="vtile" data-yt="C8RrvCe-13U" type="button"><img src="https://i.ytimg.com/vi/C8RrvCe-13U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Britpop: The Music That Changed Britain</span></button>
+<button class="vtile" data-yt="aGU4DRFgu2E" type="button"><img src="https://i.ytimg.com/vi/aGU4DRFgu2E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">90s British Rock Classics 🇬🇧 | Indie &amp; Britpop Anthems</span></button>
+<button class="vtile" data-yt="xklNEyTYwAM" type="button"><img src="https://i.ytimg.com/vi/xklNEyTYwAM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Britpop: The Music That Changed Britain - Episode 2</span></button>
+<button class="vtile" data-yt="X8OeJlfG0hI" type="button"><img src="https://i.ytimg.com/vi/X8OeJlfG0hI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">An Ignorant Guide to Britpop</span></button>
+<button class="vtile" data-yt="nYkEGNXa4kA" type="button"><img src="https://i.ytimg.com/vi/nYkEGNXa4kA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">1990s Brit Pop Music Video Playlist (Pulp, Oasis, Suede, The Verve, Mansun)</span></button>
+<button class="vtile" data-yt="0vTDXvkslk8" type="button"><img src="https://i.ytimg.com/vi/0vTDXvkslk8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Blur Vs. Oasis: Who Won The Battle of Britpop?</span></button>
+<button class="vtile" data-yt="cHYi6u1ksyM" type="button"><img src="https://i.ytimg.com/vi/cHYi6u1ksyM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">A. G. Cook – Britpop (Bratpop Mix)</span></button>
+<button class="vtile" data-yt="MiU1j75LrvU" type="button"><img src="https://i.ytimg.com/vi/MiU1j75LrvU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Best Britpop of All Time Volume 1</span></button>
+<button class="vtile" data-yt="_WQBHboYFj4" type="button"><img src="https://i.ytimg.com/vi/_WQBHboYFj4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The 8 Songs To Blame For Britpop</span></button>
+<button class="vtile" data-yt="HjpDM2fzJ0w" type="button"><img src="https://i.ytimg.com/vi/HjpDM2fzJ0w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ultimate 90s Britpop Mix – Timeless Hits and Iconic Anthems</span></button>
+<button class="vtile" data-yt="QALQNd1U9hw" type="button"><img src="https://i.ytimg.com/vi/QALQNd1U9hw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Live Forever - The Rise and Fall of Brit Pop (legendado)</span></button>
+<button class="vtile" data-yt="EI3N2NBmsEM" type="button"><img src="https://i.ytimg.com/vi/EI3N2NBmsEM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rock Family Trees: The Birth of Cool Britannia (BBC Britpop Documentary)</span></button>
+<button class="vtile" data-yt="gjOfV9DIJ3E" type="button"><img src="https://i.ytimg.com/vi/gjOfV9DIJ3E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Britpop: The Music That Changed Britain Episode 4</span></button>
+<button class="vtile" data-yt="xgU5tB7PqA0" type="button"><img src="https://i.ytimg.com/vi/xgU5tB7PqA0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Britpop: The Music That Changed Britain - Episode 3</span></button>
+<button class="vtile" data-yt="WwHpZjzUvsU" type="button"><img src="https://i.ytimg.com/vi/WwHpZjzUvsU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Britpop Story</span></button>
+<button class="vtile" data-yt="M2To6cCYVt4" type="button"><img src="https://i.ytimg.com/vi/M2To6cCYVt4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Noel Gallagher about Battle of Britpop</span></button>
+<button class="vtile" data-yt="Q29G7YDCq9Y" type="button"><img src="https://i.ytimg.com/vi/Q29G7YDCq9Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Woo-hoo!: How Blur Mocked Grunge &amp; Destroyed Britpop [&quot;Song 2&quot;] | New British Canon</span></button>
+<button class="vtile" data-yt="b0-wBi5F6vY" type="button"><img src="https://i.ytimg.com/vi/b0-wBi5F6vY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">OASIS vs BLUR: The Battle Of Britpop &amp; Beyond (and how it all started)</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Britpop was a British music and cultural movement of the 1990s that produced bright, catchy alternative rock emphasizing national identity and British culture. It emerged as a reaction against American-led grunge and British shoegaze, helping to bring British alternative rock int</p>
+<p>Britpop was a British music and cultural movement of the 1990s that produced bright, catchy alternative rock emphasizing national identity and British culture. It emerged as a reaction against American-led grunge and British shoegaze, helping to bring British alternative rock into the mainstream.</p>
+<h3>musical style and influences</h3>
+<p>Britpop bands drew heavily from 1960s guitar-based British pop, 1970s glam and punk rock, and 1980s indie pop. While specific influences varied by band—such as Oasis taking inspiration from the Beatles and Blur drawing from the Kinks and early Pink Floyd—the movement generally projected a sense of reverence for past British pop sounds. The Madchester scene, including groups like the Stone Roses and Happy Mondays, served as an immediate root of Britpop, providing catchy songs and an emphasis on good times as an alternative to grunge and shoegaze. Additionally, the La&#x27;s hit single &quot;There She Goes&quot; was described as a founding piece of Britpop&#x27;s foundation.</p>
+<h3>key figures and movement history</h3>
+<p>The UK music press frequently labeled Oasis, Blur, and Suede and Pulp as the &quot;big four&quot; of Britpop. The movement&#x27;s popularity lasted from 1993 to 1997, peaking between 1995 and 1996. A chart rivalry between Blur and Oasis in August 1995, known as &quot;The Battle of Britpop,&quot; brought the movement to the forefront of the press. While primarily music-based, Britpop also influenced fashion, art, and politics, influencing Prime Minister Tony Blair and New Labour. The movement began to decline commercially in the late 1990s, eventually being eclipsed by teen pop and evolving into the post-Britpop indie movement.</p>
+<h3>cultural impact and imagery</h3>
+<p>Britpop bands emphasized local identity, regional British accents, and references to British places and culture in their lyrics and image. This focus on Britishness made it difficult for the genre to achieve success in the United States. Imagery associated with the movement was often working-class and included the use of the Union Jack as a symbol of pride and nationalism. The era was also characterized by a rise in &quot;lad culture,&quot; binge drinking, and unabashed maleness.</p>
+<h3>post-britpop evolution</h3>
+<p>Post-Britpop is an alternative rock subgenre that emerged in the late 1990s and early 2000s. This &quot;second wave&quot; of guitar bands were influenced by Britpop acts like Oasis and Blur, but with less overt British concerns in their lyrics and more American rock and indie influences. Bands such as Travis and Coldplay achieved wider international success than most original Britpop groups. Other notable acts include Radiohead, the Verve, Keane, Snow Patrol, and Stereophonics.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Peak Years:</strong> 1995-1996</li>
+<li><strong>The Big Four:</strong> Oasis, Blur, Suede, and Pulp</li>
+<li><strong>The Battle of Britpop:</strong> August 1995 chart rivalry between Blur and Oasis</li>
+<li><strong>label: Influence on Politics:</strong> Aligned with Prime Minister Tony Blair and New Labour</li>
+<li><strong>Influence of the Smiths:</strong> Common to the majority of Britpop artists</li>
+<li><strong>Union Jack Symbolism:</strong> Used as a symbol of pride and nationalism</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Britpop" rel="noopener">https://en.wikipedia.org/wiki/Britpop</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Britpop_(Robbie_Williams_album" rel="noopener">https://en.wikipedia.org/wiki/Britpop_(Robbie_Williams_album</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Post-Britpop" rel="noopener">https://en.wikipedia.org/wiki/Post-Britpop</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Britpop">
+        <input type="hidden" name="slug" value="britpop">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Britpop</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

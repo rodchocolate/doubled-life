@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Jean-Michel Jarre — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Jean-Michel Jarre</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">714</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="kSIMVnPA994" type="button"><img src="https://i.ytimg.com/vi/kSIMVnPA994/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jean-Michel Jarre - Oxygene, Pt. 4</span></button>
+<button class="vtile" data-yt="5ab7tIZNplM" type="button"><img src="https://i.ytimg.com/vi/5ab7tIZNplM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jean Michel Jarre — Oxygene (1976/Full album)</span></button>
+<button class="vtile" data-yt="hsLxjFSfNGQ" type="button"><img src="https://i.ytimg.com/vi/hsLxjFSfNGQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jean-Michel Jarre - The Best Hit Collection (CINEMATIC)</span></button>
+<button class="vtile" data-yt="aTo-qnIBrbA" type="button"><img src="https://i.ytimg.com/vi/aTo-qnIBrbA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jean-Michel Jarre - Live in Sevilla - ARTE Concert</span></button>
+<button class="vtile" data-yt="7lbwITYRD1M" type="button"><img src="https://i.ytimg.com/vi/7lbwITYRD1M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jean Michel Jarre - Oxygene Live in your Living Room (2007) [4K Remastered]</span></button>
+<button class="vtile" data-yt="LfkqJOAEsFM" type="button"><img src="https://i.ytimg.com/vi/LfkqJOAEsFM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jean Michel Jarre - Oxygene 8 Megamix</span></button>
+<button class="vtile" data-yt="xTvdUdyNuxk" type="button"><img src="https://i.ytimg.com/vi/xTvdUdyNuxk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jean Michel Jarre - The Concerts in China</span></button>
+<button class="vtile" data-yt="SaLHTsAH9Dc" type="button"><img src="https://i.ytimg.com/vi/SaLHTsAH9Dc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jean-Michel Jarre - Mixed Reality Concert at 𝐕𝐄𝐑𝐒𝐀𝐈𝐋𝐋𝐄𝐒 𝟒𝟎𝟎 (DIRECTOR&#x27;S CUT)</span></button>
+<button class="vtile" data-yt="iBIEVHauwZI" type="button"><img src="https://i.ytimg.com/vi/iBIEVHauwZI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jean Michel Jarre - The China Concerts [Complete Remastered DVD] [Upscaled, Restored]</span></button>
+<button class="vtile" data-yt="pH2UxxdXAfg" type="button"><img src="https://i.ytimg.com/vi/pH2UxxdXAfg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jean Michel Jarre - Waiting For Cousteau (Full Song)</span></button>
+<button class="vtile" data-yt="wlDauoljbec" type="button"><img src="https://i.ytimg.com/vi/wlDauoljbec/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jean Michel Jarre - Paris La Defense (July 14, 1990) [4K Remastered VHS]</span></button>
+<button class="vtile" data-yt="i8z9iZOiMEw" type="button"><img src="https://i.ytimg.com/vi/i8z9iZOiMEw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Waiting for Cousteau (Remastered)</span></button>
+<button class="vtile" data-yt="Zd5fUKdBNkg" type="button"><img src="https://i.ytimg.com/vi/Zd5fUKdBNkg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jean Michel Jarre (Words and Music) Documentary</span></button>
+<button class="vtile" data-yt="-1NqnbRBlCo" type="button"><img src="https://i.ytimg.com/vi/-1NqnbRBlCo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Making of Oxygene by Jean-Michel Jarre</span></button>
+<button class="vtile" data-yt="AZMSxue2xHI" type="button"><img src="https://i.ytimg.com/vi/AZMSxue2xHI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The fabulous story of Jean Michel Jarre (English version)</span></button>
+<button class="vtile" data-yt="Xs6kNV0c6gE" type="button"><img src="https://i.ytimg.com/vi/Xs6kNV0c6gE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jean Michel Jarre - Oxygène 4 | The story behind the song | Top 2000 a gogo</span></button>
+<button class="vtile" data-yt="pT3_w-pWskI" type="button"><img src="https://i.ytimg.com/vi/pT3_w-pWskI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">(the making of) Jean-Michel Jarre&#x27;s &#x27;Oxygene In Moscow, 06.09.1997&#x27; [1997]</span></button>
+<button class="vtile" data-yt="aIzk9txqIZw" type="button"><img src="https://i.ytimg.com/vi/aIzk9txqIZw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jean Michel Jarre - Rare Documentary about Rendez Vous Houston (1986)</span></button>
+<button class="vtile" data-yt="uAl709JSS74" type="button"><img src="https://i.ytimg.com/vi/uAl709JSS74/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jean-Michel Jarre: A Journey Through Sound</span></button>
+<button class="vtile" data-yt="8ymOTdQ0_-Q" type="button"><img src="https://i.ytimg.com/vi/8ymOTdQ0_-Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Making of Destination Docklands (Full Video) - Jean Michel Jarre</span></button>
+<button class="vtile" data-yt="Psna_xNlWrk" type="button"><img src="https://i.ytimg.com/vi/Psna_xNlWrk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jean-Michel Jarre revisits Oxygène</span></button>
+<button class="vtile" data-yt="HZTwfmL05dM" type="button"><img src="https://i.ytimg.com/vi/HZTwfmL05dM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">In The Footsteps of the Last Emperor (EN Subtitled) of Jean Michel Jarre</span></button>
+<button class="vtile" data-yt="1XZzTolLv1I" type="button"><img src="https://i.ytimg.com/vi/1XZzTolLv1I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The story behind the sound design with Jean-Michel Jarre : the documentary | Renault Group</span></button>
+<button class="vtile" data-yt="xlyNuLLXbfo" type="button"><img src="https://i.ytimg.com/vi/xlyNuLLXbfo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jean-Michel Jarre: Breathing new life into &#x27;Oxygène&#x27;</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Jean-Michel Jarre is a musician whose work has influenced the French house genre. He is also known for the track &quot;Oxygene Part 2&quot;, which appears on the compilation album Visions of Ibiza.</p>
+<p>Jean-Michel Jarre is a musician whose work has influenced the French house genre. He is also known for the track &quot;Oxygene Part 2&quot;, which appears on the compilation album Visions of Ibiza.</p>
+<h3>influence on french house</h3>
+<p>The development of French house music, a style devised by French musicians in the 1990s, was influenced by 1970s French pop music championed by artists such as Jean-Michel Jarre and Serge Gainsbourg. This genre is characterized by filter and phaser effects on samples from European disco tracks from the late 1970s and early 1980s.</p>
+<h3>collaborations and works</h3>
+<p>Jean-Michel Jarre collaborated with the French DJ and producer Gesaffelstein on the 2015 single &quot;Conquistador&quot;, which is featured on the album Electronica 1: The Time Machine.</p>
+<h3>titles</h3>
+<p>The duo Daft Punk became the biggest-selling French act in the UK since Jean-Michel Jarre.</p>
+<h3>compilations</h3>
+<p>body: The track &quot;Oxygene Part 2&quot; by Jean-Michel Jarre is included on the 2001 2-CD set Visions of Ibiza, compiled by Chicane.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Known Track:</strong> Oxygene Part 2</li>
+<li><strong>Influence:</strong> 1970s French pop music championed by Jarre helped influence the French house genre</li>
+<li><strong>Collaborator:</strong> Gesaffelstein</li>
+<li><strong>Collaborative Work:</strong> Conquistador (2015)</li>
+<li><strong>UK Market Success:</strong> Daft Punk is the biggest-selling French act in the UK since Jarre</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/French_house" rel="noopener">https://en.wikipedia.org/wiki/French_house</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Gesaffelstein" rel="noopener">https://en.wikipedia.org/wiki/Gesaffelstein</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Visions_of_Ibiza" rel="noopener">https://en.wikipedia.org/wiki/Visions_of_Ibiza</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Jean-Michel Jarre">
+        <input type="hidden" name="slug" value="jean-michel-jarre">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Jean-Michel Jarre</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

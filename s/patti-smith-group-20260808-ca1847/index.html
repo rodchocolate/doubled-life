@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Patti Smith Group — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>Patti Smith Group</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">925</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="x_ksSEONVyc" type="button"><img src="https://i.ytimg.com/vi/x_ksSEONVyc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Patti Smith - Because The Night (1978)</span></button>
+<button class="vtile" data-yt="c_BcivBprM0" type="button"><img src="https://i.ytimg.com/vi/c_BcivBprM0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Patti Smith Group - Because the Night (Official Audio)</span></button>
+<button class="vtile" data-yt="DC8ijnYw-DM" type="button"><img src="https://i.ytimg.com/vi/DC8ijnYw-DM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Patti Smith Group | 25th Floor | Live on the Old Grey Whistle Test | 3 April 1978</span></button>
+<button class="vtile" data-yt="NUPQ5ilvpi0" type="button"><img src="https://i.ytimg.com/vi/NUPQ5ilvpi0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">PATTI SMITH GROUP - Horses, Hey Joe - Live BBC Studios (OGWT) Old Grey Whistle Test 11th May 1976</span></button>
+<button class="vtile" data-yt="s5FrS5aQc50" type="button"><img src="https://i.ytimg.com/vi/s5FrS5aQc50/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Patti Smith - Horses</span></button>
+<button class="vtile" data-yt="GGYNBvDQZo4" type="button"><img src="https://i.ytimg.com/vi/GGYNBvDQZo4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Patti Smith Group | Because the Night | Live on the Old Grey Whistle Test | 3 April 1978</span></button>
+<button class="vtile" data-yt="b70OWn4Vtmk" type="button"><img src="https://i.ytimg.com/vi/b70OWn4Vtmk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Patti Smith - Because The Night - Live @ Festival De Nimes - 19.07.2024</span></button>
+<button class="vtile" data-yt="b1o68h4Usqs" type="button"><img src="https://i.ytimg.com/vi/b1o68h4Usqs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Patti Smith - &quot;Rock &#x27;N&#x27; Roll Nigger&quot;</span></button>
+<button class="vtile" data-yt="1zkskmPAvus" type="button"><img src="https://i.ytimg.com/vi/1zkskmPAvus/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Patti Smith Group &quot;Because the Night&quot; performed by The Classic Rock Show</span></button>
+<button class="vtile" data-yt="9yGywwnNswA" type="button"><img src="https://i.ytimg.com/vi/9yGywwnNswA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Patti Smith &amp; Sarah McLachlan - Because The Night</span></button>
+<button class="vtile" data-yt="j7sodwiQJ6c" type="button"><img src="https://i.ytimg.com/vi/j7sodwiQJ6c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Patti Smith Gloria</span></button>
+<button class="vtile" data-yt="be8YuyneES4" type="button"><img src="https://i.ytimg.com/vi/be8YuyneES4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">U2, Bruce Springsteen &amp; Patti Smith perform &quot;Because the Night&quot; | Rock Hall 25th Anniversary</span></button>
+<button class="vtile" data-yt="5Nyj7YIVNlQ" type="button"><img src="https://i.ytimg.com/vi/5Nyj7YIVNlQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Patti Smith Dream Of Life Documentary</span></button>
+<button class="vtile" data-yt="hoVgD_fZ0UU" type="button"><img src="https://i.ytimg.com/vi/hoVgD_fZ0UU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Patti Smith’s Horses: When Poetry Met Punk Rock</span></button>
+<button class="vtile" data-yt="nsXqIHFiVEw" type="button"><img src="https://i.ytimg.com/vi/nsXqIHFiVEw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Patti Smith - The Classic Documentary Film - TRAILER</span></button>
+<button class="vtile" data-yt="i3T6T4FYdLQ" type="button"><img src="https://i.ytimg.com/vi/i3T6T4FYdLQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">PATTI SMITH 1996 &quot;BECAUSE...&quot; FULL DOCUMENTARY (French TV)</span></button>
+<button class="vtile" data-yt="u1uOG3bKGNI" type="button"><img src="https://i.ytimg.com/vi/u1uOG3bKGNI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Patti Smith in West Side Stories with Jonathan Miller - 1972</span></button>
+<button class="vtile" data-yt="iHqXrXDtvaA" type="button"><img src="https://i.ytimg.com/vi/iHqXrXDtvaA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Horses: Patti Smith and her Band Official Trailer</span></button>
+<button class="vtile" data-yt="SabdGoeuYMc" type="button"><img src="https://i.ytimg.com/vi/SabdGoeuYMc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Patti Smith Saved Rock n&#x27; Roll</span></button>
+<button class="vtile" data-yt="BbYTMswCl6E" type="button"><img src="https://i.ytimg.com/vi/BbYTMswCl6E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Patti Smith documentary</span></button>
+<button class="vtile" data-yt="pXSGqjmdqyw" type="button"><img src="https://i.ytimg.com/vi/pXSGqjmdqyw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Patti Smith Acted Like a Jerk to Bob Dylan When He Saw Her Band for the First Time</span></button>
+<button class="vtile" data-yt="rWVrHwrJWcs" type="button"><img src="https://i.ytimg.com/vi/rWVrHwrJWcs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Patti Smith - Biography Bringing Real People &amp; Real History to Life</span></button>
+<button class="vtile" data-yt="AcaMXIl-vXY" type="button"><img src="https://i.ytimg.com/vi/AcaMXIl-vXY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">𝗣𝗮𝘁𝘁𝗶 𝗦𝗺𝗶𝘁𝗵: 𝗘𝗹𝗲𝗰𝘁𝗿𝗶𝗰 𝗣𝗼𝗲𝘁 // 𝗗𝗼𝗸𝗦𝘁𝗮𝘁𝗶𝗼𝗻 𝟮𝟬𝟮𝟮 // 𝗧𝗿𝗮𝗶𝗹𝗲𝗿</span></button>
+<button class="vtile" data-yt="pPmjDDrbWJk" type="button"><img src="https://i.ytimg.com/vi/pPmjDDrbWJk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Patti Smith Short Biography</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The Patti Smith Group is an American musical ensemble featuring singer, songwriter, and poet Patti Smith. The group emerged from the New York City punk rock movement of the 1970s, fusing rock music with spoken poetry.</p>
+<p>The Patti Smith Group is an American musical ensemble featuring singer, songwriter, and poet Patti Smith. The group emerged from the New York City punk rock movement of the 1970s, fusing rock music with spoken poetry.</p>
+<h3>formation and early career</h3>
+<p>In 1973, Patti Smith teamed up with musician and rock archivist Lenny Kaye, later adding Richard Sohl on piano. The ensemble expanded into a full band including Jay Dee Daugherty on drums and Ivan Král on guitar and bass. Financed by Sam Wagstaff, the group recorded their first single, &quot;Hey Joe/Piss Factory&quot; in 1974. In March 1975, the Patti Smith Group began a two-month weekend set of shows at CBGB in New York City alongside the band Television.</p>
+<h3>discography and commercial success</h3>
+<p>The group&#x27;s debut album, Horses, was recorded in later 1975 and produced by John Cale. The follow-up album, Radio Ethiopia, featured a rawer sound and was influenced by the band MC5. In March 1978, the group released Easter, which is regarded as their commercial breakthrough and most commercially accessible record. Produced by Jimmy Iovine, Easter included the diversity of musical styles including folk, straightforward rock, and spoken word. The album&#x27;s successful single &quot;Because the Night&quot;, co-written with Bruce Springsteen, reached number 13 on the Billboard Hot 100 and number five on the UK Singles Chart.</p>
+<h3>crossover and later years</h3>
+<p>The group worked together through the late 1970s until Patti Smith&#x27;s tour in support of Radio Ethiopia ended with a severe neck injury in Tampa, Florida, on January 23, 1977. Despite this injury, the group produced two further albums: Easter and Wave (1979). By the mid-1980s, Smith was semi-retired from music. In 1996, she worked with her long-time band to record Gone Aga.</p>
+<h3>title la own</h3>
+<p>The Patti Smith Group importantly played at the same venue as Television and Ramones. The club&#x27;s closing performance on October 15, 2006, was given by Patti Smith.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Debut Single:</strong> Hey Joe/Piss Factory (1974)</li>
+<li><strong>Debut Album:</strong> Horses (1975)</li>
+<li><strong> :</strong> -</li>
+<li><strong>Commercial Breakthrough Album:</strong> Easter (1978)</li>
+<li><strong>Most Successful Single:</strong> Because the Night</li>
+<li><strong>Key Members:</strong> Patti Smith, Lenny Kaye, Richard Sohl, Ivan Král, Jay Dee Daugherty</li>
+<li><strong>Record Label:</strong> Arista Records</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/CBGB" rel="noopener">https://en.wikipedia.org/wiki/CBGB</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Easter_(Patti_Smith_Group_album" rel="noopener">https://en.wikipedia.org/wiki/Easter_(Patti_Smith_Group_album</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Patti_Smith" rel="noopener">https://en.wikipedia.org/wiki/Patti_Smith</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Patti Smith Group">
+        <input type="hidden" name="slug" value="patti-smith-group">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Patti Smith Group</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

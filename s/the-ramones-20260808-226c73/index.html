@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>The Ramones — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>The Ramones</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">940</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="bm51ihfi1p4" type="button"><img src="https://i.ytimg.com/vi/bm51ihfi1p4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ramones - I Wanna Be Sedated (Official Music Video)</span></button>
+<button class="vtile" data-yt="skdE0KAFCEA" type="button"><img src="https://i.ytimg.com/vi/skdE0KAFCEA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Blitzkrieg Bop (2016 Remaster)</span></button>
+<button class="vtile" data-yt="xryIghPNNP4" type="button"><img src="https://i.ytimg.com/vi/xryIghPNNP4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ramones_._Ramones (1976)(Full Album)</span></button>
+<button class="vtile" data-yt="bqn8BAXTaY0" type="button"><img src="https://i.ytimg.com/vi/bqn8BAXTaY0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Best of The Ramones</span></button>
+<button class="vtile" data-yt="Sp3zaeOyL7Q" type="button"><img src="https://i.ytimg.com/vi/Sp3zaeOyL7Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ramones - Live At The Rainbow - December 31, 1977</span></button>
+<button class="vtile" data-yt="HJWFsZ_YUc4" type="button"><img src="https://i.ytimg.com/vi/HJWFsZ_YUc4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ramones - Pet Sematary (Official Music Video) [HD]</span></button>
+<button class="vtile" data-yt="yCW7Aw8ugOI" type="button"><img src="https://i.ytimg.com/vi/yCW7Aw8ugOI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ramones - Sheena Is A Punk Rocker (Official Music Video)</span></button>
+<button class="vtile" data-yt="FauoKcYOLK4" type="button"><img src="https://i.ytimg.com/vi/FauoKcYOLK4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Ramones - Happy Birthday (HQ)</span></button>
+<button class="vtile" data-yt="V4RQsPECTdM" type="button"><img src="https://i.ytimg.com/vi/V4RQsPECTdM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">I Wanna Be Sedated</span></button>
+<button class="vtile" data-yt="oz7KYUkdlvE" type="button"><img src="https://i.ytimg.com/vi/oz7KYUkdlvE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ramones - Rock N&#x27; Roll High School (Official Music Video)</span></button>
+<button class="vtile" data-yt="NjiTzVyXRFE" type="button"><img src="https://i.ytimg.com/vi/NjiTzVyXRFE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ramones - I&#x27;m Against It (Official Music Video)</span></button>
+<button class="vtile" data-yt="w-5tS8Y9EUc" type="button"><img src="https://i.ytimg.com/vi/w-5tS8Y9EUc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Ramones – The True Story (Full Music Documentary)</span></button>
+<button class="vtile" data-yt="nUZbQKq7wFQ" type="button"><img src="https://i.ytimg.com/vi/nUZbQKq7wFQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Most Influential Punk Band of All Time?</span></button>
+<button class="vtile" data-yt="gsgZZLOJgdU" type="button"><img src="https://i.ytimg.com/vi/gsgZZLOJgdU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ramones VH1 (Full Documentary)</span></button>
+<button class="vtile" data-yt="5YU2Dg37_Tk" type="button"><img src="https://i.ytimg.com/vi/5YU2Dg37_Tk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">THE REAL PUNK STORY: The Ramones: The True Story | Full Music Documentary</span></button>
+<button class="vtile" data-yt="_0d0mkZl5A8" type="button"><img src="https://i.ytimg.com/vi/_0d0mkZl5A8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Tragic Real-Life Story Of The Ramones</span></button>
+<button class="vtile" data-yt="oCxgwyt_F7E" type="button"><img src="https://i.ytimg.com/vi/oCxgwyt_F7E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bill Hader on End of the Century</span></button>
+<button class="vtile" data-yt="o3LFP-oVbQc" type="button"><img src="https://i.ytimg.com/vi/o3LFP-oVbQc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Rise And Fall Of THE RAMONES</span></button>
+<button class="vtile" data-yt="6vf2VNoS-Iw" type="button"><img src="https://i.ytimg.com/vi/6vf2VNoS-Iw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Was Johnny Ramone a Racist? | Marky Ramone on &quot;The Cain Conversation&quot;</span></button>
+<button class="vtile" data-yt="obwZGwQnghE" type="button"><img src="https://i.ytimg.com/vi/obwZGwQnghE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ramones - RAW full (documental 2004 subtitulado español)</span></button>
+<button class="vtile" data-yt="kRIBGGVdywk" type="button"><img src="https://i.ytimg.com/vi/kRIBGGVdywk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">CBGB&#x27;S DOCUMENTARY 1978 CBGBS BLITZKRIEG BOP FEAT. RAMONES , BLONDIE &amp; DEAD BOYS</span></button>
+<button class="vtile" data-yt="KbmGqgZIfmk" type="button"><img src="https://i.ytimg.com/vi/KbmGqgZIfmk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Ramones: The True Story | Full Music Documentary | Stream Music and More</span></button>
+<button class="vtile" data-yt="35Z34NVZf3Y" type="button"><img src="https://i.ytimg.com/vi/35Z34NVZf3Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Most Chaotic Ramones Interview Ever Recorded</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The Ramones were an American punk rock band formed in 1974 in Forest Hills, Queens, New York City. They are recognized as one of the first bands of the genre and helped establish the punk movement in the United States and elsewhere. Although they never achieved significant commer</p>
+<p>The Ramones were an American punk rock band formed in 1974 in Forest Hills, Queens, New York City. They are recognized as one of the first bands of the genre and helped establish the punk movement in the United States and elsewhere. Although they never achieved significant commercial success during their existence, they remain highly influential in punk culture.</p>
+<h3>formation and early years</h3>
+<p>The band&#x27;s original members—Joey, Dee Dee, Johnny, and Tommy Ramone—met in Forest Hills, Queens. They began taking shape in early 1974, with Dee Dee Ramone inspiring the group to adopt pseudonyms ending in &#x27;Ramone&#x27;, a practice inspired by Paul McCartney&#x27;s use of the name Paul Ramon. The band played their first show on March 30, 1974, at Performance Studios and later made their debut at CBGB on August 16, 1974. They became regulars at the club, playing seventy-four times by the end of the year. In late 1975, they were signed to a recording contract by Seymour Stein of Sire Records.</p>
+<h3>musical style and debut album</h3>
+<p>The the Ramones&#x27; debut studio album, released on April 23, 1976, was recorded in just seven days on a budget of $6,400. The album is characterized by uptempo tracks, with many songs measuring over 160 beats per minute, and short songs; the longest track, &quot;I Don&#x27;t Wanna Go Down to the Basement&quot;, barely surpassed two and a half minutes. Lyrical themes included violence, drug use, Nazism, humor, and relationship issues. The album was unsuccessful commercially but received glowing reviews from critics and is now regarded as one of the greatest and most influential punk albums of all time.</p>
+<h3>title</h3>
+<p>The band experienced several lineup changes over 22 years, with Joey and Johnny Ramone remaining the only constant members. Tommy Ramone left in 1978 to pursue record production, replaced by Marky Ramone, who was later replaced by Richie Ramone in 1983. Dee Dee Ramone left in 1984, replaced by C. J. Ramone. From 1989 to their breakup in in 1996, the lineup consisted of Joey, Johnny, Marky and C. J. Ramone. The band performed 2,263 concerts and released fourteen studio albums before playing a farewell concert in Los Angeles in 1996.</p>
+<h3>legacy and recognition</h3>
+<p>The Ramones were inducted into the Rock and Roll Hall of Fame in 2002, including the original four members and Marky Ramone. In 2011, they were awarded a Grammy Lifetime Achievement Award. They have been ranked highly by publications such as Rolling Stone, Spin, and VH1, with Spin ranking them the second-greatest band of all time in 2002.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Formed:</strong> 1974</li>
+<li><strong>Origin:</strong> Forest Hills, Queens, New York City</li>
+<li><strong>Coutry of Origin:</strong> United States</li>
+<li><strong>Hobby:</strong> Punk rock</li>
+<li><strong> letztensten members:</strong> Joey, Dee Dee, Johnny, and Tommy Ramone</li>
+<li><strong>Studio Albums:</strong> 14</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Ramones" rel="noopener">https://en.wikipedia.org/wiki/Ramones</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Ramones_(album" rel="noopener">https://en.wikipedia.org/wiki/Ramones_(album</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Ramones_discography" rel="noopener">https://en.wikipedia.org/wiki/Ramones_discography</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="The Ramones">
+        <input type="hidden" name="slug" value="the-ramones">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — The Ramones</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

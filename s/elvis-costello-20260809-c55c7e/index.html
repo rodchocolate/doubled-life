@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Elvis Costello — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Elvis Costello</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-09</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1194</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="V1d4r9awjKE" type="button"><img src="https://i.ytimg.com/vi/V1d4r9awjKE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello &amp; The Attractions - Everyday I Write The Book</span></button>
+<button class="vtile" data-yt="3Y71iDvCYXA" type="button"><img src="https://i.ytimg.com/vi/3Y71iDvCYXA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello &amp; The Attractions - Pump It Up</span></button>
+<button class="vtile" data-yt="Ssd3U_zicAI" type="button"><img src="https://i.ytimg.com/vi/Ssd3U_zicAI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello &amp; The Attractions - (What&#x27;s So Funny &#x27;Bout) Peace, Love And Understanding</span></button>
+<button class="vtile" data-yt="rSXoM0WIUUg" type="button"><img src="https://i.ytimg.com/vi/rSXoM0WIUUg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello Plays Penny Lane for Sir Paul at the White House</span></button>
+<button class="vtile" data-yt="QsAe1X1gNzA" type="button"><img src="https://i.ytimg.com/vi/QsAe1X1gNzA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello &amp; The Imposters - Monkey To Man (Official Video)</span></button>
+<button class="vtile" data-yt="LrjHz5hrupA" type="button"><img src="https://i.ytimg.com/vi/LrjHz5hrupA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello &amp; The Attractions - Oliver&#x27;s Army</span></button>
+<button class="vtile" data-yt="5DL0M9P1TXk" type="button"><img src="https://i.ytimg.com/vi/5DL0M9P1TXk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello - My Funny Valentine (Live on The White Room)</span></button>
+<button class="vtile" data-yt="K--POHTLGY0" type="button"><img src="https://i.ytimg.com/vi/K--POHTLGY0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ELVIS COSTELLO - Watching The Detectives (1978)</span></button>
+<button class="vtile" data-yt="XTtopI620ZU" type="button"><img src="https://i.ytimg.com/vi/XTtopI620ZU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Alison</span></button>
+<button class="vtile" data-yt="snPDoXl9ZPs" type="button"><img src="https://i.ytimg.com/vi/snPDoXl9ZPs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello - Watching The Detectives</span></button>
+<button class="vtile" data-yt="XvRQDsH0Yho" type="button"><img src="https://i.ytimg.com/vi/XvRQDsH0Yho/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello &amp; The Attractions - (I Don&#x27;t Want To Go To) Chelsea</span></button>
+<button class="vtile" data-yt="7cp4VTztoao" type="button"><img src="https://i.ytimg.com/vi/7cp4VTztoao/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Burt Bacharach &amp; Elvis Costello I&#x27;ll Never Fall In Love Again</span></button>
+<button class="vtile" data-yt="iGh3Kzc4ZWs" type="button"><img src="https://i.ytimg.com/vi/iGh3Kzc4ZWs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello - Everything You Ever Wanted To Know About Spike</span></button>
+<button class="vtile" data-yt="PH7qggleZM0" type="button"><img src="https://i.ytimg.com/vi/PH7qggleZM0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">&quot;Radio Radio&quot; - Elvis Costello vs. Everything | New British Canon</span></button>
+<button class="vtile" data-yt="KWwbnY3J44Y" type="button"><img src="https://i.ytimg.com/vi/KWwbnY3J44Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">EC and Attractions documentary 1994</span></button>
+<button class="vtile" data-yt="dI-hjmkJmxQ" type="button"><img src="https://i.ytimg.com/vi/dI-hjmkJmxQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Untold Truth Of Elvis Costello</span></button>
+<button class="vtile" data-yt="Y3ghfYzxixo" type="button"><img src="https://i.ytimg.com/vi/Y3ghfYzxixo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello - South Bank Show (1982)</span></button>
+<button class="vtile" data-yt="SXBReln1iHA" type="button"><img src="https://i.ytimg.com/vi/SXBReln1iHA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello (interview) - July 18th, 1982, unknown location, Berkeley, CA (JEMS Archive)</span></button>
+<button class="vtile" data-yt="1YK1dg9qFZs" type="button"><img src="https://i.ytimg.com/vi/1YK1dg9qFZs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello Watched Peter Jackson&#x27;s &quot;Get Back&quot; With Paul McCartney And Ringo Starr</span></button>
+<button class="vtile" data-yt="txFBk3s9GXg" type="button"><img src="https://i.ytimg.com/vi/txFBk3s9GXg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Conan O&#x27;Brien &amp; Elvis Costello - Alison</span></button>
+<button class="vtile" data-yt="V2aeV60Wah4" type="button"><img src="https://i.ytimg.com/vi/V2aeV60Wah4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello | interview | The Hoover building | What is Punk? | Good Afternoon | 1977</span></button>
+<button class="vtile" data-yt="cqKMyPeB5yQ" type="button"><img src="https://i.ytimg.com/vi/cqKMyPeB5yQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello on His Controversial “SNL” Performance (2015)</span></button>
+<button class="vtile" data-yt="wblntQEtrxM" type="button"><img src="https://i.ytimg.com/vi/wblntQEtrxM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">At 70, Elvis Costello Finally OPENS UP About Agnetha Faltskog!</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Elvis Costello is an English singer, songwriter, record producer, author, and television host born Declan Patrick MacManus on 25 August 1954. He has been described as reinvigorating the literate, lyrical traditions of Bob Dylan and Van Morrison with punk&#x27;s raw energy and sass.</p>
+<p>Elvis Costello is an English singer, songwriter, record producer, author, and television host born Declan Patrick MacManus on 25 August 1954. He has been described as reinvigorating the literate, lyrical traditions of Bob Dylan and Van Morrison with punk&#x27;s raw energy and sass.</p>
+<h3>early life and family background</h3>
+<p>Costello was born in Paddington, west London, to a musical family. His father, Ross MacManus, was a professional trumpet player and singer who performed in bebop and modern jazz bands as well as the Joe Loss Orchestra. His grandfather, Pat Matthew McManus, was also a professional musician who played trumpet for army bandsmen, ship&#x27;s musicians for the White Star Line, and orchestra musicians in music halls and theatres showing silent films. Costello has stated that his grandfather&#x27;s career is the reason he became a musician. He was raised Roman Catholic and served as an altar boy until age 14, spending most of his childhood in Twickenham before moving to Liverpool in 1970.</p>
+<h3>musical career and style</h3>
+<p>Costello&#x27;s professional career began during the rise of punk rock in England. While he initially disguised his musical knowledge due to the primitivism of punk, his stylistic range eventually expanded to include jazz, country, R&amp;B, baroque pop, classical music and Tin Pan Alley. His debut album, My Aim Is True (1977), featured the ballad &#x27;Alison&#x27;. His subsequent albums This Year&#x27;s Model (1978) and Armed Forces (1979) helped define the new wave genre. Between late 1977 and early 1980, all of his singles reached the UK Top 30, including his biggest hit &#x27;Oliver&#x27;s Army&#x27; (1979). In the US, he earned critical praise and high rankings in The Village Voice&#x27;s Pazz &amp; Jop critics&#x27; poll, though commercial success was more modest until the album Spike (1989) and its single &#x27;Veronica&#x27;, which reached No. 19 on the Billboard Hot 100.</p>
+<h3>collaborations and other work</h3>
+<p>Costello&#x27;s early career was primarily spent performing with his backing band, the Attractions. His current backing band is known as the Imposters. He has collaborated with artists such as Paul McCartney, Burt Bacharach, the hip-hop group the Roots, the songwriter and producer Allen Toussaint, and the classical ensemble the Brodsky Quartet. Costello has also recorded cover versions of songs by Nick Lowe&#x27;s group Brinsley Schwarz, Sam &amp; Dave, Jerry Chesnut, and Charles Aznavour. His own songs have been recorded by artists including Johnny Cash, Roy Orbison, George Jones, Linda Ronstadt and Alison Krauss. Those outside of music, he was a television host from 2008 to 2010 for the show Spectacle: Elvis Costello with..., and published a memoir, Unfaithful Music &amp; Disappearing Ink, in 2015.</p>
+<h3>the album spike</h3>
+<p>Released in 1989 by Warner Bros. Records, Spike is the 12th studio album by Costello. It was his first release since My Aim Is True with no appearance by the Attractions. Produced by T-Bone Burnett, the album was recorded across four locations: London, Dublin, New Orleans and Hollywood. The album includes &#x27;Veronica&#x27;, a song co-written with Paul McCartney, and &#x27;Tramp the Dirt Down&#x27;, a protest song targeting the Thatcher government. The album cover artwork, designed by Jeri and John Heiden, depicts an entertainer in captivity.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Birth Name:</strong> Declan Patrick MacManus</li>
+<li><strong>Date of Birth:</strong> 25 August 1954</li>
+<li><strong>Accolades:</strong> Two Grammy Awards, two Ivor Novello Awards, and induction into the Rock and Roll Hall of Fame (2003) and Songwriters Hall of Fame (2016)</li>
+<li><strong>Label: Order of the British Empire:</strong> Officer of the Order of the British Empire (appointed 2019)</li>
+<li><strong>Biggest UK Hit Single:</strong> Oliver&#x27;s Army (1979)</li>
+<li><strong>Biggest US Hit Single:</strong> Veronica (1989)</li>
+<li><strong>Citations:</strong> 33 studio albums, 6 live albums, 17 compilation albums, 6 tribute albums, 2 extended plays, 4 box sets</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Elvis_Costello" rel="noopener">https://en.wikipedia.org/wiki/Elvis_Costello</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Elvis_Costello_discography" rel="noopener">https://en.wikipedia.org/wiki/Elvis_Costello_discography</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Spike_(Elvis_Costello_album" rel="noopener">https://en.wikipedia.org/wiki/Spike_(Elvis_Costello_album</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Elvis Costello">
+        <input type="hidden" name="slug" value="elvis-costello">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Elvis Costello</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

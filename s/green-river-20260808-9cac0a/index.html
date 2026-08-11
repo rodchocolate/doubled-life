@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Green River — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>Green River</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">949</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="L5V9nK7-OkM" type="button"><img src="https://i.ytimg.com/vi/L5V9nK7-OkM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Creedence Clearwater Revival - Green River (Lyric Video)</span></button>
+<button class="vtile" data-yt="cYPK_sl7h44" type="button"><img src="https://i.ytimg.com/vi/cYPK_sl7h44/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Green River (Remastered 1985)</span></button>
+<button class="vtile" data-yt="y9yhdPuP8QE" type="button"><img src="https://i.ytimg.com/vi/y9yhdPuP8QE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Green Forest River Flowing in Rainy Weather. Nature Sounds, Forest River, White Noise for Sleeping.</span></button>
+<button class="vtile" data-yt="eAdzzCXaJxM" type="button"><img src="https://i.ytimg.com/vi/eAdzzCXaJxM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Green River -CCR (Vietnam War footage/edit/music video)</span></button>
+<button class="vtile" data-yt="RDMf7T04mhA" type="button"><img src="https://i.ytimg.com/vi/RDMf7T04mhA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Author Who Speaks to the Green River Killer — What Gary Ridgway Is Saying Today</span></button>
+<button class="vtile" data-yt="fAZMPee1k5Q" type="button"><img src="https://i.ytimg.com/vi/fAZMPee1k5Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Creedence Clearwater Revival - Green River</span></button>
+<button class="vtile" data-yt="3a8w1ri_TwM" type="button"><img src="https://i.ytimg.com/vi/3a8w1ri_TwM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Green River- Cosmo&#x27;s Factory/ Fogerty&#x27;s Factory</span></button>
+<button class="vtile" data-yt="LF_ZyGyiqUs" type="button"><img src="https://i.ytimg.com/vi/LF_ZyGyiqUs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Green River Killer’s 19-Year Reign of Terror</span></button>
+<button class="vtile" data-yt="03Mocf98njg" type="button"><img src="https://i.ytimg.com/vi/03Mocf98njg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Green River - This Town</span></button>
+<button class="vtile" data-yt="QFISpbt5AV4" type="button"><img src="https://i.ytimg.com/vi/QFISpbt5AV4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Creedence Clearwater Revival - Green River [Live At Royal Albert Hall, London, England] 04/14/1970</span></button>
+<button class="vtile" data-yt="imK5v4xN3pE" type="button"><img src="https://i.ytimg.com/vi/imK5v4xN3pE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Green River - This Town - Seattle 1986</span></button>
+<button class="vtile" data-yt="P2oJIBQKlnw" type="button"><img src="https://i.ytimg.com/vi/P2oJIBQKlnw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Creedence Clearwater Revival &quot;Green River&quot; in Andy Williams Show (1969)</span></button>
+<button class="vtile" data-yt="jNcivSdvymY" type="button"><img src="https://i.ytimg.com/vi/jNcivSdvymY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">My Uncle is the Green River Killer | Special | Full Episode | LMN</span></button>
+<button class="vtile" data-yt="hTt9ASYpy_I" type="button"><img src="https://i.ytimg.com/vi/hTt9ASYpy_I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Gary Ridgway: The Story Of The Green River Killer | World’s Most Evil Killers | Real Crime</span></button>
+<button class="vtile" data-yt="kNEpuii0id4" type="button"><img src="https://i.ytimg.com/vi/kNEpuii0id4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Green River Killer: Gary Ridgway - Documentary</span></button>
+<button class="vtile" data-yt="9iAsZH_30rM" type="button"><img src="https://i.ytimg.com/vi/9iAsZH_30rM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Gary Ridgway: The Green River Killer | Real Crime</span></button>
+<button class="vtile" data-yt="vErwOPVIRb4" type="button"><img src="https://i.ytimg.com/vi/vErwOPVIRb4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The MOST Sickening Serial Killer In America</span></button>
+<button class="vtile" data-yt="pTE5bKdqej0" type="button"><img src="https://i.ytimg.com/vi/pTE5bKdqej0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">20-YEAR Hunt for &quot;Green River Killer&quot; Gary Ridgway | Cold Case Files | A&amp;E</span></button>
+<button class="vtile" data-yt="FNr4jtFFUjQ" type="button"><img src="https://i.ytimg.com/vi/FNr4jtFFUjQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Green River Killer - A&amp;E Biography</span></button>
+<button class="vtile" data-yt="uIhrp_4McYc" type="button"><img src="https://i.ytimg.com/vi/uIhrp_4McYc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Most Infamous Cases 06 The Green River Killer</span></button>
+<button class="vtile" data-yt="v4y3iZGubUI" type="button"><img src="https://i.ytimg.com/vi/v4y3iZGubUI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">World&#x27;s Most Evil Killers - Season 3, Episode 3 - Gary Ridgway - Full Episode</span></button>
+<button class="vtile" data-yt="cR4tf1oxvXY" type="button"><img src="https://i.ytimg.com/vi/cR4tf1oxvXY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How The Green River Killer Evaded Police For 19 Years | Gary Ridgway: Born To Kill? | Absolute Crime</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Green River refers to various entities including a 1969 album by Creedence Clearwater Revival, an American rock band from Seattle formed in 1984, and numerous rivers and places globally.</p>
+<p>Green River refers to various entities including a 1969 album by Creedence Clearwater Revival, an American rock band from Seattle formed in 1984, and numerous rivers and places globally.</p>
+<h3>music</h3>
+<p>The term &#x27;Green River&#x27; is associated with several musical works and artists. Creedence Clearwater Revival released a third studio album titled Green River on August 7, 1969, via Fantasy Records. The album features hits such as &quot;Bad Moon Rising&quot; and the title track &quot;Green River,&quot; both of which peaked at No. 2 on the U.S. charts. The song &quot;Green River&quot; was inspired by Putah Creek near Winters, California, and a lime-flavored soda pop syrup label. The Seattle-based rock band Green River, formed in 1984, is considered one of the first grunge bands and served as a precursor to early 1990s groups like Pearl Jam and Mudhoney. Their first record, Come on Down, is often cited as the first grunge record released. They recorded their first EP, Dry as a Bone, for Sub Pop, and their final full-length album, Rehab Doll, was released in June 1988.</p>
+<h3>geography and places</h3>
+<p>Numerous rivers named Green River are located across North America and South Africa, and Turkey (as Yeşilırmak). In the United States, these include tributaries of the Rock River in Illinois, the Ohio River in Kentucky, the umajor tributary of the Colorado River with headwaters in Wyoming flowing into Utah and Colorado. Other locations include cities in Utah and Wyoming, and various unincorporated communities in Illinois and Michigan.</p>
+<h3>title la own</h3>
+<p>Green River also refers to a variety of other uses including a bright green, lime-flavored soft drink originating in Chicago created by the Schoenhofen Edelweiss Brewing Company in 1919. Other references include the Green River Killer (Gary Ridgway), an American serial killer, and the the same name as the community college in Auburn, Washington.</p>
+<h3>other music entities</h3>
+<p>The band Green River&#x27;s history involves several other music entities. They were associated with with Sub Pop, a label that Dry as a Bone was released through. They also appeared on the Deep Six compilation album alongside fellow Washington bands such as Soundgarden and The U-Men. on the last record they had some in-fighting up until they end of the band. The band members including Mark Arm, Steve Turner, and Jeff Ament, went on to form other influential rock bands.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Creedence Clearwater Revival&#x27;s Green River album release date:</strong> August 7, 1969</li>
+<li><strong>Chart peak of &#x27;Bad Moon Rising&#x27;:</strong> No. 2</li>
+<li><strong>value own:</strong> one of the first grunge bands</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Green_River" rel="noopener">https://en.wikipedia.org/wiki/Green_River</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Green_River_(album" rel="noopener">https://en.wikipedia.org/wiki/Green_River_(album</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Green_River_(band" rel="noopener">https://en.wikipedia.org/wiki/Green_River_(band</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Green River">
+        <input type="hidden" name="slug" value="green-river">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Green River</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Debut Records — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>Debut Records</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">905</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="IaWdrbYcyXg" type="button"><img src="https://i.ytimg.com/vi/IaWdrbYcyXg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Near Career Killing Albums | 10 of the Worst Debut Records</span></button>
+<button class="vtile" data-yt="l-4pkkgmuDM" type="button"><img src="https://i.ytimg.com/vi/l-4pkkgmuDM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Highlights: Marvin Bagley III records double-double in debut | 01/18/24</span></button>
+<button class="vtile" data-yt="fW7AUFadFGo" type="button"><img src="https://i.ytimg.com/vi/fW7AUFadFGo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Björk Debut Full Album (1993)</span></button>
+<button class="vtile" data-yt="SVqwzgoVdho" type="button"><img src="https://i.ytimg.com/vi/SVqwzgoVdho/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">FULL INNING: Jefry Yan records his first career strikeout and has the celebration to match! 🔥</span></button>
+<button class="vtile" data-yt="OV9-JsEWXxo" type="button"><img src="https://i.ytimg.com/vi/OV9-JsEWXxo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Zane Carney Debut Record #CONFLUENCE on iTunes 9/10/13</span></button>
+<button class="vtile" data-yt="d8ZzMfFBOa8" type="button"><img src="https://i.ytimg.com/vi/d8ZzMfFBOa8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">New York Youth Symphony Debut Recording, a documentary</span></button>
+<button class="vtile" data-yt="nfkNMnEa8C8" type="button"><img src="https://i.ytimg.com/vi/nfkNMnEa8C8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mazzy’s First Born (Great debut albums)</span></button>
+<button class="vtile" data-yt="zDDdj_CSlLM" type="button"><img src="https://i.ytimg.com/vi/zDDdj_CSlLM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Top 20 Debut Rock Albums of All Time!</span></button>
+<button class="vtile" data-yt="S3gHuNDN0-w" type="button"><img src="https://i.ytimg.com/vi/S3gHuNDN0-w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Amazing Debut &amp; Incredible 2nd Albums #rankingvideo #vinylcommunity #debut #reviews</span></button>
+<button class="vtile" data-yt="8sDkMSYmSJI" type="button"><img src="https://i.ytimg.com/vi/8sDkMSYmSJI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">TOP 20 DEBUT ROCK ALBUMS OF ALL TIME</span></button>
+<button class="vtile" data-yt="N2PMKJm9el0" type="button"><img src="https://i.ytimg.com/vi/N2PMKJm9el0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Hudson Valley Squares: Favorite Hard Rock Debut Albums</span></button>
+<button class="vtile" data-yt="CEhCWq2gqII" type="button"><img src="https://i.ytimg.com/vi/CEhCWq2gqII/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Best Debut Albums of All Time</span></button>
+<button class="vtile" data-yt="yPojsBuW2Ko" type="button"><img src="https://i.ytimg.com/vi/yPojsBuW2Ko/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ATLANTIC RECORDS DOCUMENTARY - The Independent Years - Hip To The Tip - KHAZ&#x27; COPYRIGHT EDIT</span></button>
+<button class="vtile" data-yt="zjAb3kom1PA" type="button"><img src="https://i.ytimg.com/vi/zjAb3kom1PA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Trailer for Tower Records documentary All Things Must Pass debuts - Collider</span></button>
+<button class="vtile" data-yt="UiVxoon86PA" type="button"><img src="https://i.ytimg.com/vi/UiVxoon86PA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jewell - The Forgotten First Lady of Death Row Records (DOCUMENTARY)</span></button>
+<button class="vtile" data-yt="Teo-ret7J2U" type="button"><img src="https://i.ytimg.com/vi/Teo-ret7J2U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Griselda Records Debut Album on Shady Records Documentary Intro - November 29 2019</span></button>
+<button class="vtile" data-yt="u-zl7PLta0c" type="button"><img src="https://i.ytimg.com/vi/u-zl7PLta0c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Let&#x27;s Spin It One More Time - A Vinyl Record Documentary</span></button>
+<button class="vtile" data-yt="2QwHeTqi9xU" type="button"><img src="https://i.ytimg.com/vi/2QwHeTqi9xU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The War That SHOOK Aftermath Records 💥 | Documentary</span></button>
+<button class="vtile" data-yt="cj-RjVifaAQ" type="button"><img src="https://i.ytimg.com/vi/cj-RjVifaAQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Patrollin&#x27;s Debut Performance | Samrom Records Documentary</span></button>
+<button class="vtile" data-yt="1mE2-S5wZ7w" type="button"><img src="https://i.ytimg.com/vi/1mE2-S5wZ7w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Death Row Records Documentary (BestOfMTV)</span></button>
+<button class="vtile" data-yt="Ibcrm3v-50s" type="button"><img src="https://i.ytimg.com/vi/Ibcrm3v-50s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Creation Records Documentary 1992 VHS Ride Primal Scream My Bloody Valentine Alan McGee</span></button>
+<button class="vtile" data-yt="h3VVv9LYesQ" type="button"><img src="https://i.ytimg.com/vi/h3VVv9LYesQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Selling Records : The Documentary</span></button>
+<button class="vtile" data-yt="-l94uZUhmS0" type="button"><img src="https://i.ytimg.com/vi/-l94uZUhmS0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">MY FIRST HIT RECORD | Tony King Documentary | Clip 4</span></button>
+<button class="vtile" data-yt="psJ4OD4RHLc" type="button"><img src="https://i.ytimg.com/vi/psJ4OD4RHLc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Seattle’s Original Grunge Label | C/Z Records Documentary</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Debut Records was an American jazz record company and label founded in 1952 by bassist Charles Mingus, his wife Celia, and drummer Max Roach. It was a short-lived label intended to showcase performances by new musicians and avoid the compromises of working for major companies.</p>
+<p>Debut Records was an American jazz record company and label founded in 1952 by bassist Charles Mingus, his wife Celia, and drummer Max Roach. It was a short-lived label intended to showcase performances by new musicians and avoid the compromises of working for major companies.</p>
+<h3>history and operations</h3>
+<p>Debut Records operated from 1952 until it closed in 1957. During its time, several prominent jazz musicians including trumpeters Thad Jones and Kenny Dorham, as well as pianist Paul Bley, made their first recordings as leaders for the label. Saxophonist Hank Mobley recorded on the label as a sideman with Max Roach. Teo Macero, who later became a producer for Miles Davis, recorded his first album as a leader as a saxophonist; this recording was described by critic Dan Morgenstern as an oddball fusion of Anton Webern and Lennie Tristano.</p>
+<h3>notable recordings</h3>
+<p>The label issued approximately two dozen albums. The Jazz at Massey Hall concert album, recorded in Toronto, featuring Dizzy Gillespie, Charlie Parker, Bud Powell, Bud Powell, Charles Mingus, and Max Roach, was first issued on Debut Records. This recording captured the last recorded meeting of long-term musical partners Charlie Parker and Dizzy Gillespie.</p>
+<h3>catalog rights and reissues</h3>
+<p>In 1957, Danish bookseller Ole Vestegaard leased the company&#x27;s catalogue from Mingus to produce recordings on a Danish Debut label by American jazz musicians in Copenhagen or at Jazzhus Montmartre. Later, after Celia and Charles Mingus divorced, Charles gave the rights to the Debut catalog as a wedding gift to Saul Zaentz and his wife Celia. This was considered fitting because Celia had handled most of the business affairs and most of the seed money came from her mother. The recordings were subsequently reissued by Fantasy Records between 1962 and 1964, and in 1990, Fantasy Records issued a 12-CD set featuring Mingus, as well as a four-CD sequence called Mingus Rarities (Original Jazz Classics) for more obscure material.</p>
+<h3>discography</h3>
+<p>The label&#x27;s discography includes ten-inch and twelve-inch series, as well as 78 RPM shellac series (10&quot;) and seven-inch series. There was also a Danish Debut Twelve-inch series.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Founded:</strong> 1952</li>
+<li><strong>//////////////////////////////////////////////////////////////:</strong> -</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Debut" rel="noopener">https://en.wikipedia.org/wiki/Debut</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Debut_(song" rel="noopener">https://en.wikipedia.org/wiki/Debut_(song</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Debut_Records" rel="noopener">https://en.wikipedia.org/wiki/Debut_Records</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Debut Records">
+        <input type="hidden" name="slug" value="debut-records">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Debut Records</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

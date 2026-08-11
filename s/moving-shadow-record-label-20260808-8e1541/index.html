@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Moving Shadow record label — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>Moving Shadow record label</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">930</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="rwzYXZhuPJs" type="button"><img src="https://i.ytimg.com/vi/rwzYXZhuPJs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Moving Shadow 01.1 - Full Mix by Timecode - Classic GTA Drum &amp; Bass - MSXFM</span></button>
+<button class="vtile" data-yt="a5OHxefmxfc" type="button"><img src="https://i.ytimg.com/vi/a5OHxefmxfc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Goldie &amp; Rob Playford (Moving Shadow)</span></button>
+<button class="vtile" data-yt="Gc-arr3TFnc" type="button"><img src="https://i.ytimg.com/vi/Gc-arr3TFnc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Moving Shadow mix 1-29 Part 1</span></button>
+<button class="vtile" data-yt="dyO3J1S1QZU" type="button"><img src="https://i.ytimg.com/vi/dyO3J1S1QZU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Oaysis: Enticer | SHADOW39-Y | Moving Shadow</span></button>
+<button class="vtile" data-yt="PjjMZnNlOLE" type="button"><img src="https://i.ytimg.com/vi/PjjMZnNlOLE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Aquasky: Taurus | SHADOW132R-Y | Moving Shadow</span></button>
+<button class="vtile" data-yt="a4djlL8IJ8M" type="button"><img src="https://i.ytimg.com/vi/a4djlL8IJ8M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Oaysis: Open Secrets | SHADOW39-X | Moving Shadow</span></button>
+<button class="vtile" data-yt="zuQ3RgELePg" type="button"><img src="https://i.ytimg.com/vi/zuQ3RgELePg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DVuS: The Last A | SHADOW2-Y | Moving Shadow</span></button>
+<button class="vtile" data-yt="QDZu_5JoS-o" type="button"><img src="https://i.ytimg.com/vi/QDZu_5JoS-o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sarith - Moving Shadow (Label Appreciation Jungle / Drum &amp; Bass Mini Mix)</span></button>
+<button class="vtile" data-yt="pEbqmsrIKvs" type="button"><img src="https://i.ytimg.com/vi/pEbqmsrIKvs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dead Dred: Dred Bass | SHADOW1007-X | Moving Shadow</span></button>
+<button class="vtile" data-yt="gFzE5e7xzA8" type="button"><img src="https://i.ytimg.com/vi/gFzE5e7xzA8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Renegade: Terrorist (featuring Ray Keith) | SHADOW1006-X | Moving Shadow</span></button>
+<button class="vtile" data-yt="Fmhv_nBEeEg" type="button"><img src="https://i.ytimg.com/vi/Fmhv_nBEeEg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Corrupt Souls: Seppuku | MSXEP029-Y | Moving Shadow</span></button>
+<button class="vtile" data-yt="0NV7kBJPxds" type="button"><img src="https://i.ytimg.com/vi/0NV7kBJPxds/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Moving Shadow 99.1 - CD 2 Mixed by E-Z Rollers</span></button>
+<button class="vtile" data-yt="BZTAE7Jw6Ew" type="button"><img src="https://i.ytimg.com/vi/BZTAE7Jw6Ew/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">(1994) Goldie on Jungle, Rave Culture and Building Moving Shadow with Rob Playford</span></button>
+<button class="vtile" data-yt="npoj2RTD3jI" type="button"><img src="https://i.ytimg.com/vi/npoj2RTD3jI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">United Future Organization - The Moving Shadows</span></button>
+<button class="vtile" data-yt="hOXzpYJxOFk" type="button"><img src="https://i.ytimg.com/vi/hOXzpYJxOFk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Technical Itch: Watch Out | SHADOW101-Y | Moving Shadow</span></button>
+<button class="vtile" data-yt="_3GYOi7Cl_Q" type="button"><img src="https://i.ytimg.com/vi/_3GYOi7Cl_Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nocturne: Between Dimensions | AC011-A | Moving Shadow</span></button>
+<button class="vtile" data-yt="oxGJgoWJ9x0" type="button"><img src="https://i.ytimg.com/vi/oxGJgoWJ9x0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Successful Criminals: Control Freak | AC010-A | Moving Shadow</span></button>
+<button class="vtile" data-yt="mQ5behdSBuk" type="button"><img src="https://i.ytimg.com/vi/mQ5behdSBuk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Moving Shadow - Hardcore Rave Record Collection Journey</span></button>
+<button class="vtile" data-yt="alZuE3a31L0" type="button"><img src="https://i.ytimg.com/vi/alZuE3a31L0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Gein: Morning Star | MSXEP040-Y | Moving Shadow</span></button>
+<button class="vtile" data-yt="AbMOf04vnMU" type="button"><img src="https://i.ytimg.com/vi/AbMOf04vnMU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Successful Criminals: Diamond Ring | ASHADOW24CD-1-10 | Moving Shadow</span></button>
+<button class="vtile" data-yt="WpdD9nubgfQ" type="button"><img src="https://i.ytimg.com/vi/WpdD9nubgfQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Flytronix: Past Archives | ASHADOW15CD-2-03 | Moving Shadow</span></button>
+<button class="vtile" data-yt="WMzUs2wdNo8" type="button"><img src="https://i.ytimg.com/vi/WMzUs2wdNo8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jade &amp; Matt-U: Salem | SHADOW178-X | Moving Shadow</span></button>
+<button class="vtile" data-yt="9AKXMD2e3NU" type="button"><img src="https://i.ytimg.com/vi/9AKXMD2e3NU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Successful Criminals: Tardis | AC010-C | Moving Shadow</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Moving Shadow is an English record label specializing in breakbeat hardcore, jungle, and drum and bass music. It was founded in 1990 by Rob Playford.</p>
+<p>Moving Shadow is an English record label specializing in breakbeat hardcore, jungle, and drum and bass music. It was founded in 1990 by Rob Playford.</p>
+<h3>history</h3>
+<p>The label began in 1990 operating from the home of Rob Playford in Stevenage, where he became a focal point for local bedroom producers and young artists. The first release with a &#x27;Shadow&#x27; prefixed catalogue number was Earth Leakage Trip&#x27;s Psychotronic EP in 1991. Early releases featured collaborations and aliases of Playford, including the group 2 Bad Mice, which he formed with Simon Colebrooke and Sean O&#x27;Keeffe. During 1991 and 1992, Moving Shadow enjoyed UK Singles Chart success with tracks such as &#x27;Bombscare&#x27; by 2 Bad Mice and &#x27;Music Takes You&#x27; by Blame. In 1994, Playford began working with Goldie (using the Rufige Kru alias), resulting in the album Timeless, produced and engineered by Playford and released via FFRR Records in 1995. The label stopped releasing new artist material in 2006, though a digital-only release of Omni Trio&#x27;s &#x27;Cut Out Shapes&#x27; was put out in 2012. In 2023, the label expanded its digital sales platforms to include its own YouTube channel and other streaming services, making the entire back catalogue accessible on Spotify as of May 2023.</p>
+<h3>special release series</h3>
+<p>Moving Shadow produced several specialized release series. The &#x27;Two on One&#x27; series (1994) consisted of nine 12 inch vinyl releases where each record featured a guest artist not signed to the label on one side and a Moving Shadow artist on the other; the artwork for these nine releases was split to create one large 3’ x 3&#x27; image. The &#x27;10  &#x27; series (2000-2001) was a limited edition retrospective of popular tracks, and the &#x27;MSXEP&#x27; series (2000-2006) featured double 12 inch vinyl releases with both new and existing label artists.</p>
+<h3>associated artists</h3>
+<p>Moving Shadow released albums from Foul Play and Omni Trio in 1995, and published regional compilation albums such as Trans-Central Connection, Storm from the East, and The Revolutionary Generation. The artist Deep Blue (alias of Sean O&#x27;Keeffe) recorded for Moving Shadow before leaving in 1997 to form Partisan Recordings. Artist Blame also had chart success on the label.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Founder:</strong> Rob Playford</li>
+<li><strong>Founded:</strong> 1990</li>
+<li><strong>First &#x27;Shadow&#x27; prefixed release:</strong> Psychotronic EP by Earth Leakage Trip (1991)</li>
+<li><strong>// a bit of weirdness in the same object as label/value pairs:</strong> -</li>
+<li><strong>Chart success examples:</strong> Blame&#x27;s &#x27;Music Takes You&#x27; and 2 Bad Mice&#x27;s &#x27;Bombscare&#x27;</li>
+<li><strong>Genres:</strong> Breakbeat hardcore, jungle, drum and bass</li>
+<li><strong>label stopped releasing new artist material:</strong> 2006</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/2_Bad_Mice" rel="noopener">https://en.wikipedia.org/wiki/2_Bad_Mice</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Deep_Blue_(musician" rel="noopener">https://en.wikipedia.org/wiki/Deep_Blue_(musician</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Moving_Shadow" rel="noopener">https://en.wikipedia.org/wiki/Moving_Shadow</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Moving Shadow record label">
+        <input type="hidden" name="slug" value="moving-shadow-record-label">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Moving Shadow record label</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

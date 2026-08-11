@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>There&#x27;s more to the protocol than what most people use it… — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">video</div>
+      <h1>There&#x27;s more to the protocol than what most people use it…</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-10</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">1</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">4989</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos"><div class="vslot"><div class="vframe"><img src="lead.jpg" alt="There&#x27;s more to the protocol than what most people use it…"></div></div></div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">David from Anthropic explains the Model Context Protocol (MCP), moving beyond simple tool calling to showcase &#x27;primitives&#x27; like prompts and resources. He demonstrates how MCP servers can provide pre-defined prompt templates for users to add to their context window and expose raw </p>
+<ul>
+<li>url: <a href="https://www.tiktok.com/@sarutalksai/video/7655261384309099798?_r=1&amp;_t=ZT-98lXSwDh6DN" rel="noopener">https://www.tiktok.com/@sarutalksai/video/7655261384309099798?_r=1&amp;_t=ZT-98lXSwDh6DN</a></li>
+<li>uploader: sarutalksai</li>
+<li>duration: 1582s</li>
+<li>subject: Model Context Protocol (MCP) (product)</li>
+<li>source uuid: 019feb8b-678c-7a7c-9393-156b5a47dc2f</li>
+<li>processed: 2026-08-10T12:01:29.879250+00:00</li>
+</ul>
+<h3>summary</h3>
+<p>David from Anthropic explains the Model Context Protocol (MCP), moving beyond simple tool calling to showcase &#x27;primitives&#x27; like prompts and resources. He demonstrates how MCP servers can provide pre-defined prompt templates for users to add to their context window and expose raw data as resources for tasks like database schema visualization or RAG, aiming to build richer interactions between AI clients and servers.</p>
+<h3>claims check</h3>
+<ul>
+<li><strong>unsupported</strong> — MCP allows for more than just tool calling  (No sources provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — Prompts in MCP are pre-defined templates for AI interactions that can be dynamic/code-based  (No sources provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — Prompt completion is a feature of MCP that allows for parameterized templates</li>
+<li><strong>unsupported</strong> — Resources in MCP allow servers to expose raw data or content (e.g., database schemas) as file-like objects  (No sources provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — MCP resources can be used by clients to build embeddings and perform RAG  (un// No sources provided to verify this claim.)</li>
+</ul>
+<h4>Model Context Protocol (MCP) — product</h4>
+<ul>
+<li>what it does: An open standard for how AI models connect to data sources and tools</li>
+<li>why relevant: The primary subject of the video, explaining its capabilities beyond tool calling</li>
+<li>search terms: Model Context Protocol, MCP Anthropic, AI server-client protocol</li>
+</ul>
+<h4>Claude Desktop — product</h4>
+<ul>
+<li>what it does: A desktop application for interacting with Claude AI</li>
+<li>why relevant: Used as the MCP client to demonstrate the functionality of prompts and resources</li>
+<li>search terms: Claude Desktop app, Anthropic Claude</li>
+</ul>
+<h4>Prompts (MCP Primitive) — technique</h4>
+<ul>
+<li>what it does: Pre-defined templates for AI interactions that allow users to add specific text/context to the context window</li>
+<li>why relevant: One of the core primitives discussed as a way to enrich user interaction</li>
+<li>search terms: MCP prompts, Model Context Protocol prompt templates</li>
+</ul>
+<h4>Resources (MCP Primitive) — technique</h4>
+<ul>
+<li>what it does: Exposing raw data or content from a server as file-like objects for the model to read</li>
+<li>why relevant:</li>
+<li>search terms: -</li>
+</ul>
+<h4>Prompt Completion — technique</h4>
+<ul>
+<li>what it does: A way to provide parameterized templates with auto-completion for parameters</li>
+<li>why relevant: An advanced feature of MCP prompts that allows for richer, more dynamic interactions</li>
+<li>search terms: MCP prompt completion, MCP parameterized prompts</li>
+</ul>
+<h4>TypeScript — tool</h4>
+<ul>
+<li>what it does: A programming language used to build MCP servers</li>
+<li>why relevant: Mentioned as the language used to implement prompt completion logic</li>
+<li>search terms: TypeScript</li>
+</ul>
+<h4>Claude 4 — product</h4>
+<ul>
+<li>what it does: An AI model (likely referring to a slip of tongue or future version, though currently Claude 3.5 is current)</li>
+<li>why relevant: Mentioned as a tool that can help write the code for MCP server functions</li>
+<li>search terms: Claude 4 AI</li>
+</ul>
+<h4>RAG (Retrieval Augmented Generation) — idea</h4>
+<ul>
+<li>what it does: A technique to provide an AI model with specific external data to the context window based on retrieval</li>
+<li>why relevant: Mentioned as a potential use case for MCP resources</li>
+<li>search terms:  và RAG AI</li>
+</ul>
+<h4>PostgreSQL — product</h4>
+<ul>
+<li>what it does: An open-source relational database</li>
+<li>why relevant: Used in the example of exposing a database schema via MCP resources</li>
+<li>search terms: Postgres database, PostgreSQL</li>
+</ul>
+<h3>transcript</h3>
+<p>Well, hello,</p>
+<p>uh, my name is David.</p>
+<p>I&#x27;m a member of technical staff at anthropic</p>
+<p>and one of the co creators of, uh,</p>
+<p>MCP. And today</p>
+<p>I&#x27;m gonna tell you a little bit more about the protocol</p>
+<p>and the things you can do. Um,</p>
+<p>just to give you an understanding of, um,</p>
+<p>what there&#x27;s more to the protocol</p>
+<p>than what most people use it for at the moment,</p>
+<p>which would be tools.</p>
+<p>So really,</p>
+<p>the goal today is to showcase you what the protocol is capable of</p>
+<p>and how you can use it</p>
+<p>in ways to build richer interactions with M C P. Clients.</p>
+<p>Um, that goes beyond the tool</p>
+<p>colour tool calling that most people are used to.</p>
+<p>And I will first go through all the different,</p>
+<p>like, what we call primitives,</p>
+<p>like ways for the server to expose information to a client,</p>
+<p>before we go into some of the</p>
+<p>bit more lesser known aspects of the protocol.</p>
+<p>And then I wanna talk a little bit about,</p>
+<p>like, how to build a really rich interaction</p>
+<p>before we take a little stab of what&#x27;s coming next for M C P.</p>
+<p>And how we bring M C P. To the web.</p>
+<p>But to just get you started,</p>
+<p>I wanna talk about one of the M C P. Primitives, um,</p>
+<p>the servers can expose to M C P.</p>
+<p>Clients that very few people know.</p>
+<p>And those are called prompts.</p>
+<p>And what are prompts are really.</p>
+<p>Are pre defined templates for A I Interactions.</p>
+<p>And that&#x27;s to say, it&#x27;s a way for an M C P.</p>
+<p>Server to expose a set of text,</p>
+<p>you know, like a prompt,</p>
+<p>in a way, um.</p>
+<p>That allows, um,</p>
+<p>users to directly, um.</p>
+<p>Add this to the context window.</p>
+<p>And see how they would use,</p>
+<p>for example, the M C P.</p>
+<p>A server, uh,</p>
+<p>you&#x27;re building.</p>
+<p>And they&#x27;re really the two main use cases here.</p>
+<p>Is for you, as an M C P server author.</p>
+<p>To provide an example for, um.</p>
+<p>That you can showcase to the user.</p>
+<p>So that they know how to use the M C P server in the best way.</p>
+<p>Because realistically, you are the one who has built it.</p>
+<p>You are the one who knows how to use it in the best possible way.</p>
+<p>And probably at the time you would release it,</p>
+<p>are the one who has used it the most time.</p>
+<p>But since M C P, uh,</p>
+<p>prompts are also dynamic, in a way,</p>
+<p>they&#x27;re just code under the hood.</p>
+<p>That are executed in M C P server.</p>
+<p>Харти that will fetch directly guitar comments that, um.</p>
+<p>Into my context window. And so what you see me here doing.</p>
+<p>Is just basically, um.</p>
+<p>Put into the context window, um.</p>
+<p>The comments from my poor request.</p>
+<p>That is, of that,</p>
+<p>you know, I&#x27;ve written.</p>
+<p>So that I can go and interact with it.</p>
+<p>And have then the model go and help me,</p>
+<p>you know, apply the changes that has been requested.</p>
+<p>To me or whatever I want to do.</p>
+<p>And so this is really a way for exposing things</p>
+<p>that the user should directly interact</p>
+<p>and the user should directly wants to put into the context window</p>
+<p>before it interacts with a yellow lamp.</p>
+<p>So it&#x27;s different from that,</p>
+<p>from tools where the model decides when to do it.</p>
+<p>This is what that the user decides. Um,</p>
+<p>I wanna add this um, to the context window.</p>
+<p>And if you look carefully,</p>
+<p>there&#x27;s one additional thing that very,</p>
+<p>very few people know, um,</p>
+<p>that you can do, and that is prompt completion.</p>
+<p>So if you&#x27;ll have looked carefully,</p>
+<p>there was a way where it showcased</p>
+<p>quickly a pop up of me selecting the poll requests</p>
+<p>that are available to myself.</p>
+<p>And that is a way that you can.</p>
+<p>That is a thing that you can provide as an MCP server author</p>
+<p>to build richer parameterized templates,</p>
+<p>for example. And this is exceptionally easy to do in the code.</p>
+<p>Like if you are in type script,</p>
+<p>building a prompt that provides users with um,</p>
+<p>like such a template and have parameters for it.</p>
+<p>And like, auto completion is nothing more than a few lines of code</p>
+<p>that cloud code, together with cloud 4,</p>
+<p>can most of the time write basically for you.</p>
+<p>And it&#x27;s just that simple.</p>
+<p>It&#x27;s a function for the completion</p>
+<p>and it&#x27;s a function for generating the prompt.</p>
+<p>And so this is already like one of these primitives</p>
+<p>you can Use to build an interaction for users with an M C P. Server.</p>
+<p>But it&#x27;s just a little bit more richer than a tool call.</p>
+<p>And a second one of these is something that we call resources.</p>
+<p>It&#x27;s another imperative that an M C P.</p>
+<p>Server can expose to an M C P. Client.</p>
+<p>And while prompts are really focused on text snippets.</p>
+<p>That a user can add, uh,</p>
+<p>into the context window.</p>
+<p>Resources are about exposing raw data or content from a server.</p>
+<p>And why would you wanna do this?</p>
+<p>There are two ways why you wanna do this.</p>
+<p>So one thing is, most of the clients today</p>
+<p>would allow you to add this raw content</p>
+<p>directly to the context window.</p>
+<p>So in that way, they&#x27;re not that different from the context, uh,</p>
+<p>from prompts. But it also allows application to do additional things</p>
+<p>to that raw data. And that could be,</p>
+<p>for example,</p>
+<p>building embeddings around the state that their server exposes.</p>
+<p>And then do retrieval, augmented, uh,</p>
+<p>generation, um,</p>
+<p>by adding to the context window the most appropriate things.</p>
+<p>And so this is an area that at the moment,</p>
+<p>I feel is a bit under explored.</p>
+<p>And I just want to quickly showcase you, uh,</p>
+<p>how resources work in this case.</p>
+<p>This is again, uh,</p>
+<p>one of these, um,</p>
+<p>uh, ways where an M C P.</p>
+<p>Client exposes a resource, um,</p>
+<p>as a file like object. And in this scenario,</p>
+<p>here we are exposing the database schema.</p>
+<p>For Apostrophe&#x27;s database, um,</p>
+<p>as resources.</p>
+<p>And then you can add them in Claude Desktop just like files.</p>
+<p>In that way, you can tell Claude,</p>
+<p>this is the tables I care about.</p>
+<p>And now please go ahead and visualize them.</p>
+<p>And so in this scenario, what you&#x27;re gonna see is Claude is gonna go, uh,</p>
+<p>and write a beautiful diagram</p>
+<p>that visualizes the database schema for me.</p>
+<p>And I&#x27;ve exposed the schema via resources.</p>
+<p>There&#x27;s a lot of unexplored space still here.</p>
+<p>Again, if you go beyond just, like,</p>
+<p>adding it file, like,</p>
+<p>and then think about, like,</p>
+<p>retrieval augmentation</p>
+<p>or any other thing the application might wanna do.</p>
+<p>And so those are two primitives.</p>
+<p>One is prompts, again,</p>
+<p>the things that a user interacts with.</p>
+<p>This is</p>
+<p>the second one is resources that the application interacts with.</p>
+<p>Then, of course,</p>
+<p>there should be a third one that you all are very familiar with, um,</p>
+<p>that I don&#x27;t want to get into too much depths,</p>
+<p>because if you have built an M C P. Server,</p>
+<p>you probably have built it for exposing a tool.</p>
+<p>And so tools are really these actions,</p>
+<p>of course, that can be invoked.</p>
+<p>That&#x27;s like one of the, I think,</p>
+<p>most magical moment I feel when you build an M C P.</p>
+<p>Server is when the model for the first time</p>
+<p>invokes something that you care about</p>
+<p>that you have built for and has this little impact on.</p>
+<p>You know, it might be like carrying a Database for you,</p>
+<p>whatever it might be. Um,</p>
+<p>but this is again</p>
+<p>the thing that the model decides when to call to an action.</p>
+<p>And so these are three very basic primitives that the protocol exposes.</p>
+<p>And if you think carefully about these three primitives</p>
+<p>that I just showcased you to,</p>
+<p>to you, there&#x27;s a little bit of overlap about, like,</p>
+<p>how do you use, like,</p>
+<p>they could like,</p>
+<p>when do you use what, really?</p>
+<p>And so there&#x27;s something that very.</p>
+<p>That we don&#x27;t talk enough about,</p>
+<p>and it&#x27;s somewhere buried in the specification language of the model.</p>
+<p>Context protocol is what I call the interaction model.</p>
+<p>And I think showcasing it hopefully makes clear when you use what,</p>
+<p>because the interaction model is built in such a way</p>
+<p>that you can expose the same data in three different ways</p>
+<p>depending on when you want to have it show up.</p>
+<p>And prompts, again,</p>
+<p>are these user driven things.</p>
+<p>It&#x27;s the thing the user invokes,</p>
+<p>adds to the context window.</p>
+<p>And the most common scenario where</p>
+<p>how you see these pop up is a slash command,</p>
+<p>an add command, something like that.</p>
+<p>Resources, on the other hand,</p>
+<p>are all application driven.</p>
+<p>The application that uses the L L M,</p>
+<p>be it cloud, desktop,</p>
+<p>be it VS code, something like that,</p>
+<p>fully decides what it wants to do with that.</p>
+<p>And then lastly, tools are driven by the model.</p>
+<p>And between, you know,</p>
+<p>an A I. Application using a model and the User.</p>
+<p>We have all three parts that we eventually cover</p>
+<p>using these three basic primitives.</p>
+<p>And that allows you already</p>
+<p>to go to a little bit of a richer application</p>
+<p>and experience then what most people can currently do with tools.</p>
+<p>Because you just have a way to interact with the user</p>
+<p>a bit more nuanced, um,</p>
+<p>than if you just wait for this model to call the tool.</p>
+<p>But we can even go beyond that.</p>
+<p>Because while these basic primitives get us a little bit further</p>
+<p>than what we see most M C P.</p>
+<p>Servers do at the moment,</p>
+<p>there are even richer interactions that we want to enable.</p>
+<p>And to make this a bit more understandable,</p>
+<p>here&#x27;s a really an example I want to give you, um,</p>
+<p>that showcases this problem.</p>
+<p>So how can you build an M C P. Server,</p>
+<p>for example, that summarizes a discussion from an issue tracker?</p>
+<p>So, on one hand side,</p>
+<p>I can build an M C P. Server that exposes this kind of data.</p>
+<p>Very simple. That&#x27;s quite clear.</p>
+<p>But how do I do the summarization step?</p>
+<p>Because for the summarization step, I obviously need a model.</p>
+<p>And so there in one way to go and build this is you can build an M C P.</p>
+<p>Server that is this issue tracker server.</p>
+<p>And you have a choice here.</p>
+<p>You can bring your own S D K.</p>
+<p>And call the model, have the model summarize it.</p>
+<p>But then there&#x27;s a little problem.</p>
+<p>To that. And the problem is that the client has a model selected,</p>
+<p>be it like Claude or whatever else.</p>
+<p>But the server, the MCP server that you&#x27;ve built</p>
+<p>doesn&#x27;t know what model the client has configured.</p>
+<p>And so you bring your own SDK,</p>
+<p>like of, of a model provider.</p>
+<p>And be it the anthropic SDK,</p>
+<p>you still need them like a A P I.</p>
+<p>Key that this user needs to provide.</p>
+<p>And it gets very quickly, very awkward.</p>
+<p>And so M C P. Has a little hidden feature,</p>
+<p>or little primitive called sampling</p>
+<p>that allows a server to request a completion from the client.</p>
+<p>What does this mean?</p>
+<p>It means that the server can use a model independently from, like,</p>
+<p>don&#x27;t having to provide an SDK itself,</p>
+<p>but in, but asks the client which model you have configured.</p>
+<p>And the client is the one providing the completion to the server.</p>
+<p>And what does this do? It does two things.</p>
+<p>First of all,</p>
+<p>it allows the client to get full control over the security,</p>
+<p>privacy, and the cost.</p>
+<p>So instead of having to provide an additional A P I.</p>
+<p>Key, you might tap into the subscription</p>
+<p>that your client might already have.</p>
+<p>But it allows also, um,</p>
+<p>a second part,</p>
+<p>which is that if you take multiple, um.</p>
+<p>If you chain MCP servers in an interesting way,</p>
+<p>it makes this whole pattern very recursive.</p>
+<p>And what do I mean by that?</p>
+<p>It&#x27;s a bit abstract. You can take an M C P.</p>
+<p>Server that exposes a tool.</p>
+<p>But during the tool execution,</p>
+<p>you might want to use more M C P.</p>
+<p>Servers downstream. And somewhere downstream in this like,</p>
+<p>system, there might be the NASA tracker server</p>
+<p>that wants to go and have a completion.</p>
+<p>But using sampling, you can bubble up the requests</p>
+<p>such that the client always stays in full control</p>
+<p>over the cost of the subscription.</p>
+<p>Whatever you wanna use, it stays in full control of the privacy,</p>
+<p>over the cost of this interaction.</p>
+<p>And basically manages every interaction, um,</p>
+<p>that an M C P. Server wants to do with a model.</p>
+<p>And that allows for very powerful training.</p>
+<p>And it allows for, like,</p>
+<p>more complex patterns that go already into, like,</p>
+<p>ways of how you can build little M C P. Agents.</p>
+<p>But that&#x27;s sampling. Sampling at the moment is sadly,</p>
+<p>I think, one of the more exciting features.</p>
+<p>But also one of the features that&#x27;s the least supported in clients.</p>
+<p>For our first party projects products,</p>
+<p>we will bring, um,</p>
+<p>sampling somewhere this year. Um,</p>
+<p>and so then you can hopefully start building more exciting MCP servers.</p>
+<p>And then there&#x27;s the last primitive that I wanna touch on.</p>
+<p>That&#x27;s also a bit more interesting.</p>
+<p>And it&#x27;s one of these things that,</p>
+<p>in retrospect, as one of the person that has built the protocol, um,</p>
+<p>I probably named terribly.</p>
+<p>To be fair, I&#x27;m not a very.</p>
+<p>Not. Not very good at naming.</p>
+<p>And you will see This throughout the talk, probably.</p>
+<p>But there&#x27;s a thing called roots.</p>
+<p>And roots is also an interesting aspect,</p>
+<p>because let&#x27;s imagine I wanna build today an M C P.</p>
+<p>Server that deals with my Git commands.</p>
+<p>I don&#x27;t wanna deal with Git.</p>
+<p>I don&#x27;t wanna do source control commands.</p>
+<p>I don&#x27;t remember any of that.</p>
+<p>I wanna have M C P deal like an M C P.</p>
+<p>Server deal with this.</p>
+<p>So now I&#x27;m gonna hook up an MCP server into my favorite I D E.</p>
+<p>But how does the I D E. Know?</p>
+<p>How does the M C P. How does the M C P.</p>
+<p>Server know what are the open projects in the I D E?</p>
+<p>Because obviously</p>
+<p>I want to run the Git commands in the work spaces I have open, right?</p>
+<p>And so roots is a way for the server to inquire from the client,</p>
+<p>such as V S code, for example,</p>
+<p>what are the projects you have open?</p>
+<p>So that I can operate within only those directories</p>
+<p>that the server has opened.</p>
+<p>And I know where I want to execute my Git commands.</p>
+<p>And this again, is a feature that is not that widely used.</p>
+<p>But, for example,</p>
+<p>VS code currently does support this.</p>
+<p>And so these are, you know,</p>
+<p>just all the big primitives</p>
+<p>that M C P. Offers.</p>
+<p>So we have five primitives.</p>
+<p>Three on the server side, two on the client side.</p>
+<p>But how you put it all together to actually build A rich interaction,</p>
+<p>because that&#x27;s what we want.</p>
+<p>We want to build something for you there</p>
+<p>that&#x27;s a bit richer than just tool calling.</p>
+<p>And so let&#x27;s take a look at how you will build a hypothetical M C P.</p>
+<p>Server that interacts with your favourite chat application,</p>
+<p>be that discord, be that Slack.</p>
+<p>You could use prompts to give examples to users,</p>
+<p>such as, like,</p>
+<p>summarize this discussion.</p>
+<p>And you can use completions with your recent threads users</p>
+<p>or whatever you want them to expose.</p>
+<p>You can have additional prompts like</p>
+<p>what&#x27;s new? What happened since yesterday?</p>
+<p>And so that&#x27;s one way the user can just kick start right away into</p>
+<p>using the server you have provided and get the ideas, um,</p>
+<p>that you, how you intended it to be used.</p>
+<p>And then you can use resources to directly list the channels</p>
+<p>to expose recent threats that happened in the,</p>
+<p>in the, you know,</p>
+<p>chat application, such that the M C P.</p>
+<p>Client can index it, deal with it in ways, um,</p>
+<p>that it, that it wants.</p>
+<p>And then, of course,</p>
+<p>last but not least, we still have our tools.</p>
+<p>We have search, we have read channels,</p>
+<p>we have reading threads. And we will use sampling to summarize a thread,</p>
+<p>for example. And really exposes.</p>
+<p>And that&#x27;s a way to really build a much, much,</p>
+<p>much richer experience with M C P.</p>
+<p>To use the full power that the protocol has to offer.</p>
+<p>But this is just the. The Beginning,</p>
+<p>because most of these experiences,</p>
+<p>if we build M C P. Servers so far,</p>
+<p>have been experiences that stayed local.</p>
+<p>Out of the 10,000 M C P.</p>
+<p>Servers the community has built over the last six to seven months,</p>
+<p>the vast majority are local experiences.</p>
+<p>But I think we can take the next step,</p>
+<p>and I think this is MCP&#x27;s</p>
+<p>really big next thing,</p>
+<p>is bringing MCP servers away from the local experience through the web.</p>
+<p>And so what does this mean?</p>
+<p>It means that instead of having an MCP server that is,</p>
+<p>you know, a Docker container or some form of local executable,</p>
+<p>it is nothing else but a website that your client can connect to</p>
+<p>and exposes MCP and you talk to.</p>
+<p>But for that, we need two critical components.</p>
+<p>We need authorization and we need scaling.</p>
+<p>And in the most recent specification of M C P,</p>
+<p>we made a ton of changes towards this</p>
+<p>from the lessons we have Learned</p>
+<p>and the feedback we honestly got from the community</p>
+<p>as well as, like,</p>
+<p>key partners.</p>
+<p>And we work closely, for example,</p>
+<p>with, like,</p>
+<p>people in the industry that worked on Warframe and other aspects</p>
+<p>to get this right.</p>
+<p>And so with authorization in MCP,</p>
+<p>what you can do is</p>
+<p>you can basically provide the private context of a user</p>
+<p>that might be behind an online account or something</p>
+<p>directly to the LLM application.</p>
+<p>And it really enables MCP authors to bind the capability of the MCP</p>
+<p>Servers to a user, an online account,</p>
+<p>something like that.</p>
+<p>And in order to do that, the way this currently has to work in M C P</p>
+<p>is that you do this by providing ALL OFF as the authorization layer.</p>
+<p>And the M C P specification basically says you need to do all of 2.1.</p>
+<p>And that&#x27;s a bit daunting</p>
+<p>because very few people know what all of 2.1 is.</p>
+<p>But OR 2.1 is usually just OR 2.0</p>
+<p>with all the basic things you would do anyway.</p>
+<p>All these security considerations that people that have done ORS</p>
+<p>telling you anyway to do. So it&#x27;s just ORS 2.0,</p>
+<p>a little bit cleaned up.</p>
+<p>And you&#x27;re probably already doing it if you&#x27;re doing ORS.</p>
+<p>And if you do implement this ALL flow,</p>
+<p>you get two interesting patterns out of that.</p>
+<p>And the first one is the scenario of an MCP server in the web.</p>
+<p>And a good example of this is if you,</p>
+<p>for example, a payment provider,</p>
+<p>and you have, you know,</p>
+<p>website payment.com, and I,</p>
+<p>as a user, have an online account there.</p>
+<p>Now, I,</p>
+<p>as the payment provider, can expose M C p.payment.com.</p>
+<p>That the user can put into an M C P client.</p>
+<p>And the AMC to be client will do the oauth flow.</p>
+<p>I log in as my account, and I know this is payment.com.</p>
+<p>I know this is the.</p>
+<p>The person that is my online account with the provider that I trust.</p>
+<p>I don&#x27;t trust some Random Docker container running locally,</p>
+<p>built by a 3rd party developer.</p>
+<p>Anymore, I trust the person I already trust with the data anyway.</p>
+<p>And their developers and on the,</p>
+<p>their development side, they can just like,</p>
+<p>like update this server as they want,</p>
+<p>and they don&#x27;t have to wait for me to download a new, like,</p>
+<p>Docker image. And so this is,</p>
+<p>I think, will be a really,</p>
+<p>really big step for enabling MCP servers to be exposed on the web</p>
+<p>and MCP clients to interact basically</p>
+<p>with all the online interactions that you already have.</p>
+<p>And here&#x27;s just a small little example of this.</p>
+<p>In this scenario, we use Cloud A I. Integrations,</p>
+<p>which we launched earlier, um,</p>
+<p>this month, to connect to a remote server</p>
+<p>and use this oauth flow to log in our user</p>
+<p>to then have tools available that are aware of my data</p>
+<p>that I care about and are for.</p>
+<p>It is for me.</p>
+<p>But it enables another aspect.</p>
+<p>It enables enterprises to smoothly integrate M C P.</p>
+<p>Into their ecosystem. How they usually build applications.</p>
+<p>And what does this mean? It means that internally,</p>
+<p>they can deploy an M C P. Server to their internet or whatever.</p>
+<p>Like, they use</p>
+<p>and use an identity provider like AD ID or Octar or whatever,</p>
+<p>that central identity provider that you usually use for single sign on.</p>
+<p>And you can have that still exist.</p>
+<p>And it will be the one that, um,</p>
+<p>gives you the tokens that You require to interact with the MCP server.</p>
+<p>And that has a lot to say.</p>
+<p>That what it ends up with is a very smooth integration.</p>
+<p>You&#x27;re as a development team internally,</p>
+<p>you&#x27;re gonna build an M C P.</p>
+<p>Server that you control, that you could control the deployment.</p>
+<p>And the user just logs in in the morning with their normal S S O.</p>
+<p>Like they always would do.</p>
+<p>And anytime they use an M C P.</p>
+<p>Server from them on on out,</p>
+<p>they will just be logged in and have access to the data that,</p>
+<p>you know, the.</p>
+<p>That is their data that the company has for them.</p>
+<p>And so this, I think,</p>
+<p>enables a new way.</p>
+<p>That I&#x27;ve already seen some of the big enterprises do.</p>
+<p>To build really vast systems of M C P.</p>
+<p>Servers. That allow, um,</p>
+<p>part of the company to build a server, um,</p>
+<p>while the other part deals about the integrations really nicely.</p>
+<p>Separates, uh,</p>
+<p>integration builder and platform builders.</p>
+<p>And then the second part that we require is scaling.</p>
+<p>And we just added a new thing called Streamable H D P,</p>
+<p>which is just to say. It&#x27;s a lot of,</p>
+<p>lot of words to say. Basically,</p>
+<p>we want M C P. Servers to scale similar to normal A P I&#x27;s,</p>
+<p>and it&#x27;s as simple as that.</p>
+<p>You have as a server author,</p>
+<p>you can choose to either return results directly.</p>
+<p>As you would be in. In a rest A P I.</p>
+<p>Except That it&#x27;s not quite just rest.</p>
+<p>Or if you need to, you can open a stream and get richer interactions.</p>
+<p>So in the most simple way,</p>
+<p>you just want to provide a tool.</p>
+<p>Call result. You get a request,</p>
+<p>return application, Jason,</p>
+<p>and off you go. End of the story.</p>
+<p>You close the connection, and the next connection come in, and, uh,</p>
+<p>you know, get served by yet another Lambda function.</p>
+<p>But if you need richer interactions,</p>
+<p>such as notification or features we talked about,</p>
+<p>like sampling. A request comes in,</p>
+<p>you start a stream, the client accepts the stream,</p>
+<p>and now you&#x27;re being able to send additional things to the client</p>
+<p>before you returning. Finally,</p>
+<p>the result.</p>
+<p>And those authorization and scaling together</p>
+<p>is really the foundation to make MCP go from this local experience now</p>
+<p>to be truly a standard</p>
+<p>for how LLM applications will interact with the web.</p>
+<p>And just to finish it all up,</p>
+<p>I just want to show you quickly about, like,</p>
+<p>what&#x27;s coming for M C P. In the next few months.</p>
+<p>Of some of the. The most important highlights.</p>
+<p>And the most important part is that,</p>
+<p>um, we are starting to think more and more about agents,</p>
+<p>and there&#x27;s a lot to do there.</p>
+<p>There are asynchronous tasks that you,</p>
+<p>of course, want to run,</p>
+<p>things that are longer running,</p>
+<p>that are not just like, a minute long,</p>
+<p>but maybe a few, few,</p>
+<p>like, hours long task that an agent takes,</p>
+<p>and that Eventually, I wanna have a result for.</p>
+<p>So we think a lot about that,</p>
+<p>and we&#x27;re gonna work to build primitives for that into M C P.</p>
+<p>In the near future.</p>
+<p>The second part of that is elicitation.</p>
+<p>So really, MCP server authors being able to ask for input from the user.</p>
+<p>And that is something that&#x27;s gonna land just about today or on Monday</p>
+<p>in the. In the protocol.</p>
+<p>And then we&#x27;re doing two additional things.</p>
+<p>We first and foremost, gonna build an official registry</p>
+<p>to make sure there&#x27;s a central place</p>
+<p>where you can find and publish two M C P. Servers.</p>
+<p>Um, so that we can really have one common place</p>
+<p>where we gonna look for these servers,</p>
+<p>but also allow agents to dynamically download servers and install them</p>
+<p>and use them. And then,</p>
+<p>of course, we&#x27;re thinking more about multimodality.</p>
+<p>And that can be, for example,</p>
+<p>streaming of results, but that can have other aspects that</p>
+<p>I just don&#x27;t wanna go into details yet.</p>
+<p>And that&#x27;s just the specification part.</p>
+<p>On the. On the ecosystem part,</p>
+<p>we going and having a lot of more things to go at</p>
+<p>that we&#x27;re doing at the moment.</p>
+<p>We&#x27;re adding a Ruby SDK that is donated by Shopify</p>
+<p>in the next few weeks. And the Google folks,</p>
+<p>the Google Go team is currently building an official go SDK for M C P.</p>
+<p>And so I just hope that I was able to give you a bit of a more</p>
+<p>in Depth view of what you could do with M C P.</p>
+<p>If you use the full power of the protocol.</p>
+<p>And with that, I think I&#x27;m bit low on time,</p>
+<p>so I can&#x27;t ask question. We can&#x27;t ask questions.</p>
+<p>We can&#x27;t do Q&amp;A. But just grab me afterwards,</p>
+<p>and I can happy to answer on the hallway any questions you might have.</p>
+<p>So thank you so much.</p>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://www.tiktok.com/@sarutalksai/video/7655261384309099798?_r=1&amp;_t=ZT-98lXSwDh6DN" rel="noopener">https://www.tiktok.com/@sarutalksai/video/7655261384309099798?_r=1&amp;_t=ZT-98lXSwDh6DN</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="There&#x27;s more to the protocol than what most people use it…">
+        <input type="hidden" name="slug" value="there-s-more-to-the-protocol-than-what-most-peop">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — There&#x27;s more to the protocol than what most people use it…</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

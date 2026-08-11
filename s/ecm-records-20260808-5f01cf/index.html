@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>ECM Records — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>ECM Records</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">738</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="gOaS8v-sT8k" type="button"><img src="https://i.ytimg.com/vi/gOaS8v-sT8k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The 10 Greatest ECM Records (In My Opinion)</span></button>
+<button class="vtile" data-yt="ebwgNwQYwMU" type="button"><img src="https://i.ytimg.com/vi/ebwgNwQYwMU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">THE 10 GREATEST ECM RECORDS</span></button>
+<button class="vtile" data-yt="p7ylngkbI7E" type="button"><img src="https://i.ytimg.com/vi/p7ylngkbI7E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The ECM Sound: 5 Jazz Albums I Find Incredible (Part 4)</span></button>
+<button class="vtile" data-yt="V022lOgZuZI" type="button"><img src="https://i.ytimg.com/vi/V022lOgZuZI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ECM Documentary 1987 &quot;Only silence is more beautiful&quot;</span></button>
+<button class="vtile" data-yt="jXZAK7F58Xw" type="button"><img src="https://i.ytimg.com/vi/jXZAK7F58Xw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ECM Records The First 100 Releases</span></button>
+<button class="vtile" data-yt="4yHvSs5e8eg" type="button"><img src="https://i.ytimg.com/vi/4yHvSs5e8eg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Vintage Ambient Jazz - ECM and Illbient Mix - Dean De Benedictis</span></button>
+<button class="vtile" data-yt="fc1qmN2654Y" type="button"><img src="https://i.ytimg.com/vi/fc1qmN2654Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ECM Jazz and Ambient records to chill to</span></button>
+<button class="vtile" data-yt="p4SW40dnu5s" type="button"><img src="https://i.ytimg.com/vi/p4SW40dnu5s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rolf Lislevand - Passacaglia al modo mio (Official Video)</span></button>
+<button class="vtile" data-yt="y2N61WR2L3I" type="button"><img src="https://i.ytimg.com/vi/y2N61WR2L3I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">A Conversation with Manfred Eicher</span></button>
+<button class="vtile" data-yt="eiBKNUrKHBA" type="button"><img src="https://i.ytimg.com/vi/eiBKNUrKHBA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">2004 - John Abercrombie - ECM Selected recordings</span></button>
+<button class="vtile" data-yt="cL_ED4jROyg" type="button"><img src="https://i.ytimg.com/vi/cL_ED4jROyg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Talkin&#x27; Jazz: An Introduction to ECM Records</span></button>
+<button class="vtile" data-yt="FLCwIEqP3T8" type="button"><img src="https://i.ytimg.com/vi/FLCwIEqP3T8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Greatest ECM Records (In My Opinion - Part 2)</span></button>
+<button class="vtile" data-yt="JB751WidCPE" type="button"><img src="https://i.ytimg.com/vi/JB751WidCPE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sounds and Silence - Travels with Manfred Eicher (Trailer) | ECM Records</span></button>
+<button class="vtile" data-yt="WM_yAua_XcY" type="button"><img src="https://i.ytimg.com/vi/WM_yAua_XcY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ECM50 | 1982 Bill Frisell remembers the process of how his album, &quot;In Line&quot;, came about</span></button>
+<button class="vtile" data-yt="ufBrh5URwNs" type="button"><img src="https://i.ytimg.com/vi/ufBrh5URwNs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Manfred Eicher on ECM, America and Winter Jazz Fest | ECM Records</span></button>
+<button class="vtile" data-yt="mBIcp8-ruXc" type="button"><img src="https://i.ytimg.com/vi/mBIcp8-ruXc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">A journey through ECM records</span></button>
+<button class="vtile" data-yt="z7XtjckLrUI" type="button"><img src="https://i.ytimg.com/vi/z7XtjckLrUI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ECM50 | 1986 David Torn on Everyman Band, Don Cherry, Cloud About Mercury, King Crimson</span></button>
+<button class="vtile" data-yt="NrC8C210u2I" type="button"><img src="https://i.ytimg.com/vi/NrC8C210u2I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ECM50 | 1977 Richie Beirach about recording the albums &quot;Hubris&quot;, &quot;Elm&quot; and &quot;Sound Suggestions&quot;</span></button>
+<button class="vtile" data-yt="TFI-iUeHzu8" type="button"><img src="https://i.ytimg.com/vi/TFI-iUeHzu8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ralph Towner - At First Light (Album EPK) | ECM Records</span></button>
+<button class="vtile" data-yt="p8jzPgA9WP0" type="button"><img src="https://i.ytimg.com/vi/p8jzPgA9WP0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Early ECM. Saturday August 12, 2023</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">ECM Records (Edition of Contemporary Music) is an independent record label founded in Munich in 1969 by Manfred Eicher, Karl Egger, and Manfred Scheffner. While primarily known for jazz music, the label has released a variety of recordings across different genres.</p>
+<p>ECM Records (Edition of Contemporary Music) is an independent record label founded in Munich in 1969 by Manfred Eicher, Karl Egger, and Manfred Scheffner. While primarily known for jazz music, the label has released a variety of recordings across different genres.</p>
+<h3>history and production</h3>
+<p>The first ECM release was Mal Waldron&#x27;s 1969 recording Free at Last, produced by Manfred Scheffner. Manfred Eicher continues to act as the producer for the vast majority of its recordings, with other producers including Steve Lake, Robert Hurwitz, and Sun Chung. A typical ECM session consists of three days: two for recording and one for mixing. Many albums have been recorded with sound engineer Jan Erik Kongshaug in Oslo, Norway.</p>
+<h3>the new series</h3>
+<p>Created in 1984 to document Western classical works, the ECM New Series focuses on composers from early music (such as Thomas Tallis and Carlo Gesualdo) to contemporary figures like John Cage and Steve Reich. The series was initiated for Arvo Pärt&#x27;s record debut Tabula Rasa. Since then, a strong relationship has developed between Eicher and Pärt, where all of the same composer&#x27;s works premiere on recordings for the label and are recorded in his presence.</p>
+<h3>genre blending and distribution</h3>
+<p>ECM&#x27;s artists often refuse to acknowledge boundaries between genres, combining jazz and classical music. For example, Jan Garbarek&#x27;s Officium (1994) features saxophone solos over Gregorian chant. In 2017, ECM announced that its entire catalog would be made available for streaming on platforms such as Spotify, Apple Music and Amazon to combat unauthorized streaming and piracy, though physical recordings remain the preferred medium.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Founded:</strong> 1969</li>
+<li><strong>Founder:</strong> Manfred Eicher, Karl Egger, and Manfred Scheffner</li>
+<li><strong>Motto:</strong> &quot;the most beautiful sound next to silence&quot;</li>
+<li><strong>Independent record label:</strong> Independent record label</li>
+<li><strong>Distribution partners:</strong> Universal Music (since 1999), Warner Bros. Records, PolyGram Records, BMG</li>
+<li><strong>Location:</strong> Munich</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/ECM_Records" rel="noopener">https://en.wikipedia.org/wiki/ECM_Records</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/ECM_Records_discography" rel="noopener">https://en.wikipedia.org/wiki/ECM_Records_discography</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Re:ECM" rel="noopener">https://en.wikipedia.org/wiki/Re:ECM</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="ECM Records">
+        <input type="hidden" name="slug" value="ecm-records">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — ECM Records</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

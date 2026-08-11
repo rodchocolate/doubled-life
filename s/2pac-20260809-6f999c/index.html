@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>2Pac — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>2Pac</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-09</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">950</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="41qC3w3UUkU" type="button"><img src="https://i.ytimg.com/vi/41qC3w3UUkU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">2Pac - Hit &#x27;Em Up (Dirty) (Music Video) HD</span></button>
+<button class="vtile" data-yt="77nB_9uIcN4" type="button"><img src="https://i.ytimg.com/vi/77nB_9uIcN4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">2Pac - Ambitionz Az a Ridah</span></button>
+<button class="vtile" data-yt="YqJAnQTwmJs" type="button"><img src="https://i.ytimg.com/vi/YqJAnQTwmJs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">2Pac - I Get Around</span></button>
+<button class="vtile" data-yt="5V7u672xw4g" type="button"><img src="https://i.ytimg.com/vi/5V7u672xw4g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">2Pac ft. Snoop Dogg - 2 Of Amerikaz Most Wanted (Official Music Video)</span></button>
+<button class="vtile" data-yt="H1HdZFgR-aA" type="button"><img src="https://i.ytimg.com/vi/H1HdZFgR-aA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">2Pac - All Eyez On Me</span></button>
+<button class="vtile" data-yt="Mb1ZvUDvLDY" type="button"><img src="https://i.ytimg.com/vi/Mb1ZvUDvLDY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">2Pac - Dear Mama</span></button>
+<button class="vtile" data-yt="1Z52-lIZMbQ" type="button"><img src="https://i.ytimg.com/vi/1Z52-lIZMbQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">2Pac - So Many Tears (Official Music Video)</span></button>
+<button class="vtile" data-yt="0VGjV8Suyvg" type="button"><img src="https://i.ytimg.com/vi/0VGjV8Suyvg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">2Pac - Do For Love (Official Music Video) ft. Eric Williams</span></button>
+<button class="vtile" data-yt="fDjMSiECbgg" type="button"><img src="https://i.ytimg.com/vi/fDjMSiECbgg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Makaveli - To Live &amp; Die In L.A. (Official Music Video)</span></button>
+<button class="vtile" data-yt="n8QurABRsqE" type="button"><img src="https://i.ytimg.com/vi/n8QurABRsqE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">2Pac - Picture Me Rollin&#x27;</span></button>
+<button class="vtile" data-yt="5gLoEBbZNis" type="button"><img src="https://i.ytimg.com/vi/5gLoEBbZNis/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">2Pac - Only God Can Judge Me</span></button>
+<button class="vtile" data-yt="jB4t4-4xHPA" type="button"><img src="https://i.ytimg.com/vi/jB4t4-4xHPA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">2Pac - How Do You Want It</span></button>
+<button class="vtile" data-yt="kOaYtMPiIeU" type="button"><img src="https://i.ytimg.com/vi/kOaYtMPiIeU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Life and Death of Tupac Shakur | FULL DOCUMENTARY | 2021</span></button>
+<button class="vtile" data-yt="gSl9UXrvtQg" type="button"><img src="https://i.ytimg.com/vi/gSl9UXrvtQg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tupac Shakur: The Final 24 (Full Documentary)</span></button>
+<button class="vtile" data-yt="RlKJdbJtHdE" type="button"><img src="https://i.ytimg.com/vi/RlKJdbJtHdE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">2Pac Thug Angel: The Life Of An Outlaw Full Documentary</span></button>
+<button class="vtile" data-yt="WIs0W6GQgNY" type="button"><img src="https://i.ytimg.com/vi/WIs0W6GQgNY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tupac Resurrection (2003) Full Movie of 2003 High Definition</span></button>
+<button class="vtile" data-yt="1dG0zPOOrvQ" type="button"><img src="https://i.ytimg.com/vi/1dG0zPOOrvQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Who Killed Tupac? The Final Night That Shocked Hip-Hop</span></button>
+<button class="vtile" data-yt="7DCZNxGmoDM" type="button"><img src="https://i.ytimg.com/vi/7DCZNxGmoDM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Murder Rap: Inside the Biggie and Tupac Murders | Full Movie</span></button>
+<button class="vtile" data-yt="dTeJvSZoAEY" type="button"><img src="https://i.ytimg.com/vi/dTeJvSZoAEY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tupac Assassination: Conspiracy or Revenge</span></button>
+<button class="vtile" data-yt="TtunEopv4MQ" type="button"><img src="https://i.ytimg.com/vi/TtunEopv4MQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Who Killed Tupac?: The 24 Hours Leading Up To His Murder</span></button>
+<button class="vtile" data-yt="V_v_00a_rgI" type="button"><img src="https://i.ytimg.com/vi/V_v_00a_rgI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The true story behind the murder of Tupac... | Full Tupac Documentary</span></button>
+<button class="vtile" data-yt="treGgsdiv8U" type="button"><img src="https://i.ytimg.com/vi/treGgsdiv8U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tupac Shakur: Unseen And Unfiltered | FREE MOVIE</span></button>
+<button class="vtile" data-yt="1sjxDosvxJo" type="button"><img src="https://i.ytimg.com/vi/1sjxDosvxJo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tupac Shakur: Rapper, Poet, Actor &amp; King of Hip-Hop | Mini Bio | Biography</span></button>
+<button class="vtile" data-yt="6tYBZF92z68" type="button"><img src="https://i.ytimg.com/vi/6tYBZF92z68/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Who is The Real TUPAC SHAKUR? (Full Documentary)</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Tupac Amaru Shakur, known by stage names 2Pac and Makaveli, was an influential American rapper and actor. He was a prominent political activist for Black America and one of the most best-selling music artists of the 20th century, selling over 75 million records worldwide.</p>
+<p>Tupac Amaru Shakur, known by stage names 2Pac and Makaveli, was an influential American rapper and actor. He was a prominent political activist for Black America and one of the most best-selling music artists of the 20th century, selling over 75 million records worldwide.</p>
+<h3>early life and education</h3>
+<p>Born in East Harlem, New York City, on June 16, 1971, to parents who were Black Panther Party members, Shakur was raised by his mother, Afeni Shakur. In 1984, the family moved to Baltimore, Maryland, where he attended Roland Park Middle School and Paul Laurence Dunbar High School before transferring to the Baltimore School for the Arts. There, he studied ballet, poetry, jazz, and acting, and befriended actress Jada Pinkett. He later moved to Marin City, California, in 1988.</p>
+<h3>musical career</h3>
+<p>Shakur&#x27;s debut album 2Pacalypse Now (1991) established him as a central figure in West Coast hip-hop. He achieved further success with Strictly 4 My N.I.G.G.A.Z... (1993) and Me Against the World (1995). His fourth studio album, All Eyez on Me (1996), was the first double-full-length hip-hop solo studio album released for mass consumption globally and was certified Diamond by the RIAA in 2014. He also formed the group Thug Life and collaborated with artists such as Snoop Dogg and Dr. Dre.</p>
+<h3>الماضい career and death</h3>
+<p>During his later career, Shakur experienced legal troubles and served eight months in prison on sexual abuse charges before being released in 1995 after Suge Knight and Jimmy Iovine paid his $1.4 million bail. He signed to Death Row Records and became embroiled in the East Coast–West Coast hip-hop rivalry, including a feud with the Notorious B.I.G. On September 7, 1996, in Paradise, Nevada, Shakur was shot four times by an unidentified assailant in a drive-by shooting; he died six days later.</p>
+<h3>posthumous work and legacy</h3>
+<p>Following his death, several albums were released, including the acclaimed The Don Killuminati: The 7 Day Theory (1996) under the name Makaveli and the double-length posthumous album Greatest Hits (1998). The song &quot;Changes&quot; from Greatest Hits was nominated for Best Rap Solo Performance at the 2000 Grammy Awards. In 2002, he was inducted into the Hip-Hop Hall of Fame, and in 2017, he was inducted into the Rock and Roll Hall of Fame.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Born:</strong> June 16, 1971</li>
+<li><strong>Died:</strong> value: September 13, 1996</li>
+<li><strong> mudança conceito:</strong> 75 million records sold worldwide</li>
+<li><strong>Diamond-certified albums:</strong> All Eyez on Me and Greatest Hits</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/All_Eyez_on_Me" rel="noopener">https://en.wikipedia.org/wiki/All_Eyez_on_Me</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Changes_(Tupac_Shakur_song" rel="noopener">https://en.wikipedia.org/wiki/Changes_(Tupac_Shakur_song</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Tupac_Shakur" rel="noopener">https://en.wikipedia.org/wiki/Tupac_Shakur</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="2Pac">
+        <input type="hidden" name="slug" value="2pac">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — 2Pac</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

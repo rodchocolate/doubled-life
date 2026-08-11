@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Bebop — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">concept</div>
+      <h1>Bebop</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1088</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="iOyf4R3lLKU" type="button"><img src="https://i.ytimg.com/vi/iOyf4R3lLKU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Monk&#x27;s Dream - Thelonious Monk [1962](USA)|Jazz, Bebop, Hard Bop</span></button>
+<button class="vtile" data-yt="X1-VR_k39lE" type="button"><img src="https://i.ytimg.com/vi/X1-VR_k39lE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cowboy Bebop (Original Soundtrack) by Seatbelts - 1998</span></button>
+<button class="vtile" data-yt="09BB1pci8_o" type="button"><img src="https://i.ytimg.com/vi/09BB1pci8_o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dizzy Gillespie - Bebop</span></button>
+<button class="vtile" data-yt="J0KeCRirEoU" type="button"><img src="https://i.ytimg.com/vi/J0KeCRirEoU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Charlie Parker - Bebop</span></button>
+<button class="vtile" data-yt="91cUbvn0r9A" type="button"><img src="https://i.ytimg.com/vi/91cUbvn0r9A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bebop • Hard Bop • Energetic and complex Jazz Music 3</span></button>
+<button class="vtile" data-yt="HAeYBzaj5PE" type="button"><img src="https://i.ytimg.com/vi/HAeYBzaj5PE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">THIS IS THE CORRECT WAY TO PLAY BEBOP</span></button>
+<button class="vtile" data-yt="mkLbR7VQ6Xc" type="button"><img src="https://i.ytimg.com/vi/mkLbR7VQ6Xc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">☕ Bebop Jazz | Vintage Tunes for Focus, Study &amp; Relaxation</span></button>
+<button class="vtile" data-yt="vWUHoAGRTHU" type="button"><img src="https://i.ytimg.com/vi/vWUHoAGRTHU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cowboy Bebop | Lofi Hiphop &amp; Jazzhop Mix</span></button>
+<button class="vtile" data-yt="rTXBCk7Jb74" type="button"><img src="https://i.ytimg.com/vi/rTXBCk7Jb74/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Be-Bop</span></button>
+<button class="vtile" data-yt="ZnHi0GR0REs" type="button"><img src="https://i.ytimg.com/vi/ZnHi0GR0REs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Stan Levey - The Beginnings of Bebop</span></button>
+<button class="vtile" data-yt="a7WbiBmxzAk" type="button"><img src="https://i.ytimg.com/vi/a7WbiBmxzAk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">I Spent 100 Hours Learning BEBOP to PROVE he Is BROKEN - The Ultimate Guide to Bebop on Deadlock!</span></button>
+<button class="vtile" data-yt="1Ac5S-BH5mc" type="button"><img src="https://i.ytimg.com/vi/1Ac5S-BH5mc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What is Bebop? The Birth of a Jazz Movement</span></button>
+<button class="vtile" data-yt="mdQf1EHlrKc" type="button"><img src="https://i.ytimg.com/vi/mdQf1EHlrKc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jazz Docu - Dizzy Gillespie - To Bop or Not to Be: A Jazz Life</span></button>
+<button class="vtile" data-yt="Tf_t-LVnOUE" type="button"><img src="https://i.ytimg.com/vi/Tf_t-LVnOUE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">BBC4 Legends The Charlie Parker Story</span></button>
+<button class="vtile" data-yt="evNqUz_d3HU" type="button"><img src="https://i.ytimg.com/vi/evNqUz_d3HU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">THE BIRTH OF BEBOP (And modern jazz) Jazz History #45</span></button>
+<button class="vtile" data-yt="pDxen0mwEx4" type="button"><img src="https://i.ytimg.com/vi/pDxen0mwEx4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What is Jazz 6 - Bebop, Cool Jazz, &amp; Hard Bop</span></button>
+<button class="vtile" data-yt="4yZnIC7DZEg" type="button"><img src="https://i.ytimg.com/vi/4yZnIC7DZEg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">1959 The Year that Changed Jazz Jazz Documentary</span></button>
+<button class="vtile" data-yt="q6_kbDGIBdc" type="button"><img src="https://i.ytimg.com/vi/q6_kbDGIBdc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Genius of Charlie Parker</span></button>
+<button class="vtile" data-yt="W1LBGTBjf9k" type="button"><img src="https://i.ytimg.com/vi/W1LBGTBjf9k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bird: Not Out Of Nowhere | Charlie Parker&#x27;s Kansas City Legacy #BirdLives</span></button>
+<button class="vtile" data-yt="FT9VeJBcEBM" type="button"><img src="https://i.ytimg.com/vi/FT9VeJBcEBM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Thelonious Monk: Straight, No Chaser 1988 American documentary film ITALIAN SUBTITLES</span></button>
+<button class="vtile" data-yt="Oq1rVOD7tCk" type="button"><img src="https://i.ytimg.com/vi/Oq1rVOD7tCk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Untold History of Hard Bop - eyelovejazzmusic</span></button>
+<button class="vtile" data-yt="2TX6Z7NiF0E" type="button"><img src="https://i.ytimg.com/vi/2TX6Z7NiF0E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Jazz Baroness - The patron saint of bebop</span></button>
+<button class="vtile" data-yt="WZgv7h0Iy88" type="button"><img src="https://i.ytimg.com/vi/WZgv7h0Iy88/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">History of Jazz: Oxygen for the Ears | Music Documentary | Full Movie | Ravi Coltrane</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Bebop, also known as bop, is a style of jazz developed in the United States during the early to mid-1940s. It is characterized by fast tempos, complex chord progressions and virtuosic improvisation based on scales, harmonic structure, and occasional references to the melody.</p>
+<p>Bebop, also known as bop, is a style of jazz developed in the United States during the early to mid-1940s. It is characterized by fast tempos, complex chord progressions and virtuosic improvisation based on scales, harmonic structure, and occasional references to the melody.</p>
+<h3>musical style and characteristics</h3>
+<p>Bebop differs from swing music of the same era by emphasizing improvisation over orchestrated big band arrangements. A typical bebop piece begins and ends with a theme, known as the &#x27;head,&#x27; followed by a section where each performer improvises a solo based on the chords of the composition. The style is characterized by asymmetrical phrasing, intricate melodies, and rhythm sections that expanded their role beyond simple tempo-keeping. Bebop musicians explored advanced harmonies, complex syncopation, altered chords, extended chords, chord substitutions, and angular melodies. They often reused popular swing-era chord progressions with new, more complex melodies to create new compositions, a practice known as contrafact. Harmonic devices such as tritone substitutions and diminished scale based improvised lines were also employed to resolve to the key center in surprising ways.</p>
+<h3>instrumentation and ensemble</h3>
+<p>The classic bebop combo was a small group consisting of saxophone (alto or tenor), trumpet, trumpet, double bass, drums, and piano. This format was popularized by artists such as Charlie Parker and Dizzy Gillespie in the 1940s. This ensemble size was a shift away from the large ensembles favored during the swing era, where big bands of 16-18 musicians played in the ensemble-based style. In bebop, the ensemble played a supportive role for soloists.</p>
+<h3>etymology and terminology</h3>
+<p>The term &#x27;bebop&#x27; is derived from nonsense syllables (vocables) used in scat singing. The first known example of its use was in 1928 in McKinney&#x27;s Cotton Pickers&#x27; &#x27;Four or Five Times&#x27;. Other theories suggest the name comes from a Humming sound Charlie Christian used, something Dizzy Gillespie&#x27;s audiences coined after hearing him scat nameless same compositions to his players, or the cry of &#x27;Arriba! Arriba!&#x27; used by Latin American bandleaders. Thelonious Monk claims the original title &#x27;Bip Bop&#x27; for his composition &#x27;52nd Street Theme&#x27; was the origin of the name. {// a bit more detail on Cowboy Bebop here? No, the subject is Bebop (the music style). I will exclude the rest of the sources because they are about an anime series and not the music style itself.}</p>
+<h3>influential artists</h3>
+<p>Some of the most influential bebop artists were composer-performers such as alto sax players Charlie Parker and Sonny Stitt, tenor sax players Dexter Gordon, Sonny Rollins, and James Moody, clarinet player Buddy DeFranco, trumpeters Fats Navarro, Miles Davis, and Dizzy Gillespie, pianists Bud Powell, Barry Harris and Thelonious Monk, trombonist J.J. Johnson, electric guitarist Charlie Christian, and drummers Kenny Clarke, Max Roach, and Art Blakey.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Origin:</strong> United States, early to mid-1940s</li>
+<li><strong>Crossover with R&amp;B:</strong> By 1945, the use of &#x27;bebop&#x27; and &#x27;rebop&#x27; as nonsense syllables was widespread in R&amp;B music.</li>
+<li><strong>Crossover with other styles:</strong> value own a variation called &#x27;rebop&#x27;, which differed from bebop with its more impressionist use of discordant chords.</li>
+<li><strong>value own a variation called &#x27;rebopop single-sentence summary of the same thing as the laede:</strong> A style of jazz characterized by fast tempo, complex chord progressions and virtuosic improvisation.</li>
+<li><strong>Typical Ensemble:</strong> Small combo consisting of saxophone, trumpet, double bass, drums, and piano</li>
+<li><strong>label: &#x27;Bebop&#x27; as a label:</strong> Some musicians called it &#x27;modern music&#x27; rather than &#x27;bebop&#x27;.</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Bebop" rel="noopener">https://en.wikipedia.org/wiki/Bebop</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Cowboy_Bebop" rel="noopener">https://en.wikipedia.org/wiki/Cowboy_Bebop</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Cowboy_Bebop:_The_Movie" rel="noopener">https://en.wikipedia.org/wiki/Cowboy_Bebop:_The_Movie</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Bebop">
+        <input type="hidden" name="slug" value="bebop">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Bebop</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

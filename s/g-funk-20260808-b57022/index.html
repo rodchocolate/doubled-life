@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>G-funk — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">concept</div>
+      <h1>G-funk</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1002</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="cnBf-BAELIk" type="button"><img src="https://i.ytimg.com/vi/cnBf-BAELIk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">G funK &amp; West Coast Classics | Special Mix</span></button>
+<button class="vtile" data-yt="61FFlVqk1QE" type="button"><img src="https://i.ytimg.com/vi/61FFlVqk1QE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">G-Funk-💥West Coast Classics /Old School Hip Hop (best mix)</span></button>
+<button class="vtile" data-yt="8vrNP9wySRQ" type="button"><img src="https://i.ytimg.com/vi/8vrNP9wySRQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">G-Funk/ West Coast Classics / Old School Hip Hop ( Mix )♡</span></button>
+<button class="vtile" data-yt="YBJKS2JinaA" type="button"><img src="https://i.ytimg.com/vi/YBJKS2JinaA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">🌇 West Coast G-Funk R&amp;B Vibes 🌴 Sunset Hits Different on Crenshaw | Smooth Cruise</span></button>
+<button class="vtile" data-yt="p28XwVrzbIY" type="button"><img src="https://i.ytimg.com/vi/p28XwVrzbIY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">G funk Special mix Classics and Rare Tracks | Hip Hop Mix</span></button>
+<button class="vtile" data-yt="5hyUQjEosds" type="button"><img src="https://i.ytimg.com/vi/5hyUQjEosds/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">G funK - West Coast Classics Mix Vol. 2</span></button>
+<button class="vtile" data-yt="5zr1cLkn6WU" type="button"><img src="https://i.ytimg.com/vi/5zr1cLkn6WU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">OG FUNK | RARE FUNK MIX</span></button>
+<button class="vtile" data-yt="E5c3W40aVEE" type="button"><img src="https://i.ytimg.com/vi/E5c3W40aVEE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">West Coast Sunset Ride 🌅 G-Funk 90s | Smooth Hip Hop &amp; Funk Bass</span></button>
+<button class="vtile" data-yt="KZZ1jwVgkbs" type="button"><img src="https://i.ytimg.com/vi/KZZ1jwVgkbs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Westcoast G-Funk ONLY: Hip-Hop, R&amp;B Playlist | Warren G, Kendrick Lamar, Dove Shack, DOM KENNEDY</span></button>
+<button class="vtile" data-yt="XcIvEofx1fU" type="button"><img src="https://i.ytimg.com/vi/XcIvEofx1fU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">G Funk | Official Documentary</span></button>
+<button class="vtile" data-yt="vkMDyYg1oo0" type="button"><img src="https://i.ytimg.com/vi/vkMDyYg1oo0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">WEST COAST classics (old school Rap mix)G_ fun 2 pac,dr.dre, Snoop Dogg,ice cube,gj quik</span></button>
+<button class="vtile" data-yt="bfnT1suASsE" type="button"><img src="https://i.ytimg.com/vi/bfnT1suASsE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Golden Era · G-Funk Mix Vol.11 | 90s West Coast Classics &amp; OG Vibes</span></button>
+<button class="vtile" data-yt="dNamA3f73Ck" type="button"><img src="https://i.ytimg.com/vi/dNamA3f73Ck/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Warren g g funk doco part 1</span></button>
+<button class="vtile" data-yt="KqoTJslCttc" type="button"><img src="https://i.ytimg.com/vi/KqoTJslCttc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">G Funk / Documental - Full HD</span></button>
+<button class="vtile" data-yt="UP8__GTMJdE" type="button"><img src="https://i.ytimg.com/vi/UP8__GTMJdE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Remember 1992? The Birth of G-Funk</span></button>
+<button class="vtile" data-yt="BV_FpiuOzKY" type="button"><img src="https://i.ytimg.com/vi/BV_FpiuOzKY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Warren G: The Untold Story of &#x27;The Chronic&#x27;, Dr. Dre, &amp; Creating G-Funk | Backtrak</span></button>
+<button class="vtile" data-yt="3sFK_fStnHA" type="button"><img src="https://i.ytimg.com/vi/3sFK_fStnHA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">G Funk - Extended Trailer</span></button>
+<button class="vtile" data-yt="6NCbopZmA4A" type="button"><img src="https://i.ytimg.com/vi/6NCbopZmA4A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How &#x27;The Chronic&#x27; Changed Hip-Hop FOREVER</span></button>
+<button class="vtile" data-yt="Xb8Vf7mzih0" type="button"><img src="https://i.ytimg.com/vi/Xb8Vf7mzih0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Warren G on His Doc, &#x27;G Funk&#x27;, History of 213, Working w/ 2Pac, Dr. Dre, &amp; Nate Dogg</span></button>
+<button class="vtile" data-yt="LPJYJi9FGpk" type="button"><img src="https://i.ytimg.com/vi/LPJYJi9FGpk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Warren G Documentary on Dr Dre, Snoop, Nate Dogg, Suge Knight &amp; Hip Hop Stories | Big Boy Off Air</span></button>
+<button class="vtile" data-yt="Dh-OLCfyYkg" type="button"><img src="https://i.ytimg.com/vi/Dh-OLCfyYkg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Eazy E - G Funk Documentary</span></button>
+<button class="vtile" data-yt="prS6Zy_CVKU" type="button"><img src="https://i.ytimg.com/vi/prS6Zy_CVKU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Funk Flex - The Tunnel - Hip-Hop Documentary Teaser #90s #hiphop</span></button>
+<button class="vtile" data-yt="HqXU67dKUSo" type="button"><img src="https://i.ytimg.com/vi/HqXU67dKUSo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Warren G / G Funk documentary - The OverRated Truth | episode 4 | Bad Lucc vs The BeeHive</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">G-funk, short for gangsta funk (or funk rap), is a West Coast sub-genre of gangsta rap that emerged in the early 1990s. It is heavily influenced by the synthesizer-heavy 1970s funk sound of Parliament-Funkadelic (P-Funk).</p>
+<p>G-funk, short for gangsta funk (or funk rap), is a West Coast sub-genre of gangsta rap that emerged in the early 1990s. It is heavily influenced by the synthesizer-heavy 1970s funk sound of Parliament-Funkadelic (P-Funk).</p>
+<h3>characteristics</h3>
+<p>G-funk typically operates between 90 and 100 BPM and uses funk with an artificially altered tempo. The genre is characterized by deep bass, slow hypnotic grooves, heavy snare drum use, background female vocals, and multi-layered melodic synthesizers, including a high-pitched portamento saw wave synthesizer lead. Lyrically, the style focuses on themes of drug use (particularly marijuana), sex, love for friends, and love for a city. Rapping is often delivered in a slurred &#x27;lazy&#x27; or &#x27;smooth&#x27; way to maintain rhythmic cadence and clarify words. Unlike earlier rap acts, G-funk often utilizes fewer, unaltered samples per song; some artists, like Dr. Dre, use live musicians to replay original music from sampled records to create unique sounds rather than direct copies.</p>
+<h3>origins and development</h3>
+<p>Dr. Dre is often seen as the originator of G-funk, though Cold 187um of Above the Law has disputed this claim. Early examples include N.W.A&#x27;s &#x27;Dope Man&#x27; (1987) and &#x27;Gangsta Gangsta&#x27; (1988), which used a squealing synth solo from Ohio Players&#x27; &#x27;Funky Worm&#x27;. Dr. Dre also produced early hits like the D.O.C.&#x27;s &#x27;It&#x27;s Funky Enough&#x27; in 1989. In 1991, N.W.A released the album Niggaz4Life and Ice Cube released the diss track &#x27;No Vaseline&#x27;, both in the G-funk style. The genre reached a breakout year in 1992 with the release of Dr. Dre&#x27;s Triple Platinum certified album The Chronic.</p>
+<h3>mainstream peak</h3>
+<p>Between 1992 and 1997, G-funk experienced its mainstream peak. Following The Chronic, Snoop Dogg released his Quadruple Platinum debut album Doggystyle (1993), featuring hits like &#x27;Gin and Juice&#x27;. Ice Cube also had success with gold-certified songs such as &#x27;It Was a Good Day&#x27; and &#x27;Check Yo Self&#x27;. In 1994, Warren G&#x27;s album Regulate... G Funk Era debuted at No. 2 on the Billboard 200 and was certified triple platinum, featuring the top ten hit &#x27;Regulate&#x27;. Other successful artists including Coolio, MC Hammer, and the group Thug Life (featuring 2Pac) released G-funk influenced works. In 1995, 2Pac&#x27;s album Me Against the World reached No. 1 on the Billboard 200 and he released the hit &#x27;California Love&#x27;. By 1996, 2Pac released the lush G-funk album All Eyez on Me, which also hit No. 1.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>BPM Range:</strong> 90 to 100 BPM</li>
+<li><strong>P-Funk Influence:</strong> Parliament-Funkadelic</li>
+<li><strong>Pioneer:</strong> Dr. Dre</li>
+<li><strong>label: West Coast Style:</strong> Distinguished West Coast hip-hop from the aggressive, fast-paced East Coast scene</li>
+<li><strong>Key Albums:</strong> The Chronic (Dr. Dre), Doggystyle (Snoop Dogg), All Eyez on Me (2Pac)</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Funk" rel="noopener">https://en.wikipedia.org/wiki/Funk</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/G-funk" rel="noopener">https://en.wikipedia.org/wiki/G-funk</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Regulate..._G_Funk_Era" rel="noopener">https://en.wikipedia.org/wiki/Regulate..._G_Funk_Era</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="G-funk">
+        <input type="hidden" name="slug" value="g-funk">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — G-funk</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

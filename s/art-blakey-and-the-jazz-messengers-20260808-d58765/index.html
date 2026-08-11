@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Art Blakey and The Jazz Messengers — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Art Blakey and The Jazz Messengers</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">982</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="CX-Y-6kw8HU" type="button"><img src="https://i.ytimg.com/vi/CX-Y-6kw8HU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Art Blakey &amp; the Jazz Messangers - Live in Belgium 1958 (Jazz Icons)</span></button>
+<button class="vtile" data-yt="1oITDUn70uY" type="button"><img src="https://i.ytimg.com/vi/1oITDUn70uY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cedar Walton with Art Blakey and the Jazz Messengers - &quot;That Old Feeling&quot;</span></button>
+<button class="vtile" data-yt="47Dt1YrdyaM" type="button"><img src="https://i.ytimg.com/vi/47Dt1YrdyaM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Art Blakey Reflections In Blue</span></button>
+<button class="vtile" data-yt="Swz0IfJBtSw" type="button"><img src="https://i.ytimg.com/vi/Swz0IfJBtSw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Art̲ B̲l̲a̲k̲e̲y A̲nd T̲he ̲Ja̲z̲z̲ M̲e̲s̲s̲e̲n̲g̲e̲r̲s̲ – M̲o̲a̲n̲i̲n̲&#x27;̲ (̲1̲9̲5̲8̲)̲</span></button>
+<button class="vtile" data-yt="sAht456OlaI" type="button"><img src="https://i.ytimg.com/vi/sAht456OlaI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Art B̲l̲a̲k̲e̲y And T̲h̲e J̲a̲z̲z M̲e̲s̲s̲e̲n̲g̲e̲rs –̲ ̲R̲o̲o̲t̲s &amp; ̲H̲e̲r̲b̲s̲ ̲(̲1̲9̲6̲1̲)̲</span></button>
+<button class="vtile" data-yt="YwsqxZyNqa8" type="button"><img src="https://i.ytimg.com/vi/YwsqxZyNqa8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Art Blakey Jazz Messengers 1987</span></button>
+<button class="vtile" data-yt="JQdXJcg-hdg" type="button"><img src="https://i.ytimg.com/vi/JQdXJcg-hdg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Best of Art Blakey &amp; The Jazz Messengers (Full Album)</span></button>
+<button class="vtile" data-yt="9YH175fH2jo" type="button"><img src="https://i.ytimg.com/vi/9YH175fH2jo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Art Blakey &amp; The Jazz Messengers - Tokyo 1961</span></button>
+<button class="vtile" data-yt="GJBLA39spc4" type="button"><img src="https://i.ytimg.com/vi/GJBLA39spc4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Free For All (2004 Remaster/Rudy Van Gelder Edition)</span></button>
+<button class="vtile" data-yt="G6uhYumhlnE" type="button"><img src="https://i.ytimg.com/vi/G6uhYumhlnE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Art Blakey and the Jazz Messengers Live @ Ronnie Scott&#x27;s</span></button>
+<button class="vtile" data-yt="hihO75lZjS8" type="button"><img src="https://i.ytimg.com/vi/hihO75lZjS8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">- 1981 - Art Blakey &amp; the Jazz Messengers - En Scene</span></button>
+<button class="vtile" data-yt="uKOoxgI_xfQ" type="button"><img src="https://i.ytimg.com/vi/uKOoxgI_xfQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Moanin&#x27; - Art Blakey &amp; the Jazz Messengers - Live</span></button>
+<button class="vtile" data-yt="8CrfwdyjiEg" type="button"><img src="https://i.ytimg.com/vi/8CrfwdyjiEg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">An Art Blakey Story - Indestructible</span></button>
+<button class="vtile" data-yt="Nniw2Z_5N9o" type="button"><img src="https://i.ytimg.com/vi/Nniw2Z_5N9o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ART BLAKEY: The Jazz Messenger, Documentary, 1987 | THE JAZZ LIBRARY</span></button>
+<button class="vtile" data-yt="fbWF6I6Gw74" type="button"><img src="https://i.ytimg.com/vi/fbWF6I6Gw74/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Genius Of Art Blakey</span></button>
+<button class="vtile" data-yt="6Lp5diiWRB0" type="button"><img src="https://i.ytimg.com/vi/6Lp5diiWRB0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jazz Messengers Documentary</span></button>
+<button class="vtile" data-yt="L8cD9nNvoAs" type="button"><img src="https://i.ytimg.com/vi/L8cD9nNvoAs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Art Blakey&#x27;s Jazz Messengers with John Gilmore - March 7, 1965 - BBC Jazz 625 TV</span></button>
+<button class="vtile" data-yt="qfugtj-1BvU" type="button"><img src="https://i.ytimg.com/vi/qfugtj-1BvU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Art Blakey UK Documentary with IDJ Dancers</span></button>
+<button class="vtile" data-yt="DHPgbDDg56M" type="button"><img src="https://i.ytimg.com/vi/DHPgbDDg56M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Art Blakey and the Jazz Messengers (Docu) Pt1</span></button>
+<button class="vtile" data-yt="1Rw8BbG_wKU" type="button"><img src="https://i.ytimg.com/vi/1Rw8BbG_wKU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Complete History of Art Blakey &amp; The Jazz Messengers | 30 Albums for 30 Years (S2, E14)</span></button>
+<button class="vtile" data-yt="OvHTCvpgYCo" type="button"><img src="https://i.ytimg.com/vi/OvHTCvpgYCo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Art Blakey and the Jazz Warriors Pt1</span></button>
+<button class="vtile" data-yt="jpGVBU0JgQc" type="button"><img src="https://i.ytimg.com/vi/jpGVBU0JgQc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Art Blakey&#x27;s Jazz Messengers, Horace Silver - Battle of the bands - Newport 1968 • World of Jazz</span></button>
+<button class="vtile" data-yt="TtRRJMxzcHg" type="button"><img src="https://i.ytimg.com/vi/TtRRJMxzcHg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ART BLAKEY &amp; THE JAZZ MESSENGERS 1959</span></button>
+<button class="vtile" data-yt="Fd0tJe4wmxM" type="button"><img src="https://i.ytimg.com/vi/Fd0tJe4wmxM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">THE JAZZ MESSENGERS (A convoluted history) Jazz History #54</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The Jazz Messengers were a jazz combo that existed for over thirty-five years starting in the early 1950s. The group was led or co-led by founding drummer Art Blakey until his death in 1990.</p>
+<p>The Jazz Messengers were a jazz combo that existed for over thirty-five years starting in the early 1950s. The group was led or co-led by founding drummer Art Blakey until his death in 1990.</p>
+<h3>overview</h3>
+<p>The Jazz Messengers served as a proving ground for young jazz talent, with each iteration of the group typically including new young players. Having the group on one&#x27;s resume was considered a rite of passage in the jazz world and provided immediate bona fides. Many former members established careers as solo musicians, including Lee Morgan, Wayne Shorter, Freddie Hubbard, Wynton Marsalis, and Keith Jarrett. Some members, such as Gregory Charles Royal and Clarence Seay, played in the group but did not record with them.</p>
+<h3>history</h3>
+<p>The group&#x27;s origins trace back to 1947 when Art Blakey led &#x27;Art Blakey&#x27;s Messengers&#x27; for a Blue Note Records session. He also led a financially unstable big band called the &#x27;Seventeen Messengers&#x27; around 1947 or 1949. The Jazz Messengers formed as a collective in 1954 or 1955, nominally led by Horace Silver or Blakey. This original group disbanded in 1956, but Blakey retained the name for future iterations. A &#x27;second&#x27; lineup formed in 1956-1958, which included Jackie McLean and later evolved into a more stable version of the group. By 1958, a lineup featuring Lee Morgan, Benny Golson, Bobby Timmons, and Jymie Merritt began what is described as perhaps the most fruitful period of the Jazz Messengers.</p>
+<h3>discography and labels</h3>
+<p>The group&#x27;s discography includes 47 studio albums, 21 live albums, 6 compilations, 2 soundtracks, and one boxed set. They recorded for various labels including Blue Note Records, Columbia Records, RCA&#x27;s Vik Records, Pacific Jazz, Elektra, Cadillac, Jubilee, Bethlehem, Atlantic, Impulse! Records, Riverside Records, Limelight Records, Mercury&#x27;s sub-label, Prestige Records, Sonet Records, Roulette Records, Timeless Records and Concord Jazz. In 1958, they returned to Blue Note for the album Moanin&#x27;, which became one of the archetypal hard bop albums of the era. The group did not release recordings between 1966 and 1972, except for a 1970 release on Catalyst.</p>
+<h3>findings</h3>
+<p>The album Moanin&#x27; is noted for its combination of gospel and blues influences with modern jazz sensibility. It features the track &#x27;Moanin&#x27;,&#x27; composed by Bobby Timmons, and originals by Benny Golson such as &#x27;Along Came Betty&#x27; and &#x27;Blues March&#x27;. The recording was produced by Alfred Lion and engineered by Rudy Van Gelder in his Hackensack studios.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Founding Drummer:</strong> Art Blakey</li>
+<li><strong>Active Period:</strong> Over thirty-five years beginning in the early 1950s</li>
+<li><strong>Total Studio Albums:</strong> 47</li>
+<li><strong>Archetypal Hard Bop Album:</strong> Moanin&#x27;</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Moanin%27" rel="noopener">https://en.wikipedia.org/wiki/Moanin%27</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/The_Jazz_Messengers" rel="noopener">https://en.wikipedia.org/wiki/The_Jazz_Messengers</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/The_Jazz_Messengers_discography" rel="noopener">https://en.wikipedia.org/wiki/The_Jazz_Messengers_discography</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Art Blakey and The Jazz Messengers">
+        <input type="hidden" name="slug" value="art-blakey-and-the-jazz-messengers">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Art Blakey and The Jazz Messengers</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

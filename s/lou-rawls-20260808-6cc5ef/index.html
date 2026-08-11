@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Lou Rawls — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Lou Rawls</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">947</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="phWBaVpeRcY" type="button"><img src="https://i.ytimg.com/vi/phWBaVpeRcY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Lou Rawls - You&#x27;ll Never Find Another Love Like Mine (Official Audio)</span></button>
+<button class="vtile" data-yt="BUh3Hj2-cCo" type="button"><img src="https://i.ytimg.com/vi/BUh3Hj2-cCo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Lou Rawls - You&#x27;ll Never Find Another Love Like Mine (Official Soul Train Video)</span></button>
+<button class="vtile" data-yt="-zLfOtZZ7n8" type="button"><img src="https://i.ytimg.com/vi/-zLfOtZZ7n8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Lou Rawls - Lady Love (Official Audio)</span></button>
+<button class="vtile" data-yt="XrjYelJUl1s" type="button"><img src="https://i.ytimg.com/vi/XrjYelJUl1s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Lou Rawls - Live . In Concert</span></button>
+<button class="vtile" data-yt="z8EGp2yRbFs" type="button"><img src="https://i.ytimg.com/vi/z8EGp2yRbFs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Lou Rawls - See You When I Git There (Official Audio)</span></button>
+<button class="vtile" data-yt="5zSWIdQKTYQ" type="button"><img src="https://i.ytimg.com/vi/5zSWIdQKTYQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">L.o.u R.a.w.l.s Greatest Hits ~ Top 100 Artists To Listen in 2023</span></button>
+<button class="vtile" data-yt="bqE7RuIbfjE" type="button"><img src="https://i.ytimg.com/vi/bqE7RuIbfjE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Girl From Ipanema - Lou Rawls</span></button>
+<button class="vtile" data-yt="df2GY5yFLQk" type="button"><img src="https://i.ytimg.com/vi/df2GY5yFLQk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Frank Sinatra and Lou Rawls &quot;All The Way&quot; RARE 1986 [Remastered TV Audio]</span></button>
+<button class="vtile" data-yt="jj2t6eyXyZc" type="button"><img src="https://i.ytimg.com/vi/jj2t6eyXyZc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Lou Rawls - Groovy People (Official Audio)</span></button>
+<button class="vtile" data-yt="GfVlu2GfiFo" type="button"><img src="https://i.ytimg.com/vi/GfVlu2GfiFo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">600Breezy &quot;Lou Rawls&quot; (WSHH Exclusive - Official Music Video)</span></button>
+<button class="vtile" data-yt="4tFh4lkiCaU" type="button"><img src="https://i.ytimg.com/vi/4tFh4lkiCaU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Your Good Thing (Is About To End)</span></button>
+<button class="vtile" data-yt="7RPjCUhHzsU" type="button"><img src="https://i.ytimg.com/vi/7RPjCUhHzsU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">You&#x27;ll Never Find Another Love Like Mine</span></button>
+<button class="vtile" data-yt="xRtzcKsCkuE" type="button"><img src="https://i.ytimg.com/vi/xRtzcKsCkuE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Day We Discovered How Violent Lou Rawls REALLY Was..</span></button>
+<button class="vtile" data-yt="QPbywUcFIy4" type="button"><img src="https://i.ytimg.com/vi/QPbywUcFIy4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Untold Truth Of Lou Rawls | PIR Chronicles Ep18</span></button>
+<button class="vtile" data-yt="EUrD8CU7jDc" type="button"><img src="https://i.ytimg.com/vi/EUrD8CU7jDc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Lou Rawls&#x27; Abandoned House, Gay Lovers, Children, Tragic Death &amp; Net Worth Left Behind</span></button>
+<button class="vtile" data-yt="PU8LWqDg5uo" type="button"><img src="https://i.ytimg.com/vi/PU8LWqDg5uo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">This Week in Black History: Lou Rawls</span></button>
+<button class="vtile" data-yt="_wVeWv-YAlc" type="button"><img src="https://i.ytimg.com/vi/_wVeWv-YAlc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">At 72, Lou Rawls Finally Opens Up About Sam Cooke</span></button>
+<button class="vtile" data-yt="-AZ1KTdl0JM" type="button"><img src="https://i.ytimg.com/vi/-AZ1KTdl0JM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Legend - Film Clip: Lou Rawls reflecting on Sam Cooke</span></button>
+<button class="vtile" data-yt="FyQge-6Lv4U" type="button"><img src="https://i.ytimg.com/vi/FyQge-6Lv4U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Lou Rawls Jr and Christopher Warren talk about Lou Rawls BioPic</span></button>
+<button class="vtile" data-yt="d_75pSvX1xo" type="button"><img src="https://i.ytimg.com/vi/d_75pSvX1xo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Lou Rawls • Interview (Muscle Shoals/Racism/Taj Mahal) • 1970 [Reelin&#x27; In The Years Archive]</span></button>
+<button class="vtile" data-yt="dOELFB_2xOE" type="button"><img src="https://i.ytimg.com/vi/dOELFB_2xOE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sam Cooke - Legend: Lou Rawls Interview</span></button>
+<button class="vtile" data-yt="3wRj8V2OOtE" type="button"><img src="https://i.ytimg.com/vi/3wRj8V2OOtE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">OLD HOLLYWOOD SCANDALS - Lou Rawls! Crazy Stuff on the Net!😕😕</span></button>
+<button class="vtile" data-yt="4q8DjSVncFs" type="button"><img src="https://i.ytimg.com/vi/4q8DjSVncFs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Inside of Lou Rawls MESSY Paternity Suit &amp; His DISGUSTING Behavior | Old School Scandal</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Lou Rawls was an American baritone singer who released 61 albums and sold over 40 million records. He was a three-time winner of the Best Male R&amp;B Vocal Performance Grammy Award and also worked as a voice, television, and film actor.</p>
+<p>Lou Rawls was an American baritone singer who released 61 albums and sold over 40 million records. He was a three-time winner of the Best Male R&amp;B Vocal Performance Grammy Award and also worked as a voice, television, and film actor.</p>
+<h3>early life and military service</h3>
+<p>Born in Chicago on December 1, 1933, Rawls owns was raised by his grandmother in the Ida B. Wells projects. He began singing in the Greater Mount Olive Baptist Church choir at age seven and later sang with local groups where he met Sam Cooke and Curtis Mayfield. After graduating from Dunbar Vocational High School, he sang with the gospel groups Teenage Kings of Harmony and Holy Wonders. In 1951, he replaced Sam Cooke in the Highway QC&#x27;s. Later, he joined the Pilgrim Travelers. In 1955, Rawls enlisted in the United States Army as a paratrooper in the 82nd Airborne Division, serving as a Sergeant before leaving three years later to rejoin the Travelers.</p>
+<h3>musical career</h3>
+<p>Rawls signed with Capitol Records in 1962 and released jazz album Stormy Monday with Les McCann. In 1966, his soul album Soulin&#x27; produced his first R&amp;B No.1 single, &quot;Love Is a Hurtin&#x27; Thing&quot;. He won a Grammy Award for Best R&amp;B Vocal Performance for the single &quot;Dead End Street&quot; in 1967. After being dropped by Capitol Records in 1970, he signed with MGM and recorded the hit song &quot;Natural Man&quot;. In 1974, he recorded a cover of &quot;She&#x27;s Gone&quot; for Bell Records. In 1976, he signed with Philadelphia International and released the album All Things in Time, which sold a million copies. This album featured his biggest hit, &quot;You&#x27;ll Never Find Another Love Like Mine&quot;, which topped the R&amp;B and Adult Contemporary charts and reached No. 2 on the US Billboard Hot 100.</p>
+<h3>philanthropy</h3>
+<p>title: Philanthropy</p>
+<p>////: I&#x27;m adding a section on the philanthropy. Let&#x27;s check sources. He started the Lou Rawls Parade of Stars Telethon in 1980 to benefit the United Negro College Fund (UNCF). The event, eventually known as &quot;An Evening of Stars&quot;, raised more than $250 million for the fund by the time of his death in 2006.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Born:</strong> December 1, 1933</li>
+<li><strong>Died:</strong> January 6, 2006</li>
+<li><strong>Grammy Awards:</strong> Three-time winner of Best Male R&amp;B Vocal Performance</li>
+<li><strong>Biggest Selling Single:</strong> &quot;You&#x27;ll Never Find Another Love Like Mine&quot;</li>
+<li><strong>label: Records Sold:</strong> More than 40 million</li>
+<li><strong>Albums Released:</strong> 61</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Lou_Rawls" rel="noopener">https://en.wikipedia.org/wiki/Lou_Rawls</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/UNCF" rel="noopener">https://en.wikipedia.org/wiki/UNCF</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/You%27ll_Never_Find_Another_Love_Like_Mine" rel="noopener">https://en.wikipedia.org/wiki/You%27ll_Never_Find_Another_Love_Like_Mine</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Lou Rawls">
+        <input type="hidden" name="slug" value="lou-rawls">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Lou Rawls</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

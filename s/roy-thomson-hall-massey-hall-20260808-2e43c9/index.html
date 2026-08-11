@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Roy Thomson Hall / Massey Hall — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">place</div>
+      <h1>Roy Thomson Hall / Massey Hall</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">2</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1240</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="9D0n9jc62sA" type="button"><img src="https://i.ytimg.com/vi/9D0n9jc62sA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Share The Music | Massey Hall and Roy Thomson Hall</span></button>
+<button class="vtile" data-yt="98AuYtN-B6w" type="button"><img src="https://i.ytimg.com/vi/98AuYtN-B6w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">National Geographic Live | Jaime Rojo: Chasing Monarchs | Live at Roy Thomson Hall</span></button>
+<button class="vtile" data-yt="Q0WK_w5mh2M" type="button"><img src="https://i.ytimg.com/vi/Q0WK_w5mh2M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">National Geographic Live | Live at Roy Thomson Hall</span></button>
+<button class="vtile" data-yt="xyVs7d9f_Sg" type="button"><img src="https://i.ytimg.com/vi/xyVs7d9f_Sg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Northern Residency - Our Departure from Roy Thomson Hall</span></button>
+<button class="vtile" data-yt="67JZWK7j7OU" type="button"><img src="https://i.ytimg.com/vi/67JZWK7j7OU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Inside Toronto&#x27;s newly renovated Massey Hall</span></button>
+<button class="vtile" data-yt="UgyjP0sJXs0" type="button"><img src="https://i.ytimg.com/vi/UgyjP0sJXs0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Massey Hall and Roy Thomson Hall 2013|14 Season Trailer</span></button>
+<button class="vtile" data-yt="NKDt-YqzyV8" type="button"><img src="https://i.ytimg.com/vi/NKDt-YqzyV8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">National Geographic Live 2026/2027 Season | Roy Thomson Hall</span></button>
+<button class="vtile" data-yt="tie_QUZ3VwU" type="button"><img src="https://i.ytimg.com/vi/tie_QUZ3VwU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elden Ring Symphonic Adventure LIVE | Roy Thomson Hall | June 26, 2026</span></button>
+<button class="vtile" data-yt="KwQsnLbTEew" type="button"><img src="https://i.ytimg.com/vi/KwQsnLbTEew/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Roy Thomson Hall, Toronto</span></button>
+<button class="vtile" data-yt="cW_tiJ40Shw" type="button"><img src="https://i.ytimg.com/vi/cW_tiJ40Shw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Classic Albums Live - The Beatles &quot;Let It Be&quot; - January 30th at Roy Thomson Hall</span></button>
+<button class="vtile" data-yt="80S6-4hKIyg" type="button"><img src="https://i.ytimg.com/vi/80S6-4hKIyg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Massey Hall &amp; Roy Thomson Hall 2014|15 Season Trailer</span></button>
+<button class="vtile" data-yt="hrQGuqcnngA" type="button"><img src="https://i.ytimg.com/vi/hrQGuqcnngA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Massey Hall &amp; Roy Thomson Hall present Spring 2016 | Soundboard issue 3</span></button>
+<button class="vtile" data-yt="uwcYp1AIj7g" type="button"><img src="https://i.ytimg.com/vi/uwcYp1AIj7g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">National Geographic Live | 2024/25 Season Live at Roy Thomson Hall | On-sale now</span></button>
+<button class="vtile" data-yt="dcipZgj4XEk" type="button"><img src="https://i.ytimg.com/vi/dcipZgj4XEk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Behind the scenes of the massive renovations at Massey Hall</span></button>
+<button class="vtile" data-yt="sigXlKOAXrw" type="button"><img src="https://i.ytimg.com/vi/sigXlKOAXrw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">National Geographic Live | Alize Carrere: Adapatation | Live at Roy Thomson Hall</span></button>
+<button class="vtile" data-yt="kLai01v7UTY" type="button"><img src="https://i.ytimg.com/vi/kLai01v7UTY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">National Geographic Live: Thomas Peschak - Amazon: Andes to the Atlantic | Live at Roy Thomson Hall</span></button>
+<button class="vtile" data-yt="TGgDR9IOJKc" type="button"><img src="https://i.ytimg.com/vi/TGgDR9IOJKc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Oh Susanna | Namedropper Documentary | 2015</span></button>
+<button class="vtile" data-yt="d6z7W7TN95w" type="button"><img src="https://i.ytimg.com/vi/d6z7W7TN95w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Massey Hall: Historic venue prepares for extensive renovation</span></button>
+<button class="vtile" data-yt="rBmaLIMpAb0" type="button"><img src="https://i.ytimg.com/vi/rBmaLIMpAb0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Roy Thomson Hall The Boys</span></button>
+<button class="vtile" data-yt="BCvc-xQHvMQ" type="button"><img src="https://i.ytimg.com/vi/BCvc-xQHvMQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bobblehead Handel: From Massey Hall to Roy Thomson Hall</span></button>
+<button class="vtile" data-yt="MMLBwLrqGCc" type="button"><img src="https://i.ytimg.com/vi/MMLBwLrqGCc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Marking 100 Years of the Toronto Symphony Orchestra | The Agenda</span></button>
+<button class="vtile" data-yt="9xqEXjqrl7g" type="button"><img src="https://i.ytimg.com/vi/9xqEXjqrl7g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The importance of Massey Hall explained | If These Walls Could talk</span></button>
+<button class="vtile" data-yt="nS6jNR3yRyM" type="button"><img src="https://i.ytimg.com/vi/nS6jNR3yRyM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The History of Massey Hall</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Roy Thomson Hall and Massey Hall are two prominent concert halls in Toronto, Ontario, Canada. They are both operated by The Corporation of Massey Hall and Roy Thomson Hall, a non-profit charitable organization.</p>
+<p>Roy Thomson Hall and Massey Hall are two prominent concert halls in Toronto, Ontario, Canada. They are both operated by The Corporation of Massey Hall and Roy Thomson Hall, a non-profit charitable organization.</p>
+<h3>roy thomson hall</h3>
+<p>Opened in 1982, Roy Thomson Hall is located downtown in the city&#x27;s entertainment district. It is home to the Toronto Symphony Orchestra and the Toronto Mendelssohn Choir, as well as the esports team Toronto Defiant. The hall features a circular architectural design with a sloping curvilinear glass exterior, designed by Canadian architects Arthur Erickson and Mathers and Haldenby. Itzhak Perlman served as a special advisor on accessibility for disabled guests and performers. The venue seats 2,630 guests and contains a pipe organ built by Gabriel Kney. Its construction phase was previously known as &#x27;The New Massey Hall&#x27; before it was officially named in January 1982 after a C$4.5 million donation from the family of Roy Thomson. Following musician complaints about acoustics, the hall underwent a six-month renovation in 2002. The building&#x27;s design was influenced by Erickson&#x27;s relationship with North American Aboriginals and his journeys in Japan. Arthur Erickson described the grey structure as a container for people to fill with their own decorations. The venue is used for gala screenings of the the Toronto International Film Festival, காலைகா//toral screenings of the year&#x27;s People&#x27;s Choice Award winner, and has appeared in films such as X-Men (2000) and television series like The Expanse and The Boys. It also hosted the state funeral of Jack Layton on August 27, 2011.</p>
+<h3>history of massey hall</h3>
+<p>Massey Hall is a performing arts auditorium in Toronto&#x27;s Garden District, opened in 1894. It was a gift to the people of Toronto from industrialist Hart Massey, who wanted a secular meeting place for choral music that would be accessible to both rich and poor. The building was designed by architect Sidney Badgley with a neoclassical facade and Moorish Revival interior architecture inspired by the Alhambra Palace in Spain and Louis Sullivan&#x27;s Chicago Auditorium. It features thirty stained glass windows depicting famous composers, created by the Faircloth Brothers glass firm. Completed at a cost of CA$152,390.75, its debut concert was a choral performance of and Handel&#x27;s &#x27;Messiah&#x27; on June 14, 1894. After the 1904 Toronto Great Fire, fire escape staircases were added to the front face of the building. In 1933, the Massey Foundation undertook renovations that simplified the same name to Massey Hall and reduced its capacity from 3,500 to 2,765 patrons. In 1994, for its 100th anniversary, a bar called Centuries is now located in the basement, which has a capacity of 220 people. A major renovation began in 2013, and phase two (&#x27;Massey Hall Forever&#x27;) began in July 2018, which included an expanded stage, a new seven-story addition called the Allied Music Centre, and a new retractable seating system. The project was completed in 2022, with re-opening delayed by the COVID-19 pandemic until 2021.</p>
+<h3>capacity and designations</h3>
+<p>Massey Hall was designated as a Heritage Property under the Ontario Heritage Act in 1973 and a National Historic Site of Canada on June 15, 1981. Its current main hall capacity is 2,534 seated and 2,800 standing. The new TD Music Hall within the Allied Music Centre addition has a capacity of 245 seated and 450 standing. The venue is known for its outstanding acoustics and was the long-time hall of the Toronto Symphony Orchestra and the Toronto Symphony Orchestra and the Toronto Mendelssohn Choir until 1984.</p>
+<h3>notable performers</h3>
+<p>Massey Hall has hosted a wide variety of performers, including operatic singers such as Maria Callas, Luciano Pavarotti, Enrico Caruso, and Montserrat Caballe, and classical musicians like George Gershwin, Glenn Gould, Vladimir Horowitz, and Arturo Toscanini. It has also been used for public memorials, speaking tours, and boxing matches.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Location:</strong> Toronto, Ontario, Canada</li>
+<li><strong>//toral screenings of the year&#x27;s People&#x27;s Choice Award winner:</strong> Roy Thomson Hall</li>
+<li><strong>Opening Date (Massey Hall):</strong> 1894</li>
+<li><strong> :</strong> -</li>
+<li><strong>National Historic Site of Canada Designation:</strong> June 15, 1981</li>
+<li><strong> :</strong> -</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Massey_Hall" rel="noopener">https://en.wikipedia.org/wiki/Massey_Hall</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Roy_Thomson_Hall" rel="noopener">https://en.wikipedia.org/wiki/Roy_Thomson_Hall</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Roy Thomson Hall / Massey Hall">
+        <input type="hidden" name="slug" value="roy-thomson-hall-massey-hall">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Roy Thomson Hall / Massey Hall</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

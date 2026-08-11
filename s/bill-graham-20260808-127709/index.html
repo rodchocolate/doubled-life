@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Bill Graham — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Bill Graham</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1019</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="HF55GV9C6CU" type="button"><img src="https://i.ytimg.com/vi/HF55GV9C6CU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Feeling Drained? God Is About to Strengthen You - Billy Graham</span></button>
+<button class="vtile" data-yt="zbKXkpiLcfk" type="button"><img src="https://i.ytimg.com/vi/zbKXkpiLcfk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Holy Spirit and You | Billy Graham Classic Sermon</span></button>
+<button class="vtile" data-yt="AFCdfNSuulA" type="button"><img src="https://i.ytimg.com/vi/AFCdfNSuulA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Don’t Worry, God Will Take Care of You - Billy Graham</span></button>
+<button class="vtile" data-yt="nPtggc-zwAg" type="button"><img src="https://i.ytimg.com/vi/nPtggc-zwAg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">9 Hours of Sermons | Billy Graham Sermon #BillyGraham #Gospel #Jesus #Christ</span></button>
+<button class="vtile" data-yt="7c_yxXjQMyI" type="button"><img src="https://i.ytimg.com/vi/7c_yxXjQMyI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jesus Calls You by Name | Billy Graham Classic Sermon</span></button>
+<button class="vtile" data-yt="bCS5NZ9eNB8" type="button"><img src="https://i.ytimg.com/vi/bCS5NZ9eNB8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">When God Gets Your Attention Billy Graham Classics</span></button>
+<button class="vtile" data-yt="8J_wGWrk0ag" type="button"><img src="https://i.ytimg.com/vi/8J_wGWrk0ag/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Break Free from Anxiety - Let God Take Over Your Worries - Billy Graham</span></button>
+<button class="vtile" data-yt="f9CHi0Appoc" type="button"><img src="https://i.ytimg.com/vi/f9CHi0Appoc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Lost Sheep | Billy Graham&#x27;s Deadly Message from Anchorage, Alaska</span></button>
+<button class="vtile" data-yt="0UUaNhQ7yN4" type="button"><img src="https://i.ytimg.com/vi/0UUaNhQ7yN4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Wake Up at 3AM? Pray This Powerful Prayer | Billy Graham</span></button>
+<button class="vtile" data-yt="ToGeLDvPM18" type="button"><img src="https://i.ytimg.com/vi/ToGeLDvPM18/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Psalm 37: God Will Crush Every Evil Plan Against You! | Billy Graham | Powerful Prayer</span></button>
+<button class="vtile" data-yt="MUth7-GwAZE" type="button"><img src="https://i.ytimg.com/vi/MUth7-GwAZE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">10 hours of Billy Graham Sermons | #BillyGraham #Jesus #Christ</span></button>
+<button class="vtile" data-yt="iEX5sPb8trY" type="button"><img src="https://i.ytimg.com/vi/iEX5sPb8trY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">¡Haz estos 5 hábitos cada mañana y verás a Dios obrar en tu vida! ! | Predicas De Billy Graham</span></button>
+<button class="vtile" data-yt="0NhgPoCs-Uw" type="button"><img src="https://i.ytimg.com/vi/0NhgPoCs-Uw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Billy Graham: An Extraordinary Journey | Billy Graham TV Special</span></button>
+<button class="vtile" data-yt="_SDWjfsy-GA" type="button"><img src="https://i.ytimg.com/vi/_SDWjfsy-GA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Last Days at the Fillmore - Full Documentary - (Official)</span></button>
+<button class="vtile" data-yt="MQaOgs7m3cA" type="button"><img src="https://i.ytimg.com/vi/MQaOgs7m3cA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">God’s Warning About the Devil and Demons | Billy Graham’s 1971 Dallas Sermon That Shook America</span></button>
+<button class="vtile" data-yt="QZ7fTGe4bY4" type="button"><img src="https://i.ytimg.com/vi/QZ7fTGe4bY4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Billy Graham - God&#x27;s ambassador - part 1</span></button>
+<button class="vtile" data-yt="6C4T6RLfuz4" type="button"><img src="https://i.ytimg.com/vi/6C4T6RLfuz4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Don&#x27;t Ignore The Secrets About Billy Graham Anymore</span></button>
+<button class="vtile" data-yt="iwJ-sT9OwA0" type="button"><img src="https://i.ytimg.com/vi/iwJ-sT9OwA0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Billy Graham: A Life Remembered | Billy Graham TV Special</span></button>
+<button class="vtile" data-yt="hi3dQIHAKiQ" type="button"><img src="https://i.ytimg.com/vi/hi3dQIHAKiQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bill Graham - Bill Graham Reminisces About The Fillmore East - 8/19/1984 - New York City</span></button>
+<button class="vtile" data-yt="LBz4v3Qb7lE" type="button"><img src="https://i.ytimg.com/vi/LBz4v3Qb7lE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Bill Graham Changed The Dead Forever</span></button>
+<button class="vtile" data-yt="y9OaECMdUxY" type="button"><img src="https://i.ytimg.com/vi/y9OaECMdUxY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What They Found Hidden in Billy Graham’s Study Will Leave You Speechless</span></button>
+<button class="vtile" data-yt="lA5KUfzkfYE" type="button"><img src="https://i.ytimg.com/vi/lA5KUfzkfYE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Billy Graham - The Devil and Demons - Dallas TX 1971</span></button>
+<button class="vtile" data-yt="lMZLPa-wCIA" type="button"><img src="https://i.ytimg.com/vi/lMZLPa-wCIA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Cross | Billy Graham TV Special</span></button>
+<button class="vtile" data-yt="7geKSeSSRa4" type="button"><img src="https://i.ytimg.com/vi/7geKSeSSRa4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Paul Harvey interviews Billy Graham at his home in NC</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Bill Graham (1931–1991) was an American concert promoter who had a profound influence on the musical renaissance of the 1960s from its epicenter in San Francisco. He is known for making the Fillmore and Winterland Ballroom famous as venues for rock bands and acts of the Bay Area.</p>
+<p>Bill Graham (1931–1991) was an American concert promoter who had a profound influence on the musical renaissance of the 1960s from its epicenter in San Francisco. He is known for making the Fillmore and Winterland Ballroom famous as venues for rock bands and acts of the Bay Area.</p>
+<h3>early life</h3>
+<p>Born Wulf Wolodia Grajonca in Berlin, Germany, Graham was the son of lower middle-class Jewish parents. Due to Nazi persecution, he and his sister Tanya &quot;Tolla&quot; were placed in a Berlin orphanage and sent to France as part of a pre-Holocaust exchange of Jewish children for Christian orphans. After the fall of France in 1940, he was among a group of Jewish orphans spirited out of France to North America as one of the One Thousand Children (OTC). His mother died on the way to Auschwitz concentration camp and his sister Tolla did not survive the journey to the United States. He settled into a foster home in the Bronx, New York, where he changed his name to sound more &quot;American&quot; after being taunted for his immigrant accent. He graduated from DeWitt Clinton High School and earned a business degree from the City College of New York. In 1951, he was drafted into the United States Army and served in the Korean War, where he was awarded the Bronze Star and Purple Heart.</p>
+<h3>career in san francisco</h3>
+<p>Graham moved to San Francisco in the early 1960s. He began his career as a promoter by organizing a benefit concert for the San Francisco Mime Troupe after their leader, R. G. Davis, was arrested on obscenity charges. This success led him to team up with Chet Helms and Family Dog projects to promote concerts that served as social meeting places and forums for various ideologies, including civil rights and peace movements. Graham eventually secured a contract for open dates at the Fillmore Auditorium, which he used as a caminho to establish permanent locations of his own. Despite facing challenges with City Hall regarding dance hall permits, he eventually obtained a permit after an editorial in the San Francisco Chronicle on April 21, 1966, which he described as a big turning point. He also worked with Charles Sullivan, an entrepreneur who owned the master lease on the Fillmore Auditorium.</p>
+<h3>title la own</h3>
+<p>Graham died in 1991 in a helicopter crash. In 1992, the San Francisco Board of Supervisors voted to rename the San Francisco Civic Auditorium as the Bill Graham Civic Auditorium, a multi-purpose arena that holds 8,500 people.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Birth Name:</strong> Wulf Wolodia Grajonca</li>
+<li><strong>Military Service:</strong> Korean War</li>
+<li><strong>Military Honors:</strong> Bronze Star and Purple Heart</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Bill_Graham" rel="noopener">https://en.wikipedia.org/wiki/Bill_Graham</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Bill_Graham_(promoter" rel="noopener">https://en.wikipedia.org/wiki/Bill_Graham_(promoter</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Bill_Graham_Civic_Auditorium" rel="noopener">https://en.wikipedia.org/wiki/Bill_Graham_Civic_Auditorium</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Bill Graham">
+        <input type="hidden" name="slug" value="bill-graham">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Bill Graham</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

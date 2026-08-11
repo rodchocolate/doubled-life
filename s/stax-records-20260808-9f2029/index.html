@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Stax Records — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>Stax Records</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">933</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="VWh3l8hrNWU" type="button"><img src="https://i.ytimg.com/vi/VWh3l8hrNWU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Respect Yourself: The History of Stax Records</span></button>
+<button class="vtile" data-yt="podoObTg5sQ" type="button"><img src="https://i.ytimg.com/vi/podoObTg5sQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">STAX RECORDS funk &amp; soul 1965-1976&#x27; ALL VINYL OG 45S FONKI CHEFF</span></button>
+<button class="vtile" data-yt="kfpfq2Pp9oc" type="button"><img src="https://i.ytimg.com/vi/kfpfq2Pp9oc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Soul Classic Stax Records</span></button>
+<button class="vtile" data-yt="GyRsoLk5RZI" type="button"><img src="https://i.ytimg.com/vi/GyRsoLk5RZI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Stax Records The Memphis Label That Defined Soul and Rock</span></button>
+<button class="vtile" data-yt="hgPz_a3VHoQ" type="button"><img src="https://i.ytimg.com/vi/hgPz_a3VHoQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Booker T &amp; the MGs &#x27;Time is Tight&#x27; live in Stax Studio, 1969</span></button>
+<button class="vtile" data-yt="J5QAG0gKuM0" type="button"><img src="https://i.ytimg.com/vi/J5QAG0gKuM0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">THE SOUL OF STAX (1994)</span></button>
+<button class="vtile" data-yt="_RwAoIuzHj0" type="button"><img src="https://i.ytimg.com/vi/_RwAoIuzHj0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Stax Records 50th Anniversary Trailer</span></button>
+<button class="vtile" data-yt="mRQBPpKXEjw" type="button"><img src="https://i.ytimg.com/vi/mRQBPpKXEjw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Soul Comes Home : A Celebration of STAX Records and Memphis Soul Music (full concert 2003)</span></button>
+<button class="vtile" data-yt="SVuyQaB3XGM" type="button"><img src="https://i.ytimg.com/vi/SVuyQaB3XGM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Thie History &amp; Importance Of Stax Records - Music School</span></button>
+<button class="vtile" data-yt="S0M8ZsfpISw" type="button"><img src="https://i.ytimg.com/vi/S0M8ZsfpISw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Legendary STAX RECORDS MUSEUM Soulville U. S. A. - Memphis</span></button>
+<button class="vtile" data-yt="HxtiYR7xLCA" type="button"><img src="https://i.ytimg.com/vi/HxtiYR7xLCA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Respect Yourself: The Stax Records Story (Film Trailer)</span></button>
+<button class="vtile" data-yt="jFYjcxwcxcs" type="button"><img src="https://i.ytimg.com/vi/jFYjcxwcxcs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Story Of Stax Records 02b</span></button>
+<button class="vtile" data-yt="Szy3Rno6KIw" type="button"><img src="https://i.ytimg.com/vi/Szy3Rno6KIw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Take Me To The River | FULL MOVIE | Stax Records, Terrence Howard, Snoop Dogg | Music Documentary</span></button>
+<button class="vtile" data-yt="XHZZfarpWeQ" type="button"><img src="https://i.ytimg.com/vi/XHZZfarpWeQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">HBO&#x27;s &#x27;STAX: Soulsville U.S.A.&#x27; features Memphians, earns two Emmy nominations</span></button>
+<button class="vtile" data-yt="3I6Fdm7WGWM" type="button"><img src="https://i.ytimg.com/vi/3I6Fdm7WGWM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Stax vs Motown: The Rivalry That Destroyed The Lives Of Soul Icons</span></button>
+<button class="vtile" data-yt="B260nPIV8M8" type="button"><img src="https://i.ytimg.com/vi/B260nPIV8M8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Stax, the Legendary Soul Label | SLICE Docus | Full Documentary</span></button>
+<button class="vtile" data-yt="ste1KIwjbLE" type="button"><img src="https://i.ytimg.com/vi/ste1KIwjbLE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Inside Stax Studios! Isaac Hayes, Booker T &amp; MGs, Brook Benton Memphis 1969</span></button>
+<button class="vtile" data-yt="DW1k36nq4eM" type="button"><img src="https://i.ytimg.com/vi/DW1k36nq4eM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Dramatics: How Stax Records Exploitation and the Algiers Motel Killing Destroyed a Soul Group</span></button>
+<button class="vtile" data-yt="8H9gvTdduwI" type="button"><img src="https://i.ytimg.com/vi/8H9gvTdduwI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The History of Stax Records</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Stax Records is an American record company originally based in Memphis, Tennessee. Founded in 1957 as Satellite Records, it became influential in the creation of Southern soul and Memphis soul music.</p>
+<p>Stax Records is an American record company originally based in Memphis, Tennessee. Founded in 1957 as Satellite Records, it became influential in the creation of Southern soul and Memphis soul music.</p>
+<h3>origins and name change</h3>
+<p>Stax was founded in 1957 by Jim Stewart, initially operating out of a garage. In 1958, his sister Estelle Axton became a financial partner, investing $2,500 to purchase an Ampex 350 mono console tape recorder. The label was originally named Satellite Records and focused on country music, rockabilly, and pop. By 1960, the uma-integrated team of racially integrated staff and artists worked from a converted garage near National Cemetery in Brunswick, Tennessee, before moving to the former Capitol Theatre at 926 East McLemore Avenue in South Memphis. The name was changed to Stax Records in September 1961 after a conflict with another company called Satellite Records in California. The name &#x27;Stax&#x27; is a portmanteau of Stewart and Axton.</p>
+<h3>musical style and influence</h3>
+<p>The label&#x27;s sound was based on black gospel, country, and earlier forms of rhythm and blues (R&amp;B), which became known as southern soul music. This identifiable sound was created by using one studio, one equipment set-up, and a small group of songwriters and musicians, including the house band Booker T. &amp; the M.G.&#x27;s. Stax also released gospel, funk, and blues recordings, and featured ethnically integrated bands and staff during a time of racial strife in Memphis and the South.</p>
+<h3>growth and decline</h3>
+<p>Following the death of Otis Redding in 1967 and the severance of its distribution deal with Atlantic Records in 1968, the label was expanded by co-owner Al Bell. To compete with Motown Records, Bell expanded operations significantly over five years. However, in the mid-1970s, a problematic distribution deal with CBS Records caused the label to slide into insolvency and forced its closure in late 1975. In 1977, Fantasy Records acquired the post-1968 catalogue, and by the early 1980s, it became strictly a reissue label. After Concord Records acquired Fantasy in 2004, the Stax label was reactivated to issue both new recordings and catalog material.</p>
+<h3>associated artists and media</h3>
+<p>Stax Records featured artists such as Otis Redding, Isaac Hayes, The Staple Singers, Sam &amp; Dave, and the house band Booker T. &amp; the M.G.&#x27;s. It also had a sister label, Volt Records, and an offshoot called We Produce Records, which signed the soul vocal trio The Temprees in 1970. A documentary series titled &#x27;Stax: Soulsville U.S.A.&#x27; was produced by Jamila Wignot for HBO, winning a Peabody Award.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Founded:</strong> 1957</li>
+<li><strong>Original Name:</strong> Satellite Records</li>
+<li><strong> :</strong> -</li>
+<li><strong>Founders:</strong> Jim Stewart and Estelle Axton</li>
+<li><strong>Location:</strong> Memphis, Tennessee</li>
+<li><strong>Influence:</strong> value: Southern soul and Memphis soul music</li>
+<li><strong>Closing Date:</strong> late 1975</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Stax:_Soulsville_U.S.A." rel="noopener">https://en.wikipedia.org/wiki/Stax:_Soulsville_U.S.A.</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Stax_Records" rel="noopener">https://en.wikipedia.org/wiki/Stax_Records</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/The_Temprees" rel="noopener">https://en.wikipedia.org/wiki/The_Temprees</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Stax Records">
+        <input type="hidden" name="slug" value="stax-records">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Stax Records</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

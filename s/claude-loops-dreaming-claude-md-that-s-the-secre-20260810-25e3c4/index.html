@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Claude + loops + dreaming + CLAUDE.md - that’s the secret.… — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">video</div>
+      <h1>Claude + loops + dreaming + CLAUDE.md - that’s the secret.…</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-10</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">1</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">5992</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos"><div class="vslot"><div class="vframe"><img src="lead.jpg" alt="Claude + loops + dreaming + CLAUDE.md - that’s the secret.…"></div></div></div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">An Anthropic technical staff member discusses &#x27;context engineering&#x27; as a critical lever for making raw model intelligence scalable and durable in production agents. He covers the evolution from simple CLAUDE.md files to autonomous memory tools and procedural &#x27;skills,&#x27; emphasizing</p>
+<ul>
+<li>url: <a href="https://www.tiktok.com/@sarutalksai/video/7655022810426789142?_r=1&amp;_t=ZT-98lZXdfGoQ9" rel="noopener">https://www.tiktok.com/@sarutalksai/video/7655022810426789142?_r=1&amp;_t=ZT-98lZXdfGoQ9</a></li>
+<li>uploader: sarutalksai</li>
+<li>duration: 1866s</li>
+<li>subject: Context Engineering (technique)</li>
+<li>source uuid: 019feba5-1f25-7d64-833e-79ca5d2b968c</li>
+<li>processed: 2026-08-10T12:29:40.593173+00:00</li>
+</ul>
+<h3>summary</h3>
+<p>An Anthropic technical staff member discusses &#x27;context engineering&#x27; as a critical lever for making raw model intelligence scalable and durable in production agents. He covers the evolution from simple CLAUDE.md files to autonomous memory tools and procedural &#x27;skills,&#x27; emphasizing that context management allows AI agents to compound their intelligence through continual learning and better alignment with organizational preferences.</p>
+<h3>claims check</h3>
+<ul>
+<li><strong>unsupported</strong> — 90% of Anthropic engineers use loops and ‘dreaming’ to build self-improving agentic systems  (No sources provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — CLAUDE.md files are &#x27;unreasonably effective&#x27; at steering agents towards user preferences and codebase navigation  (No sources provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — Simple markdown files that agents can write to are highly effective for memory management</li>
+</ul>
+<h4>Claude — product</h4>
+<ul>
+<li>what it does: Large Language Model (LLM) developed by Anthropic.</li>
+<li>why relevant: The primary model being discussed in the context of agentic systems.</li>
+<li>search terms: Claude AI, Anthropic Claude</li>
+</ul>
+<h4>CLAUDE.md — product</h4>
+<ul>
+<li>what it does: A markdown file used to provide instructions, preferences, and codebase navigation guides for the agent.</li>
+<li>why relevant: Described as an &#x27;unreasonably effective&#x27; starting point for context engineering.</li>
+<li>search terms: CLAUDE.md, Claude Code configuration file, Anthropic Claude.md</li>
+</ul>
+<h4>Claude Code — product</h4>
+<ul>
+<li>what it does: A tool/environment for coding with Claude.</li>
+<li>why relevant: The product that introduced the use of CLAUDE.md files.</li>
+<li>search terms: Claude Code Anthropic</li>
+</ul>
+<h4>Context Engineering — technique</h4>
+<ul>
+<li>what it does: The process of managing and optimizing the information provided to a model&#x27;s context window to improve performance on specific tasks.</li>
+<li>why relevant: The main focus of the talk; described as the lever that translates raw intelligence into durable products.</li>
+<li>search terms: AI context engineering, LLM context management</li>
+</ul>
+<h4>Dreaming — technique</h4>
+<ul>
+<li>what it does: A paradigm for continual learning where agents can simulate or process information to improve themselves.</li>
+<li>why relevant: Mentioned as part of the path toward continual learning and used by Anthropic engineers.</li>
+<li>search terms: AI agent dreaming, continual learning AI</li>
+</ul>
+<h4>Loops — technique</h4>
+<ul>
+<li>what it does: Closing the agent loop to allow an agent to verify its own output and self-improve.</li>
+<li>why relevant: Mentioned as a core technique used by Anthropic engineers for agentic systems.</li>
+<li>search terms: agentic loops AI, self-correcting AI agents</li>
+</ul>
+<h4>Memory Tools — tool</h4>
+<ul>
+<li>what it does: Tools that allow agents to autonomously read, write, and update their own memory systems in-band during a session.</li>
+<li>why relevant: An evolution of context engineering to solve the problem of long preference files (context bloat).</li>
+<li>search terms: LLM autonomous memory tools, AI agent memory management</li>
+</ul>
+<h4>Skills — technique</h4>
+<ul>
+<li>what it does: Procedural workflows with &#x27;progressive disclosure&#x27; where the agent only sees a small amount of front matter before deciding to load more.</li>
+<li>why relevant: A method for managing ever-growing context by providing information only when needed.</li>
+<li>search terms: AI agent skills, progressive disclosure LLM</li>
+</ul>
+<h3>transcript</h3>
+<p>And hope you&#x27;re all having a wonderful day so far here at AI Devcon.</p>
+<p>I certainly am. Um,</p>
+<p>I hope that your context windows are not too full</p>
+<p>and you have a bit of space</p>
+<p>for a little bit more information about context.</p>
+<p>Um, by way of introduction,</p>
+<p>my name is Lamas. I&#x27;m a member of technical staff at anthropic.</p>
+<p>I work on our applied AI team,</p>
+<p>and this is a team which sits between research,</p>
+<p>product and go to market.</p>
+<p>So we do a mixture of working on internal projects</p>
+<p>as well as directly with customers</p>
+<p>who are building agents at the frontier.</p>
+<p>Me specifically, I work with startups and founders,</p>
+<p>many of whom I&#x27;m sure are in this room today.</p>
+<p>And I think I have the best seat in the house</p>
+<p>because these are the users that are constantly pushing us</p>
+<p>right up against the boundary of what is possible</p>
+<p>with models and products today.</p>
+<p>And as such, uh,</p>
+<p>we just get to, like,</p>
+<p>ride the exponential together.</p>
+<p>One thing that constantly comes up, uh,</p>
+<p>as I&#x27;m sure you&#x27;re all aware,</p>
+<p>is what it really takes</p>
+<p>to take the raw model intelligence that we have today</p>
+<p>and translate that into durable,</p>
+<p>scalable, useful products.</p>
+<p>And one of the main levers that we have in order to do this</p>
+<p>is context engineering, which will be the focus of my talk today.</p>
+<p>So on this journey,</p>
+<p>I want to quickly do a recap of where Context Engineering has gone in</p>
+<p>The past year, it&#x27;s a space that&#x27;s completely blown up.</p>
+<p>And through that we&#x27;ll kind of</p>
+<p>distill the primitives that have proven to be really useful,</p>
+<p>some stuff that has been a little bit less useful.</p>
+<p>Secondly, we&#x27;ll talk about what the state of the art is</p>
+<p>for memory management today.</p>
+<p>And thirdly, and,</p>
+<p>and in particular with that,</p>
+<p>we&#x27;ll talk about not just what nice theoretical principles are,</p>
+<p>but what it takes to actually build these systems in production.</p>
+<p>And then finally,</p>
+<p>we&#x27;ll talk about where this will go on the path to continual learning.</p>
+<p>And in particular, touching on a paradigm called dreaming.</p>
+<p>So we said this before and models.</p>
+<p>We release new models all the time.</p>
+<p>They are more and more intelligent.</p>
+<p>But when it comes to actually deploying these models in your agents,</p>
+<p>in your environments, in your organisation,</p>
+<p>the intelligence alone is not going to compound,</p>
+<p>because they need this context</p>
+<p>that helps them perform the specific tasks that you need them to.</p>
+<p>In particular,</p>
+<p>a lot of this context is often kind of orthogonal to the model</p>
+<p>intelligence. Right?</p>
+<p>Like the newest model we&#x27;ve just released,</p>
+<p>one, um,</p>
+<p>isn&#x27;t gonna necessary, isn&#x27;t gonna out of the box,</p>
+<p>know exactly what it takes to succeed in your organisation</p>
+<p>and with the tasks that you want them to.</p>
+<p>And so it&#x27;s a really great investment to work on the context</p>
+<p>engineering part, because this, uh,</p>
+<p>over time has the effect of multiplying the intelligence</p>
+<p>even as Models get smarter.</p>
+<p>So I&#x27;m sure you&#x27;ll all be familiar with these problems.</p>
+<p>It&#x27;s like agents not knowing their way around a codebase</p>
+<p>or knowing enough about your own user preferences.</p>
+<p>Um, and then additionally,</p>
+<p>like, you don&#x27;t have the effect where agents are better at the task</p>
+<p>the next time they perform it,</p>
+<p>so they, they might not learn from their mistakes.</p>
+<p>Um, and as such,</p>
+<p>you don&#x27;t have this, uh,</p>
+<p>continual learning effect. So just to recap,</p>
+<p>uh, where we&#x27;ve got so far on this journey of context engineering</p>
+<p>at anthropic, we like to say,</p>
+<p>do the simple thing that works.</p>
+<p>And this is a timeline that&#x27;s only really spans the past year.</p>
+<p>And where we started was with these Claude MD files</p>
+<p>that we launched with Claude Code.</p>
+<p>And what we learnt from this</p>
+<p>was that it was kind of unreasonably effective.</p>
+<p>Like this markdown file</p>
+<p>that just gives the agent a couple of instructions about</p>
+<p>maybe your way around the code base.</p>
+<p>The organisation, um,</p>
+<p>your own user preferences</p>
+<p>that injected into the beginning of the model&#x27;s context</p>
+<p>at the beginning of a session,</p>
+<p>was so good at steering it towards the things that mattered</p>
+<p>and helping it navigate</p>
+<p>and align its actions towards your preferences.</p>
+<p>However, we also learn a couple of things about what doesn&#x27;t work here.</p>
+<p>So when we&#x27;re injecting this at the beginning,</p>
+<p>at the beginning of the session into context,</p>
+<p>we obviously start to run into problems where you get problems</p>
+<p>With context blow. Like,</p>
+<p>what happens when this file with very important preferences gets very,</p>
+<p>very long? Um,</p>
+<p>how do I manage that over time?</p>
+<p>And so we went back to the drawing board and thought about, like,</p>
+<p>ways that we could improve this separately.</p>
+<p>Though what was true was that having just a very simple markdown file,</p>
+<p>which is human readable, which your agent can write to,</p>
+<p>which you can write to, is really,</p>
+<p>really effective.</p>
+<p>So a second avenue that we investigated was these memory tools.</p>
+<p>And this is interesting because it leans into this idea of, okay,</p>
+<p>what happens if we let agents</p>
+<p>autonomously manage their own memory systems?</p>
+<p>So we let them decide when they read,</p>
+<p>when they write, um,</p>
+<p>and when they update memories.</p>
+<p>And this is all happening in band,</p>
+<p>which means that it&#x27;s within the context of a session.</p>
+<p>So during a session, a agent is thinking about, like,</p>
+<p>what might be interesting to pull from memory,</p>
+<p>what might be interesting to write to memory.</p>
+<p>So autonomy proves to work really well in this case.</p>
+<p>Um, and over time,</p>
+<p>we&#x27;ve kind of developed that into systems</p>
+<p>where we&#x27;re even less opinionated</p>
+<p>about what these tools need to look like.</p>
+<p>And I&#x27;ll touch on that in a second.</p>
+<p>So the next, uh,</p>
+<p>the next stop on this journey was skills,</p>
+<p>which I&#x27;m sure you&#x27;ve heard a bunch about today.</p>
+<p>And what this solves is this problem of the, like,</p>
+<p>ever growing context. So we Have this really clever idea of, um,</p>
+<p>progressive disclosure.</p>
+<p>The way I like to think about it is, um,</p>
+<p>actually first on skill. What skills are good at.</p>
+<p>It&#x27;s processes where you have like a procedural workflow.</p>
+<p>So something where you have an opinion about how the process works</p>
+<p>end to end, that you want the agent to follow.</p>
+<p>And what&#x27;s very clever</p>
+<p>is that the agent only looks at this front matter.</p>
+<p>A couple of sentences at the top of the file before loading the skill.</p>
+<p>But you can still load as much detail as you want</p>
+<p>into the main body of the file.</p>
+<p>So you&#x27;re able to at the same time</p>
+<p>have very deep levels of detail</p>
+<p>whilst not overloading the model&#x27;s context.</p>
+<p>And the way I like to think about it</p>
+<p>is as if I had a bookshelf in my room,</p>
+<p>and every time someone talks to me, um,</p>
+<p>I can kind of scan and look at my list of books</p>
+<p>and see if any of the titles might be relevant to the conversation.</p>
+<p>And kind of pick that off the shelf and read it when I need to.</p>
+<p>So, for example,</p>
+<p>someone walked up to me and started speaking to me in French,</p>
+<p>and I noticed that I have a French dictionary.</p>
+<p>I could pull that out and it would give me context</p>
+<p>kind of loaded during the conversation.</p>
+<p>That would help me, um,</p>
+<p>without me having paid attention in like 7 years of French classes.</p>
+<p>At school and having that all loaded into my context already.</p>
+<p>So this was a really, really great innovation.</p>
+<p>But one bottleneck potentially with it</p>
+<p>is that it&#x27;s still kind of driven by humans and agents together.</p>
+<p>So you&#x27;re still,</p>
+<p>even if you&#x27;re using your agents to write the skills with you,</p>
+<p>you&#x27;re still being quite opinionated about, like,</p>
+<p>what things need skills.</p>
+<p>So that takes me to the final step on this path,</p>
+<p>which is what we perceive to be state of art for memory systems today.</p>
+<p>And what we have done, and, yeah,</p>
+<p>what we think is best practice</p>
+<p>is modelling these memory systems just as file systems.</p>
+<p>So this kind of aggregates a couple of the learnings from this path.</p>
+<p>So file systems are great.</p>
+<p>You can just fill them up with markdown.</p>
+<p>Um, agents actually just very good at using normal file system tools</p>
+<p>like bash and grep. So just let them search over the file system</p>
+<p>rather than being opinionated about these specific tools</p>
+<p>that they should use to read and write to memory.</p>
+<p>Um, and then, yeah,</p>
+<p>that. That search kind of mirrors this idea of progressive disclosure.</p>
+<p>You can index these memory systems really well</p>
+<p>so that agents can intelligently search over them.</p>
+<p>And that&#x27;s where we have kind of got to so far.</p>
+<p>So just a recap, the key learnings from that format.</p>
+<p>Mark down is great, um,</p>
+<p>for reading memories, you know,</p>
+<p>allow the memories to grow large,</p>
+<p>but give agents Tools to quickly index and search for what&#x27;s relevant.</p>
+<p>And finally, like,</p>
+<p>give agents autonomy when they&#x27;re writing to memories.</p>
+<p>And if you were to go out and build a system,</p>
+<p>it would work really well.</p>
+<p>You would have the feeling of continual learning</p>
+<p>because your agents would get better at the individual, um,</p>
+<p>whatever individual tasks you&#x27;re doing.</p>
+<p>However,</p>
+<p>as with everything, this very neat idea</p>
+<p>runs into some problems when you try and scale it to production.</p>
+<p>So we have an I, we have a concept for theoretically what works.</p>
+<p>And when we then think about scaling these to production</p>
+<p>in environments</p>
+<p>where we have many agents collaborating at the same time,</p>
+<p>where they run over very long periods of time, um,</p>
+<p>and where potentially these,</p>
+<p>like, code bases get really complicated,</p>
+<p>all manner of problems start to arise.</p>
+<p>And we&#x27;ve seen these in production time and time again.</p>
+<p>So one, a couple things just to, like, yeah,</p>
+<p>spark your imagination. Think about multiple agents</p>
+<p>trying to write to a memory file at the same time.</p>
+<p>How do you manage that?</p>
+<p>Think about one agent running into a problem and deciding to, like,</p>
+<p>write to the organisational</p>
+<p>wild wide context which every other agent is currently reading from.</p>
+<p>Like, if something was incorrect there,</p>
+<p>that would scale to all of your agents and be pretty disastrous.</p>
+<p>Um, and think about when you have humans and agents collaborating on,</p>
+<p>on memory context together.</p>
+<p>Like, how do you keep track Of what&#x27;s going on.</p>
+<p>The final problem is that memories can go stale.</p>
+<p>Of course, something that was relevant in the past, uh,</p>
+<p>might not be relevant today.</p>
+<p>Or maybe it was written incorrectly</p>
+<p>or even maliciously injected by someone trying to, uh,</p>
+<p>prompt. Inject your agents to write bad things to memory.</p>
+<p>So you have to have a lot of guardrails in place</p>
+<p>to make sure that these nice</p>
+<p>autonomous memory systems actually work in production.</p>
+<p>And so I&#x27;m going to talk through a couple of key principles</p>
+<p>that we use when designing memory systems in production</p>
+<p>to make sure that we do get to use all those nice effects</p>
+<p>that we&#x27;ve talked. That we&#x27;ve spoken about.</p>
+<p>So the very first thing is versioning.</p>
+<p>So when you&#x27;re designing any kind of memory system,</p>
+<p>you need to be able to store versions to keep track of what&#x27;s going on,</p>
+<p>to allow you to roll back,</p>
+<p>should you need to, if a.</p>
+<p>A new update isn&#x27;t particularly good.</p>
+<p>Um, additionally,</p>
+<p>you probably want to think about, like,</p>
+<p>what context was this update based on?</p>
+<p>So, which agent session,</p>
+<p>which transcript resulted in me wanting to make this update.</p>
+<p>Um,</p>
+<p>and additionally, like,</p>
+<p>you might want to track, like,</p>
+<p>who did it, which agent,</p>
+<p>which human, etcetera, etcetera.</p>
+<p>So this is really important.</p>
+<p>The second thing is concurrency.</p>
+<p>So we&#x27;ve talked about. Okay,</p>
+<p>what happens when I deploy thousands of agents</p>
+<p>all working off the same memory system?</p>
+<p>And the solution that We&#x27;ve adopted here</p>
+<p>is to have this hashing system.</p>
+<p>So when an agent decides that it wants to write an update to a memory,</p>
+<p>it takes a hash, it then drafts its edit,</p>
+<p>and then before it writes the update,</p>
+<p>it takes another hash. If those two things do not match,</p>
+<p>then the agent cannot write it</p>
+<p>because it means that some update was made in the meantime.</p>
+<p>And in order to handle that,</p>
+<p>the agent rewrites the memory,</p>
+<p>draft its new update and then tries to commit this again.</p>
+<p>So these are the kinds of</p>
+<p>just engineering practices</p>
+<p>that allow you to scale multiple agent architectures.</p>
+<p>Um, scale memory to these kinds of architectures.</p>
+<p>Another couple key principles.</p>
+<p>So permissioning is really important</p>
+<p>when you have large memory bases.</p>
+<p>You probably have a mixture of top level organisational wide knowledge.</p>
+<p>It might be like your key uh,</p>
+<p>like what your organisation is trying to achieve</p>
+<p>or key principles about the code base</p>
+<p>which you&#x27;ve really carefully curated</p>
+<p>all the way down to the level of like a scratch pad for an agent</p>
+<p>where it writes down its working memory.</p>
+<p>And it&#x27;s very like individualized and all the way in between</p>
+<p>you can have things for specific organisations or cross sections.</p>
+<p>And so it&#x27;s really important that you have guardrails</p>
+<p>when it comes to commissioning, uh,</p>
+<p>these memories. So like I said,</p>
+<p>you wouldn&#x27;t want one agent to just decide that it should update</p>
+<p>the organisation wide context.</p>
+<p>Probably you Might want that as read only.</p>
+<p>However, for its own scratch pad,</p>
+<p>you would want it to have right, access.</p>
+<p>Um, and yeah,</p>
+<p>yeah, that&#x27;s.</p>
+<p>That&#x27;s commissioning. Um,</p>
+<p>final thing, which is kind of peripheral</p>
+<p>but still really important when you design memory systems</p>
+<p>is portability.</p>
+<p>So like I mentioned before,</p>
+<p>your curation of your memory systems is going to be so important,</p>
+<p>like throughout the future.</p>
+<p>This is really, really important. Organisation,</p>
+<p>user or like work, task,</p>
+<p>specific context. And so</p>
+<p>it&#x27;s likely that if you&#x27;re putting a lot of effort into curating this,</p>
+<p>you want it to be accessible across</p>
+<p>potentially multiple product surfaces. Um,</p>
+<p>and access accessible by multiple systems.</p>
+<p>So designing in a way with a clean API</p>
+<p>in which it&#x27;s portable and you can access it</p>
+<p>is really important.</p>
+<p>And so when you put all these things together,</p>
+<p>we have the kind of learnings we have</p>
+<p>from allowing agents to creatively manage their memory</p>
+<p>and then these production level guard rails that allow them to like</p>
+<p>reasonably use all of those principles in practice.</p>
+<p>And when you do this, you get very effective results.</p>
+<p>So just sharing here a couple of learnings from what we&#x27;ve seen</p>
+<p>deploying these large scale memory systems in production.</p>
+<p>And for example, we see you get better accuracy.</p>
+<p>So you have this effect where the second time the agent does the task,</p>
+<p>it actually does it better with higher results because it&#x27;s noted.</p>
+<p>All of those memories about what went Wrong.</p>
+<p>Secondly, that then has second order effect on the speed and latency.</p>
+<p>Sorry. Speed and cost of your agents running.</p>
+<p>Because they&#x27;re then spending fewer tokens,</p>
+<p>they can you more easily one shot these tasks</p>
+<p>because they actually know what they&#x27;re doing.</p>
+<p>And you&#x27;ll see that across all sorts of different processes, um,</p>
+<p>agents are just able to do the task better and faster.</p>
+<p>Finally, having this process</p>
+<p>where your agents are starting to autonomously</p>
+<p>write their own memories,</p>
+<p>freeze up capacity and context for you as product developers,</p>
+<p>potentially to focus on product wins.</p>
+<p>While you know that the agents are doing this kind of self learning,</p>
+<p>continuous learning loop in the background.</p>
+<p>And yeah, once that infrastructure set up really well,</p>
+<p>this, this works very symbiotically.</p>
+<p>Um,</p>
+<p>as ever, we do then reach a new bottleneck.</p>
+<p>And this specifically is about in band memory.</p>
+<p>So in band memory, as I mentioned before,</p>
+<p>is when agents are writing to</p>
+<p>and reading from memory within a specific session.</p>
+<p>So if you think about Claude code for example, um,</p>
+<p>when you, like,</p>
+<p>spin up a new session, it&#x27;s.</p>
+<p>It&#x27;s largely like focusing on that specific context</p>
+<p>when it&#x27;s reading to, reading and writing from memory. Um,</p>
+<p>and this just architecturally or philosophically</p>
+<p>has limitations in the general,</p>
+<p>like Agent Fleet&#x27;s continual learning objectives.</p>
+<p>There&#x27;s two, two main reasons why.</p>
+<p>First of all</p>
+<p>is that you have this inherent split of focus and resources.</p>
+<p>So you&#x27;re asking an agent to complete A task,</p>
+<p>but at the same time,</p>
+<p>you&#x27;re also asking it to invest in memory curation,</p>
+<p>which would help it perform better in a future run.</p>
+<p>So when you put these things together,</p>
+<p>it&#x27;s just a very difficult optimization problem,</p>
+<p>because how much capacity should an agent put into, like,</p>
+<p>helping future versions of itself</p>
+<p>versus doing the task that you actually asked it to do?</p>
+<p>And also there&#x27;s like, other effects,</p>
+<p>like latency, for example.</p>
+<p>The second thing is</p>
+<p>that the agents just have an inherent visibility limitation,</p>
+<p>so they only have a context of what&#x27;s going on in their session.</p>
+<p>As such, they just won&#x27;t see patterns that happen across sessions.</p>
+<p>So when you get frustrated</p>
+<p>that your agent keeps making the same mistake over sessions,</p>
+<p>it just doesn&#x27;t understand how frustrating that is,</p>
+<p>because it has a new context window in each of those.</p>
+<p>Secondly, when you&#x27;re running multiple fleets of agents</p>
+<p>in different environments,</p>
+<p>you these single agents</p>
+<p>just don&#x27;t have the context</p>
+<p>of what other failures other agents are running into.</p>
+<p>So for these two reasons,</p>
+<p>we introduce this concept of some out of band memory curation,</p>
+<p>and this helps to make these problems go away.</p>
+<p>And just to introduce an analogy for why this,</p>
+<p>in theory, should work,</p>
+<p>I&#x27;d like you to think about a school,</p>
+<p>for example, where you have lots of students that submit a lot of work,</p>
+<p>and you also have a teachers that market</p>
+<p>and a head teacher that reviews Everything.</p>
+<p>This is a system that we have in the real world for good reason.</p>
+<p>And it&#x27;s because when you have certain individuals</p>
+<p>that have dedicated capacity for helping people learn,</p>
+<p>that&#x27;s really effective.</p>
+<p>And when you also have people that have visibility</p>
+<p>over the whole fleet of agents</p>
+<p>or learners</p>
+<p>and they&#x27;re able to spot patterns and then kind of steer context,</p>
+<p>or let&#x27;s say in this case,</p>
+<p>the curriculum, uh,</p>
+<p>that&#x27;s also really effective.</p>
+<p>So as always, we kind of looked to the real world world</p>
+<p>to think about how to build these systems.</p>
+<p>Uh, sorry,</p>
+<p>I also didn&#x27;t touch on a final limitation,</p>
+<p>which is that memories go stale.</p>
+<p>So you need something, some pass</p>
+<p>that checks that everything that&#x27;s written there is still correct.</p>
+<p>And so we introduce this concept of dreaming,</p>
+<p>which is like a second, a second order process over memory.</p>
+<p>So if we think about how that&#x27;s been constructed,</p>
+<p>we have the like actual context</p>
+<p>which agents reference and isn&#x27;t has useful information.</p>
+<p>The memory processes which allow agents to kind of</p>
+<p>autonomously manage that context themselves.</p>
+<p>And then dreaming,</p>
+<p>which is a process that runs in batch and asynchronously</p>
+<p>with its own allocated resources</p>
+<p>to ensure that those memories themselves are effective,</p>
+<p>up to date, um,</p>
+<p>and helping the agents learn over time.</p>
+<p>So what does dreaming look like?</p>
+<p>Essentially, what we do is we take an existing memory store,</p>
+<p>so this is a collection of memories.</p>
+<p>We then take a bunch Of sessions</p>
+<p>or transcripts from agent interactions over a period of time.</p>
+<p>And we give these together to an agent,</p>
+<p>which reviews all of the transcripts,</p>
+<p>looks at the memory store,</p>
+<p>and starts to identify patterns</p>
+<p>for where there could be uplift in the memories.</p>
+<p>It then outputs a new memory store</p>
+<p>where there are proposed changes to the existing memory store.</p>
+<p>And what the agent is able to do,</p>
+<p>as I mentioned, is spend tokens on solving this problem</p>
+<p>of making agents learn better,</p>
+<p>identify patterns for where agents are consistently failing,</p>
+<p>and then propose changes for what</p>
+<p>might make a more effective memory store,</p>
+<p>such that next day when you run these agents again,</p>
+<p>they&#x27;re actually feel smarter and they&#x27;re running better.</p>
+<p>To go back to my analogy, just to paint some pictures of, like,</p>
+<p>what this could look like in practice,</p>
+<p>let&#x27;s imagine that the head teacher reviewing all these transcripts,</p>
+<p>notices that every geography student</p>
+<p>has incorrectly answered a question.</p>
+<p>They&#x27;re just all writing, like complete garbage to this question.</p>
+<p>The teacher notices that actually,</p>
+<p>by kind of, in this case,</p>
+<p>analysing the memory store,</p>
+<p>that entire topic is missing from the curriculum.</p>
+<p>So what the teacher is able to do is notice that pattern,</p>
+<p>look at the memory store, and suggest a new change to that curriculum,</p>
+<p>such that the next day when these agents run,</p>
+<p>they now have that information that they needed.</p>
+<p>To give another example, the teacher might notice that, um,</p>
+<p>in A certain maths exam, all of the answers are wrong in the same way.</p>
+<p>Uh, all of the students are outputting radians</p>
+<p>when it&#x27;s meant to be degrees.</p>
+<p>I don&#x27;t know if anyone else in, like,</p>
+<p>GCSE maths had that problem too.</p>
+<p>Uh, but what they&#x27;re able to do is give an instruction saying like,</p>
+<p>this is how you should configure your calculators.</p>
+<p>And in the case of agents,</p>
+<p>that&#x27;s like noticing</p>
+<p>in the transcripts</p>
+<p>that there&#x27;s something wrong with the tool configuration.</p>
+<p>So you might notice that something in the tool calls keeps failing.</p>
+<p>And what&#x27;s important here is that when we look at those transcripts,</p>
+<p>we&#x27;re not just looking at kind of the passes of, like, uh,</p>
+<p>responses between agent and the system or the user.</p>
+<p>We&#x27;re also really scrutinizing,</p>
+<p>like, those tool calls</p>
+<p>and all of the other meta data</p>
+<p>that is really central to the agent&#x27;s performance.</p>
+<p>Finally, you could also notice something that&#x27;s like</p>
+<p>feet wide or organisation wide.</p>
+<p>So, for example,</p>
+<p>like, everybody&#x27;s using too many M dashes and you don&#x27;t like that,</p>
+<p>so you want to add some organisational wide organ, um,</p>
+<p>announcement or context change that says not to do that.</p>
+<p>And so I hope that paints a picture of, like,</p>
+<p>why this could be really, really effective.</p>
+<p>And now</p>
+<p>I&#x27;ll just talk about how you would go about designing such a system</p>
+<p>in production.</p>
+<p>So you have some concept of your memory store,</p>
+<p>which is a concept, which is a collection.</p>
+<p>Of memories.</p>
+<p>Memories themselves might just be marked down files</p>
+<p>organised in this directory.</p>
+<p>You then take a number of the transcripts and,</p>
+<p>like I mentioned,</p>
+<p>that is a mixture of, like,</p>
+<p>the back and forth passes between the agents,</p>
+<p>as well as metadata on tools,</p>
+<p>uh, other skills they used, etcetera.</p>
+<p>And the way that we&#x27;ve designed it,</p>
+<p>we have the orchestrator deploy a fleet of subagents</p>
+<p>that go and analyze all those transcripts.</p>
+<p>And one point worth making here is that when you design these systems,</p>
+<p>you have the ability to steer how these agents,</p>
+<p>which both write memories and coordinate dreaming,</p>
+<p>go about the problem. And by steering,</p>
+<p>I mean that you&#x27;re able to tell them,</p>
+<p>like, in your specific case,</p>
+<p>these are the kinds of things I think are important and relevant.</p>
+<p>These are the kinds of things that are not important and relevant.</p>
+<p>So you do have the ability there</p>
+<p>to start to curate that memory and dreaming process</p>
+<p>to your organisation specifically.</p>
+<p>And</p>
+<p>the orchestrator then reviews all of the responses from the subagents</p>
+<p>and it then decides, like,</p>
+<p>where there are prevalent enough patterns</p>
+<p>that it thinks this warrants a change in the memories.</p>
+<p>From there, it proposes individual changes to the memory store.</p>
+<p>And in our case, the way that we&#x27;ve designed this in production</p>
+<p>is the agent will additionally give you examples of transcripts</p>
+<p>where it&#x27;s noticed this pattern has happened,</p>
+<p>and also some stats on, like,</p>
+<p>how prevalent this issue Is</p>
+<p>and why this warrants actually updating the memory store.</p>
+<p>And so all of this works really neatly.</p>
+<p>You get this output, and you,</p>
+<p>as the individual,</p>
+<p>can decide where you want to accept changes to the memory</p>
+<p>and where you want to reject them, etc.</p>
+<p>And this works really effectively.</p>
+<p>So together we have these two processes that run in parallel.</p>
+<p>The first is memory. And these agents are using some of their, uh,</p>
+<p>like in bound context and in bound resources to write to memory</p>
+<p>where they think it&#x27;s important.</p>
+<p>And this is neat because it means that in the actual next run,</p>
+<p>the next session, that agent will be better.</p>
+<p>So there&#x27;s a shorter time to kind of seeing that change.</p>
+<p>But inherently, these agents have competing resources</p>
+<p>when they think about what to dedicate to memory,</p>
+<p>what to dedicate to, um,</p>
+<p>completing the task. And additionally,</p>
+<p>a lack of visibility.</p>
+<p>So on the other side, we have dreaming,</p>
+<p>which is this out of band process.</p>
+<p>And this allows, again,</p>
+<p>broader visibility and dedicated capacity,</p>
+<p>I e. Token spend,</p>
+<p>which is specifically directed towards helping agents learn better.</p>
+<p>And you might think, okay,</p>
+<p>that sounds really expensive.</p>
+<p>Why would I want to chuck extra resources at this?</p>
+<p>But if we kind of go back to the improvements we saw</p>
+<p>when you build effective memory stores,</p>
+<p>actually, you can see a bunch of costs go down because, um,</p>
+<p>agents are able to one shot things more effectively.</p>
+<p>Uh, They have more information that they need in order to, uh,</p>
+<p>perform a task. Well,</p>
+<p>so to summarize,</p>
+<p>at the very least do the simple thing that works.</p>
+<p>Context management, uh,</p>
+<p>makes such a huge difference to your agent performance.</p>
+<p>Implementing things like a command and D file like skills,</p>
+<p>which I&#x27;m sure you&#x27;ve heard about a bunch,</p>
+<p>and allowing agents to autonomously manage these systems themselves,</p>
+<p>goes a really long way</p>
+<p>once you think about scaling those things into architectures.</p>
+<p>With many agents, agents that run over a very long time,</p>
+<p>situations where you will like,</p>
+<p>continue to work and develop on a workspace or a codebase</p>
+<p>over a long period of time,</p>
+<p>or very complex domains,</p>
+<p>you should start thinking about adding some features</p>
+<p>or some guardrails</p>
+<p>that allow those agents to manage their memory in a way that is safe,</p>
+<p>verifiable, auditable.</p>
+<p>I should also say here that whilst this kind of,</p>
+<p>these kinds of practices are really effective</p>
+<p>when it comes to coding task</p>
+<p>for example, this by no means is just specific to coding.</p>
+<p>Like, I use memory all the time when I&#x27;m producing presentations</p>
+<p>that has context on, like how I like to write things,</p>
+<p>how I like my slides, etcetera, etcetera.</p>
+<p>And that develops over time.</p>
+<p>So this is really not coding specific.</p>
+<p>The final thing is,</p>
+<p>if you really want to kind of like close the loop here,</p>
+<p>think about adding an additional out of band process,</p>
+<p>like dreaming, as we call It</p>
+<p>to consolidate your memory and cut things that are no longer relevant,</p>
+<p>add things that agents are missing,</p>
+<p>and clean up and organise memory systems.</p>
+<p>So to close, I want to say that this journey that we&#x27;ve been on</p>
+<p>with Context Engineering,</p>
+<p>a lot of this stuff has only happened in this past year.</p>
+<p>This is very much an open area of research and development</p>
+<p>and one which we see huge value in the future.</p>
+<p>So we&#x27;re so excited to see the kinds of things</p>
+<p>and contributions that you all make to the space.</p>
+<p>So I encourage you to keep thinking,</p>
+<p>keep learning and keep dreaming. Thank you.</p>
+<p>Wonderful.</p>
+<p>Thank you, Lamas.</p>
+<p>That was great. Uh,</p>
+<p>do you have any questions in the room?</p>
+<p>Oh, golly gosh.</p>
+<p>Uh, I&#x27;ll dive straight here first.</p>
+<p>Thank you. Thanks for the presentation.</p>
+<p>Um, do you have any memory store implementation</p>
+<p>that you would like to suggest? Paper? Any.</p>
+<p>Any memory storage implementation that you would like us. Sorry,</p>
+<p>did you say papers or no? Memory storage implementation.</p>
+<p>Oh, okay, okay.</p>
+<p>That we would like to suggest?</p>
+<p>To solve what problem specifically?</p>
+<p>Well, one thing is put things in files that I have on my laptop.</p>
+<p>Yeah, but I think I&#x27;m looking into something more enterprising.</p>
+<p>So what kind of solution do you suggest over there?</p>
+<p>Okay. Yeah.</p>
+<p>So, I mean,</p>
+<p>maybe I was kind of coy in the talk</p>
+<p>because we&#x27;re not allowed to make product called actions,</p>
+<p>but given that you Asked. Um,</p>
+<p>we have uh,</p>
+<p>a lot of this references the architecture that we used in our memory,</p>
+<p>uh,</p>
+<p>our memory infrastructure for our managed agent solutions.</p>
+<p>And so when I talk about these things about productionizing, um,</p>
+<p>memory, so everything like versioning, uh,</p>
+<p>hashing, etcetera,</p>
+<p>that&#x27;s all available within our memory and Dreaming API</p>
+<p>through Claudia Manage Agents.</p>
+<p>So if you did want an out of box solution for this kind of thing,</p>
+<p>that is where I would point you to.</p>
+<p>Um. Hi.</p>
+<p>Uh, the early on you talked about guard rails and permissions,</p>
+<p>um, and I think,</p>
+<p>sure, most of us have probably read the code leak and the memory stuff,</p>
+<p>the dreaming stuff was definitely some of the most interesting in it.</p>
+<p>But how do you scale that at enterprise?</p>
+<p>If you&#x27;ve got hundreds of users with different permission sets,</p>
+<p>how do you make sure dreaming follows those same guardrails?</p>
+<p>If it&#x27;s happening out of band and the context is different compared to,</p>
+<p>say, the context the agent might have when a user is using it?</p>
+<p>So just to check that I understand, um,</p>
+<p>we have like some permissioning about what agents can access,</p>
+<p>like in terms of memory. Yeah.</p>
+<p>And then a separate like. Yeah.</p>
+<p>So I mean,</p>
+<p>I think these things compose quite well. Um,</p>
+<p>because when you set up a dreaming procedure,</p>
+<p>you decide exactly which session transcripts to attach.</p>
+<p>And so you could build a process</p>
+<p>which mirrors whatever permissioning you have on</p>
+<p>The agents. Um,</p>
+<p>so, yeah,</p>
+<p>I mean, if that&#x27;s to say that it&#x27;s not the case</p>
+<p>that when you kind of trigger a dreaming job,</p>
+<p>it just takes, like,</p>
+<p>everything in a certain time period,</p>
+<p>you can configure it that way,</p>
+<p>but you can also just</p>
+<p>search over whichever transcripts have the same permission set as, like,</p>
+<p>um, whatever your memory store is,</p>
+<p>and then make sure that that matches, if that makes sense.</p>
+<p>Hi. Thank you.</p>
+<p>This was really, really interesting.</p>
+<p>I, I found it fascinating earlier when you were mentioning about, like,</p>
+<p>versioning, concurrency,</p>
+<p>durability, all these,</p>
+<p>all these things. At what point are we, like,</p>
+<p>reinventing databases from, like, first principles again?</p>
+<p>Um,</p>
+<p>yeah, this is,</p>
+<p>this is an interesting point.</p>
+<p>I still think,</p>
+<p>like, one of the things that I spoke and I,</p>
+<p>this is a good reminder for me that something I didn&#x27;t say.</p>
+<p>Um,</p>
+<p>what we&#x27;re trying to do here is, like,</p>
+<p>thread the needle. Like, sorry.</p>
+<p>Find the right boundary to draw</p>
+<p>between kind of letting these agents autonomously act</p>
+<p>and then also, like,</p>
+<p>which things should just be kind of programmatic, um,</p>
+<p>things that are baked into the harness.</p>
+<p>And so I think what you allude to is, like,</p>
+<p>first of all, we were just kind of, like,</p>
+<p>letting these agents write in markdown files and just, like,</p>
+<p>commit whatever they wanted.</p>
+<p>And now we&#x27;re kind of seeing,</p>
+<p>having seen which primitives work really well,</p>
+<p>we&#x27;re thinking about, like,</p>
+<p>kind of codifying That in the harness.</p>
+<p>And so when we think about, like,</p>
+<p>the hashing or the versioning. Yeah,</p>
+<p>we are kind of going back to the software engineering principles</p>
+<p>that we&#x27;ve seen work well in the past,</p>
+<p>but in a way that kind of autonomous agents can act and like,</p>
+<p>uh, can in.</p>
+<p>Can interact with those really effectively.</p>
+<p>So I think to some extent,</p>
+<p>like, we sort of are merging back into those practices.</p>
+<p>But that&#x27;s because we have enough signal now</p>
+<p>to know that those things should just be done</p>
+<p>in a very deterministic way,</p>
+<p>and there&#x27;s no need to reinvent the wheel.</p>
+<p>I hope that answered your question.</p>
+<p>Perfect. We&#x27;re absolutely out of time.</p>
+<p>Thank you. Once again,</p>
+<p>big round of applause for Lamas. Thank you.</p>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://www.tiktok.com/@sarutalksai/video/7655022810426789142?_r=1&amp;_t=ZT-98lZXdfGoQ9" rel="noopener">https://www.tiktok.com/@sarutalksai/video/7655022810426789142?_r=1&amp;_t=ZT-98lZXdfGoQ9</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Claude + loops + dreaming + CLAUDE.md - that’s the secret.…">
+        <input type="hidden" name="slug" value="claude-loops-dreaming-claude-md-that-s-the-secre">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Claude + loops + dreaming + CLAUDE.md - that’s the secret.…</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

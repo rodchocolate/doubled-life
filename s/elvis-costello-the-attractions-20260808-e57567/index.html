@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Elvis Costello &amp; The Attractions — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>Elvis Costello &amp; The Attractions</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">935</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="LrjHz5hrupA" type="button"><img src="https://i.ytimg.com/vi/LrjHz5hrupA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello &amp; The Attractions - Oliver&#x27;s Army</span></button>
+<button class="vtile" data-yt="Ssd3U_zicAI" type="button"><img src="https://i.ytimg.com/vi/Ssd3U_zicAI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello &amp; The Attractions - (What&#x27;s So Funny &#x27;Bout) Peace, Love And Understanding</span></button>
+<button class="vtile" data-yt="DJS-2kacmpU" type="button"><img src="https://i.ytimg.com/vi/DJS-2kacmpU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello &amp; The Attractions - High Fidelity</span></button>
+<button class="vtile" data-yt="pMCw9TOR8V4" type="button"><img src="https://i.ytimg.com/vi/pMCw9TOR8V4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello &amp; The Attractions - Full Concert | Live at the Capitol Theatre (1978)</span></button>
+<button class="vtile" data-yt="V1d4r9awjKE" type="button"><img src="https://i.ytimg.com/vi/V1d4r9awjKE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello &amp; The Attractions - Everyday I Write The Book</span></button>
+<button class="vtile" data-yt="mVFfJ2ajYgY" type="button"><img src="https://i.ytimg.com/vi/mVFfJ2ajYgY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ELVIS COSTELLO AND THE ATTRACTIONS &quot;Rockpalast&quot; 78</span></button>
+<button class="vtile" data-yt="3Y71iDvCYXA" type="button"><img src="https://i.ytimg.com/vi/3Y71iDvCYXA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello &amp; The Attractions - Pump It Up</span></button>
+<button class="vtile" data-yt="eifljYPFW-E" type="button"><img src="https://i.ytimg.com/vi/eifljYPFW-E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello &amp; The Attractions - Radio, Radio</span></button>
+<button class="vtile" data-yt="sC4u59Ys7lM" type="button"><img src="https://i.ytimg.com/vi/sC4u59Ys7lM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ELVIS COSTELLO &amp; the Attractions - “THIS YEAR&#x27;S MODEL” LP 1978 vinyl full album</span></button>
+<button class="vtile" data-yt="aU_zMvaX05Q" type="button"><img src="https://i.ytimg.com/vi/aU_zMvaX05Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello &amp; The Attractions - Accidents Will Happen</span></button>
+<button class="vtile" data-yt="3dJH5IqUxrw" type="button"><img src="https://i.ytimg.com/vi/3dJH5IqUxrw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello and The Attractions - I Hope You&#x27;re Happy Now, Peace In Our Time 1984</span></button>
+<button class="vtile" data-yt="snPDoXl9ZPs" type="button"><img src="https://i.ytimg.com/vi/snPDoXl9ZPs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello - Watching The Detectives</span></button>
+<button class="vtile" data-yt="KWwbnY3J44Y" type="button"><img src="https://i.ytimg.com/vi/KWwbnY3J44Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">EC and Attractions documentary 1994</span></button>
+<button class="vtile" data-yt="H_3pWz1w8iw" type="button"><img src="https://i.ytimg.com/vi/H_3pWz1w8iw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bruce Thomas tells the story of Pump It Up by Elvis Costello &amp; The Attractions</span></button>
+<button class="vtile" data-yt="Y3ghfYzxixo" type="button"><img src="https://i.ytimg.com/vi/Y3ghfYzxixo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello - South Bank Show (1982)</span></button>
+<button class="vtile" data-yt="iGh3Kzc4ZWs" type="button"><img src="https://i.ytimg.com/vi/iGh3Kzc4ZWs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello - Everything You Ever Wanted To Know About Spike</span></button>
+<button class="vtile" data-yt="PH7qggleZM0" type="button"><img src="https://i.ytimg.com/vi/PH7qggleZM0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">&quot;Radio Radio&quot; - Elvis Costello vs. Everything | New British Canon</span></button>
+<button class="vtile" data-yt="zxO4y-n9sy0" type="button"><img src="https://i.ytimg.com/vi/zxO4y-n9sy0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">THE ELVIS COSTELLO STORY (1992) (pt2of4)</span></button>
+<button class="vtile" data-yt="dI-hjmkJmxQ" type="button"><img src="https://i.ytimg.com/vi/dI-hjmkJmxQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Untold Truth Of Elvis Costello</span></button>
+<button class="vtile" data-yt="V2aeV60Wah4" type="button"><img src="https://i.ytimg.com/vi/V2aeV60Wah4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello | interview | The Hoover building | What is Punk? | Good Afternoon | 1977</span></button>
+<button class="vtile" data-yt="cqKMyPeB5yQ" type="button"><img src="https://i.ytimg.com/vi/cqKMyPeB5yQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Costello on His Controversial “SNL” Performance (2015)</span></button>
+<button class="vtile" data-yt="vvnQuFNX0r8" type="button"><img src="https://i.ytimg.com/vi/vvnQuFNX0r8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">50 Years of Stiff Records - Bruce Thomas from Elvis Costello &amp; The Attractions</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Elvis Costello &amp; The Attractions were an English new wave musician and his backing band who performed together from 1977 to 1986, and again from 1994 to 1996. The group consisted of Steve Nieve, Bruce Thomas, and Pete Thomas, who backed Costello&#x27;s vocals and guitar. The ensemble </p>
+<p>Elvis Costello &amp; The Attractions were an English new wave musician and his backing band who performed together from 1977 to 1986, and again from 1994 to 1996. The group consisted of Steve Nieve, Bruce Thomas, and Pete Thomas, who backed Costello&#x27;s vocals and guitar. The ensemble has been described as one of the best backing bands in rock history.</p>
+<h3>formation and early history</h3>
+<p>The Attractions were formed on the eve of the release of Elvis Costello&#x27;s debut album, My Aim Is True (1977), replacing the American West Coast band Clover. The original lineup consisted of Steve Nieve on keyboards, Bruce Thomas on bass guitar, and Pete Thomas on drums. According to Tyler Wilcox of Pitchfork, the band provided a &#x27;minimal, hard-edged sound&#x27; that suited the punk scene in England at the time. The group made their live debut on 14 July 1977 and appeared on Saturday Night Live in December 1977 as a last-minute replacement for the Sex Pistols, an event that resulted in Costello being banned from the show until 1989.</p>
+<h3>musical career and discography</h3>
+<p>The Attractions backed Costello on all of his albums and singles until 1984, except for the solo single &#x27;New Amsterdam&#x27; (1980). Their first album together was This Year&#x27;s Model (1978), and they did not receive official co-billing credit until Armed Forces (1979). They recorded several albums including Get Happy!! (1980), Trust (1981), Almost Blue (1981), Imperial Bedroom ((1982), Punch the Clock (1983), and Goodbye Cruel World (1984). In 1986, they appeared on only one track of King of America and the B-side &#x27;Baby&#x27;s Got A Brand New Hairdo&#x27;. Later that year, they recorded Blood &amp; Chocolate (1986), which was their final release for several years. They reunited for tracks on Brutal Youth (1994) and toured together from 1994 to 1996, before splitting for good in 1996.</p>
+<h3>npp independent work</h3>
+<p>In 1980, The Attractions recorded an independent album titled Mad About the Wrong Boy, featuring original compositions by all three members. This album was produced by Roger Bechirian and included singles such as &#x27;Single Girl&#x27; and &#x27;Arms Race&#x27;. Due to their use of pseudonyms and association with Bechirian, they were erroneously rumored to be behind the synthpop trio Blanket of Secrecy (BoS), whose lone album Walls Have Ears (1982) was produced by Bechirian.</p>
+<h3>later years and legacy</h3>
+<p>body</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Original Members:</strong> Steve Nieve, Bruce Thomas, and Pete Thomas</li>
+<li><strong>Active Periods:</strong> 1977-1986, 1994-1996</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Elvis_Costello" rel="noopener">https://en.wikipedia.org/wiki/Elvis_Costello</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/The_Attractions" rel="noopener">https://en.wikipedia.org/wiki/The_Attractions</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/The_Best_of_Elvis_Costello_and_the_Attractions" rel="noopener">https://en.wikipedia.org/wiki/The_Best_of_Elvis_Costello_and_the_Attractions</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Elvis Costello &amp; The Attractions">
+        <input type="hidden" name="slug" value="elvis-costello-the-attractions">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Elvis Costello &amp; The Attractions</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

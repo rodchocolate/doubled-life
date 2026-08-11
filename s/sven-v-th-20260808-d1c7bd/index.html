@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Sven Väth — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Sven Väth</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">978</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="uInltd4OkTQ" type="button"><img src="https://i.ytimg.com/vi/uInltd4OkTQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sven Väth Boiler Room Berlin Groove Magazine DJ set</span></button>
+<button class="vtile" data-yt="y37cDo_CTu4" type="button"><img src="https://i.ytimg.com/vi/y37cDo_CTu4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">SVEN VÄTH. Cocoon. Pacha 2018.</span></button>
+<button class="vtile" data-yt="CD0REhH9Rpg" type="button"><img src="https://i.ytimg.com/vi/CD0REhH9Rpg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">SVEN VATH @ CHANGE YOUR MIND party at LE VELE ALASSIO (Savona) Liguria Italy 2025</span></button>
+<button class="vtile" data-yt="jAb-PeSB-kk" type="button"><img src="https://i.ytimg.com/vi/jAb-PeSB-kk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sven Väth Live at Time Warp - 2D2S [DE] 2023</span></button>
+<button class="vtile" data-yt="kyEQMF5Gsqw" type="button"><img src="https://i.ytimg.com/vi/kyEQMF5Gsqw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sven Väth | &quot;Hot &amp; Melty&quot; hr3 Clubnight (23.07.1994) (Techno/Trance Classics)</span></button>
+<button class="vtile" data-yt="JchuuaE-U5w" type="button"><img src="https://i.ytimg.com/vi/JchuuaE-U5w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">SVEN VATH @ MILANO</span></button>
+<button class="vtile" data-yt="isFQTxLKHD4" type="button"><img src="https://i.ytimg.com/vi/isFQTxLKHD4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sven Väth | &quot;OMEN Closing&quot; hr3 Clubnight (17.10.1998) (Techno/Trance Classics)</span></button>
+<button class="vtile" data-yt="CY9xPG0NWOY" type="button"><img src="https://i.ytimg.com/vi/CY9xPG0NWOY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sven Väth | &quot;The Day After Omen&quot; hr3 Clubnight (26.08.1995) (Techno/Trance Classics)</span></button>
+<button class="vtile" data-yt="W_EsoeTF9lM" type="button"><img src="https://i.ytimg.com/vi/W_EsoeTF9lM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Frankfurt 2026 : Solomun - Sven Vath - Ricardo Villalobos (Mix)</span></button>
+<button class="vtile" data-yt="j6es4tLVgAg" type="button"><img src="https://i.ytimg.com/vi/j6es4tLVgAg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sven Väth - Cocoon Ibiza Opening 2006 (Legendary Live Set)</span></button>
+<button class="vtile" data-yt="08VrNbnbz4o" type="button"><img src="https://i.ytimg.com/vi/08VrNbnbz4o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sven Vath - Live @ Love Parade 2000 Berlin</span></button>
+<button class="vtile" data-yt="rZKV4KIeIrU" type="button"><img src="https://i.ytimg.com/vi/rZKV4KIeIrU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sven Väth - L&#x27;Esperanza (1993) HQ</span></button>
+<button class="vtile" data-yt="GNbK_xwkU6k" type="button"><img src="https://i.ytimg.com/vi/GNbK_xwkU6k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sven Väth &amp; Underworld talk techno, friendship and Ibiza | Mixmag Originals</span></button>
+<button class="vtile" data-yt="nXhfQaHb0Ng" type="button"><img src="https://i.ytimg.com/vi/nXhfQaHb0Ng/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The History of Cocoon Ibiza with Sven Väth and Richie Hawtin</span></button>
+<button class="vtile" data-yt="x6musnqGIHA" type="button"><img src="https://i.ytimg.com/vi/x6musnqGIHA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sven Väth At Ibiza 2005 Wildlife</span></button>
+<button class="vtile" data-yt="GsN_-o3ZLvA" type="button"><img src="https://i.ytimg.com/vi/GsN_-o3ZLvA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sven Väth | Lost in Music Techno Doku (1992) Love Train von Frankfurt zur Love Parade Berlin</span></button>
+<button class="vtile" data-yt="TWPFrWojYQ4" type="button"><img src="https://i.ytimg.com/vi/TWPFrWojYQ4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">WE CALL IT TECHNO! A documentary about Germany’s early Techno scene and culture</span></button>
+<button class="vtile" data-yt="71NARYFh4ac" type="button"><img src="https://i.ytimg.com/vi/71NARYFh4ac/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Producer/Musician RALF HILDENBEUTEL; Sven Väth&#x27;s Electro MAESTRO, Netflix SUPERSEX Composer</span></button>
+<button class="vtile" data-yt="dZCwNVRkRDI" type="button"><img src="https://i.ytimg.com/vi/dZCwNVRkRDI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sven Väth - IMS 2013 - Keynote Interview with Ben Turner</span></button>
+<button class="vtile" data-yt="6bLchbF8WQ4" type="button"><img src="https://i.ytimg.com/vi/6bLchbF8WQ4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sven Väth - 20 Years Cocoon</span></button>
+<button class="vtile" data-yt="CHnmImuyD0w" type="button"><img src="https://i.ytimg.com/vi/CHnmImuyD0w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Remixed. 1999 Electronic Dance Music Documentary feat Sven Vath, Kerri Chandler, Eric Morillo ...</span></button>
+<button class="vtile" data-yt="w4-IEoyaH-8" type="button"><img src="https://i.ytimg.com/vi/w4-IEoyaH-8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sven Väth | Spiegel TV Interview (1994)</span></button>
+<button class="vtile" data-yt="nVa4w4OGN_Y" type="button"><img src="https://i.ytimg.com/vi/nVa4w4OGN_Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sven Väth Interview at D-Edge 2011</span></button>
+<button class="vtile" data-yt="-NFlgzfCfek" type="button"><img src="https://i.ytimg.com/vi/-NFlgzfCfek/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Much Money Did Sven Väth Spend On Records In 2024?</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Sven Väth is a German electronic music producer and DJ who has had a career spanning over 40 years. He is a three-time DJ Awards winner known as &quot;Papa Sven&quot; by his fans.</p>
+<p>Sven Väth is a German electronic music producer and DJ who has had a career spanning over 40 years. He is a three-time DJ Awards winner known as &quot;Papa Sven&quot; by his fans.</p>
+<h3>early life and career beginnings</h3>
+<p>Väth&#x27;s parents, who escaped from East Germany, met in a West German town near Frankfurt. He was introduced to music through his parents&#x27; English pub, which had a small dance floor where he played rock&#x27;n&#x27;roll and disco. In 1980, using job seeker&#x27;s allowance money, he hitchhiked to Ibiza for three months, which inspired him to become a DJ. At age 17, he began DJing at his parents&#x27; pub in Germany upon returning from Ibiza. By 1982, he had secured a residency at the club Dorian Gray in Frankfurt am Main, where he met Michael Münzing and Luca Anzilotti.</p>
+<h3>music production and pop success</h3>
+<p>In 1985, Väth joined forces with Michael Münzing and Luca Anzilotti as Off (Organisation for Fun), and produced the track &quot;Bad News&quot;. In 1986, the group released the hit single &quot;Electrica Salsa&quot;, which sold one million copies and turned Väth into a pop sensation at age 22. Following this, Off released a second album, &quot;Ask Yourself&quot; in 1989, and their final single, &quot;Move Your Body&quot; in 1990.</p>
+<h3>club ownership and record labels</h3>
+<p>In 1988, Väth opened the dance club Omen in Frankfurt with Michael Münzing and Mattias Martinsohn; the venue is regarded as one of the birthplaces of techno in Germany. He founded Eye Q in 1991 with Heinz Roth and Matthias Hoffmann, and Harthouse Records in 1992, where he recorded under the alias Barbarella. He later signed a three-album contract with Virgin Records in 1998, releasing Fusion, Contact, and Fire.</p>
+<h3>cocoon and ibiza influence</h3>
+<p>Cocoon began as a series of parties in 1996, eventually evolving into a booking agency, record label,_and event management branch. The Cocoon Recordings label served as a platform for aspiring producers to release music without major labels. In 1999, Väth hosted Monday night parties at Amnesia in Ibiza for 18 years, holding his own same-day residency up until the following thirteen years after 2000. He is recognized for his significant influence on the underground electronic music scene in both Germany and Germany&#x27;s pop stars in the 1990s, as well as in Ibiza.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Born:</strong> 26 October 1964</li>
+<li><strong>Aliases:</strong> Papa Sven, Barbarella</li>
+<li><strong>Notable Works:</strong> Electrica Salsa (single), Accident in Paradise (album), The Harlequin, the Robot, and the Ballet-Dancer (album)</li>
+<li><strong>label: Longest DJ set:</strong> 30 hours</li>
+<li><strong>DJ Equipment:</strong> Two decks and a mixer</li>
+<li><strong>Awards:</strong> Three-time DJ Awards winner</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Richie_Hawtin" rel="noopener">https://en.wikipedia.org/wiki/Richie_Hawtin</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Space_(Ibiza_nightclub" rel="noopener">https://en.wikipedia.org/wiki/Space_(Ibiza_nightclub</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Sven_V%C3%A4th" rel="noopener">https://en.wikipedia.org/wiki/Sven_V%C3%A4th</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Sven Väth">
+        <input type="hidden" name="slug" value="sven-v-th">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Sven Väth</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

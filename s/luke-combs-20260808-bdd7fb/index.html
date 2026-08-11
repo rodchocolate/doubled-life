@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Luke Combs — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Luke Combs</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">904</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="rItv9i6c7AY" type="button"><img src="https://i.ytimg.com/vi/rItv9i6c7AY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Luke Combs - Beautiful Crazy (Official Video)</span></button>
+<button class="vtile" data-yt="J6YlaeACE4E" type="button"><img src="https://i.ytimg.com/vi/J6YlaeACE4E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Luke Combs – Ain’t No Love In Oklahoma (From Twisters: The Album) [Official Music Video]</span></button>
+<button class="vtile" data-yt="uXyxFMbqKYA" type="button"><img src="https://i.ytimg.com/vi/uXyxFMbqKYA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Luke Combs - When It Rains It Pours (Official Video)</span></button>
+<button class="vtile" data-yt="x8Mc8Pbl06g" type="button"><img src="https://i.ytimg.com/vi/x8Mc8Pbl06g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Luke Combs - The Kind of Love We Make (Official Music Video)</span></button>
+<button class="vtile" data-yt="aoJwvnDuAR0" type="button"><img src="https://i.ytimg.com/vi/aoJwvnDuAR0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Luke Combs - Where the Wild Things Are (Official Studio Video)</span></button>
+<button class="vtile" data-yt="0jufTpOU2rI" type="button"><img src="https://i.ytimg.com/vi/0jufTpOU2rI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Luke Combs - Full Concert (Lexington, KY | Feb. 14, 2020)</span></button>
+<button class="vtile" data-yt="BixwVsiDdZM" type="button"><img src="https://i.ytimg.com/vi/BixwVsiDdZM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Luke Combs - Hurricane (Official Video)</span></button>
+<button class="vtile" data-yt="Fr7oYjnt3bM" type="button"><img src="https://i.ytimg.com/vi/Fr7oYjnt3bM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Luke Combs - Fast Car (Official Live Video)</span></button>
+<button class="vtile" data-yt="mj4efhy6n0o" type="button"><img src="https://i.ytimg.com/vi/mj4efhy6n0o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Luke Combs - I Ain&#x27;t No Cowboy (Official Studio Video)</span></button>
+<button class="vtile" data-yt="7Lb9dq-JZFI" type="button"><img src="https://i.ytimg.com/vi/7Lb9dq-JZFI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Luke Combs - Beer Never Broke My Heart (Official Video)</span></button>
+<button class="vtile" data-yt="A6qd1DfP9Yw" type="button"><img src="https://i.ytimg.com/vi/A6qd1DfP9Yw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Luke Combs - Miss You Here (Official Studio Video)</span></button>
+<button class="vtile" data-yt="27nRqoBQLl4" type="button"><img src="https://i.ytimg.com/vi/27nRqoBQLl4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Luke Combs - Love You Anyway (Official Studio Video)</span></button>
+<button class="vtile" data-yt="2yG0jJrdnkg" type="button"><img src="https://i.ytimg.com/vi/2yG0jJrdnkg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Story of Luke Combs is Crazier Than You Think</span></button>
+<button class="vtile" data-yt="QNyr7pCQUBE" type="button"><img src="https://i.ytimg.com/vi/QNyr7pCQUBE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Country music sensation Luke Combs gets real about stardom: FULL INTERVIEW | 60 Minutes Australia</span></button>
+<button class="vtile" data-yt="vsBQd-58ffc" type="button"><img src="https://i.ytimg.com/vi/vsBQd-58ffc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Luke Combs | Before They Were Famous | Country Music’s Entertainer of The Year</span></button>
+<button class="vtile" data-yt="i-dx24RB-cQ" type="button"><img src="https://i.ytimg.com/vi/i-dx24RB-cQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">LUKE COMBS on Living with OCD, His Marriage &amp; the Moment That Changed His Life Forever</span></button>
+<button class="vtile" data-yt="ya1JtLcmWeQ" type="button"><img src="https://i.ytimg.com/vi/ya1JtLcmWeQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">From Go-Karts to Gold Records: Luke Combs&#x27; Wild Start &amp; The Hidden Meaning Behind His Outlaw Stance</span></button>
+<button class="vtile" data-yt="nFayPVO-7qs" type="button"><img src="https://i.ytimg.com/vi/nFayPVO-7qs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Epic History of Luke Combs</span></button>
+<button class="vtile" data-yt="_EmJDfRDXXA" type="button"><img src="https://i.ytimg.com/vi/_EmJDfRDXXA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Luke Combs shares struggle with rare form of OCD</span></button>
+<button class="vtile" data-yt="_5VM3aakJfY" type="button"><img src="https://i.ytimg.com/vi/_5VM3aakJfY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Luke Combs | This Past Weekend w/ Theo Von #509</span></button>
+<button class="vtile" data-yt="Ddn_IjiqrGY" type="button"><img src="https://i.ytimg.com/vi/Ddn_IjiqrGY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Joe Rogan Experience #1956 - Luke Combs</span></button>
+<button class="vtile" data-yt="mmKWQtemfWA" type="button"><img src="https://i.ytimg.com/vi/mmKWQtemfWA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Luke Combs Met His Wife</span></button>
+<button class="vtile" data-yt="CBwzFErjF2s" type="button"><img src="https://i.ytimg.com/vi/CBwzFErjF2s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Luke Combs - Live from Georgia Theatre</span></button>
+<button class="vtile" data-yt="zP2I_woFFdw" type="button"><img src="https://i.ytimg.com/vi/zP2I_woFFdw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Luke Combs: The Way I Am Interview | Zane Lowe Interview</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Luke Combs is an American country music singer and artist. He has released six studio albums, including his most recent project, The Way I Am (2026).</p>
+<p>Luke Combs is an American country music singer and artist. He has released six studio albums, including his most recent project, The Way I Am (2026).</p>
+<h3>the way i am album</h3>
+<p>Released on March 20, 2026, through Sony Music Nashville and Seven Ridges Records, The Way I Am is the sixth studio album by Luke Combs. Co-produced by Combs, Chip Matthews, and Jonathan Singleton, the album features a total of 22 tracks. It debuted at number two on the Billboard 200 and atop the Billboard Top Country Albums chart for the week dated April 4, 2026, earning 101,000 equivalent album units in the United States. The project received generally favorable reviews from critics, with a Metacritic score of 70 out of 100 based on 20s six critic scores. The lead single &quot;Back in the Saddle&quot; was rated as the best song on the album by Billboard&#x27;s Melinda Newman and Jessica Nicholson.</p>
+<h3>singles and promotion</h3>
+<p>The promotion for The Way I Am began with the release of the debut single &quot;Back in the Saddle&quot; on July 25, 2025. This was followed by several promotional singles including &quot;Giving Her Away&quot; (December 5, 2025), &quot;Sleepless in a Hotel Room&quot; (January 7, 2026), and &quot;I Ain&#x27;t No Cowboy&quot; (March 13, 2026). The album also featured the fifth single, &quot;Rethink Some Things&quot;, which reached the top ten in several countries including Canada, Australia, New Zealand, Ireland, Scotland, Norway, and the United States. Other singles released from the project include &quot;Days Like These&quot; and &quot;Sleepless in a Hotel Room&quot;, both of which became Billboard Country Airplay number ones.</p>
+<h3>my kinda saturday night tour</h3>
+<p>The My Kinda Saturday Name Tour is the sixth headlining concert tour by Luke Combs. In support of The Way I Am, the tour began on March 21, 2026, in Paradise, Nevada at Allegiant Stadium and concluded on August 2, 2026, in London, England at Wembley Stadium.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Nationality:</strong> American</li>
+<li><strong>Number of Studio Albums:</strong> 6</li>
+<li><strong>Most Recent Album:</strong> The Way I Am (2026)</li>
+<li><strong>：:</strong> -</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Luke_Smith_(session_musician" rel="noopener">https://en.wikipedia.org/wiki/Luke_Smith_(session_musician</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/My_Kinda_Saturday_Night_Tour" rel="noopener">https://en.wikipedia.org/wiki/My_Kinda_Saturday_Night_Tour</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/The_Way_I_Am_(Luke_Combs_album" rel="noopener">https://en.wikipedia.org/wiki/The_Way_I_Am_(Luke_Combs_album</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Luke Combs">
+        <input type="hidden" name="slug" value="luke-combs">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Luke Combs</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

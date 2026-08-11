@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>name — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">concept</div>
+      <h1>name</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-09</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">911</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="yQOBUrRaPU0" type="button"><img src="https://i.ytimg.com/vi/yQOBUrRaPU0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Goo Goo Dolls - Name [Official Music Video] (HD Remaster)</span></button>
+<button class="vtile" data-yt="pM9e8nNXYVI" type="button"><img src="https://i.ytimg.com/vi/pM9e8nNXYVI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Name (2015 Remaster)</span></button>
+<button class="vtile" data-yt="t3hkwAlOlzY" type="button"><img src="https://i.ytimg.com/vi/t3hkwAlOlzY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Goo Goo Dolls - Name</span></button>
+<button class="vtile" data-yt="VRUQ-bBApcY" type="button"><img src="https://i.ytimg.com/vi/VRUQ-bBApcY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">You Will Forget Your Name 🤒🙄 You Will SHOCK! 🤯</span></button>
+<button class="vtile" data-yt="rSuxPkytE3I" type="button"><img src="https://i.ytimg.com/vi/rSuxPkytE3I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Goo Goo Dolls - Name (Live From Stagecoach 2025)</span></button>
+<button class="vtile" data-yt="UZPXAD3bBJA" type="button"><img src="https://i.ytimg.com/vi/UZPXAD3bBJA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Goo Goo Dolls - Name (Lyrics)</span></button>
+<button class="vtile" data-yt="Sz15eSMd1DY" type="button"><img src="https://i.ytimg.com/vi/Sz15eSMd1DY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Find The Name Brand (Marathon)</span></button>
+<button class="vtile" data-yt="5l36QLuQzjI" type="button"><img src="https://i.ytimg.com/vi/5l36QLuQzjI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">N.A.M.E.</span></button>
+<button class="vtile" data-yt="-7_x8Unut1k" type="button"><img src="https://i.ytimg.com/vi/-7_x8Unut1k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Justin Bieber - Name (Visualizer) ft. Tori Kelly</span></button>
+<button class="vtile" data-yt="_dyvXcv3ej0" type="button"><img src="https://i.ytimg.com/vi/_dyvXcv3ej0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What&#x27;s My Name (from Descendants 2) (Official Video)</span></button>
+<button class="vtile" data-yt="gIQatHqgNQs" type="button"><img src="https://i.ytimg.com/vi/gIQatHqgNQs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fuerza Regida - TU NAME [Official Video]</span></button>
+<button class="vtile" data-yt="bgxHYqt61ds" type="button"><img src="https://i.ytimg.com/vi/bgxHYqt61ds/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">TU NAME - Fuerza Regida (Letra/ Lyrics)</span></button>
+<button class="vtile" data-yt="qg9_spuQP4Y" type="button"><img src="https://i.ytimg.com/vi/qg9_spuQP4Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Inky Fingers - The NME Story</span></button>
+<button class="vtile" data-yt="WZ6Y9p2vhJs" type="button"><img src="https://i.ytimg.com/vi/WZ6Y9p2vhJs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Who Named the United States? (Short Animated Documentary)</span></button>
+<button class="vtile" data-yt="SI-n7_-cVu8" type="button"><img src="https://i.ytimg.com/vi/SI-n7_-cVu8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jordan Burroughs Documentary: My Name Is Jordan</span></button>
+<button class="vtile" data-yt="wYkeSDr4D2s" type="button"><img src="https://i.ytimg.com/vi/wYkeSDr4D2s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Names on the Cup: Full documentary exploring Stanley Cup stories</span></button>
+<button class="vtile" data-yt="zoyctsgMwq0" type="button"><img src="https://i.ytimg.com/vi/zoyctsgMwq0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">When did Persia become Iran? (Short Animated Documentary)</span></button>
+<button class="vtile" data-yt="dlsm-_NgGWw" type="button"><img src="https://i.ytimg.com/vi/dlsm-_NgGWw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Australia Documentary 4K | Outback Wildlife | Original Nature Documentary | Deserts and Grasslands</span></button>
+<button class="vtile" data-yt="JN8FM1NCOSk" type="button"><img src="https://i.ytimg.com/vi/JN8FM1NCOSk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">From Jesus to Christ: The First Christians, Part One (full documentary) | FRONTLINE</span></button>
+<button class="vtile" data-yt="IDX1qzIV8NA" type="button"><img src="https://i.ytimg.com/vi/IDX1qzIV8NA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Why did the Philippines keep its Spanish name? (Short Animated Documentary)</span></button>
+<button class="vtile" data-yt="Lq8o2QjnqwM" type="button"><img src="https://i.ytimg.com/vi/Lq8o2QjnqwM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">When did Constantinople become Istanbul? (Short Animated Documentary)</span></button>
+<button class="vtile" data-yt="jTMcn2UaABU" type="button"><img src="https://i.ytimg.com/vi/jTMcn2UaABU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tracking the Butcher (Full Episode) | Inside the CIA: Secrets and Spies | National Geographic</span></button>
+<button class="vtile" data-yt="9UwWhhrhc74" type="button"><img src="https://i.ytimg.com/vi/9UwWhhrhc74/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Unidentified: UFOs in the Headlines | Special | Full Episode</span></button>
+<button class="vtile" data-yt="7Zed-g6dbZ8" type="button"><img src="https://i.ytimg.com/vi/7Zed-g6dbZ8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Why are so many countries called Guinea? (Short Animated Documentary)</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">A name is a term used for identification by an external observer. It can identify a single thing uniquely or within a given context, or it can identify a class or category of things.</p>
+<p>A name is a term used for identification by an external observer. It can identify a single thing uniquely or within a given context, or it can identify a class or category of things.</p>
+<h3>naming conventions</h3>
+<p>A naming convention is a set of generally accepted standards, criteria, or stipulated norms for naming things. These conventions are used across various fields such as astronomy, biology (binomial nomenclature), chemistry (chemical nomenclature), and computer programming. Products like automobiles typically follow binomial names consisting of a make and model, while school courses often use an abbreviation for the subject area followed by a number indicating difficulty level. Additionally, many identifiers such as bank accounts, government IDs, and flight numbers have internal structures and conventions.</p>
+<h3>personal names</h3>
+<p>A personal name is an identifying word or words used to designate an individual. In many countries, it is traditional for individuals to have a given name (or first name) and a surname (also called a family name). Some people may have two surnames inherited from each parent. Depending on the {// a person&#x27;s location}, in most of Europe and the Americas, the {// a person&#x27;s location} given name typically comes before the surname, whereas in parts of Asia and Hungary, the surname precedes the given name. Other identifiers include middle names, nicknames, aliases, or titles designating professional roles or authority.</p>
+<h3>etymology and religious significance</h3>
+<p>The word &#x27;name&#x27; comes from Old English &#x27;nama&#x27;, which is cognate with Latin &#x27;nomen&#x27;, Greek &#x27;onoma&#x27;, and Sanskrit &#x27;naman&#x27;. In the ancient near-east, names were thought to be powerful manifestations of a person or deity. This belief led to a reluctance to use the proper name of God in Hebrew writing and speech, and the common understanding that magical rituals had to be carried out &#x27;in [someone&#x27;s] name&#x27;. In the Old Testament, changing a name indicated a change of status, such as when Abram and Sarai were renamed Abraham and Sarah.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Etymology:</strong> Derived from Old English &#x27;nama&#x27; and Proto-Indo-European &#x27;*h1nómn̥&#x27;.</li>
+<li><strong>Onomastic Terminology:</strong> Personal names of men are called andronyms, while those of women are called called andronyms, while those of women are called gynonyms.</li>
+<li><strong>Cultures with Generation Names:</strong> Some East Asian cultures use a generation name, a syllable shared between siblings and cousins of the same generation.</li>
+<li><strong>// own a personal name:</strong> A person&#x27;s location determines if the given name comes before or surname.</li>
+<li><strong>Personal Name Components:</strong> // own a personal name</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Name" rel="noopener">https://en.wikipedia.org/wiki/Name</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Name_(disambiguation" rel="noopener">https://en.wikipedia.org/wiki/Name_(disambiguation</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/North_American_English" rel="noopener">https://en.wikipedia.org/wiki/North_American_English</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="name">
+        <input type="hidden" name="slug" value="name">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — name</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

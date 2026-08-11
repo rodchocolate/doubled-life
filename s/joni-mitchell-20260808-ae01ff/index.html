@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Joni Mitchell — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Joni Mitchell</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1006</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="MvR7Dkg4NQU" type="button"><img src="https://i.ytimg.com/vi/MvR7Dkg4NQU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Joni Mitchell - Blue (Full Album) [Official Video]</span></button>
+<button class="vtile" data-yt="GFB-d-8_bvY" type="button"><img src="https://i.ytimg.com/vi/GFB-d-8_bvY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Joni Mitchell ~ Big Yellow Taxi + Both Sides Now (BBC - 1969)</span></button>
+<button class="vtile" data-yt="E-he9mzrjCU" type="button"><img src="https://i.ytimg.com/vi/E-he9mzrjCU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Joni Mitchell - Live at the BBC Television Centre, London, UK / Sept. 3, 1970 (several songs in HD)</span></button>
+<button class="vtile" data-yt="3Rvf324HtJg" type="button"><img src="https://i.ytimg.com/vi/3Rvf324HtJg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Joni Mitchell - Ladies of the Canyon (Full Album) [Official Video]</span></button>
+<button class="vtile" data-yt="8PGITZmJrkE" type="button"><img src="https://i.ytimg.com/vi/8PGITZmJrkE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Joni Mitchell - Song To A Seagull (Full Album) [Official Video]</span></button>
+<button class="vtile" data-yt="jxiluPSmAF8" type="button"><img src="https://i.ytimg.com/vi/jxiluPSmAF8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Joni Mitchell – Both Sides Now (Live at the Newport Folk Festival 2022) [Official Video]</span></button>
+<button class="vtile" data-yt="x5BnE5_lPqE" type="button"><img src="https://i.ytimg.com/vi/x5BnE5_lPqE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">&#x27;California&#x27; (LIVE) - Joni Mitchell (BBC In Concert, 1970) - Joni playing dulcimer.</span></button>
+<button class="vtile" data-yt="J48BpiPLHtA" type="button"><img src="https://i.ytimg.com/vi/J48BpiPLHtA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Joni Mitchell - Clouds (Full Album) [Official Video]</span></button>
+<button class="vtile" data-yt="yXr2EFomFkU" type="button"><img src="https://i.ytimg.com/vi/yXr2EFomFkU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Joni Mitchell - Both Sides Now (2021 Remaster) [Official Audio]</span></button>
+<button class="vtile" data-yt="otPQDEbVsc4" type="button"><img src="https://i.ytimg.com/vi/otPQDEbVsc4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Joni Mitchell - Help Me (Official Audio)</span></button>
+<button class="vtile" data-yt="zeaO5UZ5OcI" type="button"><img src="https://i.ytimg.com/vi/zeaO5UZ5OcI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Joni Mitchell - Coyote (Live at Gordon Lightfoot&#x27;s Home with Bob Dylan &amp; Roger McGuinn, 1975)</span></button>
+<button class="vtile" data-yt="YgtLZCe-GSM" type="button"><img src="https://i.ytimg.com/vi/YgtLZCe-GSM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Joni Mitchell - Both Sides Now (Live At The Isle Of Wight Festival 1970)</span></button>
+<button class="vtile" data-yt="RpqEEwvfAGQ" type="button"><img src="https://i.ytimg.com/vi/RpqEEwvfAGQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Joni Mitchell: Her Guitar and Lyrics Made Folk Music Contemporary | SLICE WHO | FULL DOCUMENTARY</span></button>
+<button class="vtile" data-yt="v-vLBhIrIRU" type="button"><img src="https://i.ytimg.com/vi/v-vLBhIrIRU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Joni Mitchell: The Making of a Folk and Popular Music Icon | FULL DOCUMENTARY</span></button>
+<button class="vtile" data-yt="EgrtMpG-UHE" type="button"><img src="https://i.ytimg.com/vi/EgrtMpG-UHE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Joni Mitchell (Documentary) The Isle Of Wight Festival, England 1970 BluRay 5.1 surround 96KHz—24bit</span></button>
+<button class="vtile" data-yt="cW_bwTu6VVw" type="button"><img src="https://i.ytimg.com/vi/cW_bwTu6VVw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">JONI MITCHELL | A Study of One Of The Greatest Singer-Songwriters of All Time</span></button>
+<button class="vtile" data-yt="pEJuiZN3jI8" type="button"><img src="https://i.ytimg.com/vi/pEJuiZN3jI8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Joni Mitchell Interview</span></button>
+<button class="vtile" data-yt="YATJAig1n6Y" type="button"><img src="https://i.ytimg.com/vi/YATJAig1n6Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Joni Mitchell on legendary bassist, Jaco Pastorius</span></button>
+<button class="vtile" data-yt="k5oikxuhbd0" type="button"><img src="https://i.ytimg.com/vi/k5oikxuhbd0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">David Crosby on Dating Joni Mitchell and the Night She Broke Up With Him</span></button>
+<button class="vtile" data-yt="Xea10-Z23aU" type="button"><img src="https://i.ytimg.com/vi/Xea10-Z23aU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Joni Mitchell Interview 1988 &quot;People are afraid of things they don&#x27;t understand&quot;</span></button>
+<button class="vtile" data-yt="RWeTVp7cKqw" type="button"><img src="https://i.ytimg.com/vi/RWeTVp7cKqw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">At 81, Joni Mitchell FINALLY Confirms the Tragedy She Kept Quiet For 40 Years</span></button>
+<button class="vtile" data-yt="c6_LmpZa0fI" type="button"><img src="https://i.ytimg.com/vi/c6_LmpZa0fI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Why Does Joni Mitchell Still Matter?</span></button>
+<button class="vtile" data-yt="HadPgifDy3U" type="button"><img src="https://i.ytimg.com/vi/HadPgifDy3U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Neil Young on Meeting Joni Mitchell For The First Time</span></button>
+<button class="vtile" data-yt="fUu1MvnAecc" type="button"><img src="https://i.ytimg.com/vi/fUu1MvnAecc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Joni Mitchell Interview</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Joni Mitchell is a Canadian singer-songwriter, multi-instrumentalist, and painter. She is recognized as one of the most influential singer-songwriters from the 1960s folk music circuit.</p>
+<p>Joni Mitchell is a Canadian singer-songwriter, multi-instrumentalist, and painter. She is recognized as one of the most influential singer-songwriters from the 1960s folk music circuit.</p>
+<h3>early life and education</h3>
+<p>Born Roberta Joan Anderson on November 7, 1943, in Fort Macleod, Alberta, Mitchell own her mother, a teacher, and and father, a Royal Canadian Air Force flight lieutenant. She contracted polio at age nine, which weakened her left hand; to compensate, she devised alternative tunings for the guitar, which she later used to create nonstandard approaches to harmony and structure in her songwriting. She briefly studied classical piano and took art classes with abstract expressionist painter Henry Bonli in Saskatoon, and later attended the Alberta College of Art in Calgary for the 1963–64 school year.</p>
+<h3>musical career</h3>
+<p>Mitchell began singing in nightclubs in Saskatoon and western Canada before moving to Toronto and then to the United States in 1965. She signed with Reprise Records and recorded her debut album, Song to a Seagull, in 1968. While settling in Southern California, she wrote popular songs such as &quot;Big Yellow Taxi&quot; and &quot;Woodstock&quot;. Her 1971 album Blue is frequently cited as one of the greatest albums of all time. In 1974, her best-selling album Court and Spark featured radio hits like &quot;Help Me&quot; and &quot;Free Man in Paris&quot; and explored jazz-influenced ideas. Throughout her career, she melded jazz with rock and roll, R&amp;B, classical music and non-Western beats, collaborating with jazz musicians such as Jaco Pastorius, Tom Scott, Wayne Shorter, Herbie Hancock, Pat Metheny, and Charles Mingus.</p>
+<h3>later years and health</h3>
+<p>Mitchell described herself as a &quot;painter derailed by circumstance&quot; and designed most of her own album covers. She quit touring and released her final album of original songs in 2007. Following a brain aneurysm in 2015, she underwent a long period of recovery and therapy. She returned to public appearances in 2021, accepting a Kennedy Center Honor, and returned to live performance with an unannounced show at the June 2022 Newport Folk Festival. Since then, she has made several other appearances, including headlining shows in 2023 and 2024, and headlining an event at The Gorge Amphitheatre on June 10, 2023, which was her first ticketed event in more than 20 years.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Born:</strong> November 7, 1943</li>
+<li><strong>Nationality:</strong> Canadian</li>
+<li><strong>Awards:</strong> Eleven Grammy Awards and induction into the Rock and Roll Hall of Fame (1997)</li>
+<li><strong>Debut Album:</strong> Song to a Seagull (1968)</li>
+<li><strong>Best-selling Album:</strong> Court and Spark (1974)</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Brandi_Carlile" rel="noopener">https://en.wikipedia.org/wiki/Brandi_Carlile</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Joni_Mitchell" rel="noopener">https://en.wikipedia.org/wiki/Joni_Mitchell</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/The_Gorge_Amphitheatre" rel="noopener">https://en.wikipedia.org/wiki/The_Gorge_Amphitheatre</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Joni Mitchell">
+        <input type="hidden" name="slug" value="joni-mitchell">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Joni Mitchell</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

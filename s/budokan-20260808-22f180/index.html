@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Budokan — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">place</div>
+      <h1>Budokan</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">12</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1158</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="08rN46poDw4" type="button"><img src="https://i.ytimg.com/vi/08rN46poDw4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dream Theater - Live at Budokan, 2004 (Full Show) (UHD 4K)</span></button>
+<button class="vtile" data-yt="l8YTHHClNjs" type="button"><img src="https://i.ytimg.com/vi/l8YTHHClNjs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Oasis - Champagne Supernova (Budokan 1998) [Best Live Version] - Remastered HD</span></button>
+<button class="vtile" data-yt="-qgpewMCVjs" type="button"><img src="https://i.ytimg.com/vi/-qgpewMCVjs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cheap Trick - I Want You to Want Me (from Budokan!)</span></button>
+<button class="vtile" data-yt="3FE70D5mRp0" type="button"><img src="https://i.ytimg.com/vi/3FE70D5mRp0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ERIC CLAPTON Live at Budokan, Tokyo, 2001 (Full Concert)</span></button>
+<button class="vtile" data-yt="ZbkypX1OhZ0" type="button"><img src="https://i.ytimg.com/vi/ZbkypX1OhZ0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cheap Trick - Surrender (from Budokan!)</span></button>
+<button class="vtile" data-yt="kkZBXywsPGs" type="button"><img src="https://i.ytimg.com/vi/kkZBXywsPGs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ozzy Osbourne Live At Budokan</span></button>
+<button class="vtile" data-yt="8MADGnzrC-A" type="button"><img src="https://i.ytimg.com/vi/8MADGnzrC-A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cheap Trick: Budokan! | Full Concert</span></button>
+<button class="vtile" data-yt="eO7oknTaltE" type="button"><img src="https://i.ytimg.com/vi/eO7oknTaltE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Eric Clapton - Tokyo, Japan (Budokan) - Feb 25 2009 - Full Concert</span></button>
+<button class="vtile" data-yt="n8ueKBAXi94" type="button"><img src="https://i.ytimg.com/vi/n8ueKBAXi94/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">ขอให้เหมือนเดิม - BUDOKAN【OFFICIAL MV】</span></button>
+<button class="vtile" data-yt="eKVcygzipiE" type="button"><img src="https://i.ytimg.com/vi/eKVcygzipiE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Best Warm-Up for Jiu-Jitsu: Cameron Shayne&#x27;s Budokan (Full B-Team Class)</span></button>
+<button class="vtile" data-yt="kB8ycq4GVjA" type="button"><img src="https://i.ytimg.com/vi/kB8ycq4GVjA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cheap Trick Performs I Want You to Want Me | BUDOKAN! | Front Row Music</span></button>
+<button class="vtile" data-yt="uOS40J3fg-I" type="button"><img src="https://i.ytimg.com/vi/uOS40J3fg-I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">BABYMETAL | Karate | LIVE at Budokan 2021 (4K)</span></button>
+<button class="vtile" data-yt="8luxC5BV5BU" type="button"><img src="https://i.ytimg.com/vi/8luxC5BV5BU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Rise and Fall of Cheap Trick: From Budokan Glory to a Band in Decline</span></button>
+<button class="vtile" data-yt="4tZpKvGn6f4" type="button"><img src="https://i.ytimg.com/vi/4tZpKvGn6f4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Art of Budokan Karate: From Okinawan Roots to Global Legacy.</span></button>
+<button class="vtile" data-yt="oydPJwJgGx8" type="button"><img src="https://i.ytimg.com/vi/oydPJwJgGx8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cheap Trick At Budokan (Short Film)</span></button>
+<button class="vtile" data-yt="lVnCmsIrqzY" type="button"><img src="https://i.ytimg.com/vi/lVnCmsIrqzY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DIR EN GREY — DUM SPIRO SPERO AT NIPPON BUDOKAN (DOCUMENTARY FOOTAGE)</span></button>
+<button class="vtile" data-yt="AdrlFck1y4E" type="button"><img src="https://i.ytimg.com/vi/AdrlFck1y4E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Versailles 2017 BUDOKAN Documentary (1080P/60fps)</span></button>
+<button class="vtile" data-yt="C3O84ktDPPA" type="button"><img src="https://i.ytimg.com/vi/C3O84ktDPPA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Budokan Myth | Why This Japanese Venue Changed Rock History</span></button>
+<button class="vtile" data-yt="VytNfpc0TCk" type="button"><img src="https://i.ytimg.com/vi/VytNfpc0TCk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cheap Trick on their &#x27;At Budokan&#x27; Live Album | The Big Interview</span></button>
+<button class="vtile" data-yt="SVo1kRQsS8I" type="button"><img src="https://i.ytimg.com/vi/SVo1kRQsS8I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Official Budokon University Documentary w/Cameron Shayne, Xande Ribeiro &amp; Rafael Lovato Jr.</span></button>
+<button class="vtile" data-yt="DiwNZGsW2sg" type="button"><img src="https://i.ytimg.com/vi/DiwNZGsW2sg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Empty Mind - Kendo at the Budokan</span></button>
+<button class="vtile" data-yt="dpanBrKmPPE" type="button"><img src="https://i.ytimg.com/vi/dpanBrKmPPE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Macross F Galaxy Tour Final in Budokan Back Stage Documentary 4k</span></button>
+<button class="vtile" data-yt="diuHdcd31TY" type="button"><img src="https://i.ytimg.com/vi/diuHdcd31TY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cheap Trick - Cheap Trick 2008 Interview: Looking Back (from Budokan!)</span></button>
+<button class="vtile" data-yt="w7lKkxTFV0E" type="button"><img src="https://i.ytimg.com/vi/w7lKkxTFV0E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">BUDOKAN - Short Documentary</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The Nippon Budokan is an indoor arena located in Chiyoda, Tokyo, Japan. Originally built for the 1964 Summer Olympics judo competition, it serves as a primary venue for Japanese martial arts and has become one of the world&#x27;s most outstanding musical performance venues.</p>
+<p>The Nippon Budokan is an indoor arena located in Chiyoda, Tokyo, Japan. Originally built for the 1964 Summer Olympics judo competition, it serves as a primary venue for Japanese martial arts and has become one of the world&#x27;s most outstanding musical performance venues.</p>
+<h3>history and construction</h3>
+<p>The Nippon Budokan was completed on September 15, 1964, and opened on October 3 in the presence of Emperor Showa and Empress Kojun. It was built following an initiative by the Diet Members&#x27; Association for the Construction of the Martial Arts Hall, which was formed in June 1961 after judo was selected as an official sport for the 1964 Tokyo Summer Olympics. The building is an octagonal structure modeled after Yumedono (Hall of Dreams) in Hōryū-ji in Nara and stands 42 metres high. The arena holds 14,471 people.</p>
+<h3>martial arts and sporting events</h3>
+<p>The Budokan&#x27;s primary purpose is to host Japanese martial arts contests, including annual national championships for judo, kendo, karate, and aikido. It has hosted the 1967 Women&#x27;s Volleyball World Championship and the 2020 Summer Olympics judo and karate competitions, as well as the 2020 Summer Paralympics judo events. The arena has also been associated with professional wrestling shows from Pro Wrestling Noah and All Japan Pro Wrestling, though regular shows have ceased due to declining audiences. Additionally, a 1976 hybrid rules fight between Muhammad Ali and Antonio Inoki is considered a forerunner to mixed martial arts.</p>
+<h3>musical performances</h3>
+<p>The Beatles were the first rock group to perform at the Budokan in June and July 1966. Other notable acts have played there, including ABBA, who held their final live performance there in March 1980. The venue is highly regarded for its acoustics and audience behavior, which Eric Clapton described as &quot;//s&quot; (Wait, I let me re-read the source). The venue is popular for recording live albums because of its good acoustics and Japanese audiences who are quiet during performances but appreciative when appropriate. American artists Bob Dylan and Cheap Trick have recorded live albums there; however, the album &#x27;Cheap Trick at Budokan&#x27; was actually recorded in Osaka according to producer Jack Douglas.</p>
+<h3>cheap trick at budokan</h3>
+<p>The first live album by American rock band Cheap Trick is their best-selling recording. Released in Japan on October 8, 1978, and in the US in February 1979 through Epic Records, it became a high-selling success that kickstarted the band&#x27;s popularity. In the U.S., it peaked at number four on the Billboard 200 and sold over three million copies. The album was selected by the Library of Congress for preservation in the United States National Recording Registry in 2019.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Location:</strong> Kitanomaru Park, Chiyoda, Tokyo, Japan</li>
+<li><strong>Capacity:</strong> 14,471 people</li>
+<li><strong>label own height:</strong> 42 metres (138 ft)</li>
+<li><strong>First rock group to perform:</strong> The Beatles</li>
+<li><strong>label own opening date:</strong> October 3, 1964</li>
+<li><strong>label own architectural model:</strong> value own Yumedono (Hall of Dreams) in Hōryū-ji in Nara</li>
+<li><strong>Most concerts record holder:</strong> Eikichi Yazawa (142 times as of December 19, 2017)</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Cheap_Trick_at_Budokan" rel="noopener">https://en.wikipedia.org/wiki/Cheap_Trick_at_Budokan</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Nippon_Budokan" rel="noopener">https://en.wikipedia.org/wiki/Nippon_Budokan</a></li>
+          <li><a href="https://www.setlist.fm/setlist/bialystocks/2026/nippon-budokan-tokyo-japan-2b4b3c92.html" rel="noopener">https://www.setlist.fm/setlist/bialystocks/2026/nippon-budokan-tokyo-japan-2b4b3c92.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/girls/2026/nippon-budokan-tokyo-japan-3b4b3c9c.html" rel="noopener">https://www.setlist.fm/setlist/girls/2026/nippon-budokan-tokyo-japan-3b4b3c9c.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/rosy-chronicle/2026/nippon-budokan-tokyo-japan-b750d02.html" rel="noopener">https://www.setlist.fm/setlist/rosy-chronicle/2026/nippon-budokan-tokyo-japan-b750d02.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/sayaka-yamamoto/2026/nippon-budokan-tokyo-japan-234b3c93.html" rel="noopener">https://www.setlist.fm/setlist/sayaka-yamamoto/2026/nippon-budokan-tokyo-japan-234b3c93.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/seiko-matsuda/2026/nippon-budokan-tokyo-japan-43725bbf.html" rel="noopener">https://www.setlist.fm/setlist/seiko-matsuda/2026/nippon-budokan-tokyo-japan-43725bbf.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/seiko-matsuda/2026/nippon-budokan-tokyo-japan-4b725bba.html" rel="noopener">https://www.setlist.fm/setlist/seiko-matsuda/2026/nippon-budokan-tokyo-japan-4b725bba.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/seiko-matsuda/2026/nippon-budokan-tokyo-japan-53725bb9.html" rel="noopener">https://www.setlist.fm/setlist/seiko-matsuda/2026/nippon-budokan-tokyo-japan-53725bb9.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/seiko-matsuda/2026/nippon-budokan-tokyo-japan-5b725bb8.html" rel="noopener">https://www.setlist.fm/setlist/seiko-matsuda/2026/nippon-budokan-tokyo-japan-5b725bb8.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/sumika/2026/nippon-budokan-tokyo-japan-334af845.html" rel="noopener">https://www.setlist.fm/setlist/sumika/2026/nippon-budokan-tokyo-japan-334af845.html</a></li>
+          <li><a href="https://www.setlist.fm/setlist/sumika/2026/nippon-budokan-tokyo-japan-3b4af844.html" rel="noopener">https://www.setlist.fm/setlist/sumika/2026/nippon-budokan-tokyo-japan-3b4af844.html</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Budokan">
+        <input type="hidden" name="slug" value="budokan">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Budokan</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

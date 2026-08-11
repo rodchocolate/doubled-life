@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Jimi Hendrix — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Jimi Hendrix</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1617</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="TLV4_xaYynY" type="button"><img src="https://i.ytimg.com/vi/TLV4_xaYynY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Jimi Hendrix Experience - All Along The Watchtower (Official Audio)</span></button>
+<button class="vtile" data-yt="qFfnlYbFEiE" type="button"><img src="https://i.ytimg.com/vi/qFfnlYbFEiE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Jimi Hendrix Experience - Voodoo Child (Slight Return) (Live In Maui, 1970)</span></button>
+<button class="vtile" data-yt="WGoDaYjdfSg" type="button"><img src="https://i.ytimg.com/vi/WGoDaYjdfSg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Jimi Hendrix Experience - Purple Haze (Official Audio)</span></button>
+<button class="vtile" data-yt="flLNc0SV7Dc" type="button"><img src="https://i.ytimg.com/vi/flLNc0SV7Dc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Jimi Hendrix Experience ● Live at Royal Albert Hall, London 02/24/69 ● Best version + extras 🎸✌️</span></button>
+<button class="vtile" data-yt="cJunCsrhJjg" type="button"><img src="https://i.ytimg.com/vi/cJunCsrhJjg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Jimi Hendrix Experience - Purple Haze (Live at the Atlanta Pop Festival)</span></button>
+<button class="vtile" data-yt="ot7fBM4m4wA" type="button"><img src="https://i.ytimg.com/vi/ot7fBM4m4wA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jimi Hendrix Live Full Concert 1969 Amazing Clear Footage</span></button>
+<button class="vtile" data-yt="_PVjcIO4MT4" type="button"><img src="https://i.ytimg.com/vi/_PVjcIO4MT4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Jimi Hendrix Experience - Foxey Lady (Miami Pop 1968)</span></button>
+<button class="vtile" data-yt="35luFxHO5E0" type="button"><img src="https://i.ytimg.com/vi/35luFxHO5E0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Jimi Hendrix Experience - Little Wing (Official Audio)</span></button>
+<button class="vtile" data-yt="sjzZh6-h9fM" type="button"><img src="https://i.ytimg.com/vi/sjzZh6-h9fM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jimi Hendrix - The Star Spangled Banner [ National Anthem ] ( Live at Woodstock 1969 )</span></button>
+<button class="vtile" data-yt="Z7K5VCCdOEM" type="button"><img src="https://i.ytimg.com/vi/Z7K5VCCdOEM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Wind Cries Mary</span></button>
+<button class="vtile" data-yt="G5Lvc1a76dU" type="button"><img src="https://i.ytimg.com/vi/G5Lvc1a76dU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jimi Hendrix Hey Joe Live at the Monterey 1967 1080</span></button>
+<button class="vtile" data-yt="RX-pQOaTiMM" type="button"><img src="https://i.ytimg.com/vi/RX-pQOaTiMM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jimi Hendrix - Spanish Castle Magic live stockholm 1969 HD 1440p 60FPS</span></button>
+<button class="vtile" data-yt="MZZ4vUPoMPE" type="button"><img src="https://i.ytimg.com/vi/MZZ4vUPoMPE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jimi Hendrix - Biography</span></button>
+<button class="vtile" data-yt="Qg7b5sYozLE" type="button"><img src="https://i.ytimg.com/vi/Qg7b5sYozLE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jimi Hendrix | The Untold Story | Full Music Documentary</span></button>
+<button class="vtile" data-yt="7jtqXW7_jOo" type="button"><img src="https://i.ytimg.com/vi/7jtqXW7_jOo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jimi Hendrix: The Guitar Hero | Rock Legends Pay Their Respects In This Music Documentary</span></button>
+<button class="vtile" data-yt="YHVIer81Wns" type="button"><img src="https://i.ytimg.com/vi/YHVIer81Wns/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jimi Hendrix Imagine Documentary bbc4</span></button>
+<button class="vtile" data-yt="7wwPfbPFdx0" type="button"><img src="https://i.ytimg.com/vi/7wwPfbPFdx0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jimi Hendrix: Trapped in Amber | Awesome Full Length Documentary</span></button>
+<button class="vtile" data-yt="Glrm9lWq0FM" type="button"><img src="https://i.ytimg.com/vi/Glrm9lWq0FM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The True Story of Jimi Hendrix | Mini Documentary</span></button>
+<button class="vtile" data-yt="FjpqsD8cIzg" type="button"><img src="https://i.ytimg.com/vi/FjpqsD8cIzg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jimi Hendrix - By Those Who Knew Him Best | Full Unauthorized Documentary Film</span></button>
+<button class="vtile" data-yt="an6mFsExmRY" type="button"><img src="https://i.ytimg.com/vi/an6mFsExmRY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jimi Hendrix: Smash Hits | Full Music Documentary | Stream Music and More</span></button>
+<button class="vtile" data-yt="eVetJ407n_k" type="button"><img src="https://i.ytimg.com/vi/eVetJ407n_k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jimi Hendrix | The Last 24 Hours</span></button>
+<button class="vtile" data-yt="T0A8XzekhsA" type="button"><img src="https://i.ytimg.com/vi/T0A8XzekhsA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jimi Hendrix: From Musical Roots to Tragic Heights | The Iconic Journey | Amplified</span></button>
+<button class="vtile" data-yt="kpYnDn1euEw" type="button"><img src="https://i.ytimg.com/vi/kpYnDn1euEw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">JIMI HENDRIX: The Dark Story Behind Rock&#x27;s Greatest Guitar Legend</span></button>
+<button class="vtile" data-yt="rXUpHFTZK7s" type="button"><img src="https://i.ytimg.com/vi/rXUpHFTZK7s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Troubled Life of Jimi Hendrix: From Guitar God to a Tragic Final Night</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Jimi Hendrix was an American musician who performed live at venues such as the Winterland Ballroom and the Fillmore East. He recorded several live albums and box sets, including Songs For Groovy Children: The Fillmore East Concerts and Winterland.</p>
+<p>Jimi Hendrix was an American musician who performed live at venues such as the Winterland Ballroom and the Fillmore East. He recorded several live albums and box sets, including Songs For Groovy Children: The Fillmore East Concerts and Winterland.</p>
+<h3>fillmore east performances</h3>
+<p>Hendrix performed four sets of performances over two nights at the Fillmore East auditorium in New York City on New Year&#x27;s Eve 1969 and New Year&#x27;s Day 1970. These recordings were supervised by sound engineer Wally Heider, who had also recorded Hendrix live at Woodstock and the Monterey Pop Festival in 1967. To settle a contract dispute with Capitol Records, Hendrix agreed to deliver an album, which led to the recording of these shows. To meet this obligation, the set lists contained mostly new songs, including debuts of &#x27;Power of Soul&#x27;, &#x27;Machine Gun&#x27;, &#x27;Ezy Ryder&#x27;, &#x27;Earth Blues&#x27;, &#x27;Burning Desire&#x27;, and &#x27;Who Knows&#x27;. He performed with drummer Buddy Miles and bassist Billy Cox. He also played popular Experience numbers such as &#x27;Stone Free&#x27;, &#x27;foxey Lady&#x27;, &#x27;Voodoo Child (Slight Return)&#x27;, and &#x27;Purple Haze&#x27; for encores.</p>
+<h3>winterland ballroom performances</h3>
+<p>The Jimi Hendrix Experience, Jimi Hendrix&#x27;s band, performed six performances at the Winterland Ballroom in San Francisco, California between October 10 and 12, 1968. These performances were documented in a posthumous live box set titled Winterland, released on September 13, 2011. The collection includes contributions from Noel Redding (bass guitar, backing vocals), Mitch Mitchell (drums), and guest musicians suchland as Jack Casady (bass on &#x27;Killing Floor&#x27; and &#x27;Hey Joe&#x27;) and Virgil Gonsalves (flute on &#x27;Are You Experienced?&#x27;).</p>
+<h3>title releases</h3>
+<p>Several live recordings of Hendrix&#x27;s work have been documented. The box set Songs For Groovy Children: The Fillmore East Concerts, released in 2019, contains 43 songs from the 1969-1970 New Year&#x27;s performances at the Fillmore East. This collection includes previously unreleased recordings and longer versions of some tracks. Some of the uma ownly only recorded as a uma ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownlyly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly ownly Ownly</p>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Fillmore_East" rel="noopener">https://en.wikipedia.org/wiki/Fillmore_East</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Songs_for_Groovy_Children:_The_Fillmore_East_Concerts" rel="noopener">https://en.wikipedia.org/wiki/Songs_for_Groovy_Children:_The_Fillmore_East_Concerts</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Winterland_(The_Jimi_Hendrix_Experience_album" rel="noopener">https://en.wikipedia.org/wiki/Winterland_(The_Jimi_Hendrix_Experience_album</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Jimi Hendrix">
+        <input type="hidden" name="slug" value="jimi-hendrix">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Jimi Hendrix</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

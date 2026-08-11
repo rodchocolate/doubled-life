@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Virgin Records — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>Virgin Records</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">990</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="k_G3o2vyMrY" type="button"><img src="https://i.ytimg.com/vi/k_G3o2vyMrY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">My Virgin Records story - the documentary</span></button>
+<button class="vtile" data-yt="FSIaa4gHCU4" type="button"><img src="https://i.ytimg.com/vi/FSIaa4gHCU4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Why Netflix Star Killer Mike Turned Down A Virgin Records Deal</span></button>
+<button class="vtile" data-yt="1xd8B36JZ5E" type="button"><img src="https://i.ytimg.com/vi/1xd8B36JZ5E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Virgin Records to celebrate its 40th anniversary with an exhibition</span></button>
+<button class="vtile" data-yt="vQOkvsfLbYs" type="button"><img src="https://i.ytimg.com/vi/vQOkvsfLbYs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Virgin Records: 40 Years Of Disruptions - CD1</span></button>
+<button class="vtile" data-yt="g2D8c6iTJZc" type="button"><img src="https://i.ytimg.com/vi/g2D8c6iTJZc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ranking EVERY Virgin Records Logo Ever!</span></button>
+<button class="vtile" data-yt="98QtW81YHOc" type="button"><img src="https://i.ytimg.com/vi/98QtW81YHOc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Rise &amp; Fall of Sir Richard Branson : Virgin Empire’s Untold Story #Documentary</span></button>
+<button class="vtile" data-yt="XvP7RV2umRU" type="button"><img src="https://i.ytimg.com/vi/XvP7RV2umRU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Rise and Fall of Richard Branson</span></button>
+<button class="vtile" data-yt="7t2uwAbZvtQ" type="button"><img src="https://i.ytimg.com/vi/7t2uwAbZvtQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">First Generation: 25 Years of Virgin Records Music Collection Ad (1998)</span></button>
+<button class="vtile" data-yt="AoKjWFBdNlo" type="button"><img src="https://i.ytimg.com/vi/AoKjWFBdNlo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Virgin 40 -- 5 Retrospective Compilations</span></button>
+<button class="vtile" data-yt="lgaY_1gRQpI" type="button"><img src="https://i.ytimg.com/vi/lgaY_1gRQpI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Les Rallizes Dénudés - Virgin Records Studio Session (1976)</span></button>
+<button class="vtile" data-yt="U99okVhy9Cs" type="button"><img src="https://i.ytimg.com/vi/U99okVhy9Cs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Shopping for CD&#x27;s at a Virgin Records store in 2000</span></button>
+<button class="vtile" data-yt="bDLOefC5mT8" type="button"><img src="https://i.ytimg.com/vi/bDLOefC5mT8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Richard Branson Built His Multibillion Dollar Fortune | Forbes</span></button>
+<button class="vtile" data-yt="Ll23A8hRC_o" type="button"><img src="https://i.ytimg.com/vi/Ll23A8hRC_o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Virgin’s Fearless Founder | How Branson Built a Business Network That Changed Global Markets</span></button>
+<button class="vtile" data-yt="aghj0Z0uwDw" type="button"><img src="https://i.ytimg.com/vi/aghj0Z0uwDw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Virgin Records celebrates 40 years: Richard Branson on selling records to building spaceships</span></button>
+<button class="vtile" data-yt="SOWtz6ImuLo" type="button"><img src="https://i.ytimg.com/vi/SOWtz6ImuLo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The extraordinary life of Virgin boss and billionaire Richard Branson | 60 Minutes Australia</span></button>
+<button class="vtile" data-yt="-Fmiqik4jh0" type="button"><img src="https://i.ytimg.com/vi/-Fmiqik4jh0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Richard Branson: How A Dyslexic Drop-out Build A Billion Dollar Empire!</span></button>
+<button class="vtile" data-yt="WNp3NkvOc_M" type="button"><img src="https://i.ytimg.com/vi/WNp3NkvOc_M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Richard Branson in 1970 People for Tomorrow BBC Documentary 7th January 1971</span></button>
+<button class="vtile" data-yt="D5IxvCFg1UQ" type="button"><img src="https://i.ytimg.com/vi/D5IxvCFg1UQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Richard Branson: Raw Instinct</span></button>
+<button class="vtile" data-yt="QDkRX3NNRS4" type="button"><img src="https://i.ytimg.com/vi/QDkRX3NNRS4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Virgin - The Making of 40 Years of Better</span></button>
+<button class="vtile" data-yt="20A3ly8ZkH4" type="button"><img src="https://i.ytimg.com/vi/20A3ly8ZkH4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Central Television Millionaires - Richard Branson</span></button>
+<button class="vtile" data-yt="tAR910daPOE" type="button"><img src="https://i.ytimg.com/vi/tAR910daPOE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The history of Virgin in 114 seconds</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Virgin Records is a British record label owned by Universal Music Group. It was founded in 1972 as an independent label by entrepreneurs Richard Branson, Simon Draper, Nik Powell, and musician Tom Newman.</p>
+<p>Virgin Records is a British record label owned by Universal Music Group. It was founded in 1972 as an independent label by entrepreneurs Richard Branson, Simon Draper, Nik Powell, and musician Tom Newman.</p>
+<h3>history and branding</h3>
+<p>The label&#x27;s origins began with a record shop called Virgin Records and Tapes on Notting Hill Gate in London, which specialized in krautrock imports. The name &#x27;Virgin&#x27; was suggested by Tessa Watts during a brainstorming session because the founders were new to business. The first release on the label was Mike Oldfield&#x27;s progressive rock album Tubular Bells in 1973, produced by Tom Newman. This was followed by notable krautrock releases from Tangerine Dream and Faust. The label&#x27;s original logo, designed by Roger Dean, featured a naked woman in mirror image with a lizard. A red, white, and blue design was introduced in 1975, and the current &#x27;scrawl&#x27; logo—a stylized signature created in 1978—was based on a scribble by designer Ray Kyte on a napkin.</p>
+<h3>evolution and rebranding</h3>
+<p>In 1977, the signing of the Sex Pistols reinvented the label as a new-wave outpost, moving it into the mainstream of the punk rock era. Under Tessa Watts&#x27; guidance, the Pistols brought the label to success. Virgin subsequently signed other new wave groups such as Public Image Ltd, Culture Club, The Human League, Simple Minds, and XTC. The Human League&#x27;s &quot;Don&#x27;t You Want Me&quot; became the label&#x27;s first chart-topping single in 1981.</p>
+<h3>corporate transitions</h3>
+<p>Virgin Records was sold by Richard Branson to Thorn EMI in June 1992 for a reported US$1 billion, which Branson used to fund Virgin Atlantic. Following this acquisition, Virgin launched several subsidiaries including Realworld Records, Innocent Records, Pointblank Records, and Hut Recordings. After EMI was acquired by Universal Music Group (UMG) in 2012, UMG created the Virgin EMI Records division. In 2013, Virgin EMI Records was formed through the merger of Mercury Records UK and Virgin Records. In June 2020, Virgin EMI became dormant and was replaced by the relaunch of labels EMI Records and Virgin Records, with Virgin Records operating as an imprint of EMI Records.</p>
+<h3>north american and classical music operations</h3>
+<p>Virgin Records America, Inc. was founded in 1986 to handle North American operations. It was headquartered in Beverly Hills from 1986 to 2002, then moved to New York City (2003-2012), and finally to Hollywood, California, under the Capitol Music Group imprint since 2012. Virgin Classics was founded in 1988 as part of Virgin Records. Due to European Commission requirements for divestment during UMG&#x27;s takeover of EMI, Virgin Classics was sold to Warner Music Group in February 2013 and its roster and catalogue were placed into Erato Records.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Founded:</strong> 1972</li>
+<li><strong>Founders:</strong> Richard Branson, Simon Draper, Nik Powell, and Tom Newman</li>
+<li><strong>Current Owner:</strong> Universal Music Group</li>
+<li><strong>First Release:</strong> Tubular Bells by Mike Oldfield</li>
+<li><strong>First Chart-topping Single:</strong> 。</li>
+<li><strong>First Chart-topping Single:</strong> &quot;Don&#x27;t You Want Me&quot; by The Human League</li>
+<li><strong> :</strong> -</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Virgin_EMI_Records" rel="noopener">https://en.wikipedia.org/wiki/Virgin_EMI_Records</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Virgin_Group" rel="noopener">https://en.wikipedia.org/wiki/Virgin_Group</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Virgin_Records" rel="noopener">https://en.wikipedia.org/wiki/Virgin_Records</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Virgin Records">
+        <input type="hidden" name="slug" value="virgin-records">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Virgin Records</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

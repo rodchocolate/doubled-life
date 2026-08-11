@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>RCA Records — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>RCA Records</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">948</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="M2yC-IIftX0" type="button"><img src="https://i.ytimg.com/vi/M2yC-IIftX0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The &quot;RCA Curse&quot; Explained</span></button>
+<button class="vtile" data-yt="Vud4wadQL9A" type="button"><img src="https://i.ytimg.com/vi/Vud4wadQL9A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tom Corson, President of RCA Records, Explains &quot;What the Major Record Labels Can Do for You...&quot;</span></button>
+<button class="vtile" data-yt="N14IH9UUjJ4" type="button"><img src="https://i.ytimg.com/vi/N14IH9UUjJ4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">RCA Records The Historic Label Behind Elvis, Bowie, and a Century of Sound</span></button>
+<button class="vtile" data-yt="PtIDcrXuw0Y" type="button"><img src="https://i.ytimg.com/vi/PtIDcrXuw0Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tinashe Signs to RCA Records</span></button>
+<button class="vtile" data-yt="VC34VTnB3AA" type="button"><img src="https://i.ytimg.com/vi/VC34VTnB3AA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Steve Ralbovsky, former Senior Vice President of A&amp;R at RCA Records</span></button>
+<button class="vtile" data-yt="t2tJNK9D110" type="button"><img src="https://i.ytimg.com/vi/t2tJNK9D110/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Various Artists - Perfect (From TROLLS Band Together) (Official Audio)</span></button>
+<button class="vtile" data-yt="GYoftlxKBRk" type="button"><img src="https://i.ytimg.com/vi/GYoftlxKBRk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jacob Latimore Reveals Why He Left RCA Records After 5 Years</span></button>
+<button class="vtile" data-yt="l4Fcs_T0ks8" type="button"><img src="https://i.ytimg.com/vi/l4Fcs_T0ks8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Yung Joc On Leaving RCA Records and If He Would Ever Sign To A Major Record Label Again</span></button>
+<button class="vtile" data-yt="VFPWCl0XVKc" type="button"><img src="https://i.ytimg.com/vi/VFPWCl0XVKc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nebu Kiniza Why I Signed A Recording Contract With RCA Records, How I Learned To Rap and Sing (pt 1)</span></button>
+<button class="vtile" data-yt="UfyfoNI_qOA" type="button"><img src="https://i.ytimg.com/vi/UfyfoNI_qOA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elvis Presley RCA Record Collection Part 3. 1977-1956 The King’s Court</span></button>
+<button class="vtile" data-yt="beMV5wcf0js" type="button"><img src="https://i.ytimg.com/vi/beMV5wcf0js/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">HISTORY OF VINYL RECORDS #1 - The 78 RPM Single. Manufacturing plant RCA</span></button>
+<button class="vtile" data-yt="k8rpVEzU9do" type="button"><img src="https://i.ytimg.com/vi/k8rpVEzU9do/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">*NSYNC - Better Place (From TROLLS Band Together) (Lyric Video)</span></button>
+<button class="vtile" data-yt="qjnRE305k2s" type="button"><img src="https://i.ytimg.com/vi/qjnRE305k2s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How RCA Changed the World - The History of RCA | Polara YT</span></button>
+<button class="vtile" data-yt="vHhbBJSN_aY" type="button"><img src="https://i.ytimg.com/vi/vHhbBJSN_aY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Inside the RCA Factory</span></button>
+<button class="vtile" data-yt="Ra7MDhF3PUg" type="button"><img src="https://i.ytimg.com/vi/Ra7MDhF3PUg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">WAYLON JENNINGS - Clips from RCA Records documentary</span></button>
+<button class="vtile" data-yt="trhekujyYV8" type="button"><img src="https://i.ytimg.com/vi/trhekujyYV8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Inside the RCA Victor Factory: How America’s Greatest Music Empire Faded Away</span></button>
+<button class="vtile" data-yt="NWsTmGICpcM" type="button"><img src="https://i.ytimg.com/vi/NWsTmGICpcM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Documentary 1956 - Vinyl records process, by RCA Victor</span></button>
+<button class="vtile" data-yt="Bss6ZRsEK90" type="button"><img src="https://i.ytimg.com/vi/Bss6ZRsEK90/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jeannie Seely Documentary: The RCA Studio B Recording Session for &quot;Suffertime&quot; (40 Minutes)</span></button>
+<button class="vtile" data-yt="XUk3NX9YTuo" type="button"><img src="https://i.ytimg.com/vi/XUk3NX9YTuo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">1956 RCA Educational Documentary: The Story of Television (1956) - CharlieDeanArchives</span></button>
+<button class="vtile" data-yt="cBgC7A2C4ZY" type="button"><img src="https://i.ytimg.com/vi/cBgC7A2C4ZY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">NEW RCA 45 RPM RECORD SYSTEM &amp; RECORD PLAYER PROMOTIONAL FILM VINYL RECORDS XD10544a</span></button>
+<button class="vtile" data-yt="2zL53iEHf_0" type="button"><img src="https://i.ytimg.com/vi/2zL53iEHf_0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How Shellac Records Are Made - RCA Victor presents: Command Performance</span></button>
+<button class="vtile" data-yt="Y7uWZjO6kGc" type="button"><img src="https://i.ytimg.com/vi/Y7uWZjO6kGc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">RCA Victor Studio A, Nashville, TN: Places of (Musical) Invention</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">RCA Records is an American record label owned by Sony Music Entertainment, a subsidiary of Sony Music Group and the Japanese conglomerate Sony Group Corporation. It is one of Sony Music&#x27;s flagship labels and the corporate successor of the Victor Talking Machine Company. The label</p>
+<p>RCA Records is an American record label owned by Sony Music Entertainment, a subsidiary of Sony Music Group and the Japanese conglomerate Sony Group Corporation. It is one of Sony Music&#x27;s flagship labels and the corporate successor of the Victor Talking Machine Company. The label has released music across multiple genres including pop, rock, hip hop, afrobeat, electronic, R&amp;B, blues, jazz, country, and classical.</p>
+<h3>history and ownership</h3>
+<p>RCA Records began as the RCA Victor Division of the Radio Corporation of America (RCA), following the purchase of the Victor Talking Machine Company in 1929. After the RCA Corporation was purchased by General Electric in 1986, GE sold its interest in the label to Bertelsmann in 1987, making it part of the BMG group. Following a merger between BMG and Sony in 2004, the label became part of Sony BMG Music Entertainment. In 2008, after the restructuring of Sony Music and the dissolution of Sony BMG, RCA Records became fully owned by Sony.</p>
+<h3>technical innovations and formats</h3>
+<p>In September 1931, RCA Victor introduced &#x27;Program Transcription&#x27; records, which were 33 1/3 rpm records sold to the public. This format was a commercial failure due to thees exorbitant price of new two-speed turntables. In 1949, RCA Victor introduced the 7-inch 45 rpm micro-grooved vinylite record (the &#x27;45&#x27;), which competed with Columbia Records&#x27; 33 1/3 rpm LP discs. The label initially issued these 45s on colored vinyl based on musical genre: red for classical, green for country and polka, orange or cerise for rhythm and blues, midnight blue for Broadway musicals and operettas, black for contemporary pop, yellow for children&#x27;s fare, and light blue for international music.</p>
+<h3>rca red seal</h3>
+<p>RCA Red Seal is a classical music label whose origins date to 1902. The first &#x27;Gramophone Record Red Seal&#x27; discs were issued in 1901, and the practice was adopted by the Victor Talking Machine Company in 1903. Led by Enrico Caruso, these records changed public valuation of recorded music. The first Red Seal discs recorded by Victor in the United States were of Australian contralto Ada Crossley on April 30, 1903.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Parent Company:</strong> Sony Music Entertainment</li>
+<li><strong>Corporate Successor of:</strong> Victor Talking Machine Company</li>
+<li><strong>Genres Released:</strong> Pop, classical, rock, hip hop, afrobeat, electronic, R&amp;B, blues, jazz, and country</li>
+<li><strong>label&#x27;s name origin:</strong> Radio Corporation of America (RCA)</li>
+<li><strong>First 33 1/3 rpm records:</strong> Introduced in September 1931 as &#x27;Program Transcription&#x27; records</li>
+<li><strong>First 45 rpm record:</strong> Introduced in 1949</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/List_of_RCA_Records_artists" rel="noopener">https://en.wikipedia.org/wiki/List_of_RCA_Records_artists</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/RCA_Records" rel="noopener">https://en.wikipedia.org/wiki/RCA_Records</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/RCA_Red_Seal" rel="noopener">https://en.wikipedia.org/wiki/RCA_Red_Seal</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="RCA Records">
+        <input type="hidden" name="slug" value="rca-records">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — RCA Records</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

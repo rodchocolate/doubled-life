@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Coldplay — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>Coldplay</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">809</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="cIGd8gm_pYE" type="button"><img src="https://i.ytimg.com/vi/cIGd8gm_pYE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Best of Coldplay ♡ [Coldplay Concert Setlist]</span></button>
+<button class="vtile" data-yt="dvgZkm1xWPE" type="button"><img src="https://i.ytimg.com/vi/dvgZkm1xWPE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Coldplay - Viva La Vida (Official Video)</span></button>
+<button class="vtile" data-yt="yKNxeF4KMsY" type="button"><img src="https://i.ytimg.com/vi/yKNxeF4KMsY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Coldplay - Yellow (Official Video)</span></button>
+<button class="vtile" data-yt="xQt87UcxeJs" type="button"><img src="https://i.ytimg.com/vi/xQt87UcxeJs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Best of Coldplay ♡ Coldplay Concert Setlist</span></button>
+<button class="vtile" data-yt="QtXby3twMmI" type="button"><img src="https://i.ytimg.com/vi/QtXby3twMmI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Coldplay - Adventure Of A Lifetime (Official Video)</span></button>
+<button class="vtile" data-yt="VPRjCeoBqrI" type="button"><img src="https://i.ytimg.com/vi/VPRjCeoBqrI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Coldplay - A Sky Full Of Stars (Official Video)</span></button>
+<button class="vtile" data-yt="uFcOuYnNe-c" type="button"><img src="https://i.ytimg.com/vi/uFcOuYnNe-c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Coldplay - Parachutes [Full Album]</span></button>
+<button class="vtile" data-yt="RB-RcX5DS5A" type="button"><img src="https://i.ytimg.com/vi/RB-RcX5DS5A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Coldplay - The Scientist (Official 4K Video)</span></button>
+<button class="vtile" data-yt="d020hcWA_Wg" type="button"><img src="https://i.ytimg.com/vi/d020hcWA_Wg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Coldplay - Clocks (Official Video)</span></button>
+<button class="vtile" data-yt="1G4isv_Fylg" type="button"><img src="https://i.ytimg.com/vi/1G4isv_Fylg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Coldplay - Paradise (Official Video)</span></button>
+<button class="vtile" data-yt="m-YcGen49Ho" type="button"><img src="https://i.ytimg.com/vi/m-YcGen49Ho/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Coldplay Greatest Hits Full Album 🎤 Live Concert Setlist | Best Songs Playlist</span></button>
+<button class="vtile" data-yt="k4V3Mo61fJM" type="button"><img src="https://i.ytimg.com/vi/k4V3Mo61fJM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Coldplay - Fix You (Official Video)</span></button>
+<button class="vtile" data-yt="1Fsk3sQyZt8" type="button"><img src="https://i.ytimg.com/vi/1Fsk3sQyZt8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Coldplay documentary (2009)</span></button>
+<button class="vtile" data-yt="fQT3DGAoFI8" type="button"><img src="https://i.ytimg.com/vi/fQT3DGAoFI8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Coldplay: Behind the Stage (FULL DOCUMENTARY) Chris Martin, Yellow, Members, Music, Band</span></button>
+<button class="vtile" data-yt="1QH3mmwleLI" type="button"><img src="https://i.ytimg.com/vi/1QH3mmwleLI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Coldplay - A Film For The Future (Full Film)</span></button>
+<button class="vtile" data-yt="6xt7nTuO85A" type="button"><img src="https://i.ytimg.com/vi/6xt7nTuO85A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Coldplay: The Moon Music Interview with Zane Lowe | Apple Music</span></button>
+<button class="vtile" data-yt="wZsDrjAKfmI" type="button"><img src="https://i.ytimg.com/vi/wZsDrjAKfmI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Coldplay - 2003 Tour Diary Documentary</span></button>
+<button class="vtile" data-yt="T0oyzxSB1KA" type="button"><img src="https://i.ytimg.com/vi/T0oyzxSB1KA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Coldplay documentary 2000-2005</span></button>
+<button class="vtile" data-yt="LeUlAdJuK6Y" type="button"><img src="https://i.ytimg.com/vi/LeUlAdJuK6Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Story of Coldplay</span></button>
+<button class="vtile" data-yt="VCimpu3_ISA" type="button"><img src="https://i.ytimg.com/vi/VCimpu3_ISA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Coldplay: From Yellow to Viva La Vida | Music Documentary | Full Movie | Coldplay Phenomenon</span></button>
+<button class="vtile" data-yt="DI9ArLWCi1I" type="button"><img src="https://i.ytimg.com/vi/DI9ArLWCi1I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Coldplay before they were a Band - A Head Full Of Dreams Documentary</span></button>
+<button class="vtile" data-yt="tO7CCP7liwI" type="button"><img src="https://i.ytimg.com/vi/tO7CCP7liwI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Coldplay: Everyday Life Live in Jordan</span></button>
+<button class="vtile" data-yt="Lhzu6bQxFo4" type="button"><img src="https://i.ytimg.com/vi/Lhzu6bQxFo4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Coldplay - A Head Full Of Dreams (Official Film Trailer)</span></button>
+<button class="vtile" data-yt="-h2S4ctkw-Q" type="button"><img src="https://i.ytimg.com/vi/-h2S4ctkw-Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Coldplay about writing Viva La Vida</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Coldplay is a British rock band known for their prolific live performances. They have visited all continents except Antarctica and have headlined eight concert tours.</p>
+<p>Coldplay is a British rock band known for their prolific live performances. They have visited all continents except Antarctica and have headlined eight concert tours.</p>
+<h3>live performance history</h3>
+<p>The band&#x27;s official debut was held at London&#x27;s Laurel Tree in 1998, though drummer Will Champion and vocalist Chris Martin had busked in Covent Garden a year prior. Their early career included performances at Ronnie Scott&#x27;s - Birmingham, where they held early concerts during 1999 and 2000. Following their debut album Parachutes (2000), the band embarked on the Parachutes Tour, their first concert tour, which primarily featured performances at clubs, theatres, and festivals. This tour grossed $4,201,871 from 262,140 tickets sold.</p>
+<h3>touring growth and financials</h3>
+<p>Coldplay expanded their reach to theatres, arenas, and stadiums during the Rush of Blood to the Head (2002–2003), Twisted Logic (2005–2007), and Viva la Vida (2008–2010) runs. In North America during the 2000s, they earned $142.9 million from 2.6 million tickets sold. The Mylo Xyloto (2011) tour introduced LED wristbands, which the group is credited with popularising. The Head Full of Dreams Tour (2016–2017) became one of the highest-grossing concert runs of all time, earning over $523 million from 5.38 million tickets sold.</p>
+<h3>// a bit more on recent tours</h3>
+<p>The Music of the Spheres World Tour (2022–2025) is the most-attended tour of all time and the first by a group to surpass $1 billion, generating over $1.52 billion from 13.1 million tickets sold in its initial 223 shows. This tour features ecological initiatives to reduce CO2 emissions by 50% compared to their previous run, positioning the band as pioneers for sustainable touring. Additionally, the band has performed at the Brit Awards eight times and appeared on Saturday Night Live as musical guests eight times, a record for international acts.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Official Debut:</strong> Laurel Tree in London (1998)</li>
+<li><strong>Continents Visited:</strong> All except Antarctica</li>
+<li><strong>Career Earnings:</strong> More than $2.48 billion from 24.8 million admissions since February 2001</li>
+<li><strong>label: LED wristbands:</strong> Popularised the feature during the Mylo Xyloto (2011) tour</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/List_of_Coldplay_live_performances" rel="noopener">https://en.wikipedia.org/wiki/List_of_Coldplay_live_performances</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Parachutes_Tour" rel="noopener">https://en.wikipedia.org/wiki/Parachutes_Tour</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Ronnie_Scott%27s_Jazz_Club" rel="noopener">https://en.wikipedia.org/wiki/Ronnie_Scott%27s_Jazz_Club</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Coldplay">
+        <input type="hidden" name="slug" value="coldplay">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Coldplay</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

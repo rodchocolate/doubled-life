@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Sean Paul — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Sean Paul</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-09</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">918</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="dW2MmuA1nI4" type="button"><img src="https://i.ytimg.com/vi/dW2MmuA1nI4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sean Paul - Temperature (Official Video)</span></button>
+<button class="vtile" data-yt="AQ4TW5Z8eu0" type="button"><img src="https://i.ytimg.com/vi/AQ4TW5Z8eu0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sean Paul - I&#x27;m Still In Love With You (Official Video)</span></button>
+<button class="vtile" data-yt="oPQ3o14ksaM" type="button"><img src="https://i.ytimg.com/vi/oPQ3o14ksaM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sean Paul - Get Busy/Like Glue (Official Video)</span></button>
+<button class="vtile" data-yt="8MmW_GOFS8I" type="button"><img src="https://i.ytimg.com/vi/8MmW_GOFS8I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sean Paul - Gimme The Light (Official Video)</span></button>
+<button class="vtile" data-yt="0zZ2bifb338" type="button"><img src="https://i.ytimg.com/vi/0zZ2bifb338/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sean Paul - Like Glue (Official Video)</span></button>
+<button class="vtile" data-yt="bMoNV9oWs2E" type="button"><img src="https://i.ytimg.com/vi/bMoNV9oWs2E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sean Paul - Give It Up To Me (feat. Keyshia Cole) [Official Video]</span></button>
+<button class="vtile" data-yt="SbUBMklQSVU" type="button"><img src="https://i.ytimg.com/vi/SbUBMklQSVU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sean Paul - She Doesn&#x27;t Mind (Official Video)</span></button>
+<button class="vtile" data-yt="lZizLbWxr_E" type="button"><img src="https://i.ytimg.com/vi/lZizLbWxr_E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Spice, Sean Paul, Shaggy - Go Down Deh | Official Music Video</span></button>
+<button class="vtile" data-yt="tDq3fNew1rU" type="button"><img src="https://i.ytimg.com/vi/tDq3fNew1rU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sean Paul - Got 2 Luv U (feat. Alexis Jordan) [Official Video]</span></button>
+<button class="vtile" data-yt="GzU8KqOY8YA" type="button"><img src="https://i.ytimg.com/vi/GzU8KqOY8YA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sean Paul - No Lie ft. Dua Lipa</span></button>
+<button class="vtile" data-yt="gtEzEU6YY24" type="button"><img src="https://i.ytimg.com/vi/gtEzEU6YY24/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sean Paul - We Be Burnin</span></button>
+<button class="vtile" data-yt="8ucz_pm3LX8" type="button"><img src="https://i.ytimg.com/vi/8ucz_pm3LX8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Beyoncé - Baby Boy ft. Sean Paul</span></button>
+<button class="vtile" data-yt="paQaF6lnHCM" type="button"><img src="https://i.ytimg.com/vi/paQaF6lnHCM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Story of &#x27;Get Busy&#x27; by Sean Paul</span></button>
+<button class="vtile" data-yt="-TrNJhdbW4s" type="button"><img src="https://i.ytimg.com/vi/-TrNJhdbW4s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sean Paul: A Life In Riddims (Full Documentary)</span></button>
+<button class="vtile" data-yt="mdl6bSfhOsY" type="button"><img src="https://i.ytimg.com/vi/mdl6bSfhOsY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Incident That ENDED Reggae Superstar Sean Paul&#x27;s Career</span></button>
+<button class="vtile" data-yt="rh5ARlHFo-8" type="button"><img src="https://i.ytimg.com/vi/rh5ARlHFo-8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sean Paul Breaks Down His Top Dancehall Songs | Under the Influences | Pitchfork</span></button>
+<button class="vtile" data-yt="XyHkoKwPtaw" type="button"><img src="https://i.ytimg.com/vi/XyHkoKwPtaw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sean Paul: Tiny Desk Concert</span></button>
+<button class="vtile" data-yt="YDs7K54owq4" type="button"><img src="https://i.ytimg.com/vi/YDs7K54owq4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sean Paul Interview With Seani B | 1Xtra Jamaica 2025</span></button>
+<button class="vtile" data-yt="EofcF6r88jw" type="button"><img src="https://i.ytimg.com/vi/EofcF6r88jw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Untold Story of Sean Paul | From Kingston to Global Fame</span></button>
+<button class="vtile" data-yt="EOXotuEywSQ" type="button"><img src="https://i.ytimg.com/vi/EOXotuEywSQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sean Paul Reacts To His Funniest Misheard Lyrics | Capital XTRA</span></button>
+<button class="vtile" data-yt="XCNB-0a8kjM" type="button"><img src="https://i.ytimg.com/vi/XCNB-0a8kjM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What Really Happened To Sean Paul</span></button>
+<button class="vtile" data-yt="VAD7YgjJEQo" type="button"><img src="https://i.ytimg.com/vi/VAD7YgjJEQo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">&quot;LIVE N LIVIN&quot; Dancehall Documentary</span></button>
+<button class="vtile" data-yt="LQBk55VWXRM" type="button"><img src="https://i.ytimg.com/vi/LQBk55VWXRM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DMX: Sean Paul Earned His Beef With Me (2005)</span></button>
+<button class="vtile" data-yt="LkbDHpzRi3Q" type="button"><img src="https://i.ytimg.com/vi/LkbDHpzRi3Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sean Paul Responds to Comments on his #1 Classic &#x27;Temperature’ From 2006</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Sean Paul Ryan Francis Henriques is a Jamaican rapper, singer and songwriter. He gained international fame with his second album, Dutty Rock, released in 2002.</p>
+<p>Sean Paul Ryan Francis Henriques is a Jamaican rapper, singer and songwriter. He gained international fame with his second album, Dutty Rock, released in 2002.</p>
+<h3>early life and education</h3>
+<p>Born in Kingston on 9 January 1973, Paul was raised as a Catholic but attended the Jewish private school Hillel Academy. His mother, Frances, is of English and Chinese Jamaican descent, and his father, Garth Henriques, has Afro-Jamaican ancestry and descendants from Portuguese Sephardic Jews. He trained in commerce at the College of Arts, Science, and Technology (now University of Technology) with the goal of pursuing a swimming career. Before entering music, he worked as a bank teller and enrolled in a hotel-management program to learn French cuisine basics.</p>
+<h3>musical career</h3>
+<p>Paul&#x27;s musical journey began in 1994 with an appearance in the &#x27;Nice Time&#x27; music video by Carrot Jetter. He collaborated with manager and producer Jeremy Harding, recording the song &#x27;Baby Girl&#x27; over a rhythm track. After gaining local attention, Paul released his debut album Stage One in 2000 through VP Records. In 2001, the single &#x27;Gimme the Light&#x27; became a worldwide smash hit, leading to a record deal with Atlantic Records in a joint venture with VP Records. His second album, Dutty Rock (2002), was a commercial breakthrough and the first dancehall song to top the Billboard Hot 100 with &#x27;Get Busy&#x27;.</p>
+<h3>chart success and discography</h3>
+<p>Paul has achieved multiple US number-one singles, including &#x27;Get Busy&#x27; and &#x27;Temperature&#x27;, which is widely regarded as his signature song. His third album, The Trinity (2005), debuted at number 5 on the Billboard 200 and went Platinum in the United States. He has also released albums such as Imperial Blaze (2009), Tomahawk Technique (2012) and Full Frequency (2014). Paul has been featured on several billion-view YouTube hits, cùng với &#x27;No Lie&#x27; (2016), &#x27;Cheap Thrills&#x27; and &#x27;Rockabye&#x27;.</p>
+<h3>titles and awards</h3>
+<p>Most of his albums have been nominated for Grammy Awards for Best Reggae Album, with Dutty Rock winning the award. He also won an American Music Award for &#x27;(When You Gonna) Give It Up to Me&#x27;, beating Kanye West and Nick Lachey.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Full Name:</strong> Sean Paul Ryan Francis Henriques</li>
+<li><strong>Date of Birth:</strong> 9 January 1973</li>
+<li><strong>// a bit of too many sections. I will rewrite the rest to fit the limit.:</strong> -</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Sean_Paul" rel="noopener">https://en.wikipedia.org/wiki/Sean_Paul</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Sean_Paul_discography" rel="noopener">https://en.wikipedia.org/wiki/Sean_Paul_discography</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Temperature_(Sean_Paul_song" rel="noopener">https://en.wikipedia.org/wiki/Temperature_(Sean_Paul_song</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Sean Paul">
+        <input type="hidden" name="slug" value="sean-paul">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Sean Paul</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

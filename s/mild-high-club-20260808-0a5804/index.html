@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Mild High Club — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">band</div>
+      <h1>Mild High Club</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">752</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="RDNymaNBy2I" type="button"><img src="https://i.ytimg.com/vi/RDNymaNBy2I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mild High Club - Skiptracing [Full Album]</span></button>
+<button class="vtile" data-yt="oRGDhgITetc" type="button"><img src="https://i.ytimg.com/vi/oRGDhgITetc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mild High Club - Homage</span></button>
+<button class="vtile" data-yt="Yv3OFuzYWDU" type="button"><img src="https://i.ytimg.com/vi/Yv3OFuzYWDU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mild High Club - Homage</span></button>
+<button class="vtile" data-yt="V5GtaL7cmPQ" type="button"><img src="https://i.ytimg.com/vi/V5GtaL7cmPQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mild High Club - Timeline [Full Album]</span></button>
+<button class="vtile" data-yt="jEX0r9cs5_0" type="button"><img src="https://i.ytimg.com/vi/jEX0r9cs5_0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mild High Club - Windowpane</span></button>
+<button class="vtile" data-yt="r_DhjW9DVAY" type="button"><img src="https://i.ytimg.com/vi/r_DhjW9DVAY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mild High Club - Going Going Gone [Full Album]</span></button>
+<button class="vtile" data-yt="n7SJM6o-RJ4" type="button"><img src="https://i.ytimg.com/vi/n7SJM6o-RJ4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mild High Club - Skiptracing</span></button>
+<button class="vtile" data-yt="iXehtTIgjrw" type="button"><img src="https://i.ytimg.com/vi/iXehtTIgjrw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mild High Club - Skiptracing</span></button>
+<button class="vtile" data-yt="goYZPV_zNLE" type="button"><img src="https://i.ytimg.com/vi/goYZPV_zNLE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mild High Club - It&#x27;s Over Again</span></button>
+<button class="vtile" data-yt="OeNID491JiQ" type="button"><img src="https://i.ytimg.com/vi/OeNID491JiQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tesselation</span></button>
+<button class="vtile" data-yt="5rUj0BSP5TE" type="button"><img src="https://i.ytimg.com/vi/5rUj0BSP5TE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mild High Club - Waving</span></button>
+<button class="vtile" data-yt="H13tgwE4VUw" type="button"><img src="https://i.ytimg.com/vi/H13tgwE4VUw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mild High Club - Undeniable</span></button>
+<button class="vtile" data-yt="HSPXmxi97dA" type="button"><img src="https://i.ytimg.com/vi/HSPXmxi97dA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Better Call Saul | Mild High Club - Homage</span></button>
+<button class="vtile" data-yt="76jkpzzY90w" type="button"><img src="https://i.ytimg.com/vi/76jkpzzY90w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mild High Club - Going Going Gone (Full Album) Reel to Reel</span></button>
+<button class="vtile" data-yt="M7-VZQ8GyuY" type="button"><img src="https://i.ytimg.com/vi/M7-VZQ8GyuY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Joining the Mile High Club</span></button>
+<button class="vtile" data-yt="sBIc4J2R418" type="button"><img src="https://i.ytimg.com/vi/sBIc4J2R418/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mild High Club - Homage ; 500 Days of Summer</span></button>
+<button class="vtile" data-yt="q6iiilSRUkM" type="button"><img src="https://i.ytimg.com/vi/q6iiilSRUkM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Mild High Club x Phill Ellis - 101</span></button>
+<button class="vtile" data-yt="23ETK3Vh53Y" type="button"><img src="https://i.ytimg.com/vi/23ETK3Vh53Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Scottish Ned Joins the Mile High Club</span></button>
+<button class="vtile" data-yt="MPl4WLM55Vg" type="button"><img src="https://i.ytimg.com/vi/MPl4WLM55Vg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">King Gizzard &amp; The Lizard Wizard with Mild High Club - Countdown (Official Video)</span></button>
+<button class="vtile" data-yt="YVwPx37COmE" type="button"><img src="https://i.ytimg.com/vi/YVwPx37COmE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Mild High Club w/ Phil Ellis - Ep #56</span></button>
+<button class="vtile" data-yt="SnE7U4zme1M" type="button"><img src="https://i.ytimg.com/vi/SnE7U4zme1M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mild High Club - Homage [Official Music Video]</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Mild High Club is an American psychedelic pop group led by musician Alexander Brettin. The group has released three studio albums: Timeline (2015), Skiptracing (2016), and Going, Going, Gone (2021).</p>
+<p>Mild High Club is an American psychedelic pop group led by musician Alexander Brettin. The group has released three studio albums: Timeline (2015), Skiptracing (2016), and Going, Going, Gone (2021).</p>
+<h3>history</h3>
+<p>Alexander Brettin grew up in the Midwest and played flute in his school band. He studied jazz studies at Columbia College in Chicago and founded Mild High Club in 2013. Brettin spent nearly three years working on the group&#x27;s debut album, Timeline, which was released on September 18, 2015, through the Stones Throw Records imprint Circle Star. The album received generally favorable reviews, with critics from AllMusic and Mojo describing it as an enjoyable and naturally flowing &#x27;thick trance of lysergic pop&#x27;.</p>
+<p>Following this, Mild High Club released their sophomore effort, Skiptracing, in 2016. According to Brettin, the album&#x27;s concept is a story arc about a Los Angeles detective searching for the spirit of American music. The artwork for the album was painted by Zack Goulet, who later had a falling out with Brettin over disagreements regarding Donald Trump. Skiptracing received positive reviews from critics, including those from Record Collector and Exclaim!, while Pitchfork noted that it was as an improvement over Timeline.</p>
+<p>After nearly five years of inactivity, the group announced the album Going, Going, Gone on July 27, 2021, accompanied by the song &#x27;Me Myself and Dollar Hell&#x27;. The album was released on September 17, 2021. Additionally, &#x27;Homage&#x27;, a track from Skiptracing, was certified Gold by the RIAA in 2022.</p>
+<h3>overview of discography</h3>
+<p>Mild High Club&#x27;s studio albums include Timeline (2015), Skiptracing ((</p>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Mild_High_Club" rel="noopener">https://en.wikipedia.org/wiki/Mild_High_Club</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Skiptracing_(album" rel="noopener">https://en.wikipedia.org/wiki/Skiptracing_(album</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Timeline_(Mild_High_Club_album" rel="noopener">https://en.wikipedia.org/wiki/Timeline_(Mild_High_Club_album</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Mild High Club">
+        <input type="hidden" name="slug" value="mild-high-club">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Mild High Club</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

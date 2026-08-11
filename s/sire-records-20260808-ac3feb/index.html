@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Sire Records — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>Sire Records</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-08</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">4</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">863</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="MbfTSSaymbs" type="button"><img src="https://i.ytimg.com/vi/MbfTSSaymbs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sire Records Co-Founder Seymour Stein discusses the state of music on Jonesy&#x27;s Jukebox</span></button>
+<button class="vtile" data-yt="2-bt0yq-D3s" type="button"><img src="https://i.ytimg.com/vi/2-bt0yq-D3s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sire Records The Label That Brought Punk and New Wave to the Masses</span></button>
+<button class="vtile" data-yt="sy5n2s35IG0" type="button"><img src="https://i.ytimg.com/vi/sy5n2s35IG0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">!979 Rousers Sire records demo now on https://www.leftfordeadrecords.com</span></button>
+<button class="vtile" data-yt="WZxW4pr8zDo" type="button"><img src="https://i.ytimg.com/vi/WZxW4pr8zDo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fossil: Crumb (EP) (1994) Released by “Sire records”</span></button>
+<button class="vtile" data-yt="uSzxyG6FtiM" type="button"><img src="https://i.ytimg.com/vi/uSzxyG6FtiM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ramones The 1975 Sire Demos Full Album</span></button>
+<button class="vtile" data-yt="voF_OpPlI2U" type="button"><img src="https://i.ytimg.com/vi/voF_OpPlI2U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Rhino Podcast #44: The Ocean Blue’s David Schelzel and the glory days of Sire Records</span></button>
+<button class="vtile" data-yt="lVQz9zmmexU" type="button"><img src="https://i.ytimg.com/vi/lVQz9zmmexU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The legendary Seymour Stein (Sire Records) at Musexpo W Hollywood in 2011, part 2</span></button>
+<button class="vtile" data-yt="qNM0M4s3klU" type="button"><img src="https://i.ytimg.com/vi/qNM0M4s3klU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ministry - Breathe - The Mind Is A Terrible Thing To Taste - Sire Records 1989</span></button>
+<button class="vtile" data-yt="xYrCqSBs1Pw" type="button"><img src="https://i.ytimg.com/vi/xYrCqSBs1Pw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Remembering legendary music executive Seymour Stein, co-founder of Sire Records | Fresh Air</span></button>
+<button class="vtile" data-yt="g2sbaWOmlxg" type="button"><img src="https://i.ytimg.com/vi/g2sbaWOmlxg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">&quot;Dress You Up&quot; Madonna (1984) Sire Records</span></button>
+<button class="vtile" data-yt="tlpuFTTaMGM" type="button"><img src="https://i.ytimg.com/vi/tlpuFTTaMGM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sire Records Complete Artist Roster 🌞 🌝</span></button>
+<button class="vtile" data-yt="oNteO9dV22M" type="button"><img src="https://i.ytimg.com/vi/oNteO9dV22M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ice-T Remembers Sire Records Seymour Stein</span></button>
+<button class="vtile" data-yt="UElXJIVvIyM" type="button"><img src="https://i.ytimg.com/vi/UElXJIVvIyM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sire - The Heavy Documentary</span></button>
+<button class="vtile" data-yt="GMLdh1Rdzyk" type="button"><img src="https://i.ytimg.com/vi/GMLdh1Rdzyk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Madonna gets signed to Sire Records</span></button>
+<button class="vtile" data-yt="9Xbdfa5_m4s" type="button"><img src="https://i.ytimg.com/vi/9Xbdfa5_m4s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sire Records - Seymour Stein Interview</span></button>
+<button class="vtile" data-yt="NJUFyScywqY" type="button"><img src="https://i.ytimg.com/vi/NJUFyScywqY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How The Smiths EVOLVED With Meat is Murder</span></button>
+<button class="vtile" data-yt="J9sYsEO6SGA" type="button"><img src="https://i.ytimg.com/vi/J9sYsEO6SGA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Peter Kelley - &quot;The Man is Dead&quot; from Path of the Wave (Excerpt)</span></button>
+<button class="vtile" data-yt="-bYQi8Ou2Mw" type="button"><img src="https://i.ytimg.com/vi/-bYQi8Ou2Mw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Elisha 17th Birthday Film</span></button>
+<button class="vtile" data-yt="WKbJo6Fpm8k" type="button"><img src="https://i.ytimg.com/vi/WKbJo6Fpm8k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Depeche Mode - But Not Tonight (Sire Records Ambient Dub)</span></button>
+<button class="vtile" data-yt="aQ-vINFwzTY" type="button"><img src="https://i.ytimg.com/vi/aQ-vINFwzTY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Seymour Stein | Warner Bros Records | Sire Records | MUSEXPO | Perth 2010 | Rock City Networks</span></button>
+<button class="vtile" data-yt="SUQpiq-dHK8" type="button"><img src="https://i.ytimg.com/vi/SUQpiq-dHK8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Synth Britannia - Depeche Mode - A Documentary Film</span></button>
+<button class="vtile" data-yt="QhULYdaJzhg" type="button"><img src="https://i.ytimg.com/vi/QhULYdaJzhg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Vince Clarke Yazoo</span></button>
+<button class="vtile" data-yt="0ZU_2t7lM54" type="button"><img src="https://i.ytimg.com/vi/0ZU_2t7lM54/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Madonna - Holiday (&quot;Truth Or Dare&quot; documentary version)(Official video)[4K]</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Sire Records is an American record label owned by Warner Music Group and distributed by Warner Records. It was founded in 1966 as Sire Productions by Seymour Stein and Richard Gottehrer.</p>
+<p>Sire Records is an American record label owned by Warner Music Group and distributed by Warner Records. It was founded in 1966 as Sire Productions by Seymour Stein and Richard Gottehrer.</p>
+<h3>history</h3>
+<p>Founded in 1966, the label initially focused on introducing underground, progressive British bands to the American market. Early releases included the Deviants, Tomorrow, Barclay James Harvest and Climax Blues Band. Distribution was handled by London Records in 1968, followed by Polydor Records in 1970-1971, and Famous Music from 1972-1974. In Europe, distribution was distribution was handled by Phonogram Inc. from 1974 to 1977. During the 1970s, the label released compilation albums such as the &#x27;History Of British Rock&#x27; series and acts like the Flamin Groovies and Renaissance.</p>
+<h3>warner acquisition and evolution</h3>
+<p>In the mid-1970s, Sire signed artists from the punk rock and new wave scenes, such as Talking Heads and the Ramones. In 1977, it returned to major label distribution via Warner Bros. Records, which eventually purchased the label outright. As a subsidiary of Warner Bros., Sire found success with acts like Depeche Mode, The Smiths, Madonna, and the Pretenders. During the late 1980s and early 1990s, the roster included Seal, Ice-T and k.d. lang. In 1994, distribution switched to Elektra Records, before Sire became a stand-alone label in 1997. In 2000, it merged with the US division of London Records to become London-Sire Records, a partnership that was dissolved in April 2003, after which the label returned to distribution with Warner Bros. Records.</p>
+<h3>recent developments</h3>
+<p>In July 2017, Rani Hancock was named president of Sire Records, with co-founder Seymour Stein remaining as chairman. In July 2018, Stein departed from the label after 51 years involved with Sire or its parent company, Warner Music Group.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Founded:</strong> 1966</li>
+<li><strong>Founders:</strong> Seymour Stein and Richard Gottehrer</li>
+<li><strong>label own by:</strong> Warner Music Group</li>
+<li><strong>Current President:</strong> Rani Hancock</li>
+<li><strong>Biggest Act:</strong> Madonna</li>
+<li><strong>get rid of the &#x27;////&#x27; comments in the final output. I will just rewrite it.:</strong> -</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/List_of_Sire_Records_artists" rel="noopener">https://en.wikipedia.org/wiki/List_of_Sire_Records_artists</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/London-Sire_Records" rel="noopener">https://en.wikipedia.org/wiki/London-Sire_Records</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Sire_Records" rel="noopener">https://en.wikipedia.org/wiki/Sire_Records</a></li>
+          <li><a href="https://www.leftfordeadrecords.com" rel="noopener">https://www.leftfordeadrecords.com</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Sire Records">
+        <input type="hidden" name="slug" value="sire-records">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Sire Records</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

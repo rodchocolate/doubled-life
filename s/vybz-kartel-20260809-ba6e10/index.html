@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Vybz Kartel — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Vybz Kartel</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-09</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">918</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="xyO9mg7g-eo" type="button"><img src="https://i.ytimg.com/vi/xyO9mg7g-eo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Vybz Kartel, Chambah - FAMILY (Have Meaning) [official music video] | AIR FORCE Riddim</span></button>
+<button class="vtile" data-yt="JvqX9rj2_XU" type="button"><img src="https://i.ytimg.com/vi/JvqX9rj2_XU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Vybz Kartel - ROUND and ROUND (Official Music Video)</span></button>
+<button class="vtile" data-yt="tcEFkqD9cx0" type="button"><img src="https://i.ytimg.com/vi/tcEFkqD9cx0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Vybz Kartel, Shenseea - PANIC (Official Music Video)</span></button>
+<button class="vtile" data-yt="BsvszrVbNgE" type="button"><img src="https://i.ytimg.com/vi/BsvszrVbNgE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">😭SHENSEEA FALLS SERIOUSLY SICK IN AFRICA &amp; IN PAIN |VYBZ KARTEL EX LINK DISS HIM |VANESSA BLING USED</span></button>
+<button class="vtile" data-yt="nFDsUUyF66w" type="button"><img src="https://i.ytimg.com/vi/nFDsUUyF66w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Vybz Kartel - Victory (Official Music Video)</span></button>
+<button class="vtile" data-yt="qSGgcw3Yo6U" type="button"><img src="https://i.ytimg.com/vi/qSGgcw3Yo6U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Vybz Kartel - God and Time (Official Music Video)</span></button>
+<button class="vtile" data-yt="YRV6_7joaZA" type="button"><img src="https://i.ytimg.com/vi/YRV6_7joaZA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Vybz Kartel, Slingerz - Only Gets Better (FOREVER) official music video</span></button>
+<button class="vtile" data-yt="CITU4KH93aU" type="button"><img src="https://i.ytimg.com/vi/CITU4KH93aU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Vybz Kartel - Summertime [Official Video]</span></button>
+<button class="vtile" data-yt="nYWCuPO2z0o" type="button"><img src="https://i.ytimg.com/vi/nYWCuPO2z0o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Vybz Kartel - Love Dem | Official Music Video</span></button>
+<button class="vtile" data-yt="LeQ0asfmvBs" type="button"><img src="https://i.ytimg.com/vi/LeQ0asfmvBs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Vybz Kartel &quot;Go Go Wine&quot; OFFICIAL VIDEO (Produced by Dre Skull)</span></button>
+<button class="vtile" data-yt="eyRLSe3MEGI" type="button"><img src="https://i.ytimg.com/vi/eyRLSe3MEGI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Vybz Kartel - Unstoppable (Official Video)</span></button>
+<button class="vtile" data-yt="R73WxrPM1YU" type="button"><img src="https://i.ytimg.com/vi/R73WxrPM1YU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Shenseea, Vybz Kartel &amp; Rvssian - Talk To Me Nuh (Official Video)</span></button>
+<button class="vtile" data-yt="vyJ9GXIGTjI" type="button"><img src="https://i.ytimg.com/vi/vyJ9GXIGTjI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">VYBZ KARTEL: THE WHOLE STORY</span></button>
+<button class="vtile" data-yt="LnyLmHuK1rE" type="button"><img src="https://i.ytimg.com/vi/LnyLmHuK1rE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Vybz Kartel: From King of Dancehall to Life in Prison (Case Explained)</span></button>
+<button class="vtile" data-yt="f3GmuhSflqQ" type="button"><img src="https://i.ytimg.com/vi/f3GmuhSflqQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Vybz Kartel Biography: The Untold Dancehall Documentary</span></button>
+<button class="vtile" data-yt="mgEoMpYGR3w" type="button"><img src="https://i.ytimg.com/vi/mgEoMpYGR3w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Vybz Kartel Still Dominates Dancehall From Prison | NOISEY</span></button>
+<button class="vtile" data-yt="iTPj7Ww5NAg" type="button"><img src="https://i.ytimg.com/vi/iTPj7Ww5NAg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Vybz Kartel Most SAVAGE Moments</span></button>
+<button class="vtile" data-yt="nZWTblq64uA" type="button"><img src="https://i.ytimg.com/vi/nZWTblq64uA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Vybz Kartel Rise Of A King February 2017 Documentary Part 1</span></button>
+<button class="vtile" data-yt="wWdDm9vh9dA" type="button"><img src="https://i.ytimg.com/vi/wWdDm9vh9dA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Vybz Kartel: The Truth Behind the Case, the Fame, and the Prison Years</span></button>
+<button class="vtile" data-yt="YmHsO65gfqs" type="button"><img src="https://i.ytimg.com/vi/YmHsO65gfqs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Dark Story of Vybz Kartel</span></button>
+<button class="vtile" data-yt="vA8NRkBJTRI" type="button"><img src="https://i.ytimg.com/vi/vA8NRkBJTRI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Vybz Kartel: The Jamaican Pablo Escobar? The Story Behind The Empire.</span></button>
+<button class="vtile" data-yt="pn1DeHdtY3E" type="button"><img src="https://i.ytimg.com/vi/pn1DeHdtY3E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">RODERICK HARRISON: Bulbie&#x27;s Loyal Hitman &amp; Vybz Kartel Murder Link</span></button>
+<button class="vtile" data-yt="z69NCBZpu2c" type="button"><img src="https://i.ytimg.com/vi/z69NCBZpu2c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Mistake That Forced Jamaica to Release Vybz Kartel</span></button>
+<button class="vtile" data-yt="MMtlWTd8ft8" type="button"><img src="https://i.ytimg.com/vi/MMtlWTd8ft8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Dark Truth: Vybz Kartel’s Case Was Bigger Than Music… Here’s Why</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Vybz Kartel (Adidja Azim Palmer) is a Jamaican dancehall artist known by nicknames such as Worl&#x27; Boss, Teacha, and King of Dancehall. He has attained folk-hero status in Jamaica through his provocative lyrics and mischievous public persona.</p>
+<p>Vybz Kartel (Adidja Azim Palmer) is a Jamaican dancehall artist known by nicknames such as Worl&#x27; Boss, Teacha, and King of Dancehall. He has attained folk-hero status in Jamaica through his provocative lyrics and mischievous public persona.</p>
+<h3>early career and rise to prominence</h3>
+<p>Palmer began his career as a teenager in 1993 with the recording &#x27;Love Fat Woman&#x27; under the moniker &#x27;Adi Banton&#x27;. He was later part of a three-member group called Vybz Kartel, eventually keeping the name for himself. After becoming a protege of Bounty Killer, he rose to prominence in 2003 following a string of hit songs and a violent on-stage clash with Ninjaman at the Sting festival in his hometown of Portmore. He released albums through Greensleeves Records and established his own label, Adidjahiem/Notnice Records, with partner Ainsley &#x27;Notnice&#x27; Morris. He later joined the Portmore Empire group of dancehall DJs and singers, signing them to his label.</p>
+<h3>controversies and feuds</h3>
+<p>Kartel has faced significant controversy over homophobic content in his lyrics, leading to a withdrawal of a UK MOBO Awards nomination in 2004. He was later banned from the airwaves in Guyana by the National Communications Network in 2011 due to &#x27;obscene lyrics&#x27;. Additionally, he engaged in a public feud with former collaborator Mavado, which dominated Jamaican media and culture from 2006 to 2009. This conflict resulted in numerous diss tracks and led to street violence between factions known as Gaza and Gully, eventually requiring intervention by Jamaican Prime Minister Bruce Golding.</p>
+<h3>international success and legal issues</h3>
+<p>Kartel achieved international success with singles such as &#x27;Romping Shop&#x27; (2009), &#x27;Dancehall Hero&#x27; (2010), and &#x27;Summer Time&#x27; (2011). His 2010 single &#x27;Clarks&#x27; became one of his biggest hits, gaining significant radio play in North America. He collaborated with various hip hop and R&amp;B artists including Rihanna, Missy Elliott, Travis Scott, and Major Lazer. In 2014, he was sentenced to life imprisonment for the murder of Clive &#x27;Lizard&#x27; Williams. Despite this, he continued releasing music, including over 50 songs in 2016. His conviction was quashed by the UK Judicial Committee of the Privy Council in March 2024, and he was released from prison on July 31, 2024, after the Court of Appeal declined to retry the case.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Full Name:</strong> Adidja Azim Palmer</li>
+<li><strong>Date of Birth:</strong> 7 January 1976</li>
+<li><strong>Nicknames:</strong> Worl&#x27; Boss, Teacha and King of Dancehall</li>
+<li><strong>Notable Singles:</strong> &quot;Romping Shop&quot;, &quot;Dancehall Hero&quot;, &quot;Summer Time&quot;, &quot;Clarks&quot;</li>
+<li><strong>Imprisonment:</strong> 2014-2024</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Popcaan" rel="noopener">https://en.wikipedia.org/wiki/Popcaan</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Rvssian" rel="noopener">https://en.wikipedia.org/wiki/Rvssian</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Vybz_Kartel" rel="noopener">https://en.wikipedia.org/wiki/Vybz_Kartel</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Vybz Kartel">
+        <input type="hidden" name="slug" value="vybz-kartel">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Vybz Kartel</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Devo — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">act</div>
+      <h1>Devo</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-09</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">928</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="j_QLzthSkfM" type="button"><img src="https://i.ytimg.com/vi/j_QLzthSkfM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Devo - Whip It (Official Music Video) | Warner Vault</span></button>
+<button class="vtile" data-yt="g4-2onb62y8" type="button"><img src="https://i.ytimg.com/vi/g4-2onb62y8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DEVO Girl U Want (Official Music Video)</span></button>
+<button class="vtile" data-yt="0UKtZwWLMp8" type="button"><img src="https://i.ytimg.com/vi/0UKtZwWLMp8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Devo - Smart Patrol/Mr DNA live</span></button>
+<button class="vtile" data-yt="jadvt7CbH1o" type="button"><img src="https://i.ytimg.com/vi/jadvt7CbH1o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DEVO &quot;(I Can&#x27;t Get No) Satisfaction&quot; [Official Music Video]</span></button>
+<button class="vtile" data-yt="d_KErlj9IQo" type="button"><img src="https://i.ytimg.com/vi/d_KErlj9IQo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Devo - That&#x27;s Good (Official HD Music Video)</span></button>
+<button class="vtile" data-yt="dVGINIsLnqU" type="button"><img src="https://i.ytimg.com/vi/dVGINIsLnqU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DEVO Freedom Of Choice (Official Music Video)</span></button>
+<button class="vtile" data-yt="IIEVqFB4WUo" type="button"><img src="https://i.ytimg.com/vi/IIEVqFB4WUo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DEVO &quot;Whip It&quot; [Official Music Video]</span></button>
+<button class="vtile" data-yt="izRM_fV2T4g" type="button"><img src="https://i.ytimg.com/vi/izRM_fV2T4g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Devo - Girl U Want (Video)</span></button>
+<button class="vtile" data-yt="5JdS-sSKsBc" type="button"><img src="https://i.ytimg.com/vi/5JdS-sSKsBc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Devo - Jocko Homo</span></button>
+<button class="vtile" data-yt="QmKQ2Z1odSc" type="button"><img src="https://i.ytimg.com/vi/QmKQ2Z1odSc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Devo - [I Can&#x27;t Get No] Satisfaction (Video)</span></button>
+<button class="vtile" data-yt="VKvYRDhPt_0" type="button"><img src="https://i.ytimg.com/vi/VKvYRDhPt_0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DEVO: Tiny Desk Concert</span></button>
+<button class="vtile" data-yt="cPEt5soGoyI" type="button"><img src="https://i.ytimg.com/vi/cPEt5soGoyI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Devo - Freedom Of Choice (Video)</span></button>
+<button class="vtile" data-yt="WcnvV6PFGO0" type="button"><img src="https://i.ytimg.com/vi/WcnvV6PFGO0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Devo | The Magnificent Others with Billy Corgan</span></button>
+<button class="vtile" data-yt="NKa9Q-gW_hI" type="button"><img src="https://i.ytimg.com/vi/NKa9Q-gW_hI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Story Of DEVO - Can&#x27;t Get It Out Of My Head - Podcast Documentary</span></button>
+<button class="vtile" data-yt="4GxetgNVFLE" type="button"><img src="https://i.ytimg.com/vi/4GxetgNVFLE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">CUFF.Docs 2024 Trailer: DEVO</span></button>
+<button class="vtile" data-yt="FgV8X2x6xvE" type="button"><img src="https://i.ytimg.com/vi/FgV8X2x6xvE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Devo 2024 2025 Trailer Netflix</span></button>
+<button class="vtile" data-yt="pjc_XlNg9_s" type="button"><img src="https://i.ytimg.com/vi/pjc_XlNg9_s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Devo UNCENSORED Fight</span></button>
+<button class="vtile" data-yt="LOMtiP9J8Xo" type="button"><img src="https://i.ytimg.com/vi/LOMtiP9J8Xo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Devo - The Complete Truth About De-Evolution - Part 1</span></button>
+<button class="vtile" data-yt="pKsXAqY5r_A" type="button"><img src="https://i.ytimg.com/vi/pKsXAqY5r_A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The History of Devo</span></button>
+<button class="vtile" data-yt="YBgKU5OtaAc" type="button"><img src="https://i.ytimg.com/vi/YBgKU5OtaAc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Moment Devo Realized The &quot;Sheep&quot; Didn&#x27;t Get The Joke</span></button>
+<button class="vtile" data-yt="B-aQkQrZP24" type="button"><img src="https://i.ytimg.com/vi/B-aQkQrZP24/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DEVO: Gerald Casale and Mark Mothersbaugh’s Closet Picks</span></button>
+<button class="vtile" data-yt="Fs5HjtJo3RU" type="button"><img src="https://i.ytimg.com/vi/Fs5HjtJo3RU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DEVO - Trailer Netflix - Watch or Waste</span></button>
+<button class="vtile" data-yt="Yv57rIilEeg" type="button"><img src="https://i.ytimg.com/vi/Yv57rIilEeg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Devo’s Mark Mothersbaugh Was Almost Doc Brown in ‘Back to the Future,’ but Just Wanted to Score It</span></button>
+<button class="vtile" data-yt="cx-QeWWFiUc" type="button"><img src="https://i.ytimg.com/vi/cx-QeWWFiUc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Devo, The Making of Satisfaction</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Devo is an American new wave band from Akron, Ohio, formed in 1973. The group&#x27;s classic line-up included drummer Alan Myers and two sets of brothers: the Mothersbaughs (vocalist Mark and lead guitarist Bob) and the Casales (bassist Gerald and rhythm guitarist Bob). They are best </p>
+<p>Devo is an American new wave band from Akron, Ohio, formed in 1973. The group&#x27;s classic line-up included drummer Alan Myers and two sets of brothers: the Mothersbaughs (vocalist Mark and lead guitarist Bob) and the Casales (bassist Gerald and rhythm guitarist Bob). They are best known for their 1980 single &quot;Whip It&quot;.</p>
+<h3>concept and formation</h3>
+<p>The band&#x27;s name is derived from the concept of &quot;de-evolution,&quot; a tongue-in-cheek social theory suggesting that mankind has begun to regress rather than evolve, evidenced by the dysfunction of American society. This idea was developed as a joke by Kent State University art students Gerald Casale and Bob Lewis in the late 1960s. The formation of the band became serious following the May 4, 1970, Kent State massacre. Early work was marked by experimental and dissonant art punk merging rock music with electronics, while their output in the 1980s shifted toward synth-pop and a more mainstream style.</p>
+<h3>early career and recording</h3>
+<p>Devo&#x27;s first form was the &quot;Sextet Devo,&quot; which performed at the 1973 Kent State performing arts festival. After several fluid lineups, they secured a recording contract with Warner Bros. in 1978 following recommendations from David Bowie and Iggy Pop. Their debut studio album, Q: Are We Not Men? A: We Are Devo!, was produced by Brian Eno and recorded primarily in Cologne, West Germany. The album peaked at No. 12 in the UK and No. 78 in the US. They followed this with Duty Now for the Future in 1979, which moved the band toward electronic instrumentation.</p>
+<h3>commercial success and later years</h3>
+<p>The band&#x27;s highest selling album was Freedom of Choice (1980), which went Platinum in the US and Gold in Canada. Their 1981 follow-up, New Traditionalists, peaked at No. 23 on American charts. After a period of decline in chart success, they released their apparently final studio album, Smooth Noodle Maps, in 1990. From 1990 through 2009, no new albums under the Devo name were released, until Something for Everybody was released on June 15, 2010.</p>
+<h3>influence and style</h3>
+<p>Devo&#x27;s music and visual presentation—including costumes and stage shows—combine kitsch science fiction themes, deadpan surrealist humor, and satirical social commentary. The band was a pioneer of the music video format, with Gerald Casale being particularly enthusiastic about this. Their music has influenced subsequent movements such as industrial, alternative rock, and new wave, as well as an internet microgenre known as &quot;devo-core&quot;.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Origin:</strong> Akron, Ohio</li>
+<li><strong>Founded:</strong> 1973</li>
+<li><strong>Highest Selling Album:</strong> Freedom of Choice</li>
+<li><strong>Chart Peak (UK):</strong> No. 12 for Q: Are We Not Men? A: We Are Devo!</li>
+<li><strong>Crossover Hit:</strong> &quot;Whip It&quot; (1980)</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Devo" rel="noopener">https://en.wikipedia.org/wiki/Devo</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Devo_discography" rel="noopener">https://en.wikipedia.org/wiki/Devo_discography</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Q._Are_We_Not_Men%3F_A:_We_Are_Devo!" rel="noopener">https://en.wikipedia.org/wiki/Q._Are_We_Not_Men%3F_A:_We_Are_Devo!</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Devo">
+        <input type="hidden" name="slug" value="devo">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Devo</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
