@@ -144,7 +144,7 @@ $videos = array_values(array_filter($subjects, fn($s) => ($s['kind'] ?? '') === 
   .gate.landing { background: var(--bg) url('landing.webp') center center / cover no-repeat; }
   .gate.landing h1, .gate.landing .m { text-shadow: 0 2px 12px rgba(0,0,0,.8); }
   .gate.landing button { background: rgba(0,0,0,.55); backdrop-filter: blur(2px); }
-  .gate h1 { font-size: 2rem; font-weight: 600; letter-spacing: .04em; text-transform: lowercase; }
+  .gate h1 { font-size: 2.2rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1.05; text-transform: lowercase; }
   .gate form { display: flex; gap: .6rem; }
   .gate input { background: var(--panel); border: 1px solid var(--line); color: #fff;
     font-family: inherit; font-size: 1rem; padding: .6em 1em; border-radius: 8px; width: 14rem; }
@@ -152,14 +152,15 @@ $videos = array_values(array_filter($subjects, fn($s) => ($s['kind'] ?? '') === 
     font-family: inherit; font-size: 1rem; padding: .6em 1.2em; border-radius: 8px; cursor: pointer; }
   .gate .m { opacity: .5; font-size: .85rem; min-height: 1.2em; }
   header { padding: 1.5rem 2rem; max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
-  header h1 { font-size: 2rem; font-weight: 600; letter-spacing: .04em; text-transform: lowercase; }
+  header h1 { font-size: 2.2rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1.05; text-transform: lowercase; }
   header input { background: var(--panel); border: 1px solid var(--line); color: #fff;
     font-family: inherit; font-size: .95rem; padding: .5em 1em; border-radius: 8px; width: 16rem; }
   main { padding: 1rem 2rem 4rem; max-width: 1280px; margin: 0 auto; }
   .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4rem; }
   .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
-    overflow: hidden; transition: transform .25s, border-color .25s; }
-  .card:hover { transform: translateY(-4px); border-color: var(--line); }
+    overflow: hidden; transition: transform 400ms cubic-bezier(0.2, 0.8, 0.2, 1), border-color .25s; }
+  .card:hover { border-color: var(--line); }
+  .card:active { transform: scale(0.97); transition: transform 100ms ease-out; }
   .card a { display: block; color: var(--text); text-decoration: none; padding: 1.1rem 1.2rem; }
   .card .kind { font-size: .7rem; opacity: .5; text-transform: uppercase; letter-spacing: .1em; }
   .card .name { font-size: 1.1rem; font-weight: 600; margin: .2rem 0 .4rem; }
