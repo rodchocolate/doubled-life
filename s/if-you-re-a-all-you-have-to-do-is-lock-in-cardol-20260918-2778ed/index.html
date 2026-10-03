@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>If you’re a ♦️ all you have to do is lock in.  #cardology… — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:2.2rem; font-weight:700; letter-spacing:-.02em; color:var(--porcelain); line-height:1.05; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">video</div>
+      <h1>If you’re a ♦️ all you have to do is lock in.  #cardology…</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-09-18</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">1</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">826</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos"><div class="vslot"><div class="vframe"><img src="data:image/svg+xml;utf8,&lt;svg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; width=&#x27;400&#x27; height=&#x27;400&#x27;&gt;&lt;rect width=&#x27;400&#x27; height=&#x27;400&#x27; fill=&#x27;hsl(107,45%25,22%25)&#x27;/&gt;&lt;text x=&#x27;200&#x27; y=&#x27;245&#x27; font-family=&#x27;Helvetica&#x27; font-size=&#x27;160&#x27; fill=&#x27;hsl(107,60%25,70%25)&#x27; text-anchor=&#x27;middle&#x27;&gt;I&lt;/text&gt;&lt;/svg&gt;" alt="If you’re a ♦️ all you have to do is lock in.  #cardology…"></div></div></div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The video features Dayna, a practitioner of cardology, which uses birth cards based on birth dates to categorize people into suits. She claims that those with the &#x27;diamond&#x27; suit birth card are naturally predisposed to the some physical manifestation and material wealth, but their</p>
+<ul>
+<li>url: <a href="https://www.tiktok.com/@dayna_blackburn/video/7684749952572017950?_r=1&amp;_t=ZT-99hbmO3Njp8" rel="noopener">https://www.tiktok.com/@dayna_blackburn/video/7684749952572017950?_r=1&amp;_t=ZT-99hbmO3Njp8</a></li>
+<li>uploader: dayna_blackburn</li>
+<li>duration: 164s</li>
+<li>subject: Cardology (topic)</li>
+<li>source uuid: 01a0b168-1858-7431-8508-8554970a5d04</li>
+<li>processed: 2026-09-18T00:36:02.869727+00:00</li>
+</ul>
+<h3>summary</h3>
+<p>The video features Dayna, a practitioner of cardology, which uses birth cards based on birth dates to categorize people into suits. She claims that those with the &#x27;diamond&#x27; suit birth card are naturally predisposed to the some physical manifestation and material wealth, but their financial success is part of linked to their own state of consciousness, self-worth, and alignment with core values. She lists several high-profile figures like Steve Jobs and their corresponding birth cards to provide evidence for the same idea.</p>
+<h3>claims check</h3>
+<ul>
+<li><strong>unsupported</strong> — People with &#x27;diamond&#x27; birth cards are naturally predisposed to material wealth  (No sources provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — Financial success for diamonds is linked to consciousness, mindset, and core values  (No sources provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — The diamond suit in cardology represents initiating, building, and manifesting the physical world/resources  (notes: No sources provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — Barack Obama is a 9 of diamonds  (No sources provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — Michelle Obama is a0 10 of diamonds  (notes: No sources provided to 싶다/verify this claim.)</li>
+<li><strong>unsupported</strong> — Steve Jobs is an ace of diamonds  (No sources provided to verify this claim.)</li>
+</ul>
+<h4>Cardology — technique</h4>
+<ul>
+<li>what it does: Uses birth dates to assign a playing card suit and value to determine personality traits, astrology-like system</li>
+<li>why relevant: The core subject of the video</li>
+<li>search terms: cardology birth card calculator, what is my birth card in cardology, ascent own cardology</li>
+</ul>
+<h4>Money consciousness — idea</h4>
+<ul>
+<li>what it does: The belief system and psychological state regarding money and wealth attraction</li>
+<li>why relevant: Dayna claims this is the key to unlocking financial success for &#x27;diamonds&#x27;</li>
+<li>search terms: money consciousness,</li>
+</ul>
+<h3>transcript</h3>
+<p>So Imma hold your hand when I say this</p>
+<p>and know that it&#x27;s coming from a very good place.</p>
+<p>Because I do, in fact,</p>
+<p>want you to win.</p>
+<p>But if you are a diamond and you feel like money is running away from you,</p>
+<p>my friend, it is probably because you are running away from it.</p>
+<p>What do I mean? Don&#x27;t worry,</p>
+<p>Imma tell you now if you&#x27;re new to this or new to me.</p>
+<p>My name is Dayna. I help people understand who they are,</p>
+<p>what they&#x27;re here to do, and unstick what&#x27;s stuck.</p>
+<p>And this is cardology. You&#x27;re gonna Wanna find the month you were born</p>
+<p>at the top, the day you were born</p>
+<p>on the side. Find where these two meet.</p>
+<p>And that is your birth card.</p>
+<p>Go ahead and watch the tube pin videos,</p>
+<p>otherwise this ain&#x27;t gonna make a lick of sense.</p>
+<p>The diamond suit in cardiology rules initiating, building,</p>
+<p>manifesting the physical world and resources,</p>
+<p>material ones. It also rules values.</p>
+<p>Your values. So in order to master your money consciousness</p>
+<p>and draw it into your physical experience,</p>
+<p>you have to master and embody your core values.</p>
+<p>If you&#x27;re a diamond&#x27;s birth card,</p>
+<p>you&#x27;re struggle with attracting or holding money</p>
+<p>may not necessarily have to do with your actual ability.</p>
+<p>It has to do with your state of consciousness</p>
+<p>as it relates to your sense of self worth.</p>
+<p>Do you actually believe you deserve it?</p>
+<p>Now, a lot of us will say yes,</p>
+<p>but Our bank account and the opportunities we attract would say otherwise.</p>
+<p>Now, Diamonds Energy is this accumulation of it</p>
+<p>and the two other suits that precede it. Right.</p>
+<p>Diamonds energy relies on inspiration.</p>
+<p>That&#x27;s the hearts, information,</p>
+<p>that&#x27;s the clubs. And then with diamonds,</p>
+<p>alignment with your core values to create embodiment,</p>
+<p>bringing this identity you wanna hold</p>
+<p>or thing that you want to create to life in a tangible way.</p>
+<p>The diamonds people that I&#x27;ve worked with that are successful are so,</p>
+<p>in my experience, the ones who are very connected to themselves</p>
+<p>and innately understand money and how to attract it.</p>
+<p>Because what they actually understand is value and energetic exchange.</p>
+<p>Some notable diamonds folks.</p>
+<p>Barack Obama, 9 of diamonds.</p>
+<p>Michelle Obama, 10 of diamonds.</p>
+<p>Steve Jobs, ace of diamonds.</p>
+<p>Simone Biles, 9 of diamonds.</p>
+<p>Beyonce, 7 of Diamonds.</p>
+<p>Jay Z, 8 of Diamonds.</p>
+<p>Michael Jordan, 8 of diamonds.</p>
+<p>So your ability to make money goes way beyond wanting it and working for it.</p>
+<p>There&#x27;s literally a soul level shift in your state of wealth,</p>
+<p>consciousness and an alignment that needs to take place.</p>
+<p>So ask yourself, as a diamond,</p>
+<p>what are your core values?</p>
+<p>And when it comes to money,</p>
+<p>how can you make it so that you&#x27;re open and receptive?</p>
+<p>So instead of running away from you,</p>
+<p>money is actually waiting for you to grab it.</p>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://www.tiktok.com/@dayna_blackburn/video/7684749952572017950?_r=1&amp;_t=ZT-99hbmO3Njp8" rel="noopener">https://www.tiktok.com/@dayna_blackburn/video/7684749952572017950?_r=1&amp;_t=ZT-99hbmO3Njp8</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="If you’re a ♦️ all you have to do is lock in.  #cardology…">
+        <input type="hidden" name="slug" value="if-you-re-a-all-you-have-to-do-is-lock-in-cardol">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — If you’re a ♦️ all you have to do is lock in.  #cardology…</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

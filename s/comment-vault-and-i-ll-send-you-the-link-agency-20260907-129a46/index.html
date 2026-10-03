@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Comment &quot;VAULT&quot; and I&#x27;ll send you the link #agency… — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:2.2rem; font-weight:700; letter-spacing:-.02em; color:var(--porcelain); line-height:1.05; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">video</div>
+      <h1>Comment &quot;VAULT&quot; and I&#x27;ll send you the link #agency…</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-09-07</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">1</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">866</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos"><div class="vslot"><div class="vframe"><img src="data:image/svg+xml;utf8,&lt;svg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; width=&#x27;400&#x27; height=&#x27;400&#x27;&gt;&lt;rect width=&#x27;400&#x27; height=&#x27;400&#x27; fill=&#x27;hsl(257,45%25,22%25)&#x27;/&gt;&lt;text x=&#x27;200&#x27; y=&#x27;245&#x27; font-family=&#x27;Helvetica&#x27; font-size=&#x27;160&#x27; fill=&#x27;hsl(257,60%25,70%25)&#x27; text-anchor=&#x27;middle&#x27;&gt;C&lt;/text&gt;&lt;/svg&gt;" alt="Comment &quot;VAULT&quot; and I&#x27;ll send you the link #agency…"></div></div></div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The video introduces &#x27;AMIA Vault&#x27;, an Obsidian-based system designed for project planning and memory management for developers/agencies. It claims to integrate various AI tools like Claude Code and Codex, allowing users to switch between them and use a specialized &#x27;LM Council&#x27; an</p>
+<ul>
+<li>url: <a href="https://www.tiktok.com/@seqora_ai/video/7679824388350430477?_r=1&amp;_t=ZT-99Jjwf02zgT" rel="noopener">https://www.tiktok.com/@seqora_ai/video/7679824388350430477?_r=1&amp;_t=ZT-99Jjwf02zgT</a></li>
+<li>uploader: seqora_ai</li>
+<li>duration: 89s</li>
+<li>subject: AMIA Vault (product)</li>
+<li>source uuid: 01a0532b-90de-704e-9119-724729637ede</li>
+<li>processed: 2026-09-07T09:08:11.576729+00:00</li>
+</ul>
+<h3>summary</h3>
+<p>The video introduces &#x27;AMIA Vault&#x27;, an Obsidian-based system designed for project planning and memory management for developers/agencies. It claims to integrate various AI tools like Claude Code and Codex, allowing users to switch between them and use a specialized &#x27;LM Council&#x27; and pre-built UI/UX skills for front-end development.</p>
+<h3>claims check</h3>
+<ul>
+<li><strong>unsupported</strong> — AMIA Vault is a built-in Obsidian vault own memory system that updates on its own  (No sources provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — It can inject current projects into the vault via &#x27;graphify code understanding&#x27;  (No sources provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — It can analyze TikTok and YouTube videos to determine if content should be implemented into the user&#x27;s system  (No sources provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — It has a &#x27;bit button system&#x27; that allows switching between Codex and Claude Code without copy-pasting  (No sources provided to verify this claim.)</li>
+<li><strong>?</strong> — The &#x27;LM Council&#x27; feature allows different AI models to debate/rank next steps  (en// No sources provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — It includes pre-built UI/UX Pro Max skills for front-end code generation via Claude  (No sources provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — AMIA Vault is available as a git repo clone  (No sources provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — The &#x27;LM Council&#x27; feature allows different AI models to debate/rank next steps  (No sources provided {// No sources provided to verify this claim.)</li>
+</ul>
+<h4>AMIA Vault — product</h4>
+<ul>
+<li>what it does: An Obsidian vault system for project planning, memory management and AI integration</li>
+<li>why relevant: The primary product being showcased</li>
+<li>search terms: AMIA Vault, Obsidian vault AI agent, AI project planner</li>
+</ul>
+<h4>Obsidian — tool</h4>
+<ul>
+<li>what it does: A knowledge base and note-taking app using Markdown files</li>
+<li>why relevant: The foundation upon which AMIA Vault is part of</li>
+<li>search terms: Obsidian.md, Obsidain vault</li>
+</ul>
+<h4>Codex — product</h4>
+<ul>
+<li>what it does: An AI model/tool for code generation</li>
+<li>why relevant: Integrated into the AMIA Vault system to be used alongside Claude Code</li>
+<li>search terms: OpenAI Codex, AI coding assistant</li>
+</ul>
+<h4>name: Claude Code — plugin</h4>
+<ul>
+<li>what it does: -</li>
+<li>why relevant: -</li>
+<li>search terms: -</li>
+</ul>
+<h4>Claude Code — plugin</h4>
+<ul>
+<li>what it does: An AI coding agent/tool from Anthropic</li>
+<li>why relevant: Integrated into the AMIA Vault the user can switch between it and Codex</li>
+<li>search terms: Anthropic Claude Code, Claude CLI</li>
+</ul>
+<h4>LM Council — idea</h4>
+<ul>
+<li>what it does: A system where multiple LLMs are used to relay/debate and rank the same task for better results</li>
+<li>why relevant: Mentioned as a feature of AMIA Vault</li>
+<li>search terms: LLM ensemble, AI model council, synthesis of AI outputs</li>
+</ul>
+<h4>Graphify code understanding — technique</h4>
+<ul>
+<li>what it does: Injecting current project structure/code into the vault for context</li>
+<li>why relevant: Mentionificancey as a feature of_the system</li>
+<li>search terms: -</li>
+</ul>
+<h3>transcript</h3>
+<p>You gotta install this git repo introducing AMIA Vault.</p>
+<p>This is a built in obsidian vault that I was going to remember</p>
+<p>what you&#x27;re doing is going to be able to plan your next move</p>
+<p>and gonna give you all the tools that you need for your setup.</p>
+<p>This has a memory system that updates on its own.</p>
+<p>This has a graphify code understanding</p>
+<p>that takes your current project and injects it into the vault</p>
+<p>and it has a planner that over time with you</p>
+<p>giving it</p>
+<p>different content that you want to implement into your system</p>
+<p>will update the plan for you.</p>
+<p>You can give it TikTok videos,</p>
+<p>you can give it YouTube videos</p>
+<p>and it will learn from those videos and actually rank</p>
+<p>should this be implemented into my system or not.</p>
+<p>Also for those of you who say oh,</p>
+<p>just working with codex is going to always give me the same results</p>
+<p>and codex is better with this codex with that.</p>
+<p>This has a bit button system that will go between codex and codex</p>
+<p>and you could just without copy pasting anything</p>
+<p>work from codex and codex at the same time.</p>
+<p>This also has things like L m council</p>
+<p>it has a relay between code and Codex</p>
+<p>that it will make it so that they don&#x27;t agree with each other</p>
+<p>and actually rank what you should be doing next.</p>
+<p>This has the taste and U I U X Pro Max skills built in so that if you</p>
+<p>Are in building any front end code,</p>
+<p>you don&#x27;t have to tell Claude to get you that skill and then build it.</p>
+<p>It already has it.</p>
+<p>Go ahead and clone this repo so that you have for yourself.</p>
+<p>Follow me for more AI videos.</p>
+<p>And if your business needs to be automated with a dashboard,</p>
+<p>with a new website, with a new platform,</p>
+<p>you can have my services in the link in my bio.</p>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://www.tiktok.com/@seqora_ai/video/7679824388350430477?_r=1&amp;_t=ZT-99Jjwf02zgT" rel="noopener">https://www.tiktok.com/@seqora_ai/video/7679824388350430477?_r=1&amp;_t=ZT-99Jjwf02zgT</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Comment &quot;VAULT&quot; and I&#x27;ll send you the link #agency…">
+        <input type="hidden" name="slug" value="comment-vault-and-i-ll-send-you-the-link-agency">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Comment &quot;VAULT&quot; and I&#x27;ll send you the link #agency…</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Signified and Signifiers — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:2.2rem; font-weight:700; letter-spacing:-.02em; color:var(--porcelain); line-height:1.05; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">concept</div>
+      <h1>Signified and Signifiers</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-14</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">758</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="0JtJu9HdQVM" type="button"><img src="https://i.ytimg.com/vi/0JtJu9HdQVM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Semiotics: WTF? Introduction to Saussure, the Signifier and Signified</span></button>
+<button class="vtile" data-yt="zVM7e_iyh3Y" type="button"><img src="https://i.ytimg.com/vi/zVM7e_iyh3Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Semiotics for Beginners</span></button>
+<button class="vtile" data-yt="ay0eInGVtfU" type="button"><img src="https://i.ytimg.com/vi/ay0eInGVtfU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Signifier and the Signified (Lacan, Saussure and Zizek)</span></button>
+<button class="vtile" data-yt="mtXzG7PZzwM" type="button"><img src="https://i.ytimg.com/vi/mtXzG7PZzwM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What is Semiotics? | Lacan&#x27;s Signifier and Signified</span></button>
+<button class="vtile" data-yt="2ubpnlRr7g0" type="button"><img src="https://i.ytimg.com/vi/2ubpnlRr7g0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Difference between Sign, Signifier &amp; Signified</span></button>
+<button class="vtile" data-yt="o7_KcBAvIAE" type="button"><img src="https://i.ytimg.com/vi/o7_KcBAvIAE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ferdinand de Saussure</span></button>
+<button class="vtile" data-yt="X-dgISkghIQ" type="button"><img src="https://i.ytimg.com/vi/X-dgISkghIQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Signifier and the Signified</span></button>
+<button class="vtile" data-yt="VsMfaIOsT3M" type="button"><img src="https://i.ytimg.com/vi/VsMfaIOsT3M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">8. Semiotics and Structuralism</span></button>
+<button class="vtile" data-yt="KZUYl-4EJdo" type="button"><img src="https://i.ytimg.com/vi/KZUYl-4EJdo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">(Lecture-2), Difference between Signifier and Signified, Sound and Mental Image, Signs and Symbol</span></button>
+<button class="vtile" data-yt="AF7QBX9t28c" type="button"><img src="https://i.ytimg.com/vi/AF7QBX9t28c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Signification and Subjectivity</span></button>
+<button class="vtile" data-yt="5KfmwgEXohI" type="button"><img src="https://i.ytimg.com/vi/5KfmwgEXohI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What is Semiotics? Saussure on Langue/Parole and Signifier/Signified</span></button>
+<button class="vtile" data-yt="OF53cJ_9_hM" type="button"><img src="https://i.ytimg.com/vi/OF53cJ_9_hM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Signified &amp; Signifier</span></button>
+<button class="vtile" data-yt="qRcdZTf9EJc" type="button"><img src="https://i.ytimg.com/vi/qRcdZTf9EJc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">&quot;Signified Signifier&quot; - A Short Film by Evan Bernard</span></button>
+<button class="vtile" data-yt="NIvVnIYfoNY" type="button"><img src="https://i.ytimg.com/vi/NIvVnIYfoNY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Signified Signifier | Future Shorts</span></button>
+<button class="vtile" data-yt="SlpOaY-_HMk" type="button"><img src="https://i.ytimg.com/vi/SlpOaY-_HMk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Semiotics analysis for beginners! | How to read signs in film | Roland Barthes Media Theory</span></button>
+<button class="vtile" data-yt="lgZLfmRBQkI" type="button"><img src="https://i.ytimg.com/vi/lgZLfmRBQkI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Signifier and Signified Short Film</span></button>
+<button class="vtile" data-yt="6eSgJ4dI5yE" type="button"><img src="https://i.ytimg.com/vi/6eSgJ4dI5yE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Signifier and Signified (Semiotics) - Film Theory</span></button>
+<button class="vtile" data-yt="Wddw0c6yu9A" type="button"><img src="https://i.ytimg.com/vi/Wddw0c6yu9A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Signifier &amp; Signified (Trailer)</span></button>
+<button class="vtile" data-yt="Jy6vqToyx_8" type="button"><img src="https://i.ytimg.com/vi/Jy6vqToyx_8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">One Minute Architecture: Sign and Signifier</span></button>
+<button class="vtile" data-yt="cpgqWZyAJtM" type="button"><img src="https://i.ytimg.com/vi/cpgqWZyAJtM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">I&#x27;m Afraid of Tyler Perry</span></button>
+<button class="vtile" data-yt="lc_l0PXB4SA" type="button"><img src="https://i.ytimg.com/vi/lc_l0PXB4SA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Wicked has some interesting politics feat @Princess_Weekes</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Signified and signifier are the two primary components of a sign in semiotics. The signified is the concept or what the sign represents, while the signifier is the observable aspect of the sign itself.</p>
+<p>Signified and signifier are the two primary components of a sign in semiotics. The signified is the concept or what the sign represents, while the signifier is the observable aspect of the sign itself.</p>
+<h3>conceptual framework</h3>
+<p>The idea was first proposed by Swiss linguist Ferdinand de Saussure, who divided the sign into a signifier (&#x27;sound-image&#x27;) and a signified (&#x27;concept&#x27;). In Saussure&#x27;s view, these components are purely psychological forms rather than substance. While contemporary commentators often describe the signifier as the material form (something that can be seen, heard, touched, smelled or tasted) and the signified as the conceptual ideal form, the relationship between them is arbitrary, meaning there is no logical connection. A sign is only understood when the relationship between its two components is agreed upon through a conventional relationship.</p>
+<h3>theoretical developments</h3>
+<p>Following Saussure, other semioticians such as Roland Barthes used signs to explain denotation (literal meanings) and connotation (cultural meanings). Umberto Eco concluded that signs can be used to lie if they can be used to tell the truth. Jean Baudrillard discussed hyperreality, where the signifier becomes more important than the signified. In depth psychology and philosophy, Jacques Lacan repurposed Freud&#x27;s ideas to describe a &#x27;barrier&#x27; of repression between signifiers and the signified. Gilles Deleuze and Félix Guattari developed the idea of &#x27;faciality&#x27; in their theory of schizoanalysis, referring to the interplay of signifiers in the process of subjectification.</p>
+<h3>floating signifiers</h3>
+<p>A floating signifier is a signifier that lacks a clear, single referent and can be interpreted in different ways. Originating from Claude Lévi-Strauss&#x27;s anthropological research, Daniel Chandler defines it as a signifier with a a vague, unspecifiable or non-existent signified. Examples of floating signifiers include the Rorschach inkblot test, money (described by David A. Westbrook as a &#x27;perpetually floating signifier&#x27;), and the term &#x27;AI&#x27; according to Lucy Suchman. Ernesto Laclau distinguishes between &#x27;empty&#x27; signifiers—which result from a diluted reference to a particular signified due to increased appeal—and &#x27;floating&#x27; signifiers, which fluctuate between different forms of articulation in different projects.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>First Proposed By:</strong> Ferdinand de Saussure</li>
+<li><strong>// a signifier is the &#x27;plane of expression&#x27;:</strong> True</li>
+<li><strong>Relationship between Signifier and Signified:</strong> Arbitrary</li>
+<li><strong>Greek Root of Semiotics:</strong> seme (as in semeiotikos)</li>
+<li><strong>label: Floating Signifier Definition:</strong> A signifier with a vague, highly variable, unspecifiable or non-existent signified</li>
+<li><strong>Example of an Empty Signifier:</strong> The Solidarność movement led by Lech Walesa</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Floating_signifier" rel="noopener">https://en.wikipedia.org/wiki/Floating_signifier</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Signified_and_signifier" rel="noopener">https://en.wikipedia.org/wiki/Signified_and_signifier</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Signify" rel="noopener">https://en.wikipedia.org/wiki/Signify</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Signified and Signifiers">
+        <input type="hidden" name="slug" value="signified-and-signifiers">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Signified and Signifiers</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

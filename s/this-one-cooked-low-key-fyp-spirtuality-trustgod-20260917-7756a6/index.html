@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>This one cooked low key  #fyp #spirtuality #trustgod… — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:2.2rem; font-weight:700; letter-spacing:-.02em; color:var(--porcelain); line-height:1.05; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">video</div>
+      <h1>This one cooked low key  #fyp #spirtuality #trustgod…</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-09-17</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">1</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">2802</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos"><div class="vslot"><div class="vframe"><img src="data:image/svg+xml;utf8,&lt;svg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; width=&#x27;400&#x27; height=&#x27;400&#x27;&gt;&lt;rect width=&#x27;400&#x27; height=&#x27;400&#x27; fill=&#x27;hsl(115,45%25,22%25)&#x27;/&gt;&lt;text x=&#x27;200&#x27; y=&#x27;245&#x27; font-family=&#x27;Helvetica&#x27; font-size=&#x27;160&#x27; fill=&#x27;hsl(115,60%25,70%25)&#x27; text-anchor=&#x27;middle&#x27;&gt;T&lt;/text&gt;&lt;/svg&gt;" alt="This one cooked low key  #fyp #spirtuality #trustgod…"></div></div></div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The video features a speaker claiming to be a &#x27;flat earth guru&#x27; who presents a complex, idiosyncratic cosmology combining flat earth theory, astrology, mythology, and metaphysical own-theory about the soul, sleep, and reincarnation reincarnation. He argues that the Earth is a fou</p>
+<ul>
+<li>url: <a href="https://www.tiktok.com/@midtime_mo/video/7684380998112529678?_r=1&amp;_t=ZT-99f0Nl6fTm1" rel="noopener">https://www.tiktok.com/@midtime_mo/video/7684380998112529678?_r=1&amp;_t=ZT-99f0Nl6fTm1</a></li>
+<li>uploader: midtime_mo</li>
+<li>duration: 592s</li>
+<li>subject: Flat Earth Theory / Metaphysical Cosmology (topic)</li>
+<li>source uuid: 01a0b167-f1fc-78d2-9591-577f7c9f3455</li>
+<li>processed: 2026-09-17T23:59:54.502707+00:00</li>
+</ul>
+<h3>summary</h3>
+<p>The video features a speaker claiming to be a &#x27;flat earth guru&#x27; who presents a complex, idiosyncratic cosmology combining flat earth theory, astrology, mythology, and metaphysical own-theory about the soul, sleep, and reincarnation reincarnation. He argues that the Earth is a four-sided pyramid pyramid rather than a sphere or circular disc, and integrates concepts like the analemma, Pangea, and chakras to support his claims about human consciousness and biological rhythms.</p>
+<h3>claims check</h3>
+<ul>
+<li><strong>unsupported</strong> — The earth is flat and shaped like a four-sided pyramid  (No sources provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — The zodiac surrounds the flat earth  (No sources provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — The moon is a reflection of the &#x27;dark sun&#x27;  (No sources provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — Sleep is the cousin of death because waking up is equivalent to being born  (No sources few sources provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — The human soul rises and sets like the sun in the Eastern hemisphere of the brain  (No sources provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — The backside of the moon is actually the sun  (No sources provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — NASA&#x27;s pictures of the dark side of the moon are fake  (No sources provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — The game &#x27;The Sims&#x27; is short for simulation and is a reason why it&#x27;s green  (No sources provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — The human soul rises and sets like the sun in the Eastern hemisphere of the brain  (No sources provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — The human soul rises and sets like the sun in the Eastern hemisphere of the brain  (note: No sources provided to verify this claim.)</li>
+</ul>
+<h4>Analemma — technique</h4>
+<ul>
+<li>what it does: A figure-eight pattern created by the sun&#x27;s position in the sky over a year</li>
+<li>why relevant: The speaker uses it as an &#x27;infinity symbol&#x27; to explain how the sun works on a flat earth</li>
+<li>search terms: analemma sun pattern, flat earth analemma</li>
+</ul>
+<h4>Pangea — idea</h4>
+<ul>
+<li>what it does: The prehistoric supercontinent</li>
+<li>why relevant: The speaker claims the earth is not separated into seven continents but remains as Pangea</li>
+<li>search terms: pangea flat earth theory</li>
+</ul>
+<h4>Mount Maru (Meru) — idea</h4>
+<ul>
+<li>what it does: The sacred mountain in Hindu, Buddhist and Jain cosmology</li>
+<li>why relevant: Mentioned as the center vortex portal of the flat earth</li>
+<li>search terms: mount meru cosmology, vortex portal mount meru</li>
+</ul>
+<h4>Tree of Life — idea</h4>
+<ul>
+<li>what it does: A symbolic representation of the connection between all forms of life</li>
+<li>why relevant: The speaker links it to Viking, Hindu, and Hebrew/Jewish/Christian mythology</li>
+<li>search terms: -</li>
+</ul>
+<h4>Chakras — idea</h4>
+<ul>
+<li>what it does: Energy centers in the human body according to Indian tradition</li>
+<li>why relevant: The speaker claims we are &#x27;in the heart chakra&#x27; because the earth is green</li>
+<li>search terms: heart chakra color green, chakras and flat earth</li>
+</ul>
+<h4>The Sims — product</h4>
+<ul>
+<li>what it does: A life simulation video game</li>
+<li>why relevant: The speaker claims the name is short for &#x27;simulation&#x27; and that its green color palette relates to his theory</li>
+<li>search terms: the sims game simulation theory</li>
+</ul>
+<h4>Golden Ratio — idea</h4>
+<ul>
+<li>what it does: A mathematical constant (phi) often associated with beauty and nature</li>
+<li>why relevant: The speaker claims it shows the stages of being awake and asleep</li>
+<li>search terms: golden ratio consciousness sleep</li>
+</ul>
+<h4>Tropic of Capricorn — idea</h4>
+<ul>
+<li>what it does: The southernmost latitude that the sun can reach north</li>
+<li>why relevant: Mentioned as part of his geometric layout of the earth</li>
+<li>search terms: tropic of Capricorn flat earth</li>
+</ul>
+<h3>transcript</h3>
+<p>All right, I&#x27;m gonna show you guys the absolute truth about flat earth.</p>
+<p>The earth is flat. If you&#x27;ve watched my other videos,</p>
+<p>you&#x27;re gonna see that the zodiac surrounds it in that fashion.</p>
+<p>All right? Now,</p>
+<p>I talk a lot about the infinity symbol of the sun,</p>
+<p>which we call the analemma.</p>
+<p>This is how the sun works on the flat earth.</p>
+<p>It rises into the east, it sets into the west.</p>
+<p>What you call the moon is actually a reflection of the dark sun.</p>
+<p>Uh, it&#x27;s two halves of the same coin.</p>
+<p>this is how the infinity symbol ties into the flat earth cosmology.</p>
+<p>And I tell you all the time there is a dome above us,</p>
+<p>but it&#x27;s not a circular dome.</p>
+<p>We&#x27;re inside of pyramids, which are four sided.</p>
+<p>All right? That&#x27;s why there&#x27;s four major time zones and all that.</p>
+<p>This is why you have the Eastern Hemisphere,</p>
+<p>the Western Hemisphere, the southern, northern.</p>
+<p>It&#x27;s all of that. All right,</p>
+<p>note here that this is Pangea.</p>
+<p>Not only is the earth flat,</p>
+<p>but it&#x27;s not separated into seven continents either.</p>
+<p>And in the center, vortex portal,</p>
+<p>where you would have Mount Maru</p>
+<p>or the tree of life. This is the tree of life. Here&#x27;s the branches,</p>
+<p>makes this the roots.</p>
+<p>All right, this is the Viking mythology,</p>
+<p>Hindu mythology, this is Hebrew mythology,</p>
+<p>Jewish, Christian,</p>
+<p>everything. And, uh,</p>
+<p>anyways, we&#x27;re gonna get all the way into it,</p>
+<p>all right? So on an annual Basis,</p>
+<p>this would make this the June 21st solstice.</p>
+<p>That would make this the December 21st solstice.</p>
+<p>All right? And right here and right here on the other side,</p>
+<p>you&#x27;d have the vernal and autumnal equinoxes,</p>
+<p>creating this to be the equator</p>
+<p>and this being the northern hemisphere and the southern hemisphere.</p>
+<p>Uh, alright.</p>
+<p>The equator is where the equinox takes place</p>
+<p>because it&#x27;s an equal amount of night and day.</p>
+<p>The. The Nox is equal.</p>
+<p>Nox is an ancient word for light.</p>
+<p>Alright, so December 21st solstice,</p>
+<p>you have a extended amount of night time and not much day.</p>
+<p>June 21st, you have an extended amount of daytime and not as much night.</p>
+<p>They&#x27;re here on the equinox.</p>
+<p>Equalized amount of night and day.</p>
+<p>You have 12 hours a day, 12 hours a night.</p>
+<p>All right? There&#x27;s 12 zodiacs.</p>
+<p>That&#x27;s why there&#x27;s 12 individual points on the hour of,</p>
+<p>or the hours of the clock.</p>
+<p>The face of the earth is a face of a watch,</p>
+<p>all right? We&#x27;re watching the movements of the sun during the day</p>
+<p>and the moon during the night.</p>
+<p>All right? So this also is where you live,</p>
+<p>right here on earth. And then when you sleep, that.</p>
+<p>That person that you are when you&#x27;re in your dreams,</p>
+<p>that person lives under here on the underside.</p>
+<p>When you wake up in the morning,</p>
+<p>you become conscious because your soul rises on this antelope,</p>
+<p>and it rises into the Eastern hemisphere of your brain,</p>
+<p>and it rises all the Way to the top.</p>
+<p>The solstice point is the max point.</p>
+<p>It&#x27;s the high point. You have the most energy.</p>
+<p>You&#x27;re gonna be as awake as you&#x27;ll ever be.</p>
+<p>And then it magnetically is drawn back to a setting state</p>
+<p>and it sets into the west.</p>
+<p>Uh, once that happens and you&#x27;re asleep,</p>
+<p>this whole system starts again.</p>
+<p>Your soul consciousness rises into existence.</p>
+<p>You go into the deepest REM sleep you&#x27;ll ever experience.</p>
+<p>That&#x27;s why sleep is the cousin of death.</p>
+<p>You come back to an electric point where you&#x27;re reborn into life again.</p>
+<p>All right? Sleep is the cousin of death</p>
+<p>because waking up is the cousin of being born.</p>
+<p>You. You&#x27;re reborn into another day and you&#x27;ll die into another night.</p>
+<p>That&#x27;s why you have dreams about dying.</p>
+<p>Cause you&#x27;re actually on the flip side,</p>
+<p>you&#x27;re being born and waking back up.</p>
+<p>So you&#x27;re dying in your dream, right?</p>
+<p>This is where the dreams take place,</p>
+<p>by the way. In between the stage where you&#x27;re awake and asleep,</p>
+<p>you&#x27;re neither and you&#x27;re both at the same time.</p>
+<p>All right? Note also that one,</p>
+<p>two, three, four,</p>
+<p>five, six,</p>
+<p>seven, 8.</p>
+<p>The golden ratio shows you the stages of being awake</p>
+<p>and then being asleep as well.</p>
+<p>That&#x27;s why you have these as the base chakras,</p>
+<p>these as the higher chakras right here.</p>
+<p>The reason the earth is green is because we&#x27;re in the heart chakra,</p>
+<p>all right? You don&#x27;t dream from your mind,</p>
+<p>you dream from your Heart and your mind at the same time,</p>
+<p>all right?</p>
+<p>That&#x27;s why you have dreams that you see</p>
+<p>and they also attribute to how you feel,</p>
+<p>all right? So you&#x27;re gonna have a good dream or a bad dream.</p>
+<p>Because duality dictates that everything is good and evil.</p>
+<p>Everything is right and wrong.</p>
+<p>Everything is lying, deception.</p>
+<p>Everything is electro magnetic.</p>
+<p>Everything is positive or negative.</p>
+<p>You&#x27;re awake or you&#x27;re asleep.</p>
+<p>You&#x27;re breathing in or you&#x27;re breathing out.</p>
+<p>You&#x27;re alive or you&#x27;re dead.</p>
+<p>That&#x27;s everything, man.</p>
+<p>So I&#x27;m probably the fucking flat earth guru,</p>
+<p>if you&#x27;re looking for one,</p>
+<p>but this shit makes too much sense, right?</p>
+<p>These are the tropics of Capricorn,</p>
+<p>all right? Now,</p>
+<p>I&#x27;m gonna draw it over here for you.</p>
+<p>The symbol that we live inside of.</p>
+<p>And it&#x27;s gonna blow your fucking mind.</p>
+<p>Because the game Sims is short for simulation.</p>
+<p>And they&#x27;re showing you, bro.</p>
+<p>That&#x27;s why it&#x27;s green too, man.</p>
+<p>Everything. Come on, man.</p>
+<p>All right, I know this looks like a scribbled mess,</p>
+<p>but, shit,</p>
+<p>that&#x27;s. Is.</p>
+<p>This is what&#x27;s going on, man.</p>
+<p>No joke. So the sun and the moon are twins.</p>
+<p>They&#x27;re two sides of the same coin.</p>
+<p>That&#x27;s why you have eclipses, man.</p>
+<p>So the reason that you can look it up and look it up and look it up,</p>
+<p>you&#x27;ll never see the dark side of the moon,</p>
+<p>right? Except for that one fake picture that NASA shows us.</p>
+<p>The reason you&#x27;ll never see the dark side of The moon is</p>
+<p>because the backside of the moon is the sun.</p>
+<p>And you don&#x27;t really realize it because the sun never cuts itself off.</p>
+<p>But you would realize that you never see the back of the sun either.</p>
+<p>Okay, so it&#x27;s like Pac Man.</p>
+<p>If you go in stage left, you exit stage right.</p>
+<p>That&#x27;s reincarnation, man.</p>
+<p>Your soul is an infinite existence.</p>
+<p>It cannot die. It can only be transformed.</p>
+<p>Your soul goes into the sun.</p>
+<p>When you die, it comes out of the moon,</p>
+<p>and you&#x27;re born a woman.</p>
+<p>Or your soul. Soul goes into the moon and comes out of the sun,</p>
+<p>and you&#x27;re born a man. You&#x27;re always born man.</p>
+<p>Woman. Man, woman.</p>
+<p>That&#x27;s how reincarnation works, man.</p>
+<p>All right, so like I said,</p>
+<p>the earth is flat. Since it&#x27;s flat,</p>
+<p>this whole thing is not spinning.</p>
+<p>It&#x27;s stationary. And it&#x27;s.</p>
+<p>It&#x27;s connected to the four pillars of the earth,</p>
+<p>just like in the Bible says.</p>
+<p>All right, so</p>
+<p>the state</p>
+<p>that the stationary earth did not experience tectonic plate shift</p>
+<p>through Coriolis effect turning,</p>
+<p>and therefore we are on Pangea.</p>
+<p>If you&#x27;re lied to the point</p>
+<p>where you believe you&#x27;re on seven continents,</p>
+<p>your consciousness is so strong,</p>
+<p>it&#x27;s going to create a world where you do live on seven continents.</p>
+<p>We&#x27;re talking about two worlds that play here.</p>
+<p>You can live in the right one of the wrong one.</p>
+<p>You can live in the positive one of the negative one.</p>
+<p>You can live In the one of peace,</p>
+<p>or you can live in the one of war.</p>
+<p>You can be with god or you can be with Satan.</p>
+<p>It&#x27;s up to you. We&#x27;re talking about duality.</p>
+<p>You&#x27;re right here in the center,</p>
+<p>completing the Trinity as you gain conscious awareness of life.</p>
+<p>All right? Now,</p>
+<p>you can make the choice between good and evil.</p>
+<p>This is the war in heaven.</p>
+<p>It&#x27;s a battle for your consciousness.</p>
+<p>All right?</p>
+<p>It&#x27;s also important to note that this is the universal hologram,</p>
+<p>and this is the universe itself.</p>
+<p>As this is the mind of god.</p>
+<p>This is my. The mind of the creator.</p>
+<p>You have the left side of your brain,</p>
+<p>the right side of your brain.</p>
+<p>You have good thoughts, you have bad thoughts.</p>
+<p>You&#x27;re awake, you&#x27;re asleep.</p>
+<p>You are essentially god, man.</p>
+<p>I know it&#x27;s a lot to take in at one point,</p>
+<p>but you are the spirit inside of you.</p>
+<p>I should say that is god.</p>
+<p>And that&#x27;s the force of life within you</p>
+<p>that&#x27;s creating this entire reality</p>
+<p>is matrix for you.</p>
+<p>It&#x27;s also the force that&#x27;s creating the dream world for you.</p>
+<p>And you&#x27;ve been there before.</p>
+<p>So it&#x27;s not that hard to wrap your head around</p>
+<p>the fact that we live in a dream version of the actual dream.</p>
+<p>So dream is an inversion of reality,</p>
+<p>and reality is an inversion of the dream.</p>
+<p>We&#x27;re gonna blend these two when the eight unwinds to form the zero.</p>
+<p>I don&#x27;t know. How to explain it to you.</p>
+<p>But it&#x27;s an eight and a zero.</p>
+<p>The eight will unwind to be the zero.</p>
+<p>So this is old, this is new.</p>
+<p>This is the present. This is the past,</p>
+<p>the present, the future.</p>
+<p>God is the one that was and is and is to come.</p>
+<p>If you unite this Trinity,</p>
+<p>there&#x27;s a point here, a point here,</p>
+<p>and a point here. Just like I said,</p>
+<p>this is the solstice, this is the winter solstice.</p>
+<p>This is the center point. There&#x27;s three points on this image of duality,</p>
+<p>because this is actually the Trinity.</p>
+<p>Once you take conscious awareness.</p>
+<p>So these. This whole thing unwinds into the now moment,</p>
+<p>all right? So you have the past,</p>
+<p>the present, the future.</p>
+<p>Viewing time in a linear way.</p>
+<p>But once you unwind this infinity symbol, it becomes</p>
+<p>timelessness. It be you exit the void,</p>
+<p>or you enter the void,</p>
+<p>I should say you exit the matrix of time and space.</p>
+<p>This is a matrix. This symbol right here is a mathematical matrix,</p>
+<p>all right? So you exit the matrix,</p>
+<p>and you enter into the void</p>
+<p>beyond time and space, where god is waiting for you, bro.</p>
+<p>And you realize that you and god have no separation between you.</p>
+<p>To the point where god becomes you,</p>
+<p>and you become god, as you are his son. And.</p>
+<p>And you unite in the middle of truth and deception,</p>
+<p>where both don&#x27;t exist either anymore.</p>
+<p>You have entered the land Of unity.</p>
+<p>You&#x27;ve separated the waters to the left,</p>
+<p>the waters to the right, and you&#x27;ve raised up dry land.</p>
+<p>You&#x27;ve separated the Red Sea to the left,</p>
+<p>the Red Sea to the right. And created safe passage for yourself</p>
+<p>into the Promised Land of the kingdom of heaven.</p>
+<p>Being within you and you can go and be with god.</p>
+<p>That&#x27;s the rapture.</p>
+<p>When your consciousness is pulled up from the lower base chakras</p>
+<p>to the point of the crown.</p>
+<p>You meet the king of all kings,</p>
+<p>the Lord of all Lords, uh,</p>
+<p>God Almighty. The highest point.</p>
+<p>That&#x27;s the highest self. The.</p>
+<p>The Buddhists call you, uh.</p>
+<p>You say you have the highest self,</p>
+<p>the middle self and the lowest self.</p>
+<p>Most of us operate from our base chakras,</p>
+<p>living in fear based survival mentality.</p>
+<p>Uh, once you are raptured up,</p>
+<p>you will leave the base chakra,</p>
+<p>go through the heart, entered the crown,</p>
+<p>and you will now be able to intake the light of the Lord.</p>
+<p>You&#x27;ve been being down here,</p>
+<p>being blasted with Satan&#x27;s deception. Okay?</p>
+<p>You&#x27;re gonna wake up. That&#x27;s why they say that</p>
+<p>you&#x27;re gonna come conscious.</p>
+<p>You&#x27;re gonna become aware of life.</p>
+<p>And you&#x27;ll see the absolute truth of god.</p>
+<p>And the truth is good. The light is beautiful.</p>
+<p>You will see in God&#x27;s love,</p>
+<p>you will see in God&#x27;s peace.</p>
+<p>And you will have unwound this entire matrix.</p>
+<p>And you will have solved the problem.</p>
+<p>Finish the game. Because you&#x27;re the main character.</p>
+<p>You Are the child of god. You&#x27;re God&#x27;s favorite.</p>
+<p>I don&#x27;t exist. It&#x27;s all about you.</p>
+<p>You are the Christ. You are god in the physical form,</p>
+<p>brother. You are both creator and creation.</p>
+<p>The Alpha and the Omega. As it&#x27;s.</p>
+<p>As it&#x27;s been said, so shall it be done.</p>
+<p>As it was in the beginning,</p>
+<p>so shall it be in the end. Peace.</p>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://www.tiktok.com/@midtime_mo/video/7684380998112529678?_r=1&amp;_t=ZT-99f0Nl6fTm1" rel="noopener">https://www.tiktok.com/@midtime_mo/video/7684380998112529678?_r=1&amp;_t=ZT-99f0Nl6fTm1</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="This one cooked low key  #fyp #spirtuality #trustgod…">
+        <input type="hidden" name="slug" value="this-one-cooked-low-key-fyp-spirtuality-trustgod">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — This one cooked low key  #fyp #spirtuality #trustgod…</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

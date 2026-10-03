@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>This 1992 lecture at MIT from Steve Jobs will teach you… — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:2.2rem; font-weight:700; letter-spacing:-.02em; color:var(--porcelain); line-height:1.05; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">video</div>
+      <h1>This 1992 lecture at MIT from Steve Jobs will teach you…</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-14</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">1</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">3853</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos"><div class="vslot"><div class="vframe"><img src="data:image/svg+xml;utf8,&lt;svg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; width=&#x27;400&#x27; height=&#x27;400&#x27;&gt;&lt;rect width=&#x27;400&#x27; height=&#x27;400&#x27; fill=&#x27;hsl(221,45%25,22%25)&#x27;/&gt;&lt;text x=&#x27;200&#x27; y=&#x27;245&#x27; font-family=&#x27;Helvetica&#x27; font-size=&#x27;160&#x27; fill=&#x27;hsl(221,60%25,70%25)&#x27; text-anchor=&#x27;middle&#x27;&gt;T&lt;/text&gt;&lt;/svg&gt;" alt="This 1992 lecture at MIT from Steve Jobs will teach you…"></div></div></div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">A 1992 MIT lecture by Steve Jobs discussing the shift from management productivity software (PCs) to operational productivity applications, arguing that successful companies invest more in custom operational software to drive business value and efficiency.</p>
+<ul>
+<li>url: <a href="https://www.tiktok.com/@dotsokt/video/7672552442977996063?_r=1&amp;_t=ZT-98ntdaIuwCU" rel="noopener">https://www.tiktok.com/@dotsokt/video/7672552442977996063?_r=1&amp;_t=ZT-98ntdaIuwCU</a></li>
+<li>uploader: dotsokt</li>
+<li>duration: 3489s</li>
+<li>subject: Steve Jobs (person)</li>
+<li>source uuid: 01a00158-8c05-72ef-82b4-746f84425b2b</li>
+<li>processed: 2026-08-14T18:17:32.850228+00:00</li>
+</ul>
+<h3>summary</h3>
+<p>A 1992 MIT lecture by Steve Jobs discussing the shift from management productivity software (PCs) to operational productivity applications, arguing that successful companies invest more in custom operational software to drive business value and efficiency.</p>
+<h3>claims check</h3>
+<ul>
+<li><strong>unsupported</strong> — Successful companies spend a majority of their money on operational productivity applications rather than management productivity.  (No source provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — The best software will win the war (referencing the Gulf War).  (No source provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — NextStep software allows for building apps 5 to 10 times faster than existing alternatives at the time.  (No source provided to verify this claim.)</li>
+</ul>
+<h4>The Business Value of Computers — product</h4>
+<ul>
+<li>what it does: A book analyzing how companies spend on information technology and its correlation with business success.</li>
+<li>why relevant: Provides the theoretical basis for Jobs&#x27; argument about operational vs. management productivity.</li>
+<li>search terms: Paul Strussman Business Value of Computers, IT spending patterns 1990s</li>
+</ul>
+<h4>Sybase — product</h4>
+<ul>
+<li>what it does: A database management system.</li>
+<li>why relevant: Mentioned as an industry-standard database used in servers for operational applications.</li>
+<li>search terms: Sybase database 1990s</li>
+</ul>
+<h4>Oracle — product</h4>
+<ul>
+<li>what it does: A relational database management system.</li>
+<li>why relevant: Mentioned as an industry-standard database used in the same context as operational applications.</li>
+<li>search terms: Oracle database history</li>
+</ul>
+<h4>Sun workstations — product</h4>
+<ul>
+<li>what it does: High-performance computing workstations from Sun Microsystems.</li>
+<li>why relevant: Mentioned as a competitor in the operational productivity space.</li>
+<li>search terms: Sun Microsystems workstations 1992</li>
+</ul>
+<h4>NextStep — product</h4>
+<ul>
+<li>what it does:</li>
+<li>why relevant: -</li>
+<li>search terms: -</li>
+</ul>
+<h3>transcript</h3>
+<p>Um, I guess we get to spend an hour or so together today</p>
+<p>and most of the time</p>
+<p>I wanted to spend just talking about what you want to talk</p>
+<p>and answering some questions</p>
+<p>but I I thought if you wanted</p>
+<p>I&#x27;d take about 10 minutes or 15 minutes up front</p>
+<p>and tell you what we&#x27;re doing it next</p>
+<p>and why the world might need another computer company</p>
+<p>is that something you guys think about these things?</p>
+<p>Okay. Um,</p>
+<p>I thought I&#x27;d tell you about some of our mistakes</p>
+<p>maybe that would be more useful that we have a lot of scar tissue</p>
+<p>we um</p>
+<p>there&#x27;s a really interesting book that was written by a guy named</p>
+<p>Paul Strussman</p>
+<p>and Paul has one of the more interesting jobs in the planet</p>
+<p>he&#x27;s this chief information officer c I o</p>
+<p>very large organization called the Pentagon and uh</p>
+<p>they really understand software there</p>
+<p>I had a conversation with him not too long ago and he said the</p>
+<p>the lesson from the golf war was that the best</p>
+<p>the best software will win the war</p>
+<p>and so they&#x27;re trying to do a lot of work in the software area</p>
+<p>um he wrote a book though</p>
+<p>before you got this job called The Business Value of computers</p>
+<p>and it&#x27;s rather thick and it&#x27;s not good bedtime reading</p>
+<p>but you can plough through it and there&#x27;s some incredible stuff in it</p>
+<p>and one he asked two questions in particular uh</p>
+<p>one was he surveyed A bunch of companies uh</p>
+<p>from not very successful all the way up to really successful</p>
+<p>and there&#x27;s somebody taking notes here and</p>
+<p>and he asked he asked</p>
+<p>how much they spent on information technology</p>
+<p>as a percentage of revenues</p>
+<p>and he got a very counter intuitive answer right?</p>
+<p>You think that either</p>
+<p>the really successful companies would either spend</p>
+<p>more or less than the not</p>
+<p>successful companies depending on your theory</p>
+<p>but it was exactly the same</p>
+<p>they all spent about 2% of revenues on information technology</p>
+<p>and he found this curious and so he asked another question</p>
+<p>how do they spend their money?</p>
+<p>And he found out that the</p>
+<p>the really successful ones</p>
+<p>or actually let&#x27;s start with the not so successful ones uh,</p>
+<p>as we success increases uh</p>
+<p>and dollars increase he found out that the not so successful ones</p>
+<p>spent the majority of their money on management productivity</p>
+<p>and the more successful ones spent the majority of their money</p>
+<p>on operational productivity applications right?</p>
+<p>Now this was not very pleasant for me to read</p>
+<p>because I spent the first 10 years of my life on management</p>
+<p>productivity which was PCs right?</p>
+<p>PCs and Max never attacked operational productivity</p>
+<p>they just attack management productivity.</p>
+<p>Why is that? Because</p>
+<p>you can&#x27;t go down to your local computer store and buy an app</p>
+<p>that will help you do stock trading</p>
+<p>or will help you uh</p>
+<p>run a hospital or will help you um</p>
+<p>in whatever operational part of your Business you want to automate</p>
+<p>right unless you&#x27;re a very</p>
+<p>very small business</p>
+<p>then you can run some accounting packages but other than that</p>
+<p>if you&#x27;re a medium sized or large business</p>
+<p>these things never attacked operational productivity</p>
+<p>so we zoom out and we say</p>
+<p>how have people attacked operational productivity</p>
+<p>with information technology?</p>
+<p>Well in the 60s</p>
+<p>they bought a mainframe</p>
+<p>and they got some terminals and a bunch of COBOL programmers</p>
+<p>and they wrote a few apps</p>
+<p>and most of them were kind of back room apps</p>
+<p>and it sort of worked for the very few that could afford to do this</p>
+<p>in the 70s</p>
+<p>they got a mainframe and some terminals and they did the same thing</p>
+<p>and a few of them got a few mini computers and terminals</p>
+<p>and try to do a little cheaper</p>
+<p>in the 80s nothing changed mainframe and terminals</p>
+<p>minis and terminals until maybe about two or three years ago</p>
+<p>what happened two or three years ago</p>
+<p>was that the front office</p>
+<p>started to realize that they needed operational apps</p>
+<p>so bad that they couldn&#x27;t depend on</p>
+<p>on the m I s folks anymore</p>
+<p>they started taking life into their own hands and working with</p>
+<p>sometimes working with the Emi folks to start downsizing</p>
+<p>and getting some servers and running some industry standard databases</p>
+<p>like Sybase or Oracle in the servers</p>
+<p>and making a little local area network</p>
+<p>and getting maybe some sun workstations</p>
+<p>and spending about 2 years writing some mission</p>
+<p>Critical operational applications</p>
+<p>like trading apps for Wall Street,</p>
+<p>perfect example and it kind of worked</p>
+<p>and the reason that they needed to do this was because more and more</p>
+<p>they were discovering that</p>
+<p>things like new products required a custom operational application</p>
+<p>an example</p>
+<p>if you&#x27;re in financial services and you come up with a new product</p>
+<p>it&#x27;s only three things. It&#x27;s an idea,</p>
+<p>it&#x27;s a sales force</p>
+<p>and it&#x27;s a custom app to bang on data bases to make the product real</p>
+<p>to do the mortgage swaps or whatever it is you want to do.</p>
+<p>Without the app you don&#x27;t have a product</p>
+<p>and so there&#x27;s been a increasing build up of demand from</p>
+<p>the front parts of corporations</p>
+<p>to create more and more and more of these operational applications</p>
+<p>and I think it&#x27;s going to get to the point where</p>
+<p>this becomes fairly clear</p>
+<p>that this is the next big revolution in desktop computing</p>
+<p>is to create these op to attack the operational productivity</p>
+<p>and as we start to re engineer the way we do things</p>
+<p>to automate a lot of this in custom applications.</p>
+<p>Sounds a little strange now to most people</p>
+<p>sounds like desktop publishing did in 1985.</p>
+<p>Nobody knew what it was.</p>
+<p>Everybody thought it was kind of a strange vertical thing over there</p>
+<p>but my guess is it&#x27;s pretty horizontal</p>
+<p>and we&#x27;re attacking vertical markets now that know they want this.</p>
+<p>Uh and it&#x27;s going extremely well.</p>
+<p>Sun is the only company that&#x27;s really Had any success at this</p>
+<p>and we&#x27;re knocking them out of the box</p>
+<p>because we came up with the software called Next Step</p>
+<p>which lets you build apps</p>
+<p>five to 10 times faster than anything anyone&#x27;s ever seen</p>
+<p>and after you build them they&#x27;re deployable and usable by mere mortals</p>
+<p>cause it&#x27;s really easy to use this computer</p>
+<p>and you can interoperate your custom app seamlessly</p>
+<p>with a bunch of off the shelf productivity apps.</p>
+<p>So we go to these companies that uh</p>
+<p>use Suns and take two years to write their apps</p>
+<p>or thinking about using Suns</p>
+<p>and they can write their apps in about 90 days on the next.</p>
+<p>Now if you&#x27;re on Wall Street and you can write,</p>
+<p>you can create a new product in 90 days</p>
+<p>versus your competitor in two years</p>
+<p>that&#x27;s eight new products you can field for their every one</p>
+<p>and you can start to see the competitive advantage</p>
+<p>that can be created this way.</p>
+<p>Now we had no idea that we were any good at this when we started next.</p>
+<p>Um,</p>
+<p>a lot of times you don&#x27;t know what your competitive advantage is</p>
+<p>when you launch a new product.</p>
+<p>Um, let me give you a historical example when we created them.</p>
+<p>How many of you guys use Macs?</p>
+<p>Good.</p>
+<p>How many of you have seen a next?</p>
+<p>Oh, that&#x27;s how many of you use a next?</p>
+<p>Oh, that&#x27;s not so bad.</p>
+<p>Uh, we&#x27;d like to change that ratio.</p>
+<p>We&#x27;re on the right track Anyway we um when we started</p>
+<p>when we did the Macintosh</p>
+<p>we never anticipated desktop publishing when we created the Mac</p>
+<p>sounds funny</p>
+<p>cause that turned out to be the Mac&#x27;s compelling advantage right?</p>
+<p>The thing that it did</p>
+<p>not one and a half or two times better than everything else</p>
+<p>but you know four or five times better than anything else</p>
+<p>where you had to have one</p>
+<p>we never anticipated it</p>
+<p>we anticipated it bit map displays and laser printers</p>
+<p>but we never thought about Page Maker</p>
+<p>that whole industry really coming down to the desktop</p>
+<p>maybe we weren&#x27;t smart enough</p>
+<p>but we were smart enough to see it start to happen</p>
+<p>nine to 12 months later</p>
+<p>and we changed our entire marketing and business strategy</p>
+<p>to focus on desktop publishing</p>
+<p>and it became the Trojan horse</p>
+<p>that eventually got the Mac into corporate America</p>
+<p>where it could show its owners</p>
+<p>all the other wonderful things it could do</p>
+<p>likewise when we created Next Step</p>
+<p>this revolutionary object oriented software that we have</p>
+<p>our target customer coming from the PC world</p>
+<p>where shrink wrapped apps were king</p>
+<p>was Lotus and Adobe and Word Perfect and all the shrink wrapped apps</p>
+<p>developers and the purpose was to let them create their apps</p>
+<p>five to 10 times faster these shrink wrapped apps and it worked</p>
+<p>we have a ton of shrink wrapped apps now</p>
+<p>on best of breed in almost every category</p>
+<p>but it wasn&#x27;t till early in 91</p>
+<p>early last Year a little over a year ago</p>
+<p>that some really big companies came to us and said</p>
+<p>you don&#x27;t understand what you&#x27;ve got</p>
+<p>the same software that allows Lotus to create their apps</p>
+<p>five to 10 times faster</p>
+<p>is letting us build our in house mission critical apps</p>
+<p>five to 10 times faster and this is the biggest problem we&#x27;ve had</p>
+<p>this is a huge problem for every big company</p>
+<p>and almost all medium sized companies</p>
+<p>and you have a solution in your hands and you</p>
+<p>dummies don&#x27;t even know it</p>
+<p>and it took him about three months before we finally heard it</p>
+<p>uh and in last summer</p>
+<p>we changed our whole sales and marketing strategy around</p>
+<p>to focus on that it&#x27;s taken off like a rocket</p>
+<p>and we grew about 4 x last year and probably grow about 2 x this year</p>
+<p>and our customer list is is now very</p>
+<p>very strong and growing like crazy</p>
+<p>we just got back from spending a few days in DC and in New York</p>
+<p>and</p>
+<p>we&#x27;re talking to customers we only dreamed of talking to a year ago</p>
+<p>so that&#x27;s what we do and our arch enemy&#x27;s son</p>
+<p>they want to kill us which is good</p>
+<p>they should try to do that as soon as possible</p>
+<p>cause the sooner they do it</p>
+<p>the cheaper it will be for them but they won&#x27;t</p>
+<p>I think it&#x27;s gone past the point where it&#x27;s possible and they can&#x27;t</p>
+<p>the greatest thing is hardware is really hardware</p>
+<p>Churns every 18 months it&#x27;s pretty impossible to get a sustainable</p>
+<p>competitive advantage from hardware um</p>
+<p>if you&#x27;re lucky you can make something one and a/2</p>
+<p>or two times as good as your competitor,</p>
+<p>which probably isn&#x27;t enough to be quite a competitive advantage</p>
+<p>and it only lasts for 6 months</p>
+<p>but software seems to take a lot longer for people to catch up with um</p>
+<p>I watch Microsoft take 8 or 9 years to catch up with the Mac</p>
+<p>and it&#x27;s arguable whether they&#x27;ve even caught up um</p>
+<p>it takes a long time and we think that the soonest</p>
+<p>we&#x27;re gonna have a true competitor is probably 4 to 5 years</p>
+<p>so we&#x27;ve got that amount of time to grow ourselves</p>
+<p>a 1 to 2 billion dollar company</p>
+<p>so that we can compete with them on scale</p>
+<p>see today we can&#x27;t compete with them on scale.</p>
+<p>We never have as many sales people as they do as sun does.</p>
+<p>We don&#x27;t have the ad budgets that they do</p>
+<p>so we&#x27;ve got to have a better product</p>
+<p>assuming and I hope we always have a better product and I think we can</p>
+<p>but I&#x27;d also like to be able to</p>
+<p>at least give them a run for their money on scale</p>
+<p>so we&#x27;ve got the next three to four years to run really fast</p>
+<p>by the time they even get close to having a competitive product,</p>
+<p>we&#x27;re at a large enough scale</p>
+<p>to where we can start to compete with them</p>
+<p>And that&#x27;s what we&#x27;re doing with our lives right now,</p>
+<p>spending a lot of time with customers,</p>
+<p>spending a lot of time making next step better and that kind of thing.</p>
+<p>So that&#x27;s the strategic basis of what we do.</p>
+<p>Does that make any sense to you?</p>
+<p>Um,</p>
+<p>have you run across the concept of sort of operational</p>
+<p>custom applications at all?</p>
+<p>I mean, you guys,</p>
+<p>most of you come from companies where you&#x27;ve had work experience, right?</p>
+<p>And you&#x27;ve all done that. So</p>
+<p>do you have this problem in the companies you come from</p>
+<p>of a lot of pressure to write these operational custom applications</p>
+<p>and hardly anything coming out of the spigot to satisfy this thirst?</p>
+<p>Yeah. How many of you from Wall Street?</p>
+<p>Good.</p>
+<p>How many of you from manufacturing companies?</p>
+<p>Oh, excellent.</p>
+<p>Where, where are the rest of you from?</p>
+<p>How many from consulting? Oh, that&#x27;s bad.</p>
+<p>Yeah.</p>
+<p>A mind is too important to waste.</p>
+<p>You should do something.</p>
+<p>Wait, why is that bad?</p>
+<p>If a consultant can come into a company and use your system</p>
+<p>and basically</p>
+<p>fill their applications in ridiculously short amounts of time</p>
+<p>and show them how to work,</p>
+<p>the only consultants I&#x27;ve seen that</p>
+<p>I think are truly useful are the ones that help us sell our computers.</p>
+<p>But other than that, no, seriously,</p>
+<p>I, I don&#x27;t think there&#x27;s anything inherently evil in consulting.</p>
+<p>I think that,</p>
+<p>I think that without, without owning something,</p>
+<p>uh, over an extended period of time,</p>
+<p>Like a few years where one has a chance to take</p>
+<p>responsibility for one&#x27;s recommendations</p>
+<p>where one has to see one&#x27;s recommendations through all action stages</p>
+<p>and accumulate scar tissue for the mistakes</p>
+<p>and pick oneself up off the ground and dust oneself off. Uh,</p>
+<p>one learns a fraction,</p>
+<p>uh, of what one can</p>
+<p>what you&#x27;re coming in and making recommendations</p>
+<p>and not owning the results</p>
+<p>not owning the implementation. Um,</p>
+<p>I think is,</p>
+<p>is a fraction of the of the value</p>
+<p>and a fraction of the opportunity to learn and get better.</p>
+<p>And so what, what you,</p>
+<p>you do get a broad cut at companies,</p>
+<p>but it&#x27;s very thin. It&#x27;s like a picture of a I would,</p>
+<p>I could use, I&#x27;m a vegetarian</p>
+<p>so when you steak it&#x27;s like a picture of a,</p>
+<p>of a banana. Uh,</p>
+<p>it, you might get a very accurate picture,</p>
+<p>but it&#x27;s only two dimensional</p>
+<p>and without the experience of actually doing it</p>
+<p>you never get three dimensional.</p>
+<p>So you might have a lot of pictures on your walls</p>
+<p>you can show it off to your friends.</p>
+<p>You know, I&#x27;ve worked in bananas,</p>
+<p>I&#x27;ve worked in peaches, I&#x27;ve worked in grapes,</p>
+<p>but you never really taste it and,</p>
+<p>and I think that that&#x27;s, um,</p>
+<p>that&#x27;s, that&#x27;s what I think</p>
+<p>you&#x27;re also a variable expense and in hard times you find yourself,</p>
+<p>you find yourself variable. Right? Yes.</p>
+<p>Right. Very good question. Um,</p>
+<p>I&#x27;m gonna generalize your question.</p>
+<p>Why don&#x27;t we just become a software Company right,</p>
+<p>it&#x27;s a very good question.</p>
+<p>It&#x27;s a subtle question. We&#x27;ll try to go through some several things</p>
+<p>and I&#x27;m sorry if I jump around</p>
+<p>we got a lot of requests from customers last year</p>
+<p>that they would love to see next step on other platforms</p>
+<p>and primarily Intel based platforms like the 4 86</p>
+<p>so we decided to do just that</p>
+<p>and we have ported next step to the 4 86 and we&#x27;re finishing it now</p>
+<p>and it&#x27;ll ship in the September,</p>
+<p>October time frame</p>
+<p>and it&#x27;s exactly the same stuff we run on our own computer</p>
+<p>and same apps, same user interface,</p>
+<p>same training, same development environment</p>
+<p>and we&#x27;re gonna sell it for 9 95</p>
+<p>and we&#x27;re oming it to a bunch of companies</p>
+<p>whose names you&#x27;ll recognize quite easily</p>
+<p>and oming it to them at much cheaper price</p>
+<p>and everybody&#x27;s coming out of the woodwork to help us.</p>
+<p>We&#x27;re getting help from Novell,</p>
+<p>we&#x27;re getting help from all the developers.</p>
+<p>Intel&#x27;s really helping us and they really want us to succeed.</p>
+<p>Why is that?</p>
+<p>Right? They all want to make sure that there&#x27;s a choice out there</p>
+<p>and they&#x27;re all really scared about Microsoft</p>
+<p>and they see next step as the only thing on the horizon</p>
+<p>that can challenge Microsoft in system</p>
+<p>software for the next several years</p>
+<p>so we&#x27;re enjoying a lot of help and you know boy</p>
+<p>we need it so that&#x27;s good.</p>
+<p>Now we&#x27;ve also had a lot of requests from companies to</p>
+<p>Port next step to other platforms</p>
+<p>and we&#x27;re talking to some of those companies right now.</p>
+<p>Now sun,</p>
+<p>we got a lot of requests from sun customers to port next step to sun.</p>
+<p>So a lot of them are saying, look,</p>
+<p>we may not want to buy them anymore,</p>
+<p>but we already bought 500 and we don&#x27;t want to throw them in the bay.</p>
+<p>So can we put your software on them?</p>
+<p>Cause Sun&#x27;s falling behind in software.</p>
+<p>Now sun says</p>
+<p>they&#x27;d rather stick needles in their eyes than help us do this.</p>
+<p>That&#x27;s a quote.</p>
+<p>And um,</p>
+<p>so we&#x27;re evaluating right now which will be worse for sun</p>
+<p>if we pour it or if we don&#x27;t pour it</p>
+<p>and since we&#x27;re fairly since we&#x27;re fairly customer driven,</p>
+<p>we&#x27;ll probably end up doing what the customers ask us to do</p>
+<p>cause we want to make them happy.</p>
+<p>Now this leads one into the question well,</p>
+<p>this leads one into the question should we just be a software company?</p>
+<p>And we think the answer is no.</p>
+<p>We think we should be a software company and a hardware company.</p>
+<p>In making the decision to put next step on more than our own platforms,</p>
+<p>we clearly decided that we will sell less than 100% of the next step</p>
+<p>hardware. However,</p>
+<p>we think that the marketplace will grow</p>
+<p>and we will sell more absolute hardware.</p>
+<p>And secondly, the charter of our hardware division is to make the best</p>
+<p>next step hardware might not be The cheapest might not be this,</p>
+<p>might not be that but we think all in all we can make the best stuff</p>
+<p>and I would love it nothing better</p>
+<p>than if someday we only sold 20 or 25% of the next step hardware</p>
+<p>but I still think that&#x27;s a billion dollar plus hardware business.</p>
+<p>Um, and I&#x27;ll get into one other hardware related reason in a minute.</p>
+<p>There&#x27;s some things I can&#x27;t talk about here but it&#x27;s</p>
+<p>in addition to that. If you look at how we sell our computers right now,</p>
+<p>we have a sales force in the US of about 130 professionals</p>
+<p>in the field out selling next computers.</p>
+<p>They spend 90% of their time selling next step software</p>
+<p>and then 10% of their time selling the hardware.</p>
+<p>In other words, if they can get the customer to buy into Next Step,</p>
+<p>then they&#x27;re going to sell the hardware</p>
+<p>cause right now we have the only hardware it runs on.</p>
+<p>So they are out there selling Next Step right now</p>
+<p>and this is what is required to launch a new innovative product.</p>
+<p>The current distribution channels for the computer industry</p>
+<p>over the last several years have lost their ability to create demand.</p>
+<p>They can fulfill demand, but they can&#x27;t create it.</p>
+<p>If a new product comes out,</p>
+<p>you&#x27;re lucky if you can find somebody at the computer store</p>
+<p>that even knows how to demo it right?</p>
+<p>So the more innovative the product is,</p>
+<p>the more revolutionary it is And not just an incremental improvement,</p>
+<p>the more you&#x27;re stuck</p>
+<p>because the existing channels only fulfilling demand.</p>
+<p>Matter of fact, it&#x27;s getting so bad that it&#x27;s getting wiped out</p>
+<p>because there are more efficient channels to fulfill demand</p>
+<p>like the telephone and Federal Express.</p>
+<p>So we&#x27;re seeing that that the channel become condensed on its way to,</p>
+<p>I think, just televisions.</p>
+<p>So how does one bring innovation to the marketplace?</p>
+<p>We believe the only way we know how to do it right now</p>
+<p>is with a direct sales force</p>
+<p>out there in front of customers</p>
+<p>showing them the products in the environment of their own problems</p>
+<p>and discussing how those problems can be mated with these solutions.</p>
+<p>A software only company</p>
+<p>could never afford to field a direct sales force</p>
+<p>with average selling prices of $500</p>
+<p>a software package.</p>
+<p>You could never afford 130 professionals in the field</p>
+<p>with an average selling price of $5,000.</p>
+<p>You can.</p>
+<p>And that&#x27;s why I don&#x27;t think we&#x27;re going to see any more system</p>
+<p>software companies succeed.</p>
+<p>I don&#x27;t think it&#x27;s possible to fund the effort</p>
+<p>to educate the market about a revolutionary product</p>
+<p>with ASPs that low. And if it&#x27;s not a revolutionary product,</p>
+<p>I don&#x27;t think the company can succeed.</p>
+<p>So our strategy has been that we&#x27;ve got to be a hardware company</p>
+<p>in order to make our software business succeed.</p>
+<p>And we think we can do really well at both of them.</p>
+<p>I know that&#x27;s a long answer,</p>
+<p>but it&#x27;s a Complex problem too.</p>
+<p>Uh huh.</p>
+<p>Sure. Um,</p>
+<p>if you ask us who are compete.</p>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://www.tiktok.com/@dotsokt/video/7672552442977996063?_r=1&amp;_t=ZT-98ntdaIuwCU" rel="noopener">https://www.tiktok.com/@dotsokt/video/7672552442977996063?_r=1&amp;_t=ZT-98ntdaIuwCU</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="This 1992 lecture at MIT from Steve Jobs will teach you…">
+        <input type="hidden" name="slug" value="this-1992-lecture-at-mit-from-steve-jobs-will-te">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — This 1992 lecture at MIT from Steve Jobs will teach you…</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

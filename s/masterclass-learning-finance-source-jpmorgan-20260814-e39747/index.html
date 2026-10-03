@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>#masterclass #learning #finance  Source: JPMorgan — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:2.2rem; font-weight:700; letter-spacing:-.02em; color:var(--porcelain); line-height:1.05; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">video</div>
+      <h1>#masterclass #learning #finance  Source: JPMorgan</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-08-14</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">1</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">7047</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos"><div class="vslot"><div class="vframe"><img src="data:image/svg+xml;utf8,&lt;svg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; width=&#x27;400&#x27; height=&#x27;400&#x27;&gt;&lt;rect width=&#x27;400&#x27; height=&#x27;400&#x27; fill=&#x27;hsl(229,45%25,22%25)&#x27;/&gt;&lt;text x=&#x27;200&#x27; y=&#x27;245&#x27; font-family=&#x27;Helvetica&#x27; font-size=&#x27;160&#x27; fill=&#x27;hsl(229,60%25,70%25)&#x27; text-anchor=&#x27;middle&#x27;&gt;#&lt;/text&gt;&lt;/svg&gt;" alt="#masterclass #learning #finance  Source: JPMorgan"></div></div></div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">A high-level executive from JPMorgan Chase (likely Jamie Dimon) delivers a masterclass on corporate discipline, operational efficiency, and the dangers of complacency. He emphasizes the need for agility, rigorous financial analysis over rote accounting, and marginal profitability</p>
+<ul>
+<li>url: <a href="https://www.tiktok.com/@timmbrocks/video/7672505877156367649?_r=1&amp;_t=ZT-98nsqVHedV0" rel="noopener">https://www.tiktok.com/@timmbrocks/video/7672505877156367649?_r=1&amp;_t=ZT-98nsqVHedV0</a></li>
+<li>uploader: timmbrocks</li>
+<li>duration: 2140s</li>
+<li>subject: JPMorgan Chase (company)</li>
+<li>source uuid: 01a00158-8c05-7054-beab-f9c14ab34aa2</li>
+<li>processed: 2026-08-14T18:11:45.625793+00:00</li>
+</ul>
+<h3>summary</h3>
+<p>A high-level executive from JPMorgan Chase (likely Jamie Dimon) delivers a masterclass on corporate discipline, operational efficiency, and the dangers of complacency. He emphasizes the need for agility, rigorous financial analysis over rote accounting, and marginal profitability to avoid the fate of failed companies like Lehman Brothers or Nokia.</p>
+<h3>claims check</h3>
+<ul>
+<li><strong>unsupported</strong> — The company is worth $700 billion  (No source provided to verify the company&#x27;s valuation.)</li>
+<li><strong>unsupported</strong> — The company employs 320,000 people  (No source provided to verify employee count.)</li>
+<li><strong>unsupported</strong> — Management is implementing a 10% efficiency target</li>
+</ul>
+<h4>AI — technology</h4>
+<ul>
+<li>what it does: Artificial Intelligence for business automation and optimization</li>
+<li>why relevant: Mentioned as distinct from basic business discipline/efficiency targets</li>
+<li>search terms: AI in banking, JPMorgan AI strategy</li>
+</ul>
+<h4>Marginal Profitability Analysis — technique</h4>
+<ul>
+<li>what it does: Analyzing the return on the next unit of revenue rather than average returns</li>
+<li>why relevant: Described as absolutely critical for capital deployment</li>
+<li>search terms: marginal ROI, marginal profitability vs average return</li>
+</ul>
+<h4>10% Efficiency Target — idea</h4>
+<ul>
+<li>what it does: A goal to reduce operational waste and do &#x27;less&#x27; of unnecessary tasks</li>
+<li>why relevant: Presented as a basic business discipline to combat bureaucracy and complacency</li>
+<li>search terms: corporate efficiency targets, operational lean management</li>
+</ul>
+<h4>Fixed vs Variable Expense Analysis — technique</h4>
+<ul>
+<li>what it does: Distinguishing between costs that remain constant and those that change with volume</li>
+<li>why relevant: Mentioned as a key factor in making complex business decisions</li>
+<li>search terms: fixed vs variable cost analysis</li>
+</ul>
+<h3>transcript</h3>
+<p>Welcome, everybody.</p>
+<p>So I have a lot to say.</p>
+<p>I try to actually organize it thoughtfully and intelligently.</p>
+<p>And while I&#x27;m doing this,</p>
+<p>if people have dying questions or issues or something like that,</p>
+<p>feel free to ask. Uh,</p>
+<p>I don&#x27;t. I probably won&#x27;t have much time at the end to do Q&amp;A.</p>
+<p>I&#x27;d be happy to do that. And obviously,</p>
+<p>I have some time tomorrow to talk about strategy,</p>
+<p>the company, geopolitics,</p>
+<p>and all those things. I just want to start with,</p>
+<p>we have, like,</p>
+<p>what a. What a company.</p>
+<p>I don&#x27;t know about you guys,</p>
+<p>but I see this company in action,</p>
+<p>it just blows me away. And the quality of the people,</p>
+<p>the respect of our clients</p>
+<p>or how much they want us in countries around the world, uh,</p>
+<p>it&#x27;s extraordinary.</p>
+<p>It&#x27;s all based upon the things that you do and how you do it, uh,</p>
+<p>and things like that.</p>
+<p>How we make sure we&#x27;re gonna do it</p>
+<p>and stay innovative and ambitious and disciplined</p>
+<p>while killing complacency, arrogance,</p>
+<p>bureaucracy. Um,</p>
+<p>and so we&#x27;re gonna do a bunch of things.</p>
+<p>None of this is out of anger.</p>
+<p>It&#x27;s just out of thought about</p>
+<p>kind of reinstalling some basic disciplines.</p>
+<p>You know, if you have 100 people,</p>
+<p>just. Can you live with 100 people and make that work? And.</p>
+<p>And we should be able to. Um.</p>
+<p>We&#x27;re asking people, everyone.</p>
+<p>Oh, this is very important.</p>
+<p>Everyone in this room.</p>
+<p>I&#x27;m talking to you personally when I give these Examples.</p>
+<p>Don&#x27;t say that&#x27;s something else.</p>
+<p>That&#x27;s not my unit. That doesn&#x27;t affect me.</p>
+<p>It does. I&#x27;m gonna tell you why.</p>
+<p>Cause all of you, you know,</p>
+<p>you&#x27;re responsible for this company that&#x27;s worth $700 billion.</p>
+<p>You know, 320,000 people,</p>
+<p>all the clients you&#x27;ve seen around the world,</p>
+<p>you individually responsible.</p>
+<p>And you know more than you think.</p>
+<p>When you travel around and you talk to people</p>
+<p>and you&#x27;re. You have management,</p>
+<p>you know more than you think.</p>
+<p>So, um.</p>
+<p>I bet we&#x27;re asking people to do a 10% efficiency target. Again,</p>
+<p>it&#x27;s a discipline, and what it basically is.</p>
+<p>Think of is what you&#x27;re gonna.</p>
+<p>And this is just basic business.</p>
+<p>This is not AI. I&#x27;m gonna talk about AI in a second.</p>
+<p>This is just, can you do less?</p>
+<p>So what. What are your units doing that you can do less</p>
+<p>you don&#x27;t need to be doing at all?</p>
+<p>Or things like that? I apologize if I&#x27;m being specific</p>
+<p>that it&#x27;s you I&#x27;m talking about, okay?</p>
+<p>I&#x27;m not. I just.</p>
+<p>I gotta get it off my chest about what we need to do.</p>
+<p>And some of the things I&#x27;ve seen recently on.</p>
+<p>Over my career. I said speed kills,</p>
+<p>but I mean slow speed,</p>
+<p>okay? I don&#x27;t mean fast speed.</p>
+<p>And I wrote down just examples, okay,</p>
+<p>of winners and losers. And this is just over the last 20 to 30 years.</p>
+<p>Sears and Kmart, they&#x27;re gone.</p>
+<p>Walmart, done. Well,</p>
+<p>digital equipment, gone.</p>
+<p>A M P, the best supermarket In the world disappeared.</p>
+<p>Taken over by Kroger&#x27;s, whatever.</p>
+<p>Uh, Blackberry disappeared,</p>
+<p>Dell did well. Apple obviously done well.</p>
+<p>Amazon&#x27;s done well. Nokia basically disappeared.</p>
+<p>And you know, and I go on and on with these examples.</p>
+<p>It&#x27;s even worse in financial services,</p>
+<p>mostly cause you can manipulate the numbers</p>
+<p>and over leverage and stuff like that.</p>
+<p>But travelers blew up, city blew up twice.</p>
+<p>Bear Stearns failed, Lehman failed.</p>
+<p>Bank One. I&#x27;m here because,</p>
+<p>you know, Bank One screwed up a bunch of businesses and stuff like that.</p>
+<p>The SNL business, the whole business got wiped out.</p>
+<p>The whole thing. Savings loans do not exist anymore.</p>
+<p>And you know what it was? Interest rate mismatch.</p>
+<p>WAMU interest rate mismatch.</p>
+<p>Silicon Valley Bank interest rate mismatch.</p>
+<p>The whole mortgage business disappeared.</p>
+<p>100% of the brokers and uh,</p>
+<p>stuff like that disappeared.</p>
+<p>Kidder disappeared, Drexel disappeared.</p>
+<p>And these were. If you look at these things,</p>
+<p>is complacency, it&#x27;s bureaucracy,</p>
+<p>it&#x27;s arrogance. It&#x27;s slow to adjust. It.</p>
+<p>It. A lot of his dishonest numbers.</p>
+<p>I&#x27;m going to give you some very specific examples.</p>
+<p>Failure to set standards, bad people,</p>
+<p>bad comp schemes, disincentives,</p>
+<p>bad incentives. Um,</p>
+<p>politics, you know,</p>
+<p>and these things like all the.</p>
+<p>The. The cancer that kills companies.</p>
+<p>And you know,</p>
+<p>we all have to be very cautious about when that takes place.</p>
+<p>And I&#x27;m gonna give you examples about why I think it happens</p>
+<p>and how we have to combat it uh, now.</p>
+<p>And the things it&#x27;s even. More important</p>
+<p>because things are faster and more complex.</p>
+<p>I mean, the world is just faster and more complex.</p>
+<p>That means we got to move quicker,</p>
+<p>coordinate better, and do those things.</p>
+<p>I&#x27;m a fanatic about proper accounting,</p>
+<p>don&#x27;t get me wrong. I&#x27;m gonna give you again</p>
+<p>specific examples</p>
+<p>where the accounting will lead you to the wrong answer.</p>
+<p>Regulatory rules will lead you to the wrong answer.</p>
+<p>Regulatory capital will lead you to the wrong answer.</p>
+<p>And yet we fall into this little echo chamber.</p>
+<p>So instead of know your numbers,</p>
+<p>I&#x27;m gonna change it to get your numbers right.</p>
+<p>Understand them, analyze them,</p>
+<p>work them, test them,</p>
+<p>and don&#x27;t be wrote about them.</p>
+<p>You gotta have the budget in the thing.</p>
+<p>You can&#x27;t always compare yourself to forecast,</p>
+<p>because then you&#x27;re always very close,</p>
+<p>okay? And it&#x27;s just a.</p>
+<p>You gotta show the budget.</p>
+<p>You gotta show the budget. Okay?</p>
+<p>And, uh.</p>
+<p>And then the other one, which I hate,</p>
+<p>like, really hate,</p>
+<p>is comparing yourself to pure average.</p>
+<p>I mean, really,</p>
+<p>really. Is that.</p>
+<p>Is that what we&#x27;re gonna do?</p>
+<p>You should always compare yourself to the best.</p>
+<p>Where are they and where are we?</p>
+<p>Fixed and variable expenses matter.</p>
+<p>Uh, Jeremy mentioned it in the complexity of actually making decisions.</p>
+<p>This is where wrote matters.</p>
+<p>You can&#x27;t just say, fully allocated,</p>
+<p>fully marginal. You have to, like,</p>
+<p>think about what matters in that thing.</p>
+<p>But marginal profitability is absolutely critical.</p>
+<p>You know, like when we.</p>
+<p>When We look at. And you did.</p>
+<p>Jeremy gave an example about,</p>
+<p>you know, anything we do.</p>
+<p>You know, the next hundred million dollars of revenues,</p>
+<p>while the business may have a 14% return,</p>
+<p>and this could be almost anything we do. Uh,</p>
+<p>the next hundred percent is a margin of 80% and therefore marginal ROI.</p>
+<p>And that&#x27;s how you deploy capital.</p>
+<p>And so you gotta. We have to always understand that.</p>
+<p>Rigorous review of allocated expenses.</p>
+<p>I&#x27;m gonna give you an example most about J P.</p>
+<p>Morgan. I give you.</p>
+<p>They are real expenses,</p>
+<p>you know, and.</p>
+<p>And. But you have the right to question them.</p>
+<p>You have to question them.</p>
+<p>Zero base budgeting. I,</p>
+<p>I don&#x27;t like asking people to do it.</p>
+<p>It&#x27;s like, too hard.</p>
+<p>But you gotta think that way.</p>
+<p>Like, if I start from ground where I have 100 people doing this thing,</p>
+<p>what do I do differently? And so, uh,</p>
+<p>a P N L. Is not an assessment of a business.</p>
+<p>You gotta do the full assessment.</p>
+<p>Customer metrics, turnover, apps,</p>
+<p>technology, you. Whatever.</p>
+<p>It&#x27;s. Whatever is important is what I&#x27;m talking about.</p>
+<p>We talk about numbers. It&#x27;s not the P N L.</p>
+<p>In fact, the P N L.</p>
+<p>Could be the most deceptive thing of all.</p>
+<p>And telling you and giving the wrong answer and,</p>
+<p>and proper project reporting. Again,</p>
+<p>whenever you have a project and this is on it,</p>
+<p>you have to. It could be technology,</p>
+<p>it could be anything else.</p>
+<p>What we What did we say? We started it</p>
+<p>and where are we today? And uh,</p>
+<p>like, I remember getting to JP Morgan and one after another the.</p>
+<p>Every project was like on course,</p>
+<p>but from the last forecast and.</p>
+<p>But I. I said no,</p>
+<p>show me where. Where it&#x27;s from the beginning.</p>
+<p>And every single one was a year too late.</p>
+<p>And it&#x27;s just an honest assessment</p>
+<p>not to blame yourselves or get mad about it or.</p>
+<p>And also the project morphed without any discussion.</p>
+<p>And I think that&#x27;s just a bad management thing.</p>
+<p>So, um,</p>
+<p>external reporting actually matters.</p>
+<p>Okay? So I&#x27;m always quite careful.</p>
+<p>We report externally. Is real.</p>
+<p>A lot of companies it&#x27;s not real.</p>
+<p>And what happens inside a company is people start running that way.</p>
+<p>And you&#x27;ve never seen me spin, uh,</p>
+<p>analyst. And if I spin analyst,</p>
+<p>and if I spin analyst, you&#x27;re gonna spin us.</p>
+<p>That&#x27;s it. You know,</p>
+<p>the I. I wanna honestly show how we compare to other people.</p>
+<p>Constant investment, you know, the.</p>
+<p>The notion you go stop start investments is a bad idea.</p>
+<p>Constant transformation, technology and conversions. Um,</p>
+<p>then you can&#x27;t have stop start strategies almost anywhere.</p>
+<p>Um, proper assumptions,</p>
+<p>you know, what do you do when your spread on deposits is zero</p>
+<p>but you&#x27;re opening branches,</p>
+<p>you know, Jim,</p>
+<p>what do you do? That&#x27;s why I always talk about through the cycle.</p>
+<p>Think real carefully about the assumptions that go into these things,</p>
+<p>cause sometimes they make you Do stupid stuff,</p>
+<p>and sometimes they stop you from doing good stuff.</p>
+<p>When you do numbers, it&#x27;s to make decisions too.</p>
+<p>Therefore the. So what, uh,</p>
+<p>risk of contra accounts? Any contra accounts?</p>
+<p>I&#x27;m gonna give you some examples.</p>
+<p>Balance sheet contra accounts,</p>
+<p>revenue contra accounts. Off balance sheet. Crap.</p>
+<p>It is a absolute, uh,</p>
+<p>mine and pit of stuff that&#x27;ll. You&#x27;ll.</p>
+<p>Will kill you. And,</p>
+<p>you know, that&#x27;s what happened</p>
+<p>was a bunch of these companies I&#x27;m gonna mention.</p>
+<p>So here are examples, okay?</p>
+<p>Expenses, that could be great investments. Okay?</p>
+<p>The fact that it&#x27;s called an expense means nothing to me.</p>
+<p>In fact, a lot of the business,</p>
+<p>they capitalize it. You build a plant,</p>
+<p>you capitalize it. You don&#x27;t start expensing it till it&#x27;s producing,</p>
+<p>okay? We build the branch,</p>
+<p>we don&#x27;t capitalize it.</p>
+<p>We have a negative cash flow for a couple of years,</p>
+<p>and then hopefully by the 50 years,</p>
+<p>it&#x27;s making million dollars a year for eternity</p>
+<p>or so far. Bankers,</p>
+<p>same thing,</p>
+<p>okay? And that&#x27;s.</p>
+<p>That&#x27;s private bankers,</p>
+<p>investment bankers,</p>
+<p>chase wealth managers. Those investments pay off over time.</p>
+<p>JP expense allocations. I got a JP one.</p>
+<p>This is true, by the way.</p>
+<p>Because the company was dominated by the investment bank.</p>
+<p>Everything was skewed towards the investment bank.</p>
+<p>Everything. Cheap funding,</p>
+<p>investment bank. They even took things like HR cost,</p>
+<p>they lumped them. So HR cost included pension,</p>
+<p>medical executive comp, expat.</p>
+<p>All these departments, they added it together</p>
+<p>and they charge It out on head count,</p>
+<p>really. Expat was 100% for the investment bank.</p>
+<p>Executive comp was 100% for the investment bank.</p>
+<p>The subsidy of the trading floors.</p>
+<p>We were subsidizing the investment bank.</p>
+<p>$2 billion a year,</p>
+<p>which I immediately fixed.</p>
+<p>Not to punish anyone because it caused huge misallocation of capital.</p>
+<p>The big loser, all that was the consumer bank,</p>
+<p>and I&#x27;m still quite sensitive about.</p>
+<p>We did the same thing with.</p>
+<p>I&#x27;ll give you a little example.</p>
+<p>Capacity in the computer center was charged out to everybody.</p>
+<p>Whereas the extra capacity,</p>
+<p>which is quite expensive,</p>
+<p>was necessary and required for these businesses,</p>
+<p>but not for those businesses.</p>
+<p>This is not a waste of time to get this right.</p>
+<p>And so when you all see your allocated expense,</p>
+<p>you may spend no time on it,</p>
+<p>but you shouldn&#x27;t be paying for capacity.</p>
+<p>We need for payment systems that should be paid for by payment systems.</p>
+<p>And all that does over time is cause a huge misallocation.</p>
+<p>And, uh,</p>
+<p>analyze sales comp. And Mike got to the company. This.</p>
+<p>But this is always true. Analyze.</p>
+<p>I mean, it always goes bad,</p>
+<p>it always morphs. Don&#x27;t assume it&#x27;s okay.</p>
+<p>People see things, they get paid for,</p>
+<p>things they shouldn&#x27;t get paid for,</p>
+<p>they don&#x27;t mention it. Um,</p>
+<p>and I&#x27;ll just give you one example,</p>
+<p>but I. I have.</p>
+<p>Would have 50 when I got to the company.</p>
+<p>We paid the treasury sales force based upon estimated, um,</p>
+<p>revenues going forward.</p>
+<p>That was It. And almost no adjustments later on.</p>
+<p>And I, and I,</p>
+<p>and I,</p>
+<p>I. It&#x27;s staggering.</p>
+<p>Branches. Uh,</p>
+<p>well, I can give you a lot of examples about branches.</p>
+<p>Bank One hadn&#x27;t opened a branch in five years.</p>
+<p>Chase hadn&#x27;t opened a branch in five years.</p>
+<p>They never refurbished their branches,</p>
+<p>but at least Bank One, by the time we did the merger,</p>
+<p>we do making a million plus profit a branch year.</p>
+<p>23 branches. Chase was making zero.</p>
+<p>Partially cause of the allocations I mentioned,</p>
+<p>partially cause no one seemed to care about them,</p>
+<p>stuff like that. Uh,</p>
+<p>but we should always analyze these.</p>
+<p>And these branches have been usually profitable.</p>
+<p>And when we don&#x27;t, this goes back to a county again.</p>
+<p>We don&#x27;t give a branch credit for a credit card.</p>
+<p>So when they create a Sapphire account,</p>
+<p>that&#x27;s where 700.</p>
+<p>But I think they create a million accounts a year in the branches.</p>
+<p>That&#x27;s $700 million of value.</p>
+<p>I&#x27;m gonna give a couple of quick examples here.</p>
+<p>And we know we do these NPVs about why we should close a branch,</p>
+<p>and there we should do them.</p>
+<p>We should be disciplined. I think,</p>
+<p>for the most part, NPVs might work,</p>
+<p>but they don&#x27;t always work.</p>
+<p>And you just. You gotta use your common sense sometimes.</p>
+<p>Banksville branch. We&#x27;re gonna close it.</p>
+<p>It&#x27;s kind of small. They show me that,</p>
+<p>and I get. Now I&#x27;m getting 100 complaints. Little.</p>
+<p>Literally, there&#x27;s a campaign.</p>
+<p>Every small business there is,</p>
+<p>200 Or 300 consumers. Banksville is six miles.</p>
+<p>They said, it&#x27;s six miles to the closest branch.</p>
+<p>The biggest competitors were.</p>
+<p>Were US and other branches in Greenwich.</p>
+<p>It&#x27;s a Six Mile drive from the next closest branch.</p>
+<p>And I look at that. That was making 500,</p>
+<p>600,000 profit. I said,</p>
+<p>if you close that branch, you know what&#x27;s gonna happen.</p>
+<p>What would happen the day we closed it.</p>
+<p>Who&#x27;s going to open in the same spot?</p>
+<p>Yeah. Or.</p>
+<p>Or that good Connecticut bank.</p>
+<p>And by the way, does a little lady want to drive 6 miles in the winter</p>
+<p>on those windy roads?</p>
+<p>And is the branch more profitable than it kind of looks?</p>
+<p>And to me, that wasn&#x27;t the MPV.</p>
+<p>It was the pawn blocking the queen.</p>
+<p>While we&#x27;re cutting cost at waste cut,</p>
+<p>waste cutting. I also did something.</p>
+<p>I opened the partner&#x27;s room.</p>
+<p>And a lot of people told me that</p>
+<p>this is just how I think about what you do and what you don&#x27;t do.</p>
+<p>Do the right thing anyway,</p>
+<p>whether it looks good or looks bad.</p>
+<p>The whole operating committee said,</p>
+<p>don&#x27;t do it.</p>
+<p>A partner&#x27;s room is gonna cost a million and a half dollars a year, etc,</p>
+<p>etc. And I was, yeah,</p>
+<p>but we don&#x27;t know each other,</p>
+<p>you know, and if we don&#x27;t do it,</p>
+<p>it&#x27;ll be years before we know each other.</p>
+<p>And, you know,</p>
+<p>I call it is a good expense.</p>
+<p>It&#x27;s a judgment call. You know,</p>
+<p>you can argue I Know a lot of you enjoy it. Um,</p>
+<p>do the right thing and explain it.</p>
+<p>They don&#x27;t do that thing</p>
+<p>because you think it&#x27;ll look bad for you or hurt morale a little bit.</p>
+<p>So chick fil A is a great Ark on the paper.</p>
+<p>How they&#x27;re trying to.</p>
+<p>They&#x27;re using satellites and stuff like that and drones to.</p>
+<p>And now they got down to 13 seconds of sandwich through the.</p>
+<p>Through the drive through line.</p>
+<p>That&#x27;s what you got to be thinking.</p>
+<p>How do you make it better,</p>
+<p>better, better all the time.</p>
+<p>Full and constant assessment the way you do this stuff.</p>
+<p>A lot we&#x27;ve been talking here.</p>
+<p>Always look, always learn.</p>
+<p>It&#x27;s the only way. Look at competition,</p>
+<p>go to other companies, go to their branches,</p>
+<p>go to. Go on the road trips, uh,</p>
+<p>take people out to take each other.</p>
+<p>You know, when you go out,</p>
+<p>take management teams to dinner,</p>
+<p>when you see clients, you wanna,</p>
+<p>you know, it&#x27;s a.</p>
+<p>They tell us that we&#x27;re making a mistake.</p>
+<p>It&#x27;s a gift. And by the way,</p>
+<p>very often they tell you that&#x27;s a mistake,</p>
+<p>but it&#x27;s not your area. And some people just tend to ignore it.</p>
+<p>No, no,</p>
+<p>write it down and then send it to the person.</p>
+<p>Uh, always acknowledge your mistakes.</p>
+<p>You&#x27;ll learn a lot having wine at the bar with people, uh,</p>
+<p>and then it&#x27;s okay to be a fast follower.</p>
+<p>Like we are in our own echo chamber sometimes,</p>
+<p>and that&#x27;s Not bad. That just happens,</p>
+<p>you know? And this is the way you get out of the echo chamber.</p>
+<p>Hit the road, go to the branch,</p>
+<p>talk to small businesses. Um,</p>
+<p>constantly assess, constantly engage.</p>
+<p>You have to have great controls,</p>
+<p>constantly review financial,</p>
+<p>operational detail. You know, that&#x27;s.</p>
+<p>That&#x27;s that. And always,</p>
+<p>always, it&#x27;s.</p>
+<p>You can&#x27;t. That&#x27;s a discipline.</p>
+<p>That&#x27;s like exercising. I bought a.</p>
+<p>I had a. We had a printing.</p>
+<p>This commercial credit printing press and, uh,</p>
+<p>to print financial reports and stuff like that.</p>
+<p>And they said, we gotta buy a new one.</p>
+<p>It cost $2 million a 0 x 20, 2000,</p>
+<p>whatever it was. I went in and said, no, no.</p>
+<p>I went to the tech booth and said,</p>
+<p>just, we don&#x27;t.</p>
+<p>We don&#x27;t need to print all that stuff to get rid of some.</p>
+<p>They came back very proudly and got rid of 8%.</p>
+<p>I was like, okay,</p>
+<p>well, again,</p>
+<p>my mother could have done that. Uh,</p>
+<p>and then. But we get.</p>
+<p>Then we got. We did it again.</p>
+<p>And I did it.</p>
+<p>So I literally got the room that we are small company at the time.</p>
+<p>I got every report there were,</p>
+<p>you know, 100.</p>
+<p>And I put on top the names of the people getting it.</p>
+<p>And I had you all come in,</p>
+<p>say, do you read this report?</p>
+<p>What&#x27;s in it? And I cut it 50% immediately.</p>
+<p>Now, then later on,</p>
+<p>they come back to me and say,</p>
+<p>we have to do It. We&#x27;re.</p>
+<p>We&#x27;re bigger and stuff like that.</p>
+<p>So I bought one of these machines for 2 million bucks.</p>
+<p>We just bought Primerica. I&#x27;m down in their printing plant,</p>
+<p>and the guys show me his plant,</p>
+<p>and I say, great.</p>
+<p>And they see one of the machines,</p>
+<p>they say, hey,</p>
+<p>I just bought one of those.</p>
+<p>He said, how much you pay for.</p>
+<p>I said, two million.</p>
+<p>I said, how much you pay?</p>
+<p>How much did he pay? 50,000.</p>
+<p>You know why? He bought it from a bankrupt company.</p>
+<p>It was still in the box.</p>
+<p>That&#x27;s all.</p>
+<p>And let&#x27;s. Let&#x27;s do that a little bit every now and then,</p>
+<p>you know? Like,</p>
+<p>as it turns out, some of this is a true story.</p>
+<p>Some of those reports were being printed and shipped to people</p>
+<p>in Dallas. We had a company called Golf Insurance,</p>
+<p>and they were being shipped to a person that died a year earlier.</p>
+<p>And then I asked, what are they.</p>
+<p>What are they doing with it?</p>
+<p>And all that stuff is being put into a warehouse.</p>
+<p>And that&#x27;s dumb. And.</p>
+<p>And you CFO&#x27;s, you&#x27;re gonna find some of this furniture</p>
+<p>that&#x27;s been sitting in a warehouse for 10 years.</p>
+<p>Just give it away. Use your common sense.</p>
+<p>Close down the warehouse. Like,</p>
+<p>um,</p>
+<p>audit, whitewashing.</p>
+<p>We don&#x27;t do this here. Never did.</p>
+<p>But a bank one. Every water report was like,</p>
+<p>how great we were. I was like, what?</p>
+<p>We suck. How&#x27;s it possible?</p>
+<p>Like they said,</p>
+<p>well We don&#x27;t want to document anything for the regulators and lawyers.</p>
+<p>And I said, no,</p>
+<p>I want an honest assessment,</p>
+<p>because you&#x27;re better off being a great company,</p>
+<p>which will reduce your exposure,</p>
+<p>than hiding your weaknesses,</p>
+<p>you know? And so,</p>
+<p>you know, the audit report should be tough and teach us all the time.</p>
+<p>Kill bureaucracy all the time and relentlessly.</p>
+<p>It comes a lot of forms. Weed that garden.</p>
+<p>It&#x27;s a mindset. Home Depot.</p>
+<p>When you walk into Home Depot</p>
+<p>and you walk into their global galactic headquarters,</p>
+<p>the sign above says Store Support Center.</p>
+<p>It reminds people every day they are there because of the store.</p>
+<p>And we have to remember that</p>
+<p>all of us, particularly staff,</p>
+<p>we are there because there&#x27;s a client in a branch</p>
+<p>or a investment banker in front of a client.</p>
+<p>And that is an important mindset.</p>
+<p>And then you can use things like war rooms and all these things.</p>
+<p>Uh, review customer complaints very often.</p>
+<p>I always look at customer complaints,</p>
+<p>and sometimes I read them and I know the policy</p>
+<p>and I call up some of this where I say I agree with the customer.</p>
+<p>We could have, should have,</p>
+<p>would have. And you gotta change your mindset.</p>
+<p>Atms. Uh,</p>
+<p>when I got to JP Morgan, this is happened periodically.</p>
+<p>My wife called me, she went to Walgreens,</p>
+<p>the ATM didn&#x27;t work. I tell the people on the ATM thing at Bank 1.</p>
+<p>The guy calls me, I said, no,</p>
+<p>it&#x27;s working. My wife calls me and says,</p>
+<p>it&#x27;s not working. He calls,</p>
+<p>I call him up and says, no,</p>
+<p>it&#x27;s working. So I said,</p>
+<p>you do me a favor. Get in your car and drive out there.</p>
+<p>And he drives out there, and it&#x27;s not working.</p>
+<p>It&#x27;s squiggly.</p>
+<p>Now, as it turns out,</p>
+<p>we have an outside vendor tracking this stuff.</p>
+<p>And I said, you know,</p>
+<p>I fire the vendor, and I want to be paid back the last six months.</p>
+<p>Now we track it ourselves.</p>
+<p>That stuff happens all the time.</p>
+<p>That black car story.</p>
+<p>You all know the black car story never happened to J P. Morgan.</p>
+<p>It did happen when we took over Shearson.</p>
+<p>And I was going outside one day,</p>
+<p>and there was, you know,</p>
+<p>literally, after I said,</p>
+<p>50 black cars. They had given away those books to everybody.</p>
+<p>People were taking way into 7:00 to go home.</p>
+<p>They&#x27;re supposed to take it to the closest train station.</p>
+<p>Uh, uh,</p>
+<p>they would pick up their, their dinner money.</p>
+<p>Uh, no one paid attention to it.</p>
+<p>There was one woman who took it to Glen Cove or something and back.</p>
+<p>Every. She came in early in the morning,</p>
+<p>went back. Uh,</p>
+<p>her boss knew about it. And I said to the boss,</p>
+<p>I said, you know,</p>
+<p>I can get her own car and driver for a third what that cost,</p>
+<p>literally.</p>
+<p>And I did do it. I,</p>
+<p>I took away the books. I did.</p>
+<p>Stuff changed. A Bunch of rules and stuff like that.</p>
+<p>So branches should have a branch administration group</p>
+<p>where nothing gets sent to the branch</p>
+<p>that doesn&#x27;t go through this group.</p>
+<p>Because if they&#x27;re getting stuff from HR,</p>
+<p>risk, legal,</p>
+<p>compliant, trading,</p>
+<p>audit, finance,</p>
+<p>options, equity,</p>
+<p>that they&#x27;re overwhelmed. There should be a group that says, no, no.</p>
+<p>And then they organize in a way that makes sense.</p>
+<p>Cause I used to go to Smith Barney.</p>
+<p>They all complain, you know,</p>
+<p>I complain. They say,</p>
+<p>well, I said,</p>
+<p>I told you this. They said,</p>
+<p>you did not. I said, I.</p>
+<p>We sent you a memo. We give you this.</p>
+<p>And one of the branch managers came and saw me and said,</p>
+<p>he took a FedEx box, a big one,</p>
+<p>dropped in front of me and said, yeah,</p>
+<p>I get that every week from you guys.</p>
+<p>Where. Where in it is it?</p>
+<p>So we just changed a little thing.</p>
+<p>Common sense. A little booklet called.</p>
+<p>I think we call it since we last met or you must read this.</p>
+<p>That had a summary page and the stuff they have to read</p>
+<p>and that whenever we go out,</p>
+<p>they&#x27;ve got that part. And, uh.</p>
+<p>So it&#x27;s just important. Just little things.</p>
+<p>We have 500 coaches at JP Morgan.</p>
+<p>When I first came in, you know,</p>
+<p>the operating committee was,</p>
+<p>you know, I was going through all these things</p>
+<p>and this came up. I said,</p>
+<p>500 coaches. I kept on bringing it up,</p>
+<p>and so in. The operating committee said,</p>
+<p>you know, Jamie,</p>
+<p>are you gonna do this every meeting?</p>
+<p>You&#x27;re gonna micromanage every single decision?</p>
+<p>And of course I said, no,</p>
+<p>I&#x27;m not gonna micromanage every single decision.</p>
+<p>I, I,</p>
+<p>I&#x27;m sorry. You know,</p>
+<p>it&#x27;s your decision. I came in that Monday,</p>
+<p>I said, I changed my mind.</p>
+<p>I&#x27;m gonna micromanage this one.</p>
+<p>I want all coaches out by the end of the week.</p>
+<p>And I&#x27;m not doing it to save money. Whose job is it to coach?</p>
+<p>We had outsource management.</p>
+<p>I mean, seriously. And,</p>
+<p>and I also said to the operating committee,</p>
+<p>at the end of one year, anyone of you can bring back a coach you,</p>
+<p>you personally have to know about and think it&#x27;s the right thing to do.</p>
+<p>You know, I bite.</p>
+<p>And my whole career, I&#x27;ve never seen it work.</p>
+<p>Like we&#x27;re trying to save someone.</p>
+<p>I just. Doesn&#x27;t mean we shouldn&#x27;t try.</p>
+<p>In my whole career, I&#x27;ve never seen.</p>
+<p>Maybe there&#x27;s one example where it actually worked.</p>
+<p>Kill meetings. You gotta kill meetings.</p>
+<p>Meetings gotta start on time,</p>
+<p>they gotta end on time. Someone&#x27;s gotta run it.</p>
+<p>I mean, I go to a lot of meetings and no one knows who&#x27;s running it.</p>
+<p>We, we,</p>
+<p>we&#x27;re too nice. We collaborate too much.</p>
+<p>There should be a purpose to,</p>
+<p>to a meeting. There should always be a follow up list.</p>
+<p>An example of bureaucracy is always the meeting after the meeting.</p>
+<p>Whereas we know, generally with me,</p>
+<p>if you Can&#x27;t say it with in front of my partners.</p>
+<p>Don&#x27;t bother. Come say it to me.</p>
+<p>I&#x27;m not your passenger.</p>
+<p>Lay it on the table. It&#x27;s okay.</p>
+<p>Sometimes, obviously</p>
+<p>there&#x27;s something that&#x27;s different you want to have privately,</p>
+<p>but usually it&#x27;s a go around,</p>
+<p>it&#x27;s a rope, a dope,</p>
+<p>it&#x27;s an end run, you know,</p>
+<p>usually don&#x27;t allow that kind of stuff.</p>
+<p>Mistakes I made. This is gonna be short,</p>
+<p>but. But they always.</p>
+<p>I always say it&#x27;s an anatomy of mistakes.</p>
+<p>Didn&#x27;t have the right people in the room,</p>
+<p>didn&#x27;t work it hard enough,</p>
+<p>uh.</p>
+<p>Didn&#x27;t have a decision making process that made sense.</p>
+<p>Didn&#x27;t get the right inputs,</p>
+<p>made assumptions that I&#x27;ve made so many.</p>
+<p>The London Whale, you know,</p>
+<p>which I&#x27;m sure when I die,</p>
+<p>no matter what I do, it&#x27;s gonna say Jamie,</p>
+<p>you know, his,</p>
+<p>his,</p>
+<p>you know, resume blotted by the London Whale. Uh,</p>
+<p>but the mistake wasn&#x27;t complexity of derivatives, folks.</p>
+<p>It was. It didn&#x27;t go through the regular risk committee.</p>
+<p>And I would never. I didn&#x27;t know that,</p>
+<p>you know, but I had.</p>
+<p>I had signs looking back and it should go through a risk committee.</p>
+<p>It didn&#x27;t go through the risk committee. Exactly.</p>
+<p>Precisely because it was risky</p>
+<p>and they want to play close to their vest.</p>
+<p>This goes back to hoarding information,</p>
+<p>you know, which is a disease.</p>
+<p>Okay, cloud.</p>
+<p>I always fought cloud. This goes the long time ago</p>
+<p>cause I said it&#x27;s cloud is outsourcing.</p>
+<p>I like doing It stuff ourselves.</p>
+<p>I still do like it. And.</p>
+<p>And this is a mistake I made.</p>
+<p>At one point, I said,</p>
+<p>you know what?</p>
+<p>We&#x27;re gonna take the operating committee out to Silicon Valley.</p>
+<p>This goes back to why it&#x27;s important to get on the road.</p>
+<p>When they went to see 10 Cent and Ping An and Alibaba,</p>
+<p>it&#x27;s amazing what you learn.</p>
+<p>And we flew out there, and we sat down with cloud and Amazon,</p>
+<p>stuff like that. And flying back,</p>
+<p>I said, I made a huge mistake.</p>
+<p>We&#x27;re going cloud right away. And.</p>
+<p>And it just opens up your eyes,</p>
+<p>and you got to be obviously willing to change your mind.</p>
+<p>I remember I got to bank one.</p>
+<p>I thought it was a mistake.</p>
+<p>One of my bigger ones. I&#x27;ve been there for not quite a year,</p>
+<p>and I&#x27;m in Louisville, and,</p>
+<p>you know, our business has been shrinking.</p>
+<p>We had to open branches. Customer sat sucked.</p>
+<p>Uh, we had seven deposit systems.</p>
+<p>I was trying to fix all that,</p>
+<p>but I was in a branch, and I realized that the branch across the street,</p>
+<p>ours were 9 to 5, and ours were 10 to four.</p>
+<p>I said, whoa,</p>
+<p>that&#x27;s not so good. I called up.</p>
+<p>They said, well,</p>
+<p>we&#x27;re different. You know,</p>
+<p>we&#x27;re not that their kind of bank.</p>
+<p>I said, do me a favor.</p>
+<p>Find out. Let&#x27;s find out</p>
+<p>for all of our branches at 2,000,</p>
+<p>a little over 2,000. What our hours are versus the Average competitor,</p>
+<p>not the best in town. And they said,</p>
+<p>well, how are we gonna do that?</p>
+<p>I said, well email the branch manager and tell him to tell you.</p>
+<p>And so we co lay this. Our average branch were open 2 hours less a day.</p>
+<p>I went home, it was a Friday.</p>
+<p>I went home embarrassed. I came in on Monday,</p>
+<p>just what happened? The whole branch system was there.</p>
+<p>And here&#x27;s what I said to him.</p>
+<p>I apologize. I thought I was a pretty good CEO.</p>
+<p>I made a mistake. I should have recognized this much sooner.</p>
+<p>Said, on the other hand,</p>
+<p>none of you told me, like,</p>
+<p>what&#x27;s wrong with you too?</p>
+<p>Like serious. Not a sales person,</p>
+<p>not a branch manager, not a regional manager,</p>
+<p>not a district. Never came up.</p>
+<p>And then I said, we have to change.</p>
+<p>And so he said, well,</p>
+<p>you know, morale is already bad. And.</p>
+<p>And they went on and on about morale</p>
+<p>cause we had to change the work hours,</p>
+<p>you know, the time for the people when the cash gets sent in</p>
+<p>the settlement, the fractional.</p>
+<p>And I said, but we gotta change it.</p>
+<p>We&#x27;re here for customers, you know.</p>
+<p>I said, morale sucks because we suck.</p>
+<p>Morale will get better when we&#x27;re better.</p>
+<p>What the hell is culture?</p>
+<p>I struggle with this one a little bit because.</p>
+<p>And I think it&#x27;s all the things I&#x27;m speaking about here.</p>
+<p>By the way, I don&#x27;t think you can put It in one little thing. Uh,</p>
+<p>but there are good people and bad people,</p>
+<p>and you know that. I think we&#x27;re almost all good people.</p>
+<p>The people you don&#x27;t trust.</p>
+<p>And people mean different things.</p>
+<p>Sometimes you don&#x27;t trust them because they lie,</p>
+<p>they shave the truth. They&#x27;re not to be honest.</p>
+<p>Or you don&#x27;t trust them because you don&#x27;t trust their judgment.</p>
+<p>Those are very different things.</p>
+<p>But, uh,</p>
+<p>what are their motives in life?</p>
+<p>I mean, you know,</p>
+<p>and this goes back to what&#x27;s the role of our bank?</p>
+<p>I, I think it&#x27;s to lift up society,</p>
+<p>to help people and create culture by doing.</p>
+<p>Not saying. Recognition is important.</p>
+<p>I was never particularly good at,</p>
+<p>as most of you know, uh,</p>
+<p>but. But it&#x27;s an amazing way. Yeah.</p>
+<p>That I know. They&#x27;re laughing. Yeah.</p>
+<p>This is why I was at an 0.</p>
+<p>I was at a town hall one day,</p>
+<p>and someone says,</p>
+<p>what do you do to show recognition to your direct reports?</p>
+<p>And just a couple of my direct reports were in the room,</p>
+<p>and they burst out laughing.</p>
+<p>But I told them, and I meant it,</p>
+<p>that they do know. And I Learned lessons in this.</p>
+<p>I Learned a lesson by watching Ted Lasso and David Novak,</p>
+<p>that recognition is a form of humility</p>
+<p>and acknowledgement they did something that you didn&#x27;t,</p>
+<p>that they taught you something.</p>
+<p>And I. So I do think it&#x27;s very important that we get it right.</p>
+<p>Uh, and I Did make biscuits for my.</p>
+<p>I had Judy make biscuits for my operating committee.</p>
+<p>And. But then I also came in the next day,</p>
+<p>and I realized I gave you biscuits,</p>
+<p>and they all took them and said,</p>
+<p>thank you. This was supposed to give biscuits to the boss.</p>
+<p>And I already mentioned fire</p>
+<p>bad clients.</p>
+<p>I&#x27;ve done it before. Corporate clients.</p>
+<p>And then, you know,</p>
+<p>this wealthy guy come into a branch yelling and screaming</p>
+<p>it would so that. So the branch people said.</p>
+<p>He sent me a note. He complained.</p>
+<p>He&#x27;s philanthropic. I knew him.</p>
+<p>He&#x27;s, uh.</p>
+<p>It happened the second time</p>
+<p>and the third time, I actually called up the branch manager.</p>
+<p>I said, what.</p>
+<p>What is he doing? She.</p>
+<p>And he told me what she. What the guy does.</p>
+<p>And it was disgusting. I couldn&#x27;t even say it here.</p>
+<p>And, you know,</p>
+<p>she&#x27;s one of those people that likes to beat up and yell at people</p>
+<p>because they&#x27;re a big, powerful thing.</p>
+<p>I called him up and said, you know,</p>
+<p>so and so, uh.</p>
+<p>I want you to take all your business out of the Bay.</p>
+<p>You said, you can&#x27;t do that.</p>
+<p>You said, damn,</p>
+<p>Australia can do it. And by the way,</p>
+<p>and you&#x27;re not gonna treat my people that way.</p>
+<p>Don&#x27;t allow it. And. And.</p>
+<p>And it doesn&#x27;t matter anywhere, because,</p>
+<p>you know, in any client. Okay,</p>
+<p>if you don&#x27;t do business with a client,</p>
+<p>like, life will go on.</p>
+<p>Hire back your guards. I&#x27;ve told the story about.</p>
+<p>We outsourced all our guards in the.</p>
+<p>In the. In the United States.</p>
+<p>And, you know,</p>
+<p>and a union guy came to see me,</p>
+<p>yelling at me, and I.</p>
+<p>The. The bureaucracy didn&#x27;t want me to see him.</p>
+<p>I see everybody. He ran the S E I U,</p>
+<p>A tough union. And he said,</p>
+<p>you outsource your guards to save money.</p>
+<p>And he said, but the same people working the same job,</p>
+<p>making the same salary. He said,</p>
+<p>you&#x27;re saving money because the benefits programs,</p>
+<p>you know, which were worth $30,000 to a family,</p>
+<p>they cut to 15, and then they saved you seventy five hundred dollars.</p>
+<p>They kept seventy five hundred.</p>
+<p>And I called up the person who did it was very smart and very senior.</p>
+<p>I said, I want them all back on our payroll.</p>
+<p>I want them graduated and pension plans.</p>
+<p>JP Morgan does not need to make our profit off the backs of our guards.</p>
+<p>Leading the team, regular business views,</p>
+<p>like regular war rooms, snapshots,</p>
+<p>bureaucracy busting, that type of thing.</p>
+<p>Attack the problem. All dead cats on the table.</p>
+<p>I mean,</p>
+<p>our biggest mistakes are when people kind of think it&#x27;s a problem,</p>
+<p>but they don&#x27;t bring it up on the table</p>
+<p>in the right room. Loyalty is earned,</p>
+<p>and it&#x27;s also earned by getting the full input,</p>
+<p>you know, and.</p>
+<p>And that you&#x27;ve had a chance to have your input,</p>
+<p>you may. You know,</p>
+<p>sometimes we. We all get Things we don&#x27;t want. Exactly. Right,</p>
+<p>but. But you earn it.</p>
+<p>And so after you&#x27;ve had a chance of input,</p>
+<p>after you&#x27;ve had a chance to put the dead cats in the table,</p>
+<p>then you should get on board,</p>
+<p>but not before that. And I hate things I hear like,</p>
+<p>stay in your lane. Absolutely do not stay in your lane.</p>
+<p>That is a bureaucratic, stupid comment.</p>
+<p>You&#x27;re not a good partner.</p>
+<p>You won&#x27;t let stuff go on each one.</p>
+<p>If someone said to me, you know,</p>
+<p>I say right about, like,</p>
+<p>what do you mean? What do they do?</p>
+<p>Maybe they&#x27;re right,</p>
+<p>you know, as opposed to these blanket statements that are bad and.</p>
+<p>And, you know,</p>
+<p>you gotta work on this one.</p>
+<p>There&#x27;s nothing wrong with disagreement,</p>
+<p>by the way. Ever.</p>
+<p>Disagreement is a good thing.</p>
+<p>Make it fun,</p>
+<p>you know, that&#x27;s our job,</p>
+<p>to have fun in life and make everything we do fun.</p>
+<p>Invite mom when you go on the road,</p>
+<p>and you&#x27;re gonna have management teams and stuff like that.</p>
+<p>And invite mom and dad. When I went to Kenya,</p>
+<p>I had Pauline&#x27;s mother and Peter&#x27;s mother and their families there.</p>
+<p>I mean, what a gift to us</p>
+<p>to see what those moms have accomplished with those kids. And.</p>
+<p>And moms and dads love to see us.</p>
+<p>And then also when you go out,</p>
+<p>take the management teams to dinner with spouse,</p>
+<p>they love to see the spouse.</p>
+<p>I mean, it&#x27;s a kick.</p>
+<p>And you learn a lot about each other.</p>
+<p>Why it&#x27;s hard to get good growth,</p>
+<p>innovate. Test and learning is nothing.</p>
+<p>Nothing that you shouldn&#x27;t be test and learning. Uh,</p>
+<p>you can kill innovation with too much resource.</p>
+<p>Too little resource or bureaucracy,</p>
+<p>including NPV, you know,</p>
+<p>and you got to really think through</p>
+<p>what are you trying to accomplish in some of these things.</p>
+<p>I&#x27;m gonna give you examples.</p>
+<p>Conversions.</p>
+<p>You know, both J P.</p>
+<p>Morgan and bank when it stopped,</p>
+<p>all the conversions, cause they&#x27;re costly,</p>
+<p>they take time, they divert resources.</p>
+<p>Meanwhile, you&#x27;re dying a slow death.</p>
+<p>You got seven loan systems and five deposit systems</p>
+<p>and 26 general ledgers. You just do them,</p>
+<p>and then you. But what happens is you get better at it over time.</p>
+<p>And so transformation is a constant thing.</p>
+<p>So, um,</p>
+<p>don&#x27;t try to make it look better than it is.</p>
+<p>And that happens all the time in companies.</p>
+<p>Allocate this way. Make it look better.</p>
+<p>I&#x27;m gonna give you some specific examples.</p>
+<p>And always do the good, the bad,</p>
+<p>the ugly. That will make you better.</p>
+<p>Doing just the good makes you worse.</p>
+<p>Doing the good, the bad,</p>
+<p>the ugly makes you get better versus the competition.</p>
+<p>There are good expenses, good expenses and bad expenses.</p>
+<p>Good revenues and bad revenues.</p>
+<p>I, I hate the concept of cutting costs.</p>
+<p>The concept should always be cutting waste.</p>
+<p>Management tricks and tools.</p>
+<p>Throw reviews with or without you in the room.</p>
+<p>Have Brainstorming sessions with wine.</p>
+<p>Have fun.</p>
+<p>Write memos yourself.</p>
+<p>Don&#x27;t. Don&#x27;t always let other people write it.</p>
+<p>Emails when we ask questions of someone</p>
+<p>and even ask Teresa to do it,</p>
+<p>and she asked Derek Walder to do it,</p>
+<p>who asked somebody else to do it.</p>
+<p>That memo should come directly back to me from that person,</p>
+<p>not back up the chain. And if I call that person directly,</p>
+<p>it comes directly to me. They should copy their bosses.</p>
+<p>The other thing is slow, bureaucratic,</p>
+<p>and the. But the really important thing is</p>
+<p>makes that person job more important.</p>
+<p>You&#x27;re enabling them. You&#x27;re telling them the job is more important.</p>
+<p>Okay. Definitely celebrate,</p>
+<p>but emphasize the negatives.</p>
+<p>Have a follow up list of your own.</p>
+<p>No management problem. Like when you write stuff that comes at you.</p>
+<p>Or just try to get rid of the freaking jargon.</p>
+<p>You know, speak.</p>
+<p>Speak to like you&#x27;re speaking to someone to explain something to them.</p>
+<p>And don&#x27;t waste people&#x27;s time.</p>
+<p>Work smart. Most people,</p>
+<p>they waste so much time. Like,</p>
+<p>double read emails, triple read them.</p>
+<p>You know, uh. Uh.</p>
+<p>Take care of yourself. If you don&#x27;t take care of yourself,</p>
+<p>it doesn&#x27;t work. Here&#x27;s what I really.</p>
+<p>We got to change 100%. You know,</p>
+<p>a lot of your meetings with me for the last 20 years,</p>
+<p>I don&#x27;t think you ever, ever, ever, ever, ever, ever, ever,</p>
+<p>ever see me not do the pre read and not get 100% of my attention.</p>
+<p>And I. And.</p>
+<p>And people are going to meetings all the time</p>
+<p>and they&#x27;re getting notifications and text and read email.</p>
+<p>You gotta stop</p>
+<p>and you gotta stop it everywhere.</p>
+<p>It&#x27;s disrespectful. It.</p>
+<p>It&#x27;s people. I didn&#x27;t know that.</p>
+<p>Yeah, well,</p>
+<p>of course you don&#x27;t know cause you weren&#x27;t paying attention.</p>
+<p>And uh. And another thing.</p>
+<p>Don&#x27;t be lazy about this one.</p>
+<p>Write a press release about a new product,</p>
+<p>a new service and do the F A Q&#x27;s as an exercise.</p>
+<p>Cause it makes you answer a lot of questions</p>
+<p>and people simply don&#x27;t. They wanna have a quick verbal thing.</p>
+<p>No, when you write it down,</p>
+<p>it&#x27;s amazing. It focuses the mind quite a bit</p>
+<p>about how you explain what you&#x27;re doing to people.</p>
+<p>Push the theory as low as you can.</p>
+<p>Take the other side of the argument.</p>
+<p>Be a skeptic but not a cynic.</p>
+<p>And always answer the question.</p>
+<p>What would you do if you&#x27;re queen?</p>
+<p>Queen or king for a day?</p>
+<p>And that&#x27;s the big one. What would you do?</p>
+<p>What you&#x27;re gonna do.</p>
+<p>Okay, I&#x27;ll end where I started.</p>
+<p>I hope this is productive. At least I feel better.</p>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://www.tiktok.com/@timmbrocks/video/7672505877156367649?_r=1&amp;_t=ZT-98nsqVHedV0" rel="noopener">https://www.tiktok.com/@timmbrocks/video/7672505877156367649?_r=1&amp;_t=ZT-98nsqVHedV0</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="#masterclass #learning #finance  Source: JPMorgan">
+        <input type="hidden" name="slug" value="masterclass-learning-finance-source-jpmorgan">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — #masterclass #learning #finance  Source: JPMorgan</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

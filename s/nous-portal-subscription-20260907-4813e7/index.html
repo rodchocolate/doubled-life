@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Nous Portal Subscription — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:2.2rem; font-weight:700; letter-spacing:-.02em; color:var(--porcelain); line-height:1.05; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">product</div>
+      <h1>Nous Portal Subscription</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-09-07</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">692</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="VvkBFyF14kk" type="button"><img src="https://i.ytimg.com/vi/VvkBFyF14kk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nous Portal Explained — 300+ Models, One Login, and When You Don&#x27;t Need It</span></button>
+<button class="vtile" data-yt="48T2M40DflY" type="button"><img src="https://i.ytimg.com/vi/48T2M40DflY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Nous Tool Gateway Review | One Subscription for Search, Browser, Image, and TTS</span></button>
+<button class="vtile" data-yt="9iCOfy3BShE" type="button"><img src="https://i.ytimg.com/vi/9iCOfy3BShE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Hermes Agent: Run Hermes with Nous Portal</span></button>
+<button class="vtile" data-yt="kovUM5wssAI" type="button"><img src="https://i.ytimg.com/vi/kovUM5wssAI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Hermes Agent Setup for $8/Month Cost Reduction: No Claude Rate Limits</span></button>
+<button class="vtile" data-yt="UUcsxd99ER0" type="button"><img src="https://i.ytimg.com/vi/UUcsxd99ER0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How to install Hermes Agent and Hermes Desktop with Nous Portal on Ubuntu</span></button>
+<button class="vtile" data-yt="VIpMz5uz4Cc" type="button"><img src="https://i.ytimg.com/vi/VIpMz5uz4Cc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Hermes Agent Update v0.10 is POWERFUL! (Tool Gateway Release)</span></button>
+<button class="vtile" data-yt="CLTZBB1p8ko" type="button"><img src="https://i.ytimg.com/vi/CLTZBB1p8ko/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">MiMo V2 Pro Is Now FREE - Nous Portal + Hermes Agent</span></button>
+<button class="vtile" data-yt="e-fK4QGdX94" type="button"><img src="https://i.ytimg.com/vi/e-fK4QGdX94/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Free Qwen 3 6 Plus on Nous Portal #AIAgent#एआईएजेंट#人工智能代理#AgenteDeIA</span></button>
+<button class="vtile" data-yt="8L-V4iLtBBU" type="button"><img src="https://i.ytimg.com/vi/8L-V4iLtBBU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Hermes agent + Nous Research as an AI provider is INSANE!</span></button>
+<button class="vtile" data-yt="5d02TYoOzfE" type="button"><img src="https://i.ytimg.com/vi/5d02TYoOzfE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Use This To Make The Hermes Agent Basically Free</span></button>
+<button class="vtile" data-yt="nkTGr4QyejI" type="button"><img src="https://i.ytimg.com/vi/nkTGr4QyejI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Run Hermes Agent 24/7 for Free (Never Hit a Limit)</span></button>
+<button class="vtile" data-yt="45XTF4rrrdk" type="button"><img src="https://i.ytimg.com/vi/45XTF4rrrdk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Hermes Agent Nous Portal Full Installation EXPERT Support</span></button>
+<button class="vtile" data-yt="kHL3XzjpT5w" type="button"><img src="https://i.ytimg.com/vi/kHL3XzjpT5w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Story of VS Code | Official Documentary</span></button>
+<button class="vtile" data-yt="dlJI0CTQa6k" type="button"><img src="https://i.ytimg.com/vi/dlJI0CTQa6k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Why an Entire Generation is Facing a Mental Health Crisis</span></button>
+<button class="vtile" data-yt="v4wr4oxRO6A" type="button"><img src="https://i.ytimg.com/vi/v4wr4oxRO6A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Learn How Nous Infosystems Adds Value to Our Global Software Solutions</span></button>
+<button class="vtile" data-yt="0qZWeGQLA0U" type="button"><img src="https://i.ytimg.com/vi/0qZWeGQLA0U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">portals nous.</span></button>
+<button class="vtile" data-yt="_Vl1rVA2Il4" type="button"><img src="https://i.ytimg.com/vi/_Vl1rVA2Il4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Wedding International - Parish church of Portals Nous</span></button>
+<button class="vtile" data-yt="aPgQhNp1yio" type="button"><img src="https://i.ytimg.com/vi/aPgQhNp1yio/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Portals Nous, holidays late 1960s, Beaches of Mallorca, Majorca, 1970s, F678 g</span></button>
+<button class="vtile" data-yt="P9AuRe_7WbM" type="button"><img src="https://i.ytimg.com/vi/P9AuRe_7WbM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Portals Nous- Mallorca 🤩 Discover the Beauty of Portals Nous!</span></button>
+<button class="vtile" data-yt="V6pn-A3d5Ak" type="button"><img src="https://i.ytimg.com/vi/V6pn-A3d5Ak/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Portal to Hell | Official Trailer</span></button>
+<button class="vtile" data-yt="6GzBWoDLJw0" type="button"><img src="https://i.ytimg.com/vi/6GzBWoDLJw0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mallorca ; Portal Nous ......</span></button>
+<button class="vtile" data-yt="isJiV5nVyW0" type="button"><img src="https://i.ytimg.com/vi/isJiV5nVyW0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Portals Nous Mallorca Walking Tour | Inside Mallorca&#x27;s Luxury Marina</span></button>
+<button class="vtile" data-yt="EkVPU37N1Xs" type="button"><img src="https://i.ytimg.com/vi/EkVPU37N1Xs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rise of the Machines | SCIENCE FICTION | Full Movie en English 💎</span></button>
+<button class="vtile" data-yt="Gj3rAfBarWY" type="button"><img src="https://i.ytimg.com/vi/Gj3rAfBarWY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Portals Nous 3</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">France Channel is an online digital video subscription service headquartered in France and operating in the United States. It was founded by Julien Verley, a former executive of Canal+ Group and France Télévisions.</p>
+<p>France Channel is an online digital video subscription service headquartered in France and operating in the United States. It was founded by Julien Verley, a former executive of Canal+ Group and France Télévisions.</p>
+<h3>history and launch</h3>
+<p>Julien Verley founded France Channels, SAS with the goal of creating a &quot;French version of BritBox&quot; to promote French culture and media abroad. The service launched in the United States in August 2021, utilizing technology from NetGem for its distribution platform. It was originally slated for Spring 2021 but the launch was delayed. To provide content, the company established partnerships with Arte France, M6 Group, TF1 Group, Canal+ S.A. (formerly Canal+ Group), and France Télévisions and France Médias Monde. Through a partnership with France Médias Monde, subscribers can watch livestreams of the French and English versions of France 24; the Spanish version was added in November 2025.</p>
+<h3>availability and content</h3>
+<p>France Channel is available as a subscription channel on The Roku Channel and Amazon Prime Video, where it launched in June 2023. The platform features various documentaries, movies, TV shows, and live TV networks from France.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Founder:</strong> Julien Verley</li>
+<li><strong>Headquarters:</strong> France</li>
+<li><strong>// a fact about the same thing as the laede:</strong> United States</li>
+<li><strong>Launch Date:</strong> August 2021</li>
+<li><strong>Linguistic Options:</strong> English and French subtitles, with some content dubbed in English</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/France_Channel" rel="noopener">https://en.wikipedia.org/wiki/France_Channel</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Lakm%C3%A9" rel="noopener">https://en.wikipedia.org/wiki/Lakm%C3%A9</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Pavane_(Faur%C3%A9" rel="noopener">https://en.wikipedia.org/wiki/Pavane_(Faur%C3%A9</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Nous Portal Subscription">
+        <input type="hidden" name="slug" value="nous-portal-subscription">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Nous Portal Subscription</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

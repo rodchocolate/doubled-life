@@ -14,7 +14,7 @@
     --link:#ef476f; --visited:#ffd166;
     --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
   }
-  * { margin:0; padding:0; box-sizing:border-box; border-radius:0; }
+  * { margin:0; padding:0; box-sizing:border-box; }
   html, body { height:100%; }
   body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
   a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
@@ -27,7 +27,7 @@
   .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
     padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
   .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
-  .masthead h1 { font-size:1.9rem; font-weight:700; letter-spacing:-.01em; color:var(--porcelain); line-height:1; }
+  .masthead h1 { font-size:2.2rem; font-weight:700; letter-spacing:-.02em; color:var(--porcelain); line-height:1.05; }
   .stats { margin-left:auto; display:flex; gap:.5rem; }
   .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
   .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
@@ -43,7 +43,7 @@
 
   /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
   .videos { display:flex; flex-direction:column; gap:.9rem; }
-  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
   a.vslot:hover { border-color:var(--link); }
   .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
     background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
@@ -140,9 +140,9 @@
       <h1>This is what happens when you use the “multi-agent”…</h1>
     </div>
     <div class="stats">
-      <div class="stat"><div class="v">2026-07-27</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">2026-08-14</div><div class="k">researched</div></div>
       <div class="stat"><div class="v">1</div><div class="k">sources</div></div>
-      <div class="stat"><div class="v">427</div><div class="k">words</div></div>
+      <div class="stat"><div class="v">551</div><div class="k">words</div></div>
     </div>
   </header>
 
@@ -157,30 +157,70 @@
     <section class="col col-text">
       <div class="coltag">deliverable</div>
       <article class="article">
-        <p class="lede">The video demonstrates the ability of Claude Opus (likely referring to Claude 3 Opus) and a specific &#x27;multi-agent&#x27; prompting technique to recreate a functional clone of Call of Duty from a single prompt. It highlights the importance of using a &#x27;critic&#x27; agent to iteratively refine</p>
+        <p class="lede">The video demonstrates the ability of Claude 3.5 Sonnet (referred to as &#x27;Claude O P S5&#x27; likely due to at transcription error for 3.5) to recreate a functional Call of Duty clone from scratch using a single, three-paragraph prompt. It highlights the &#x27;multi-agent&#x27; prompting techniq</p>
 <ul>
 <li>url: <a href="https://www.tiktok.com/@justinfineberg/video/7666899216303688990?_r=1&amp;_t=ZT-98Nsv95sHT4" rel="noopener">https://www.tiktok.com/@justinfineberg/video/7666899216303688990?_r=1&amp;_t=ZT-98Nsv95sHT4</a></li>
 <li>uploader: justinfineberg</li>
 <li>duration: 69s</li>
-<li>source uuid: manual-refix2</li>
-<li>processed: 2026-07-27T23:08:32.389555+00:00</li>
+<li>subject: Claude 3.5 Sonnet (technique)</li>
+<li>source uuid: 01a00158-8be4-78fe-9d10-f71189e13ea3</li>
+<li>processed: 2026-08-14T17:42:42.460508+00:00</li>
 </ul>
 <h3>summary</h3>
-<p>The video demonstrates the ability of Claude Opus (likely referring to Claude 3 Opus) and a specific &#x27;multi-agent&#x27; prompting technique to recreate a functional clone of Call of Duty from a single prompt. It highlights the importance of using a &#x27;critic&#x27; agent to iteratively refine the work of a sequence of agentic workflows,icly improving the output quality of LLMs for complex tasks like game development.</p>
-<h4>Claude Opus — product</h4>
+<p>The video demonstrates the ability of Claude 3.5 Sonnet (referred to as &#x27;Claude O P S5&#x27; likely due to at transcription error for 3.5) to recreate a functional Call of Duty clone from scratch using a single, three-paragraph prompt. It highlights the &#x27;multi-agent&#x27; prompting technique where one agent acts as the creator and another as a critic/reviewer to iteratively improve the output until it reaches high quality.</p>
+<h3>claims check</h3>
 <ul>
-<li>what it does: A high-capacity Large Language Model (LLM) from Anthropic</li>
-<li>why relevant: The model used to generate the code for the Call of Duty clone.</li>
-<li>search terms: Claude 3 Opus, Anthropic Claude Opus,</li>
+<li><strong>unsupported</strong> — Claude can recreate a functional Call of Duty clone from scratch in a single prompt  (No sources provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — The multi-agent prompting technique (creator agent + critic agent) significantly improves the output quality for difficult AI tasks  (No sources provided to verify this claim.)</li>
 </ul>
-<h4>Multi-agent prompt — technique</h4>
+<h4>Claude 3.5 Sonnet — product</h4>
+<ul>
+<li>what it does: An LLM that can generate code for a game clone</li>
+<li>why relevant: The primary tool used to create the Call of Duty clone</li>
+<li>search terms: Claude 3.5 Sonnet, Claude AI game development</li>
+</ul>
+<h4>multi-agent prompt — technique</h4>
+<ul>
+<li>what it does: A prompting strategy where one agent performs the task and another acts as a critic to iteratively refine the output</li>
+<li>why relevant: The core technique being discussed as a beneficial strategy for all AI interactions</li>
+<li>search terms: multi-agent prompting, AI agentic workflow, -1, self-correction loop in LLMs</li>
+</ul>
+<h4>Call of Duty — product</h4>
 <ul>
 <li>what it does: -</li>
-<li>why relevant: The core technique used to achieve the</li>
+<li>why relevant: -</li>
 <li>search terms: -</li>
 </ul>
 <h3>transcript</h3>
-<p>Okay, check this out. In a single prompt from Claude, Claude Opus 5 was able to recreate Call of Duty from scratch. I&#x27;m going to show you the exact prompt that created this, but literally in three paragraphs with no external assets, it recreated what functionally looks exactly like Call of Duty. Here&#x27;s the full prompt from Matt who put this together. And basically in three paragraphs, Claude went off and created that full Call of Duty clone. Now what I think is most interesting about this prompt and something that I think is actually really beneficial for everything you do with AI is you want the prompt to effectively do two different things. You want the prompt to do the task at hand, the thing that you actually wanted to do, in this case, create a Call of Duty game. But then you want a sub-agent that is actually a critic of the work of the other agent, that first agent. So basically one agent does the task, the other agent criticizes the work of that first agent. Then you set that up on a loop and it literally does not stop until that second agent is 100% satisfied with the work of the first agent. When you actually talk about doing really difficult work with AI agents, the most impressive demos you see online are actually done by that multi-agent approach. I&#x27;m going to make another video showing you how you can apply that strategy to anything that you do in AI. Bye. Thank you.</p>
+<p>Okay, check this out.</p>
+<p>In a single prompt from Claude,</p>
+<p>Claude O P S5, was able to recreate call of duty from scratch.</p>
+<p>I&#x27;m gonna show you the exact prompt that created this,</p>
+<p>but literally in three paragraphs,</p>
+<p>with no external assets,</p>
+<p>it recreated what functionally looks exactly like call of duty.</p>
+<p>Here&#x27;s the full prompt from Matt,</p>
+<p>who put this together. And basically in three paragraphs,</p>
+<p>Claude went off and created that full call of duty clone.</p>
+<p>Now, what I think is most interesting about this prompt,</p>
+<p>and something that I think</p>
+<p>is actually really beneficial for everything you do with A I,</p>
+<p>is you want the prompt to effectively do two different things.</p>
+<p>You want the prompt to do the task at hand,</p>
+<p>the thing that you actually wanted to do</p>
+<p>in this case, create a call of duty game.</p>
+<p>But then you want a sub agent</p>
+<p>that is actually a critic of the work of the other agent.</p>
+<p>A first agent. Basically,</p>
+<p>one agent does the task, the other agent criticises the work of that first agent.</p>
+<p>Then you set it up on a loop,</p>
+<p>and it literally does not stop</p>
+<p>until that second agent is 100% satisfied with the work of the first agent.</p>
+<p>When you actually talk about doing really difficult work with A I. Agents,</p>
+<p>the most impressive demos you see online</p>
+<p>are actually done by that multi agent approach.</p>
+<p>I&#x27;m gonna make another video</p>
+<p>showing you how you can apply that strategy to Anything that you do in A I</p>
       </article>
     </section>
 

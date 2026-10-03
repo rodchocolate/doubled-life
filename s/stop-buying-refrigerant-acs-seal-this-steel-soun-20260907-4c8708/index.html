@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>STOP Buying Refrigerant ACs. Seal This STEEL SOUND TUBE… — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:2.2rem; font-weight:700; letter-spacing:-.02em; color:var(--porcelain); line-height:1.05; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">video</div>
+      <h1>STOP Buying Refrigerant ACs. Seal This STEEL SOUND TUBE…</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-09-07</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">1</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1331</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos"><div class="vslot"><div class="vframe"><img src="data:image/svg+xml;utf8,&lt;svg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; width=&#x27;400&#x27; height=&#x27;400&#x27;&gt;&lt;rect width=&#x27;400&#x27; height=&#x27;400&#x27; fill=&#x27;hsl(92,45%25,22%25)&#x27;/&gt;&lt;text x=&#x27;200&#x27; y=&#x27;245&#x27; font-family=&#x27;Helvetica&#x27; font-size=&#x27;160&#x27; fill=&#x27;hsl(92,60%25,70%25)&#x27; text-anchor=&#x27;middle&#x27;&gt;S&lt;/text&gt;&lt;/svg&gt;" alt="STOP Buying Refrigerant ACs. Seal This STEEL SOUND TUBE…"></div></div></div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The video claims that a simple system of sealed steel tubes containing a small amount of distilled water under vacuum pressure is an even more efficient alternative to modern refrigerant-based ACs. It describes a &#x27;Thermosiphon Tube&#x27; (or heat pipe) the viewer can build for under $</p>
+<ul>
+<li>url: <a href="https://www.tiktok.com/@chris.vr.azumaa10/video/7676580170605612302?_r=1&amp;_t=ZT-99IxI9h812z" rel="noopener">https://www.tiktok.com/@chris.vr.azumaa10/video/7676580170605612302?_r=1&amp;_t=ZT-99IxI9h812z</a></li>
+<li>uploader: chris.vr.azumaa10</li>
+<li>duration: 300s</li>
+<li>subject: Thermosiphon Tube (technique)</li>
+<li>source uuid: 01a050cc-ba38-7fb2-aa5b-912d30c1352a</li>
+<li>processed: 2026-09-07T08:37:42.526652+00:00</li>
+</ul>
+<h3>summary</h3>
+<p>The video claims that a simple system of sealed steel tubes containing a small amount of distilled water under vacuum pressure is an even more efficient alternative to modern refrigerant-based ACs. It describes a &#x27;Thermosiphon Tube&#x27; (or heat pipe) the viewer can build for under $90, claiming it provides significant cooling without electricity or electricity bills. The video presents this as a hidden physics principle that the HVAC industry suppresses to protect their profits.</p>
+<h3>claims check</h3>
+<ul>
+<li><strong>unsupported</strong> — A system of six 4-foot lengths of 3/4 inch steel pipe, buried 18 inches deep, can drop indoor temperature by 20-30 degrees Fahrenheit  (No sources provided to verify this claim.)</li>
+<li><strong>unsupported</strong> — The total cost to build this system is under $90 in steel pipe, copper fittings, and distilled water  (No sources provided to verify this claim.)</li>
+</ul>
+<h4>Thermosiphon Tube / Heat Pipe — technique</h4>
+<ul>
+<li>what it does: Uses a vacuum-sealed tube containing a small amount of water to transfer heat from inside a house to the ground via phase change (evaporation and condensation)</li>
+<li>why relevant: Proposed as a zero-electricity, low-cost alternative to air conditioning</li>
+<li>search terms: thermosiphon cooling, heat pipe cooling system, passive geothermal cooling, vacuum sealed heat pipe DIY, phase change heat transfer</li>
+</ul>
+<h4>Steel Pipe (3/4 inch) — product</h4>
+<ul>
+<li>what it does: The physical housing for the working fluid</li>
+<li>why relevant: Required material for building the system</li>
+<li>search terms: 3/4 inch steel pipe schedule 40, sealed steel tubing for heat pipes</li>
+</ul>
+<h4>Distilled Water — product</h4>
+<ul>
+<li>what it does: The working fluid that evaporates and absorbs heat from the indoor air</li>
+<li>why relevant: Used as the working 것 a small amount of distilled water is used to lower boiling point via vacuum</li>
+<li>search terms: distilled water</li>
+</ul>
+<h4>Copper Fittings — product</h4>
+<ul>
+<li>what it does: Used to seal the tube ends</li>
+<li>why relevant:</li>
+<li>search terms: -</li>
+</ul>
+<h3>transcript</h3>
+<p>In 1936, an Austrian born metal worker named Emil Hartman</p>
+<p>sealed six four foot lengths of three quarter inch steel pipe,</p>
+<p>evacuated the air from each one,</p>
+<p>added two tablespoons of distilled water</p>
+<p>and buried them 18 inches deep in a shaded trench</p>
+<p>along the north wall of his fieldstone house in Bucks County,</p>
+<p>Pennsylvania. Then spent the next 47 summers</p>
+<p>without ever once feeling the heat rise off his kitchen floor.</p>
+<p>His neighbors thought he was wasteful with good steel.</p>
+<p>His grandchildren thought he was ahead of his time.</p>
+<p>The University of Pennsylvania,</p>
+<p>when their building science team finally surveyed the property in 1961,</p>
+<p>recorded an indoor temperature of 58 degrees Fahrenheit</p>
+<p>on an afternoon when the mercury outside had climbed past 97.</p>
+<p>No compressor, no refrigerant,</p>
+<p>no electricity, no monthly Bill from any power company of any kind.</p>
+<p>Just a sealed steel tube, two tablespoons of water</p>
+<p>and a principle of physics so simple</p>
+<p>that the modern HVAC industry</p>
+<p>has spent the better part of a century pretending it does not exist.</p>
+<p>Because if you understood what Emil Hartman understood,</p>
+<p>you would never write another three hundred dollar check</p>
+<p>to your utility company Between May and September</p>
+<p>for as long as you live.</p>
+<p>And that is exactly what the Amish and Mennonite communities</p>
+<p>in Lancaster County, in Holmes County,</p>
+<p>in Berks and Mifflin, have been quietly doing for over 80 years.</p>
+<p>They call it the Thermosiphon Tube.</p>
+<p>If you built the same six tubes behind your house,</p>
+<p>this Saturday you would drop your indoor temperature 20 to 30 degrees</p>
+<p>by Sunday morning</p>
+<p>and never pay another cooling Bill for the rest of your life.</p>
+<p>The total cost is under $90 in steel pipe,</p>
+<p>copper fittings and distilled water from any grocery store.</p>
+<p>That is 90 dollars once for a system that lasts 50 years.</p>
+<p>Compare that to the 15,000 dollar central air conditioner</p>
+<p>that the HVAC industry will tell you is your only option.</p>
+<p>The one that needs a 200 dollar refrigerant recharge every three years</p>
+<p>and a 350 dollar maintenance contract every single season.</p>
+<p>The one that dies on you in 12 years so you can buy it all over again.</p>
+<p>That industry pulls in $137 billion a year</p>
+<p>selling you compressors, selling you refrigerant,</p>
+<p>and selling you service calls.</p>
+<p>And every company in that chain,</p>
+<p>from the manufacturer to the installer</p>
+<p>to the technician who shows up every April,</p>
+<p>has a very strong financial interest</p>
+<p>in making sure you never learn how simple the physics actually are.</p>
+<p>Let me show you why this works,</p>
+<p>why it has always worked,</p>
+<p>and why almost nobody in the HVAC industry will ever mention it to you.</p>
+<p>The physics is so simple it almost feels like cheating.</p>
+<p>You already know the core of it,</p>
+<p>even if nobody has ever explained it to you in plain language.</p>
+<p>Water boils. That is the entire mechanism.</p>
+<p>Not at 212 degrees, not on your stove.</p>
+<p>Water boils at whatever temperature matches the pressure around it.</p>
+<p>Drop the pressure inside a sealed steel tube</p>
+<p>to half a pound per square inch</p>
+<p>and the water inside that tube will boil at 79 degrees Fahrenheit.</p>
+<p>Drop the pressure to a tenth of a pound per square inch</p>
+<p>and it boils at 35.</p>
+<p>Your warm living room air touches the indoor end of that tube.</p>
+<p>The tiny amount of water at the bottom absorbs that heat</p>
+<p>and flashes into vapor.</p>
+<p>The vapor shoots down the length of the tube toward the buried end,</p>
+<p>the cold end, the end sitting in 60 degree soil.</p>
+<p>When the vapor hits that cooler surface,</p>
+<p>it condenses back into liquid,</p>
+<p>releases its heat into the ground.</p>
+<p>And gravity pulls the liquid back down the slight slope</p>
+<p>to the warm end to do it all over again.</p>
+<p>No pump, no fan,</p>
+<p>no wiring, no moving parts of any kind.</p>
+<p>The water just cycles endlessly,</p>
+<p>carrying your heat out of the house and dumping it into the earth</p>
+<p>for as long as the tube stays sealed</p>
+<p>and the ground stays cooler than your air.</p>
+<p>What makes this so powerful is not the boiling itself.</p>
+<p>It is how much energy the boiling moves.</p>
+<p>When water changes phase from liquid to vapor,</p>
+<p>it absorbs roughly 970 British Thermal units per pound.</p>
+<p>When it condenses back, it releases that same 970 BTU&#x27;s.</p>
+<p>A single three quarter inch heat pipe running this cycle</p>
+<p>can transfer up to one kilowatt of Thermal energy along its length.</p>
+<p>That is up to</p>
+<p>1,000 Times the Thermal conductivity of a solid copper rod</p>
+<p>of the same diameter.</p>
+<p>You could not move that much heat through solid metal</p>
+<p>if the rod were 10 feet thick.</p>
+<p>If that number sounds impossible,</p>
+<p>it is published in a Los Alamos National Laboratory technical report</p>
+<p>document number L ADASH11 9 4 2 dash M s,</p>
+<p>released in 1990</p>
+<p>titled Heat Pipe Theory and practice A Classical Review,</p>
+<p>a title so boring it could sedate a graduate seminar.</p>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://www.tiktok.com/@chris.vr.azumaa10/video/7676580170605612302?_r=1&amp;_t=ZT-99IxI9h812z" rel="noopener">https://www.tiktok.com/@chris.vr.azumaa10/video/7676580170605612302?_r=1&amp;_t=ZT-99IxI9h812z</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="STOP Buying Refrigerant ACs. Seal This STEEL SOUND TUBE…">
+        <input type="hidden" name="slug" value="stop-buying-refrigerant-acs-seal-this-steel-soun">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — STOP Buying Refrigerant ACs. Seal This STEEL SOUND TUBE…</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

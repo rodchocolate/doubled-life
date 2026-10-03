@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Apparently half of digital art is drawing, and the other… — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:2.2rem; font-weight:700; letter-spacing:-.02em; color:var(--porcelain); line-height:1.05; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">video</div>
+      <h1>Apparently half of digital art is drawing, and the other…</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-09-07</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">1</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1104</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos"><div class="vslot"><div class="vframe"><img src="data:image/svg+xml;utf8,&lt;svg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; width=&#x27;400&#x27; height=&#x27;400&#x27;&gt;&lt;rect width=&#x27;400&#x27; height=&#x27;400&#x27; fill=&#x27;hsl(313,45%25,22%25)&#x27;/&gt;&lt;text x=&#x27;200&#x27; y=&#x27;245&#x27; font-family=&#x27;Helvetica&#x27; font-size=&#x27;160&#x27; fill=&#x27;hsl(313,60%25,70%25)&#x27; text-anchor=&#x27;middle&#x27;&gt;A&lt;/text&gt;&lt;/svg&gt;" alt="Apparently half of digital art is drawing, and the other…"></div></div></div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The video is a curated list of ten niche digital art tools and resources that streamline creative workflows by solving specific problems like reference management, posing 3D models, finding visual inspiration, &#x27;painting over&#x27; moving footage,</p>
+<ul>
+<li>url: <a href="https://www.tiktok.com/@yhs.artstudio/video/7663814981057514783?_r=1&amp;_t=ZT-99VZzu15oAo" rel="noopener">https://www.tiktok.com/@yhs.artstudio/video/7663814981057514783?_r=1&amp;_t=ZT-99VZzu15oAo</a></li>
+<li>uploader: yhs.artstudio</li>
+<li>duration: 100s</li>
+<li>subject: -</li>
+<li>source uuid: 01a0770b-d53e-7fb8-a4ea-c59e05f088dc</li>
+<li>processed: 2026-09-07T11:21:47.467922+00:00</li>
+</ul>
+<h3>summary</h3>
+<p>The video is a curated list of ten niche digital art tools and resources that streamline creative workflows by solving specific problems like reference management, posing 3D models, finding visual inspiration, &#x27;painting over&#x27; moving footage,</p>
+<p>{</p>
+<p>  &quot;summary&quot;: &quot;The video provides a curated list of ten niche digital art tools and resources designed to streamline the creative workflow. It covers solutions for reference organization, pose creation, color analysis, pattern generation, font creation, perspective matching, and animation, aiming to help artists move beyond basic drawing by utilizing specialized software.&quot;,</p>
+<p>  &quot;subject&quot;: &quot;digital art tools&quot;,</p>
+<p>  &quot;content_type&quot;: &quot;topic&quot;,</p>
+<p>  &quot;claims&quot;: [</p>
+<p>    &quot;PureRef allows users to keep references on one endless board above their drawing software&quot;,</p>
+<p>    &quot;VizRef is a reference board app for iPad that can pause GIFs frame by frame&quot;,</p>
+<p>    &quot;Same energy finds images with a similar visual feel based on one uploaded image&quot;,</p>
+<p>    &quot;Pose My Art uses adjustable 3D models to create custom poses&quot;,</p>
+<p>    &quot;The Biodiversity Heritage Library contains hundreds of thousands of scientific illustrations&quot;,</p>
+<p>    &quot;Color study breaks images into simpler color and value shapes&quot;,</p>
+<p>    &quot;Repper turns a small drawing or image into a seamless repeating pattern&quot;,</p>
+<p>    &quot;Calligraphr converts handwritten alphabets into usable fonts&quot;,</p>
+<p>    &quot;fSpy recreates camera angles from photos inside Blender by marking perspective lines&quot;,</p>
+<p>    &quot;EbSynth applies a painted style from one frame to the rest of a video sequence&quot;</p>
+<p>  ],</p>
+<p>  &quot;items&quot;: [</p>
+<p>    {</p>
+<p>      &quot;name&quot;: &quot;PureRef&quot;,</p>
+<p>      &quot;kind&quot;: &quot;tool&quot;,</p>
+<p>      &quot;what_it_does&quot;: &quot;An endless board for organizing and displaying reference images over other software.&quot;,</p>
+<p>      &quot;why_relevant&quot;: &quot;Eliminates the need to switch between multiple browser tabs while drawing.&quot;,</p>
+<p>      &quot;search_terms&quot;: [&quot;PureRef digital art&quot;, &quot;reference image organizer&quot;]</p>
+<p>    },</p>
+<p>    {</p>
+<p>      &quot;name&quot;: &quot;VizRef&quot;,</p>
+<p>      &quot;kind&quot;: &quot;tool&quot;,</p>
+<p>      &quot;what_it_does&quot;: &quot;A reference board app for iPad that supports GIF frame-by-frame pausing.&quot;,</p>
+<p>      &quot;why_relevant&quot;: &quot;Works alongside Procreate on iPad for mobile reference management.&quot;,</p>
+<p>      &quot;search_terms&quot;: [&quot;VizRef iPad app&quot;, &quot;iPad art reference tool&quot;]</p>
+<p>    },</p>
+<p>    {</p>
+<p>      &quot;name&quot;: &quot;Same energy&quot;,</p>
+<p>      &quot;kind&quot;: &quot;service&quot;,</p>
+<p>      &quot;what_it_does&quot;: &quot;A visual search tool that finds images with a similar &#x27;vibe&#x27; or aesthetic to an uploaded image.&quot;,</p>
+<p>      &quot;why_relevant&quot;: &quot;Helps artists find inspiration when they cannot describe the desired look in words.&quot;,</p>
+<p>      &quot;search_terms&quot;: [&quot;Same energy image search&quot;, &quot;visual vibe search tool&quot;]</p>
+<p>    },</p>
+<p>    {</p>
+<p>      &quot;name&quot;: &quot;Pose My Art&quot;,</p>
+<p>      &quot;kind&quot;: &quot;tool&quot;,</p>
+<p>      &quot;what_it_does&quot;: &quot;Provides adjustable 3D models to create specific character poses.&quot;,</p>
+<p>      &quot;why_relevant&quot;: &quot;Removes the need to search for existing reference photos for complex poses.&quot;,</p>
+<p>      &quot;search_terms&quot;: [&quot;Pose My Art 3D&quot;, &quot;digital art posing tool&quot;]</p>
+<p>    },</p>
+<p>    {</p>
+<p>      &quot;name&quot;: &quot;Biodiversity Heritage Library&quot;,</p>
+<p>      &quot;kind&quot;: &quot;service&quot;,</p>
+<p>      &quot;what_it_does&quot;: &quot;A digital archive of scientific illustrations of plants, animals, and insects.&quot;,</p>
+<p>      &quot;why_relevant&quot;: &quot;Acts as a high-quality reference source for creature design and decorative details.&quot;,</p>
+<p>      &quot;search_terms&quot;: [&quot;Biodiversity Heritage Library illustrations&quot;, &quot;scientific art references&quot;]</p>
+<p>    },</p>
+<p>    {</p>
+<p>      &quot;name&quot;: &quot;Color study&quot;,</p>
+<p>      &quot;kind&quot;: &quot;tool&quot;,</p>
+<p>      &quot;what_it_does&quot;: &quot;Simplifies a reference image into basic color and value shapes.&quot;,</p>
+<p>      &quot;why_relevant&quot;: &quot;Makes complex paintings less intimidating by breaking them down into manageable parts.&quot;,</p>
+<p>      &quot;search_terms&quot;: [&quot;Color study tool art&quot;, &quot;image color simplification&quot;]</p>
+<p>    },</p>
+<p>    {</p>
+<p>      &quot;name&quot;: &quot;Repper&quot;,</p>
+<p>      &quot;kind&quot;: &quot;tool&quot;,</p>
+<p>      &quot;what_it_does&quot;: &quot;Converts a small image or drawing into a seamless repeating pattern.&quot;,</p>
+<p>      &quot;why_relevant&quot;: &quot;Useful for creating textures for clothing, wallpaper, and packaging.&quot;,</p>
+<p>      &quot;search_terms&quot;: [&quot;Repper seamless pattern generator&quot;, &quot;digital pattern tool&quot;]</p>
+<p>    },</p>
+<p>    {</p>
+<p>      &quot;name&quot;: &quot;Calligraphr&quot;,</p>
+<p>      &quot;kind&quot;: &quot;service&quot;,</p>
+<p>      &quot;what_it_does&quot;: &quot;Turns a user&#x27;s own handwriting into a digital font.&quot;,</p>
+<p>      &quot;why_relevant&quot;: &quot;Allows artists to create custom typography based on their personal style.&quot;,</p>
+<p>      &quot;search_terms&quot;: [&quot;Calligraphr custom font&quot;, &quot;handwriting to font tool&quot;]</p>
+<p>    },</p>
+<p>    {</p>
+<p>      &quot;name&quot;: &quot;fSpy&quot;,</p>
+<p>      &quot;kind&quot;: &quot;tool&quot;,</p>
+<p>      &quot;what_it_does&quot;: &quot;Calculates camera perspective from a photo to recreate the angle in Blender.&quot;,</p>
+<p>      &quot;why_relevant&quot;: &quot;Simplifies the process of matching 3D scenes to real-world photographs.&quot;,</p>
+<p>      &quot;search_terms&quot;: [&quot;fSpy Blender&quot;, &quot;camera perspective matching tool&quot;]</p>
+<p>    },</p>
+<p>    {</p>
+<p>      &quot;name&quot;: &quot;EbSynth&quot;,</p>
+<p>      &quot;kind&quot;: &quot;tool&quot;,</p>
+<p>      &quot;what_it_does&quot;: &quot;Propagates a painted style from one keyframe across an entire video clip.&quot;,</p>
+<p>      &quot;why_relevant&quot;: &quot;Allows artists to create stylized animation without painting every single frame.&quot;,</p>
+<p>      &quot;search_terms&quot;: [&quot;EbSynth tutorial&quot;, &quot;AI style transfer video&quot;]</p>
+<p>    },</p>
+<p>    {</p>
+<p>      &quot;name&quot;: &quot;Procreate&quot;,</p>
+<p>      &quot;kind&quot;: &quot;product&quot;,</p>
+<p>      &quot;what_it_does&quot;: &quot;Digital illustration software for iPad.&quot;,</p>
+<p>      &quot;why_relevant&quot;: &quot;The primary drawing tool mentioned as the base for these complementary resources.&quot;,</p>
+<p>      &quot;search_terms&quot;: [&quot;Procreate app&quot;]</p>
+<p>    },</p>
+<p>    {</p>
+<p>      &quot;name&quot;: &quot;Blender&quot;,</p>
+<p>      &quot;kind&quot;: &quot;product&quot;,</p>
+<p>      &quot;what_it_does&quot;: &quot;Open-source 3D creation suite.&quot;,</p>
+<p>      &quot;why_relevant&quot;: &quot;The software used in conjunction with fSpy for perspective matching.&quot;,</p>
+<p>      &quot;search_terms&quot;: [&quot;Blender 3D software&quot;]</p>
+<p>    }</p>
+<p>  ],</p>
+<p>  &quot;follow_ups&quot;: [</p>
+<p>    &quot;Research the pricing models (free vs paid) for Repper and Calligraphr&quot;,</p>
+<p>    &quot;Verify if &#x27;Same energy&#x27; is a standalone website or part of a larger search engine&quot;,</p>
+<p>    &quot;Check compatibility of VizRef with the latest iPadOS versions&quot;,</p>
+<p>    &quot;Investigate EbSynth&#x27;s current status and whether it requires specific video formats for optimal results&quot;</p>
+<p>  ]</p>
+<p>}</p>
+<h3>claims check</h3>
+<ul>
+<li>(no claims to check)</li>
+</ul>
+<h3>transcript</h3>
+<p>10 out of 10</p>
+<p>digital art tools,</p>
+<p>but they get</p>
+<p>progressively</p>
+<p>more niche.</p>
+<p>Number one:</p>
+<p>pureref</p>
+<p>drop all your</p>
+<p>references</p>
+<p>onto one</p>
+<p>endless board</p>
+<p>and keep it</p>
+<p>open above</p>
+<p>whatever</p>
+<p>you&#x27;re drawing.</p>
+<p>You can finally close those</p>
+<p>14 browser tabs.</p>
+<p>VizRef</p>
+<p>It&#x27;s basically a reference board app made for your iPad.</p>
+<p>You can keep it beside procreate and even pause gifs</p>
+<p>Frame by frame.</p>
+<p>Same energy.</p>
+<p>Upload one image and it finds more images with a similar visual feel.</p>
+<p>Perfect when you know the exact vibe you want</p>
+<p>but have no idea what to type into the search bar.</p>
+<p>Pose my art build the exact pose you need using adjustable</p>
+<p>3D models.</p>
+<p>Skip the endless search and make the exact pose you&#x27;re looking for.</p>
+<p>The Biodiversity</p>
+<p>Heritage Library.</p>
+<p>It has hundreds</p>
+<p>of thousands of</p>
+<p>old scientific</p>
+<p>illustrations of</p>
+<p>plants,</p>
+<p>animals,</p>
+<p>insects,</p>
+<p>shells</p>
+<p>and more.</p>
+<p>It&#x27;s basically a gold mine for creature designs and tiny decorative details.</p>
+<p>Color study</p>
+<p>upload a reference and it breaks the image into simpler color and value shapes.</p>
+<p>It can make a complicated picture feel way less intimidating to paint.</p>
+<p>Repper</p>
+<p>give it one small drawing or image and it turns it into a seamless</p>
+<p>repeating pattern.</p>
+<p>You can use it for clothing,</p>
+<p>wallpaper,</p>
+<p>packaging,</p>
+<p>backgrounds,</p>
+<p>or pretty much</p>
+<p>anything else.</p>
+<p>Calligraphr</p>
+<p>write out the alphabet in your own handwriting</p>
+<p>and it turns it into a font</p>
+<p>you can actually type with.</p>
+<p>Fspy.</p>
+<p>Mark the perspective lines in a photo</p>
+<p>and it recreates That camera angle inside blender.</p>
+<p>This is way easier than trying to eyeball perspective.</p>
+<p>And No. 10 eb Synth.</p>
+<p>Paint over one frame of a video in your own style,</p>
+<p>and it carries that look through the moving footage.</p>
+<p>You still make the art,</p>
+<p>but</p>
+<p>you don&#x27;t have to repaint every single frame.</p>
+<p>How many did you know?</p>
+<p>And which digital art tool feels the most underrated?</p>
+<p>Save this for later and follow for more digital art tips,</p>
+<p>procreate tricks</p>
+<p>and art ideas.</p>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://www.tiktok.com/@yhs.artstudio/video/7663814981057514783?_r=1&amp;_t=ZT-99VZzu15oAo" rel="noopener">https://www.tiktok.com/@yhs.artstudio/video/7663814981057514783?_r=1&amp;_t=ZT-99VZzu15oAo</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Apparently half of digital art is drawing, and the other…">
+        <input type="hidden" name="slug" value="apparently-half-of-digital-art-is-drawing-and-th">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Apparently half of digital art is drawing, and the other…</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
