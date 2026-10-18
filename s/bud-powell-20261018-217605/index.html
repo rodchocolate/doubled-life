@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Bud Powell — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:2.2rem; font-weight:700; letter-spacing:-.02em; color:var(--porcelain); line-height:1.05; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Bud Powell</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-10-18</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">926</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="cqerUeOwcoU" type="button"><img src="https://i.ytimg.com/vi/cqerUeOwcoU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bud Powell - 1962-04-19 Live in Stockholm - Swedish Pastry 2 CD</span></button>
+<button class="vtile" data-yt="TaSDinL6pC8" type="button"><img src="https://i.ytimg.com/vi/TaSDinL6pC8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bud Powell - Anthropology (1962)</span></button>
+<button class="vtile" data-yt="72vmRqayW0E" type="button"><img src="https://i.ytimg.com/vi/72vmRqayW0E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bud Powell- I Want To Be Happy (1961) Paris</span></button>
+<button class="vtile" data-yt="CzYOf1Wn_5U" type="button"><img src="https://i.ytimg.com/vi/CzYOf1Wn_5U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Sonny Rollins Remembers Bud Powell</span></button>
+<button class="vtile" data-yt="U5oVWVH43Dc" type="button"><img src="https://i.ytimg.com/vi/U5oVWVH43Dc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Pianist That Influenced A Generation</span></button>
+<button class="vtile" data-yt="XEXHQPcWCCE" type="button"><img src="https://i.ytimg.com/vi/XEXHQPcWCCE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bud Powell, at the Antibes Jazz festival, July 13th, 1960 (colorized)</span></button>
+<button class="vtile" data-yt="G4u9Qp-s4bs" type="button"><img src="https://i.ytimg.com/vi/G4u9Qp-s4bs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bud Powell live Montmartre 30/03/1962</span></button>
+<button class="vtile" data-yt="YS86eFFeQ_c" type="button"><img src="https://i.ytimg.com/vi/YS86eFFeQ_c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Barry plays Oblivion (Bud Powell)</span></button>
+<button class="vtile" data-yt="dwYLj-hMNQY" type="button"><img src="https://i.ytimg.com/vi/dwYLj-hMNQY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bud Powell - You Go to My Head</span></button>
+<button class="vtile" data-yt="m-O1uAPpA4w" type="button"><img src="https://i.ytimg.com/vi/m-O1uAPpA4w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bud Powell Trio - Blues In The Closet</span></button>
+<button class="vtile" data-yt="BmfDUDgM5ko" type="button"><img src="https://i.ytimg.com/vi/BmfDUDgM5ko/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bud Powell - &quot;Sweet and Lovely&quot; France (1960)</span></button>
+<button class="vtile" data-yt="RgognYgjy90" type="button"><img src="https://i.ytimg.com/vi/RgognYgjy90/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Swedish Pastry</span></button>
+<button class="vtile" data-yt="Ar9CmxVdpMU" type="button"><img src="https://i.ytimg.com/vi/Ar9CmxVdpMU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Life &amp; Music of Bud Powell Tribute with Bruce Dudley</span></button>
+<button class="vtile" data-yt="DtBAHTXTy9E" type="button"><img src="https://i.ytimg.com/vi/DtBAHTXTy9E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Stopforbud (1963) aka Stop for Bud</span></button>
+<button class="vtile" data-yt="57caYN2rIKc" type="button"><img src="https://i.ytimg.com/vi/57caYN2rIKc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">&quot;Bud Lives!&quot; Trailer</span></button>
+<button class="vtile" data-yt="QezaUqNUU9c" type="button"><img src="https://i.ytimg.com/vi/QezaUqNUU9c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bud Powell: The Charlie Parker of the Piano Couldn&#x27;t Shake His Demons&quot;</span></button>
+<button class="vtile" data-yt="5gMHsw2QW3A" type="button"><img src="https://i.ytimg.com/vi/5gMHsw2QW3A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">BUD LIVES! - preview</span></button>
+<button class="vtile" data-yt="CDZJrWpOM9k" type="button"><img src="https://i.ytimg.com/vi/CDZJrWpOM9k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">BUD LIVES! - The Opening</span></button>
+<button class="vtile" data-yt="tfgG6xz0hQU" type="button"><img src="https://i.ytimg.com/vi/tfgG6xz0hQU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Trailer for the film Amazing The Tests and Triumph of Bud Powell HD</span></button>
+<button class="vtile" data-yt="bRrGFDrif3w" type="button"><img src="https://i.ytimg.com/vi/bRrGFDrif3w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">BUD POWELL (Bouncing with...) Jazz History #50</span></button>
+<button class="vtile" data-yt="qQjBR5x6_j0" type="button"><img src="https://i.ytimg.com/vi/qQjBR5x6_j0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Fire Music The Story of Free Jazz 2021 WEB DL 720p fzmovies net b4afaa1af120a62391da3999dbad0f9b</span></button>
+<button class="vtile" data-yt="Z3WHUsfJd4M" type="button"><img src="https://i.ytimg.com/vi/Z3WHUsfJd4M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Bud Powell: The Heartbreaking Genius and Tragic Fall of Jazz legend</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Bud Powell was an American jazz pianist and composer who pioneered the development of bebop. His application of complex phrasing to the piano influenced later pianists such as Barry Harris, Toshiko Akiyoshi, and Walter Davis Jr. He is known for his right-hand-focused approach to </p>
+<p>Bud Powell was an American jazz pianist and composer who pioneered the development of bebop. His application of complex phrasing to the piano influenced later pianists such as Barry Harris, Toshiko Akiyoshi, and Walter Davis Jr. He is known for his right-hand-focused approach to the piano.</p>
+<h3>early life and education</h3>
+<p>Born in Harlem, New York, in 1924, Powell own a musical family; his father William was a stride pianist and his grandfather Zachary was a flamenco guitarist. He began taking classical piano lessons at age five from William Rawlins, a West Indian man. As an altar boy at the suatu own Catholic church in Harlem, he also learned to play the organ. By age 10, Powell showed interest in swing music, appearing in public for the first time at a rent party where he emulated Fats Waller and Art Tatum. After leaving DeWitt Clinton High School, he shifted toward jazz, mastering James P. Johnson&#x27;s &quot;Carolina Shout&quot; as his first jazz composition. He also developed an interest in adapting Broadway songs to jazz improvisation.</p>
+<h3>professional career</h3>
+<p>Powell&#x27;s early professional career began as an accompanist for singer Valaida Snow and played with the Sunset Royals. He later joined trumpeter Cootie Williams&#x27;s band in 1943, where he became the musical director and arranger. While with Williams, Powell requested that the band play Monk&#x27;s &quot;&#x27;Round Midnight&quot;, which resulted in the first recording of the tune.</p>
+<h3>health struggles and institutionalization</h3>
+<p>In 1945, Powell suffered a severe beating by railroad police in Philadelphia, which led to persistent head wounds and chronic pain. To relieve this pain, he turned to alcohol, developing an addiction that haunted him throughout his life. This resulted in several years of intermittent institutionalizations, including stays at Bellevue Hospital and Creedmoor State Hospital in Queens, New York. He was later released after a jazz aficionado arranged for his medical care to be transferred to someone who allowed him to play piano regularly.</p>
+<h3>later years and death</h3>
+<p>In 1959, Powell relocated to Paris, France, to flee racism and barriers to a higher standard of living. He returned to a regular recording schedule and toured Northern and Central Europe. In February 1963, he recorded the studio album &#x27;Bud Powell in Paris&#x27; for Reprise, produced by Duke Ellington with financial support from Frank Sinatra. In 1963, he became ill with tuberculosis tuberculosis. After returning to New York, he died in 1966 at age 41 due to ill health and alcohol addiction.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Born:</strong> September 27, 1924</li>
+<li><strong>Died:</strong> value: July 31, 1966</li>
+<li><strong> :</strong> -</li>
+<li><strong>Notable Compositions:</strong> Un Poco Loco, Bouncing with Bud, Parisian Thoroughfare</li>
+<li><strong>Influence:</strong> Bebop pioneer, influenced Walter Davis Jr., Toshiko Akiyoshi, and Barry Harris</li>
+<li><strong>First Jazz Composition Mastered:</strong> James P. Johnson&#x27;s &quot;Carolina Shout&quot;</li>
+<li><strong>value: Idol:</strong> Art Tatum</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Bud_Powell" rel="noopener">https://en.wikipedia.org/wiki/Bud_Powell</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Bud_Powell_discography" rel="noopener">https://en.wikipedia.org/wiki/Bud_Powell_discography</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Bud_Powell_in_Paris" rel="noopener">https://en.wikipedia.org/wiki/Bud_Powell_in_Paris</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Bud Powell">
+        <input type="hidden" name="slug" value="bud-powell">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Bud Powell</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
