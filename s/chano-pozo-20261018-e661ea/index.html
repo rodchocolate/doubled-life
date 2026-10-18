@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Chano Pozo — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:2.2rem; font-weight:700; letter-spacing:-.02em; color:var(--porcelain); line-height:1.05; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Chano Pozo</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-10-18</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">908</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="ZfLz9igch5k" type="button"><img src="https://i.ytimg.com/vi/ZfLz9igch5k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rumba Rumbero CHANO POZO</span></button>
+<button class="vtile" data-yt="j2fhraskYP0" type="button"><img src="https://i.ytimg.com/vi/j2fhraskYP0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">CHANO POZO &amp; DIZZY GILLESPIE - MANTECA</span></button>
+<button class="vtile" data-yt="Vlagk-LDXq0" type="button"><img src="https://i.ytimg.com/vi/Vlagk-LDXq0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dizzy Gillespie about Chano Pozo and Manteca&#x27;s story</span></button>
+<button class="vtile" data-yt="7qsVVwlh6Nc" type="button"><img src="https://i.ytimg.com/vi/7qsVVwlh6Nc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The legacy of Chano Pozo -completo-</span></button>
+<button class="vtile" data-yt="2DhZeS6wVWA" type="button"><img src="https://i.ytimg.com/vi/2DhZeS6wVWA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Chano Pozo - Corta Historia - Mini Documental 1/3 (by Lucas Vazquez)</span></button>
+<button class="vtile" data-yt="bZw5se84ejU" type="button"><img src="https://i.ytimg.com/vi/bZw5se84ejU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DonSalserisimo T,Puente C,Cruz Murio Chano Pozo</span></button>
+<button class="vtile" data-yt="eRzgiAJ9ZQw" type="button"><img src="https://i.ytimg.com/vi/eRzgiAJ9ZQw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Chano Pozo</span></button>
+<button class="vtile" data-yt="f_79MTIjg_g" type="button"><img src="https://i.ytimg.com/vi/f_79MTIjg_g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Chano Pozo</span></button>
+<button class="vtile" data-yt="Hz7riQa7aGA" type="button"><img src="https://i.ytimg.com/vi/Hz7riQa7aGA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Manteca, de Chano Pozo, por Dizzy Gillespie</span></button>
+<button class="vtile" data-yt="ctmPns5UR5U" type="button"><img src="https://i.ytimg.com/vi/ctmPns5UR5U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Chico and Rita Exclusive Clip: Poor Chano Pozo</span></button>
+<button class="vtile" data-yt="bHLFAZxtDVk" type="button"><img src="https://i.ytimg.com/vi/bHLFAZxtDVk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Chico &amp; Rita - Tribute to Chano Pozo</span></button>
+<button class="vtile" data-yt="ChLKDdBxQfA" type="button"><img src="https://i.ytimg.com/vi/ChLKDdBxQfA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">🥁 Chano Pozo: The Cuban who revolutionized jazz… and was murdered in Harlem</span></button>
+<button class="vtile" data-yt="dlGp3yjJwOE" type="button"><img src="https://i.ytimg.com/vi/dlGp3yjJwOE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Chano Pozo - The Legacy - USA - 2006 - Documentary</span></button>
+<button class="vtile" data-yt="0jLZ09Ue31I" type="button"><img src="https://i.ytimg.com/vi/0jLZ09Ue31I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Documental &quot;Lucumi, el Rumbero de Cuba&quot; (Rumbero of Cuba)</span></button>
+<button class="vtile" data-yt="pdFBsD9h6ZM" type="button"><img src="https://i.ytimg.com/vi/pdFBsD9h6ZM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Buscando a Chano Pozo di Rebeca Chavéz (1987) - Documental</span></button>
+<button class="vtile" data-yt="3-pZ8qp9ubI" type="button"><img src="https://i.ytimg.com/vi/3-pZ8qp9ubI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Documental: Homenaje A Chano Pozo de Ekue Muñanga Efó</span></button>
+<button class="vtile" data-yt="jq77FO83pXQ" type="button"><img src="https://i.ytimg.com/vi/jq77FO83pXQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Chano Pozo: Historia de la Musica Afro-Cubana</span></button>
+<button class="vtile" data-yt="qdBWcXKDn9I" type="button"><img src="https://i.ytimg.com/vi/qdBWcXKDn9I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">WHO KILLED CHANO POZO?</span></button>
+<button class="vtile" data-yt="alsdQr8HIdU" type="button"><img src="https://i.ytimg.com/vi/alsdQr8HIdU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Legacy Of Chano Pozo Fragmento</span></button>
+<button class="vtile" data-yt="IMipw5NWSZk" type="button"><img src="https://i.ytimg.com/vi/IMipw5NWSZk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dizzy Gillespie and Manteca</span></button>
+<button class="vtile" data-yt="d_F6TNQsMnk" type="button"><img src="https://i.ytimg.com/vi/d_F6TNQsMnk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">CHANO POZO</span></button>
+<button class="vtile" data-yt="jjNEko0_18c" type="button"><img src="https://i.ytimg.com/vi/jjNEko0_18c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Chano Pozo - Corta Historia - Mini Documental 3/3 (by Lucas Vazquez)</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Luciano &#x27;Chano&#x27; Pozo González was a Cuban jazz percussionist, singer, dancer, and composer who played a major role in the founding of Latin jazz. Despite living to only 33 years old, he is credited with shaping Latin music. He was the first Latin percussionist in Dizzy Gillespie&#x27;</p>
+<p>Luciano &#x27;Chano&#x27; Pozo González was a Cuban jazz percussionist, singer, dancer, and composer who played a major role in the founding of Latin jazz. Despite living to only 33 years old, he is credited with shaping Latin music. He was the first Latin percussionist in Dizzy Gillespie&#x27;s band.</p>
+<h3>early life and santería</h3>
+<p>Born in Havana to Cecelio González and Carnación Pozo, Chano Pozo grew up in poverty. After his mother died when he was 11, he lived with his father&#x27;s mistress, Natalia. He showed an early interest in drums and performed in Afro-Cuban religious ceremonies. While living in the Africa neighborhood (El África Solar), a former slave quarters, he became involved in petty criminal activities and spent time in a youth reformatory in Guanajay, where he learned reading, writing, and auto body repair while honing his drumming skills. During this time, he became a devotee of Santería (La Regla de Ocha), an Afro-Caribbean religion derived from Yoruba beliefs of Nigeria. He pledged allegiance to the Catholic Saint Barbara/Shango, the god of fire and thunder, often carrying a red scarf to signify this allegiance. After his release, he worked as a bootblack and later as a newspaper seller for El País, which led to him being hired as a personal driver and bodyguard for businessman Alfredo Suárez.</p>
+<h3>musical career in cuba</h3>
+<p>Pozo became well-known in Havana for his compositions for Carnival, where he was a sought-after rumbero. He led his own comparsa (street troupe) щотen winning top cash prizes for his compositions. In 1940, he and fellow musicians wrote &#x27;La Comparsa de los Dandys&#x27;, a conga music composition that earned first prize in the city of Santiago de Cuba&#x27;s carnival and is considered an unofficial theme song of Santiago de Cuba. He also performed as a dancer in a troupe known as The Dandy. To overcome racial marginalization, he worked as a bouncer for the radio station Azul, where he used his imposing size to keep crowds in check while befriending musicians who worked there.</p>
+<h3>career in new york and latin jazz</h3>
+<p>In 1947, encouraged by Mario Bauza and Miguelito Valdés, Pozo immigrated to the United States. He was introduced to Dizzy Gillespie, who was looking for a conga player. The collaborations between Gillespie and Pozo brought Afro-Cuban rhythms and instruments like the bongo and tumbadora into the East Coast jazz scene. They co-wrote Latin-flavored compositions such as &#x27;Manteca&#x27; and &#x27;Tin Tin Deo&#x27;. Their work contributed to the early form of Latin jazz known as &#x27;Cubop&#x27; (Cuban bebop), a mix of Afro-Cuban clave-based rhythms with jazz harmonies and improvisation techniques.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Full Name:</strong> Luciano Pozo González</li>
+<li><strong>Born:</strong> January 7, 1915</li>
+<li><strong>died:</strong> December 2, 1948</li>
+<li><strong>Religion:</strong> Santería (devotee of Saint Barbara/Shango)</li>
+<li><strong>Notable Compositions:</strong> &#x27;Manteca&#x27;, &#x27;Tin Tin Deo&#x27;, and &#x27;La Comparsa de los Dandys&#x27;</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Afro-Cuban_jazz" rel="noopener">https://en.wikipedia.org/wiki/Afro-Cuban_jazz</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Chano_Pozo" rel="noopener">https://en.wikipedia.org/wiki/Chano_Pozo</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Jazz" rel="noopener">https://en.wikipedia.org/wiki/Jazz</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Chano Pozo">
+        <input type="hidden" name="slug" value="chano-pozo">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Chano Pozo</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
