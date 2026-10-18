@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>George Russell — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:2.2rem; font-weight:700; letter-spacing:-.02em; color:var(--porcelain); line-height:1.05; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>George Russell</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-10-18</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1020</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="g50gT64fp0g" type="button"><img src="https://i.ytimg.com/vi/g50gT64fp0g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">George Russell Answers the Internet&#x27;s Most Asked Questions!</span></button>
+<button class="vtile" data-yt="iu0KInshl48" type="button"><img src="https://i.ytimg.com/vi/iu0KInshl48/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">George Russell FURIOUS After RETIRING From The 2026 Canadian GP - Slams car + Silent Team Radio</span></button>
+<button class="vtile" data-yt="loWVdE5yoBA" type="button"><img src="https://i.ytimg.com/vi/loWVdE5yoBA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Max Verstappen and George Russell Being Best Friends For 8 Minutes Straight</span></button>
+<button class="vtile" data-yt="GybJw9k8Yjo" type="button"><img src="https://i.ytimg.com/vi/GybJw9k8Yjo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">George Russell being THE ICON OF THE GRID for 4 minutes straight</span></button>
+<button class="vtile" data-yt="XvSteBW1eXE" type="button"><img src="https://i.ytimg.com/vi/XvSteBW1eXE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">George Russell HEARTBREAKING TEAM RADIO After RETIRING From The 2026 Malaysian / Bahrain GP!</span></button>
+<button class="vtile" data-yt="hquMYiX_1l4" type="button"><img src="https://i.ytimg.com/vi/hquMYiX_1l4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">5 Times George Russell Went Full Hall Monitor</span></button>
+<button class="vtile" data-yt="qs333MgOeHk" type="button"><img src="https://i.ytimg.com/vi/qs333MgOeHk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">George Russell blaming everyone for 6 minutes straight</span></button>
+<button class="vtile" data-yt="_CMtecF6TQ8" type="button"><img src="https://i.ytimg.com/vi/_CMtecF6TQ8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">What Has Gone Wrong For George Russell?</span></button>
+<button class="vtile" data-yt="kXGfU3Ce8eE" type="button"><img src="https://i.ytimg.com/vi/kXGfU3Ce8eE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">George Russell Post-Race interview | 2026 Bahrain Grand Prix</span></button>
+<button class="vtile" data-yt="PcaO3aKsOV8" type="button"><img src="https://i.ytimg.com/vi/PcaO3aKsOV8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">George Russell&#x27;s Pole Lap | 2026 Azerbaijan Grand Prix | Pirelli</span></button>
+<button class="vtile" data-yt="S58Uqz4mDRw" type="button"><img src="https://i.ytimg.com/vi/S58Uqz4mDRw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">George Russell on Perfectionism, Mindset, And The Car He Didn&#x27;t Fit In | Significant Figures</span></button>
+<button class="vtile" data-yt="IkVylQUuguI" type="button"><img src="https://i.ytimg.com/vi/IkVylQUuguI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">George Russell&#x27;s Monza Meltdown</span></button>
+<button class="vtile" data-yt="MOdL6p7wzX0" type="button"><img src="https://i.ytimg.com/vi/MOdL6p7wzX0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Next Generation: George Russell</span></button>
+<button class="vtile" data-yt="RCaEB7MRFng" type="button"><img src="https://i.ytimg.com/vi/RCaEB7MRFng/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Frustrating Career of George Russell So Far</span></button>
+<button class="vtile" data-yt="eglCFzxWg6U" type="button"><img src="https://i.ytimg.com/vi/eglCFzxWg6U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">From Highs To Heartbreak: George Russell&#x27;s Extraordinary Mercedes Debut</span></button>
+<button class="vtile" data-yt="PkLfAdo3vx4" type="button"><img src="https://i.ytimg.com/vi/PkLfAdo3vx4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">George Russell: The Truth About The Mercedes Seat &amp; My Future In F1</span></button>
+<button class="vtile" data-yt="AjO3UIwOiRU" type="button"><img src="https://i.ytimg.com/vi/AjO3UIwOiRU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">George Russell seriously struggling after Singapore Race</span></button>
+<button class="vtile" data-yt="vM0Ayenc6gg" type="button"><img src="https://i.ytimg.com/vi/vM0Ayenc6gg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">This Charming Serial Killer Liked to &#x27;Pose&#x27; his Victims for Shock Value | George Russell</span></button>
+<button class="vtile" data-yt="lHEY9nUp6Ds" type="button"><img src="https://i.ytimg.com/vi/lHEY9nUp6Ds/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">George Russell&#x27;s Journey To Mercedes</span></button>
+<button class="vtile" data-yt="DDd8JZOsV5o" type="button"><img src="https://i.ytimg.com/vi/DDd8JZOsV5o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">George is how old?! 🤣 In Convo With Kids | George Russell and Kimi Antonelli</span></button>
+<button class="vtile" data-yt="v02uP3eKCv8" type="button"><img src="https://i.ytimg.com/vi/v02uP3eKCv8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The REAL Reason F1 Fans HATE George Russell</span></button>
+<button class="vtile" data-yt="YWd7_bwzdkw" type="button"><img src="https://i.ytimg.com/vi/YWd7_bwzdkw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rookie Of The Year 2019: Norris, Russell or Albon?</span></button>
+<button class="vtile" data-yt="dQDWdFbpBMo" type="button"><img src="https://i.ytimg.com/vi/dQDWdFbpBMo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Drift of a Lifetime</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">George Russell is a name shared by several individuals across various fields. Most notably, it refers to a British racing driver for Mercedes and an Irish writer, poet, and painter known as Æ.</p>
+<p>George Russell is a name shared by several individuals across various fields. Most notably, it refers to a British racing driver for Mercedes and an Irish writer, poet, and painter known as Æ.</p>
+<h3>british racing driver</h3>
+<p>George William Russell, born February 15, 1998, is a British racing driver who competes in Formula One for Mercedes. He began karting at age seven and won back-to-back Junior European Championships in 2011 and 2012. After winning the BRDC F4 Championship in 2014, and the GP3 Series and FIA Formula 2 Championship in 2017 and 2018 respectively, junior formulae single-seater racing became his kind of sport. He debuted in Formula One in 2019 with Williams, debuting at the Australian Grand Prix. After a substitute appearance for Lewis Hamilton at the 2020 Sakhir Grand Prix, scored his maiden podium at the 2021 Belgian Grand Prix. In 2022, he joined Mercedes to partner Hamilton; achieving his maiden pole position in Hungary and his maiden win in  São Paulo.    // a bit more detail on his racing career progression from karting to F1 up to 2026</p>
+<h3>irish writer and artist</h3>
+<p>George William Russell, (1867–1935), who wrote under the pseudonym Æ, Æ la own same name, Æ was an Irish writer, editor, critic, poet, painter and Irish nationalist. Born in Lurgan, County Armagh, he was educated at Rathmines School and the Metropolitan School of Art. He worked as a draper&#x27;s clerk and later for the Irish Agricultural Organisation Society (IAOS), where he became Assistant Secretary. As a publisher, he established himself in the the same same name, editor of the Irish Homestead from 1905 to 1923 and The Irish Statesman from 1923 to 1930. As an even more detailed description of terms, Æ Æ was a central figure in the the same same name, editor of the Irish uma own same name, editor of the Irish Homestead from 1905 and 1923, and 1 uma own same name, editor of the Irish Homestead from 1905 to 1923. He was a central figure in the group of devotees of theosophy in Dublin for many years.</p>
+<h3>racing career progression</h3>
+<p>George Russell (racing driver) began his competitive karting career at age seven. He progressed to the cadet class by 2009, becoming MSA British champion and British Open champion. In 2011, he became CIK-FIA European Champion and won the SKUSA SuperNationals title. In 2012, he  became the first driver in history to successfully defend the Junior European Championship. In 2014, he made his single-seater debut in BRDC Formula 4 (Lanan Racing) and Formula Renault 2.0 Alps (Koiranen GP). He won the 2014 BRDC F4 Championship title. ocorreu ocorreu ocorreu ocorreu occurred own same name, ocorreu ocorreu ocorreu ocorreu occurred own same name, ocorr// a bit more detail on his racing career progression from karting to karting to F1 up to 2026</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Born:</strong> February 15, 1998 (Racing Driver)</li>
+<li><strong>Born:</strong> April 10, 1867 (Writer/Artist)</li>
+<li><strong>F1 Wins:</strong> 8 race wins as of the 2026 Singapore Grand Prix</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/George_Russell" rel="noopener">https://en.wikipedia.org/wiki/George_Russell</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/George_Russell_(racing_driver" rel="noopener">https://en.wikipedia.org/wiki/George_Russell_(racing_driver</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/George_William_Russell" rel="noopener">https://en.wikipedia.org/wiki/George_William_Russell</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="George Russell">
+        <input type="hidden" name="slug" value="george-russell">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — George Russell</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
