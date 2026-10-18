@@ -276,11 +276,13 @@ const BC = 4; const BW = Math.ceil(W/BC)+1, BH = Math.ceil(D/BC)+1; const WALK =
   for (const l of L){ if (!l.points?.length) continue; const top = l.points.reduce((a,b)=>a[2]>b[2]?a:b), bot = l.points.reduce((a,b)=>a[2]<b[2]?a:b); stamp([top, top], 14); stamp([bot, bot], 14); } })();
 const walkable = (x, y) => { const X=Math.round(x/BC), Y=Math.round(y/BC); return X>=0&&Y>=0&&X<BW&&Y<BH && WALK[Y*BW+X]===1; };
 let BOUND = !(new URLSearchParams(location.search).get('free'));   // ?free=1 lifts the bounding (debug / later off-piste mode)
-// --- the walker: start at the TOP station of the highest lift (by elevation), facing back down its line
-const liftsWithPts = L.filter(l => l.points && l.points.length >= 2);
-const topLift = liftsWithPts.reduce((best, l) => { const t = l.points.reduce((a,b)=>a[2]>b[2]?a:b); return (!best || t[2] > best.top[2]) ? { l, top: t } : best; }, null);
-let px, py, yaw, pitch = -0.08;
-if (topLift){ const bot = topLift.l.points.reduce((a,b)=>a[2]<b[2]?a:b); px = topLift.top[0]; py = topLift.top[1]; yaw = Math.atan2(bot[0]-topLift.top[0], bot[1]-topLift.top[1]); }
+// --- the walker: start at the BASE of the lift whose top is highest (surface lifts excluded), facing up its line; ride it to arrive
+const SURFACE = new Set(['magic_carpet','rope_tow','platter','t-bar','j-bar','zip_line','goods']);
+const liftsWithPts = L.filter(l => l.points && l.points.length >= 2 && !SURFACE.has(l.type));
+const START_OVERRIDE = (H.start_lift || null);   // optional per-package override by lift name (heightmap.json "start_lift")
+const topLift = liftsWithPts.reduce((best, l) => { if (START_OVERRIDE) return (l.name === START_OVERRIDE) ? { l, top: l.points.reduce((a,b)=>a[2]>b[2]?a:b) } : best; const t = l.points.reduce((a,b)=>a[2]>b[2]?a:b); return (!best || t[2] > best.top[2]) ? { l, top: t } : best; }, null);
+let px, py, yaw, pitch = -0.02;
+if (topLift){ const bot = topLift.l.points.reduce((a,b)=>a[2]<b[2]?a:b); px = bot[0]; py = bot[1]; yaw = Math.atan2(topLift.top[0]-bot[0], topLift.top[1]-bot[1]); }
 else { const p0 = P[0].points[0]; px = p0[0]; py = p0[1]; yaw = 0; }
 const EYE=1.7, SPEED=28;
 let RIDE = null;   // {l, t0, dur, pts, len}
@@ -289,6 +291,8 @@ const prompt = document.createElement('div'); prompt.id='lift'; prompt.style.css
 function nearStation(){ let best=null, bd=25*25; for (const s of stations){ const d=(s.bot[0]-px)**2+(s.bot[1]-py)**2; if (d<bd){ bd=d; best=s; } } return best; }
 function boardLift(s){ RIDE = { s, t0: performance.now(), dur: Math.max(6000, s.len/1000*20000) }; prompt.style.display='none'; }
 prompt.onclick = () => { const s = nearStation(); if (s) boardLift(s); };
+let AUTO_BOARD = performance.now() + 2500, userMoved = false;   // on load: ride up unless the user takes control first
+addEventListener('keydown', () => userMoved = true, { once: true }); addEventListener('pointerdown', () => userMoved = true, { once: true });
 addEventListener('keydown', e => { if (e.code==='KeyE'){ const s = nearStation(); if (s && !RIDE) boardLift(s); } }); const keys={};
 jump.onchange = () => { const sp = window.__spots.find(x=>x[0]===jump.value); if (!sp) return; const [, at, toward] = sp; px = at[0]; py = at[1]; yaw = Math.atan2(toward[0]-at[0], toward[1]-at[1]); pitch = -0.1; jump.value=''; };
 addEventListener('keydown',e=>keys[e.code]=1); addEventListener('keyup',e=>keys[e.code]=0);
@@ -324,7 +328,9 @@ function frame(now){ const dt=Math.min(0.05,(now-last)/1000); last=now;
   const frac = 0.5 + 0.25 * Math.min(1, speedNow / (SPEED*3)); const target = slopeAng * frac;
   lean += (target - lean) * Math.min(1, dt*4);
   cam.rotation.set(0,0,0); cam.rotateY(-yaw); cam.rotateX(pitch + lean);
-  const st = nearStation(); if (st && !RIDE){ prompt.textContent = `ride ${st.l.name||st.l.type} ▲ ${Math.round(st.top[2])} m — E / tap`; prompt.style.display='block'; } else prompt.style.display='none';
+  const st = nearStation(); if (st && !RIDE){ const auto = AUTO_BOARD && !userMoved; prompt.textContent = auto ? `${st.l.name||st.l.type} ▲ ${Math.round(st.top[2])} m — boarding… (move to stay)` : `ride ${st.l.name||st.l.type} ▲ ${Math.round(st.top[2])} m — E / tap`; prompt.style.display='block';
+    if (auto && now > AUTO_BOARD){ AUTO_BOARD = 0; boardLift(st); } } else prompt.style.display='none';
+  if (userMoved) AUTO_BOARD = 0;
   const r=nearestRun(px,py); document.getElementById('pos').textContent=`${Math.round(h)} m · ${Math.round(px)} E ${Math.round(py)} N`; document.getElementById('run').textContent=(r?`on: ${r.name||'unnamed'} (${r.difficulty||'?'})${r.resort&&new Set(P.map(x=>x.resort)).size>1?' · '+r.resort:''}`:'')+` · ${PISTE_MESHES.length} runs`+((now-edgeHit)<400?' · trail edge':'');
   if (window.updateTrees && (now|0) % 4 === 0) window.updateTrees(cam.position); if (terrMat.userData.sh) terrMat.userData.sh.uniforms.uTime.value = now/1000;
   if ((now|0) % 100 < 17) drawMini();

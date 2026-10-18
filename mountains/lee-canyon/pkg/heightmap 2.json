@@ -1,0 +1,36 @@
+{
+ "resort": "Lee Canyon",
+ "slug": "lee-canyon",
+ "landscape_px": [
+  461,
+  505
+ ],
+ "metres_per_px": [
+  2.969,
+  2.968
+ ],
+ "elev_min_m": 2577.3,
+ "elev_max_m": 3141.1,
+ "unreal": {
+  "import": "Landscape \u2192 Import from File \u2192 heightmap.png",
+  "scale_x_cm": 296.89,
+  "scale_y_cm": 296.76,
+  "scale_z_pct": 11010.07,
+  "note": "Set X/Y scale to scale_x_cm/scale_y_cm (1 Unreal unit = 1 cm). Z scale as given puts the terrain at true elevation span. Landscape origin = SW corner at (0,0); add elev_min_m*100 to Z location to place sea level at 0."
+ },
+ "bbox": {
+  "lat0": 36.293915825,
+  "lat1": 36.307351475000004,
+  "lon0": -115.687678275,
+  "lon1": -115.67245582500001
+ },
+ "origin_sw": {
+  "lat": 36.293915825,
+  "lon": -115.687678275
+ },
+ "source_zoom": 15,
+ "native_m_per_px": 3.85,
+ "dem": "USGS 3DEP (public domain), 1-10 m lidar/NED via National Map ImageServer",
+ "crs": "WGS84 lat/lon \u2192 local equirectangular metres at mean latitude; adequate at \u226410 km extents",
+ "made": "2026-10-18 13:51"
+}
