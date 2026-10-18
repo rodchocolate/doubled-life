@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Mahavishnu Orchestra — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:2.2rem; font-weight:700; letter-spacing:-.02em; color:var(--porcelain); line-height:1.05; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>Mahavishnu Orchestra</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-10-18</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">826</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="LcQKjffxIOY" type="button"><img src="https://i.ytimg.com/vi/LcQKjffxIOY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mahavishnu Orchestra - Meeting Of The Spirits/You Know You Know</span></button>
+<button class="vtile" data-yt="tkVAJoK1gxE" type="button"><img src="https://i.ytimg.com/vi/tkVAJoK1gxE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mahavishnu Orchestra - Apocalypse 1974 A-Side</span></button>
+<button class="vtile" data-yt="bJxi16Ul_Ps" type="button"><img src="https://i.ytimg.com/vi/bJxi16Ul_Ps/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Inner Mounting Flame (1971) By The Mahavishnu Orchestra Full Album</span></button>
+<button class="vtile" data-yt="NYbfus0NQE8" type="button"><img src="https://i.ytimg.com/vi/NYbfus0NQE8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Frank Zappa about John McLaughlin (Interview 1973)</span></button>
+<button class="vtile" data-yt="TAMx_nkKqDg" type="button"><img src="https://i.ytimg.com/vi/TAMx_nkKqDg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Mahavishnu Orchestra - Live in Munich 1972 (Full)</span></button>
+<button class="vtile" data-yt="n0Gs0lh7Hl0" type="button"><img src="https://i.ytimg.com/vi/n0Gs0lh7Hl0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mahavishnu Orchestra - BBC 1972</span></button>
+<button class="vtile" data-yt="VuIAmbmwVSs" type="button"><img src="https://i.ytimg.com/vi/VuIAmbmwVSs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mahavishnu Orchestra - You Know, You Know (Live on BBC)</span></button>
+<button class="vtile" data-yt="aAMfNhnz48g" type="button"><img src="https://i.ytimg.com/vi/aAMfNhnz48g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">A BRIEF HISTORY OF THE MAHAVISHNU ORCHESTRA | with Gary Husband</span></button>
+<button class="vtile" data-yt="1JUqPbHTx5Q" type="button"><img src="https://i.ytimg.com/vi/1JUqPbHTx5Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Lost Mahavishnu Orchestra Album Between Eternity &amp; Nothingness Montreal Canada July 13 1973</span></button>
+<button class="vtile" data-yt="10a45mgMGcY" type="button"><img src="https://i.ytimg.com/vi/10a45mgMGcY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mahavishnu Orchestra - Noonward Race</span></button>
+<button class="vtile" data-yt="5rBBsYdFRPY" type="button"><img src="https://i.ytimg.com/vi/5rBBsYdFRPY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mahavishnu Orchestra - Live in Seattle (Tele-Rock, 1973)</span></button>
+<button class="vtile" data-yt="HW56Yvw42uY" type="button"><img src="https://i.ytimg.com/vi/HW56Yvw42uY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">BILLY COBHAM | Creating the Mahavishnu Orchestra</span></button>
+<button class="vtile" data-yt="AoUWR1cWLak" type="button"><img src="https://i.ytimg.com/vi/AoUWR1cWLak/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Mahavishnu Orchestra: The Shocking Betrayal Behind Jazz Fusion’s Greatest Band</span></button>
+<button class="vtile" data-yt="YDHOcPsNJtA" type="button"><img src="https://i.ytimg.com/vi/YDHOcPsNJtA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Why Mahavishnu Orchestra’s Apocalypse Was Misunderstood</span></button>
+<button class="vtile" data-yt="qateeY6Zh9M" type="button"><img src="https://i.ytimg.com/vi/qateeY6Zh9M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Spiritual &amp; Musical Legacy of John McLaughlin &amp; Origins of the Mahavishnu Orchestra - Group talk</span></button>
+<button class="vtile" data-yt="BolkY1SUhGo" type="button"><img src="https://i.ytimg.com/vi/BolkY1SUhGo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Story of Shakti with John McLaughlin 1977</span></button>
+<button class="vtile" data-yt="PevdetZIS1E" type="button"><img src="https://i.ytimg.com/vi/PevdetZIS1E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">“Stratus” | Jeff Beck Tribute 5-23-23 | Song 14 (John McLaughlin)</span></button>
+<button class="vtile" data-yt="K1slAaoFTw8" type="button"><img src="https://i.ytimg.com/vi/K1slAaoFTw8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Exploring the Legendary Tour History of the Mahavishnu Orchestra: 1971-1973</span></button>
+<button class="vtile" data-yt="2KwOvw-4iG0" type="button"><img src="https://i.ytimg.com/vi/2KwOvw-4iG0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Deeper into APOCALYPSE by THE MAHAVISHNU ORCHESTRA</span></button>
+<button class="vtile" data-yt="g5pqBqcbkBQ" type="button"><img src="https://i.ytimg.com/vi/g5pqBqcbkBQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">John McLaughlin Had It All… So What Went Wrong?</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The Mahavishnu Orchestra was a jazz fusion band formed in New York City in 1971 by English guitarist John McLaughlin. The group&#x27;s music was characterized by a blend of Indian classical music, jazz, and psychedelic rock, blending electric rock, funk, and complex time signatures.</p>
+<p>The Mahavishnu Orchestra was a jazz fusion band formed in New York City in 1971 by English guitarist John McLaughlin. The group&#x27;s music was characterized by a blend of Indian classical music, jazz, and psychedelic rock, blending electric rock, funk, and complex time signatures.</p>
+<h3>formation and first incarnation</h3>
+<p>The band&#x27;s first line-up featured John McLaughlin, drummer Billy Cobham, keyboardist Jan Hammer, violinist Jerry Goodman, and bassist Rick Laird. The group&#x27;s name originates from Indian spiritual leader Sri Chinmoy, who gave McLaughlin the name Mahavishnu, with &#x27;Maha&#x27; meaning &#x27;great&#x27; in Sanskrit and &#x27;vishnu&#x27; after the Hindu deity Vishnu. After rehearsing for one week in July 1971, they recorded their debut album, The Inner Mounting Flame, released in November 1971. This was followed by Birds of Fire (1973). They also released a live album, Between Nothingness &amp; Eternity. Their first incarnation ended in January 1974 when McLaughlin split the group due to pressures of fame, exhaustion, and lack of communication.</p>
+<h3>subsequent incarnations</h3>
+<p>The band reformed in 1974 with a new cast of musicians including Jean-Luc Ponty on violin, Gayle Moran on keyboards, Ralphe Armstrong on bass guitar, and Narada Michael Walden on drums. This version of the orchestra expanded to include various violins, viola, and cello, and recorded Apocalypse (1974) with the London Symphony Orchestra under the direction of Michael Tilson Thomas, and Visions of the Emerald Beyond (1975). In 1976, the band was reduced to a four-piece for Inner Worlds. After a period of dissolution, McLaughlin reformed the group again in 1984 with Bill Evans on saxophones, Jonas Hellborg on bass, Mitchel Forman on keyboards, and original member Billy Cobham on drums. This third incarnation&#x27;s sound was different from the original, specifically due to McLaughlin&#x27;s extensive use of the Synclavier synthesizer system.</p>
+<h3>musical style and discography</h3>
+<p>The Mahavishnu Orchestra&#x27;s music was characterized by complex, intense music consisting of a blend of Indian classical music, jazz, and the psychedelic rock. Their first incarnation&#x27;s first two studio albums, The Inner Mounting Flame and Birds of Fire, cùng với live album Between Nothingness &amp; Eternity. During the cùng với 1980s reformation reformation reformation reformation reformation reformation reformation reformation reformation reformation reformation reformation reformation reformation പുതുபுறம் પુரு// a general subject research</p>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Apocalypse_(Mahavishnu_Orchestra_album" rel="noopener">https://en.wikipedia.org/wiki/Apocalypse_(Mahavishnu_Orchestra_album</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Mahavishnu_(album" rel="noopener">https://en.wikipedia.org/wiki/Mahavishnu_(album</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Mahavishnu_Orchestra" rel="noopener">https://en.wikipedia.org/wiki/Mahavishnu_Orchestra</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Mahavishnu Orchestra">
+        <input type="hidden" name="slug" value="mahavishnu-orchestra">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Mahavishnu Orchestra</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
