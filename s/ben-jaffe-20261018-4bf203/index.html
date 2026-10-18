@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Ben Jaffe — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:2.2rem; font-weight:700; letter-spacing:-.02em; color:var(--porcelain); line-height:1.05; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Ben Jaffe</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-10-18</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">825</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="mJpmjSJM8ug" type="button"><img src="https://i.ytimg.com/vi/mJpmjSJM8ug/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Benjamin Jaffe performs &quot;LA River&quot; at Healing Force of the Universe on January 25, 2026</span></button>
+<button class="vtile" data-yt="kvi01i_HVzM" type="button"><img src="https://i.ytimg.com/vi/kvi01i_HVzM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The History of the Preservation Hall Jazz Band with Ben Jaffe</span></button>
+<button class="vtile" data-yt="Ly5Ey4S47n8" type="button"><img src="https://i.ytimg.com/vi/Ly5Ey4S47n8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Benjamin Jaffe | Jam in the Van | Alternative Folk (Full Set 2026)</span></button>
+<button class="vtile" data-yt="VT-wscFxQFw" type="button"><img src="https://i.ytimg.com/vi/VT-wscFxQFw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ben Jaffe, Musician | &quot;Everyday in New Orleans inspires me&quot;</span></button>
+<button class="vtile" data-yt="KM9b_mLiXtI" type="button"><img src="https://i.ytimg.com/vi/KM9b_mLiXtI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Benjamin Jaffe - Susan the Cat - 2/26/2018 - Paste Studios - New York - NY</span></button>
+<button class="vtile" data-yt="eT1tGUvUthA" type="button"><img src="https://i.ytimg.com/vi/eT1tGUvUthA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Benjamin Jaffe - Everlasting Peace - 2/26/2018 - Paste Studios - New York - NY</span></button>
+<button class="vtile" data-yt="hUTHWpOPdoE" type="button"><img src="https://i.ytimg.com/vi/hUTHWpOPdoE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Benjamin Jaffe --- Jacaranda</span></button>
+<button class="vtile" data-yt="7x75l9bWCu4" type="button"><img src="https://i.ytimg.com/vi/7x75l9bWCu4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">[Gotta Get Some] Meat Up On the Bone</span></button>
+<button class="vtile" data-yt="oFXzh9A6Ynk" type="button"><img src="https://i.ytimg.com/vi/oFXzh9A6Ynk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Benjamin Jaffe and 10 Good Songs - (Gotta Get Some) Meat Up on the Bone</span></button>
+<button class="vtile" data-yt="T9Zl8gFeaXI" type="button"><img src="https://i.ytimg.com/vi/T9Zl8gFeaXI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jazz Talk: Ben Jaffe of Preservation Hall Jazz Band | Spoleto at Home</span></button>
+<button class="vtile" data-yt="bG8GhxUnBjY" type="button"><img src="https://i.ytimg.com/vi/bG8GhxUnBjY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Benjamin Jaffe at Paste Studio NYC live from The Manhattan Center</span></button>
+<button class="vtile" data-yt="LIJ6N6Ig41w" type="button"><img src="https://i.ytimg.com/vi/LIJ6N6Ig41w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Behind the Scenes of Apollo Artists Sessions Vol. XII with Che Pope &amp; Ben Jaffe</span></button>
+<button class="vtile" data-yt="rNWuaNnecgU" type="button"><img src="https://i.ytimg.com/vi/rNWuaNnecgU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ben Jaffe - Interview - 8/10/2002 - Newport Jazz Festival</span></button>
+<button class="vtile" data-yt="PIarAYfc9CA" type="button"><img src="https://i.ytimg.com/vi/PIarAYfc9CA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Marching Tradition Forward: The Story of Preservation Hall</span></button>
+<button class="vtile" data-yt="zCZop5HJJaU" type="button"><img src="https://i.ytimg.com/vi/zCZop5HJJaU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Interview with Ben Jaffe 2021</span></button>
+<button class="vtile" data-yt="qMGuH4PmvRc" type="button"><img src="https://i.ytimg.com/vi/qMGuH4PmvRc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">A Conversation with Preservation Halls&#x27; Ben Jaffe and Charlie Gabriel</span></button>
+<button class="vtile" data-yt="lgNgPf-SB_o" type="button"><img src="https://i.ytimg.com/vi/lgNgPf-SB_o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ben Jaffe, heir to Preservation Hall, philosophizes about New Orleans jazz</span></button>
+<button class="vtile" data-yt="dixLHLwysc0" type="button"><img src="https://i.ytimg.com/vi/dixLHLwysc0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ben Jaffe Talks Preservation Hall, Jazzfest and More 420LIVE! Jeff Kravitz</span></button>
+<button class="vtile" data-yt="WBfP-YlmBP4" type="button"><img src="https://i.ytimg.com/vi/WBfP-YlmBP4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">British Airways Ben Jaffe 30sec | Commercial Film Director Philip Clyde Smith | The Visionaries</span></button>
+<button class="vtile" data-yt="tvqJjy2Wb8c" type="button"><img src="https://i.ytimg.com/vi/tvqJjy2Wb8c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Preservation Hall Jazz Band, New Orleans - NEW DOCUMENTARY</span></button>
+<button class="vtile" data-yt="4ELh-vpQC18" type="button"><img src="https://i.ytimg.com/vi/4ELh-vpQC18/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Preservation Hall - A Short Documentary</span></button>
+<button class="vtile" data-yt="3djlI3IRhK4" type="button"><img src="https://i.ytimg.com/vi/3djlI3IRhK4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">A TUBA TO CUBA (2019) Official Trailer HD Documentary Movie</span></button>
+<button class="vtile" data-yt="AnYsN0SxGuY" type="button"><img src="https://i.ytimg.com/vi/AnYsN0SxGuY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Ben Jaffe - Interview - 5/15/2010 - Hangout Music Festival, Gulf Shores, AL</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Ben Jaffe is an American jazz musician and the creative director of Preservation Hall. He plays double bass and tuba with the Preservation Hall Jazz Band.</p>
+<p>Ben Jaffe is an American jazz musician and the creative director of Preservation Hall. He plays double bass and tuba with the Preservation Hall Jazz Band.</p>
+<h3>early life and education</h3>
+<p>Born on January 26, 1971, Jaffe grew up in New Orleans&#x27; French Quarter, two blocks from Preservation Hall. He is the son of former managers Allan and Sandra Jaffe. His father, Allan, also played tuba with the band. Ben Jaffe began playing in grammar school at McDonogh 15 School for the Creative Arts and later studied upright bass under Walter Payton during high school at NOCCA. In 1992, he received a degree in bass performance from Oberlin College.</p>
+<h3>career</h3>
+<p>After graduating from college, Jaffe returned to New Orleans and resumed his father&#x27;s position as manager of the Preservation Hall venue. He also joined the Preservation Hall Jazz Band on tour playing bass. As a producer, he has produced several albums for the band, including &quot;That&#x27;s It,&quot; which he co-produced with Jim James. He currently serves as Chairman of the Board of the Preservation Hall Foundation, a non-profit organization dedicated to protecting and preserving New Orleans jazz music and culture.</p>
+<h3>work and media appearances</h3>
+<p>In 2019, Jaffe narrated the documentary A Tuba to Cuba, which follows the Preservation Hall Jazz Band&#x27;s 2015 visit to Cuba to retrace connections between indigenous Cuban music and New Orleans jazz. He also appeared in episode 6 of &quot;Foo Fighters: Sonic Highways,&quot; where he was interviewed by Dave Grohl regarding his parents&#x27; role in preserving New Orleans jazz and the history of Preservation Hall.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Born:</strong> January 26, 1971</li>
+<li><strong>Instruments:</strong> Tuba and double bass</li>
+<li><strong>Education:</strong></li>
+<li><strong>Role at Preservation Hall:</strong> Creative Director</li>
+<li><strong>Chairman of the Board of the Preservation Hall Foundation:</strong> -</li>
+<li><strong>Notable Documentary Narration:</strong> A Tuba to Cuba (2019)</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Ben_Jaffe" rel="noopener">https://en.wikipedia.org/wiki/Ben_Jaffe</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Jaffe" rel="noopener">https://en.wikipedia.org/wiki/Jaffe</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Sam_Jaffe" rel="noopener">https://en.wikipedia.org/wiki/Sam_Jaffe</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Ben Jaffe">
+        <input type="hidden" name="slug" value="ben-jaffe">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Ben Jaffe</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
