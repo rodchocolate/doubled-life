@@ -264,9 +264,12 @@ MINI.addEventListener('pointerup', e => { if (!miniDown) return; const moved = M
 MINI.addEventListener('pointermove', e => e.stopPropagation());
 document.getElementById('minibtn').onclick = () => { MINI.classList.toggle('big'); document.getElementById('minibtn').textContent = MINI.classList.contains('big') ? 'map ⤡' : 'map ⤢'; };
 addEventListener('keydown', e => { if (e.code === 'KeyM') document.getElementById('minibtn').onclick(); });
-// --- the walker: start at the bottom of the first chair lift
-const base = L.find(l=>l.type==='chair_lift') || L[0]; const b0 = base.points.reduce((a,b)=>a[2]<b[2]?a:b); let px=b0[0], py=b0[1];
-let yaw = Math.atan2(base.points[base.points.length-1][0]-b0[0], base.points[base.points.length-1][1]-b0[1]), pitch = -0.05;
+// --- the walker: start at the TOP station of the highest lift (by elevation), facing back down its line
+const liftsWithPts = L.filter(l => l.points && l.points.length >= 2);
+const topLift = liftsWithPts.reduce((best, l) => { const t = l.points.reduce((a,b)=>a[2]>b[2]?a:b); return (!best || t[2] > best.top[2]) ? { l, top: t } : best; }, null);
+let px, py, yaw, pitch = -0.08;
+if (topLift){ const bot = topLift.l.points.reduce((a,b)=>a[2]<b[2]?a:b); px = topLift.top[0]; py = topLift.top[1]; yaw = Math.atan2(bot[0]-topLift.top[0], bot[1]-topLift.top[1]); }
+else { const p0 = P[0].points[0]; px = p0[0]; py = p0[1]; yaw = 0; }
 const EYE=1.7, SPEED=28; const keys={};
 jump.onchange = () => { const sp = window.__spots.find(x=>x[0]===jump.value); if (!sp) return; const [, at, toward] = sp; px = at[0]; py = at[1]; yaw = Math.atan2(toward[0]-at[0], toward[1]-at[1]); pitch = -0.1; jump.value=''; };
 addEventListener('keydown',e=>keys[e.code]=1); addEventListener('keyup',e=>keys[e.code]=0);
