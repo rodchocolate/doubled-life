@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>McCoy Tyner — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:2.2rem; font-weight:700; letter-spacing:-.02em; color:var(--porcelain); line-height:1.05; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>McCoy Tyner</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-10-18</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">779</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="73VczRfu9Kg" type="button"><img src="https://i.ytimg.com/vi/73VczRfu9Kg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">McCoy Tyner - Passion Dance</span></button>
+<button class="vtile" data-yt="0zdoOyeRTCA" type="button"><img src="https://i.ytimg.com/vi/0zdoOyeRTCA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Passion Dance</span></button>
+<button class="vtile" data-yt="NPJ1uvgriM0" type="button"><img src="https://i.ytimg.com/vi/NPJ1uvgriM0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Inner Glimpse - McCoy Tyner Trio with Freddie Hubbard &amp; Joe Henderson</span></button>
+<button class="vtile" data-yt="PukuQPUKfyU" type="button"><img src="https://i.ytimg.com/vi/PukuQPUKfyU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">McCoy Tyner - Giant Steps</span></button>
+<button class="vtile" data-yt="cguQFfJLZXg" type="button"><img src="https://i.ytimg.com/vi/cguQFfJLZXg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jazz Pianists Changed Forever After This Album</span></button>
+<button class="vtile" data-yt="YgRLTqfuuFM" type="button"><img src="https://i.ytimg.com/vi/YgRLTqfuuFM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">McCoy Tyner Quartet - Moment&#x27;s Notice (2002)</span></button>
+<button class="vtile" data-yt="s0nFW7fZ32s" type="button"><img src="https://i.ytimg.com/vi/s0nFW7fZ32s/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">McCoy Tyner Trio &amp; Michael Brecker - North Sea Jazz Festival 1996 - Full Concert</span></button>
+<button class="vtile" data-yt="-b9LWJwBxH0" type="button"><img src="https://i.ytimg.com/vi/-b9LWJwBxH0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">McCoy Tyner Trio - Berlin, Germany, 1997-11-08</span></button>
+<button class="vtile" data-yt="frYLvC0mM50" type="button"><img src="https://i.ytimg.com/vi/frYLvC0mM50/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">When Sunny Gets Blue</span></button>
+<button class="vtile" data-yt="EeEfoYHUdaM" type="button"><img src="https://i.ytimg.com/vi/EeEfoYHUdaM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">McCoy Tyner Is On Fire Here | John Coltrane – Afro Blue (1963)</span></button>
+<button class="vtile" data-yt="UZIXDTH-sLA" type="button"><img src="https://i.ytimg.com/vi/UZIXDTH-sLA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">McCoy Tyner - Fly With the Wind - [Fly With the Wind] 1976</span></button>
+<button class="vtile" data-yt="gFjH_SDcLnM" type="button"><img src="https://i.ytimg.com/vi/gFjH_SDcLnM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">McCoy Tyner - Jazz Profiles</span></button>
+<button class="vtile" data-yt="xdzu102vlzk" type="button"><img src="https://i.ytimg.com/vi/xdzu102vlzk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">A Man Named McCoy Tyner</span></button>
+<button class="vtile" data-yt="mJaQg5rgsRs" type="button"><img src="https://i.ytimg.com/vi/mJaQg5rgsRs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">McCoy Tyner - Interview</span></button>
+<button class="vtile" data-yt="sV08Ew-HNxc" type="button"><img src="https://i.ytimg.com/vi/sV08Ew-HNxc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">McCoy Tyner on Letterman, February 19, 1985</span></button>
+<button class="vtile" data-yt="4DfEuBsgA8o" type="button"><img src="https://i.ytimg.com/vi/4DfEuBsgA8o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">McCOY TYNER : Montreal 1982</span></button>
+<button class="vtile" data-yt="YrM0GcAkkvQ" type="button"><img src="https://i.ytimg.com/vi/YrM0GcAkkvQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">McCoy Tyner Interview</span></button>
+<button class="vtile" data-yt="rwicCv6jTkU" type="button"><img src="https://i.ytimg.com/vi/rwicCv6jTkU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">McCoy Tyner - In-Depth Interview With Anil Prasad</span></button>
+<button class="vtile" data-yt="m-2FTAVz2DU" type="button"><img src="https://i.ytimg.com/vi/m-2FTAVz2DU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">McCoy Tyner, NYPL jazz oral history</span></button>
+<button class="vtile" data-yt="7Yx03pB5wAo" type="button"><img src="https://i.ytimg.com/vi/7Yx03pB5wAo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">McCoy Tyner &amp; Stephane Grappelli Dec. 1990 TV performance</span></button>
+<button class="vtile" data-yt="9RdHXui_SxA" type="button"><img src="https://i.ytimg.com/vi/9RdHXui_SxA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">McCoy Tyner Quartet Montreux 1973 Part 1</span></button>
+<button class="vtile" data-yt="O6xlHDu3pMQ" type="button"><img src="https://i.ytimg.com/vi/O6xlHDu3pMQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">SAHARA | McCoy Tyner&#x27;s MASTERPIECE | Discussion</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Alfred McCoy Tyner (1938–2020) was an influential American jazz pianist and composer who gained prominence through his work with the John Coltrane Quartet from 1960 to 1965. An NEA Jazz Master and five-time Grammy Award winner, he is recognized as one of the most recognizable and</p>
+<p>Alfred McCoy Tyner (1938–2020) was an influential American jazz pianist and composer who gained prominence through his work with the John Coltrane Quartet from 1960 to 1965. An NEA Jazz Master and five-time Grammy Award winner, he is recognized as one of the most recognizable and influential jazz pianists of all time.</p>
+<h3>early life and education</h3>
+<p>Born in Philadelphia, Pennsylvania, Tyner was encouraged to study piano by his mother. At age 13, he began lessons at the Granoff School of Music, studying music theory and harmony. He was influenced by Thelonious Monk&#x27;s percussive attacks and bebop pianist Bud Powell. During his teens, he led a group called the Houserockers. At age 17, Tyner converted to Ahmadiyya and changed his name to Suleiman Saud, though he continued performing as McCoy Tyner.</p>
+<h3>the john coltrane quartet</h3>
+<p>Tyner joined the John Coltrane Quartet in 1960 after a brief period with The Jazztet. The quartet&#x27;s classic lineup included bassist Jimmy Garrison and drummer Elvin Jones. Together they recorded several jazz classics, including A Love Supreme (1964) and Crescent (1964). Tyner remained with the group until 1965, leaving because Coltrane&#x27;s music was becoming more atonal and free, which he felt he could no longer contribute to. He was replaced by Alice Coltrane.</p>
+<h3>solo career</h3>
+<p>Following his departure from the Coltrane Quartet, Tyner embarked on a career as a bandleader. After an initial period of struggle where he considered taking a day job as a taxi driver, he established himself through post-bop albums released by Blue Note between 1967 and 1970, including The Real McCoy (1967). This album features Joe Henderson, Ron Carter, and Elvin Jones. He later signed with Milestone Records, where he recorded 19 albums, including orchestral works like Song of the New World (1973) and Fly with the Wind (1976), before moving to Columbia.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Born:</strong> December 11, 1938</li>
+<li><strong>Died:</strong> March 6, 2020</li>
+<li><strong>Birthplace:</strong> Philadelphia, Pennsylvania</li>
+<li><strong>Awards:</strong> NEA Jazz Master and five-time Grammy Award winner</li>
+<li><strong>Crossover Name:</strong> Suleiman Saud</li>
+<li><strong>Notable Albums:</strong> A Love Supreme, The Real McCoy, Inception</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/McCoy_Tyner" rel="noopener">https://en.wikipedia.org/wiki/McCoy_Tyner</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/McCoy_Tyner_discography" rel="noopener">https://en.wikipedia.org/wiki/McCoy_Tyner_discography</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/The_Real_McCoy_(McCoy_Tyner_album" rel="noopener">https://en.wikipedia.org/wiki/The_Real_McCoy_(McCoy_Tyner_album</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="McCoy Tyner">
+        <input type="hidden" name="slug" value="mccoy-tyner">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — McCoy Tyner</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
