@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Herbie Hancock — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:2.2rem; font-weight:700; letter-spacing:-.02em; color:var(--porcelain); line-height:1.05; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Herbie Hancock</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-10-18</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1029</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="GHhD4PD75zY" type="button"><img src="https://i.ytimg.com/vi/GHhD4PD75zY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Herbie Hancock - Rockit (Official Video)</span></button>
+<button class="vtile" data-yt="4pF605yRr7k" type="button"><img src="https://i.ytimg.com/vi/4pF605yRr7k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Herbie Hancock Institute International Jazz Vocals Competition Finals &amp; Gala Concert live from Paris</span></button>
+<button class="vtile" data-yt="iqomTAiRnVM" type="button"><img src="https://i.ytimg.com/vi/iqomTAiRnVM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Herbie Hancock - Chameleon (Official Audio)</span></button>
+<button class="vtile" data-yt="9RsZifvSVSI" type="button"><img src="https://i.ytimg.com/vi/9RsZifvSVSI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Herbie Hancock Group on Danish TV, 1976</span></button>
+<button class="vtile" data-yt="gteK7jxGcyM" type="button"><img src="https://i.ytimg.com/vi/gteK7jxGcyM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Herbie Hancock 2026 Seoul Jazz Festival Full Concert (2026.05.24.South Korea)</span></button>
+<button class="vtile" data-yt="y8fFkW_eSkE" type="button"><img src="https://i.ytimg.com/vi/y8fFkW_eSkE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Herbie Hancock | SEOUL JAZZ FESTIVAL 2026 [Full Performance] (2026.05.24)</span></button>
+<button class="vtile" data-yt="ppJQKfqhFfE" type="button"><img src="https://i.ytimg.com/vi/ppJQKfqhFfE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Watermelon Man</span></button>
+<button class="vtile" data-yt="njs0FsvFVY0" type="button"><img src="https://i.ytimg.com/vi/njs0FsvFVY0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Herbie Hancock, Wayne Shorter, Dave Holland, Brian Blade | FULL CONCERT Newport Jazz Festival (2004)</span></button>
+<button class="vtile" data-yt="BVfZmjVRRUo" type="button"><img src="https://i.ytimg.com/vi/BVfZmjVRRUo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Herbie Hancock – “Footprints” (Live) | Jazz Day 2023 (All-Star Performance)</span></button>
+<button class="vtile" data-yt="l4WWKnGBWIc" type="button"><img src="https://i.ytimg.com/vi/l4WWKnGBWIc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Herbie Hancock - Maiden Voyage (Full Album)</span></button>
+<button class="vtile" data-yt="sUG0P7tcCto" type="button"><img src="https://i.ytimg.com/vi/sUG0P7tcCto/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Miles Davis angry at Herbie Hancock</span></button>
+<button class="vtile" data-yt="STKxbUmVCkg" type="button"><img src="https://i.ytimg.com/vi/STKxbUmVCkg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Head Hunters Herbie Hancock 1973 Full Album</span></button>
+<button class="vtile" data-yt="Jt5orm2gehI" type="button"><img src="https://i.ytimg.com/vi/Jt5orm2gehI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Herbie Hancock：Possibilities</span></button>
+<button class="vtile" data-yt="vVq5FTXPAAM" type="button"><img src="https://i.ytimg.com/vi/vVq5FTXPAAM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">“All That’s Jazz” PBS Los Angeles Documentary, KCET, (October 28, 2011)</span></button>
+<button class="vtile" data-yt="KEI__NJCyv8" type="button"><img src="https://i.ytimg.com/vi/KEI__NJCyv8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Herbie Hancock | 2013 Kennedy Center Honors</span></button>
+<button class="vtile" data-yt="zvhZTdLxY9Y" type="button"><img src="https://i.ytimg.com/vi/zvhZTdLxY9Y/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Herbie Hancock - Jazz Profiles</span></button>
+<button class="vtile" data-yt="fRJ_h3eKmHg" type="button"><img src="https://i.ytimg.com/vi/fRJ_h3eKmHg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Herbie Hancock &quot;Chameleon&quot; - Songs That Changed Music</span></button>
+<button class="vtile" data-yt="AI7qpxy5A4g" type="button"><img src="https://i.ytimg.com/vi/AI7qpxy5A4g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">They Had ONE Shot to Make History | Herbie Hancock - Thrust</span></button>
+<button class="vtile" data-yt="wM-_44deuSY" type="button"><img src="https://i.ytimg.com/vi/wM-_44deuSY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Herbie Hancock&#x27;s Greatest Era Is Not Even Jazz?</span></button>
+<button class="vtile" data-yt="EPFXC3q1tTg" type="button"><img src="https://i.ytimg.com/vi/EPFXC3q1tTg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Herbie Hancock: The Ethics of Jazz | Mahindra Humanities Center</span></button>
+<button class="vtile" data-yt="0kVD_o-S6D8" type="button"><img src="https://i.ytimg.com/vi/0kVD_o-S6D8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Herbie Hancock Interview by Dr. Michael Woods - 11/18/1995 - NYC</span></button>
+<button class="vtile" data-yt="6Tn6G7z48nc" type="button"><img src="https://i.ytimg.com/vi/6Tn6G7z48nc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Herbie Hancock Tribute Film - Update 2024</span></button>
+<button class="vtile" data-yt="_GI5F21VVRo" type="button"><img src="https://i.ytimg.com/vi/_GI5F21VVRo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Herbie Hancock on Jaco Pastorius&#x27;s Work Ethic</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Herbie Hancock own an American jazz musician, bandleader, and composer born on April 12, 1940. He is recognized as one of the primary architects of the post-bop sound and helped redefine the role of a jazz rhythm section.</p>
+<p>Herbie Hancock own an American jazz musician, bandleader, and composer born on April 12, 1940. He is recognized as one of the primary architects of the post-bop sound and helped redefine the role of a jazz rhythm section.</p>
+<h3>early life and education</h3>
+<p>Hancock was born in Chicago, Illinois, to Winnie Belle and Wayman Edward Hancock. He began playing piano at age seven and was considered a child prodigy, performing Mozart&#x27;s Piano Concerto No. 26 in D Major with the Chicago Symphony Orchestra when he was 11. In his teenage years, he developed his ear for harmony by listening to recordings of jazz pianists like Bill Evans, Oscar Peterson, and George Shearing, as well as Hard Bop by Art Blakey&#x27;s the Jazz Messengers and Birth of the Cool by Miles Davis. He also cited Clare Fischer&#x27;s arrangements for the Hi-Lo&#x27;s as a major influence on his harmonic concept. In 1960, he graduated from Grinnell College with degrees in music and electrical engineering, and later took courses at Roosevelt University. He briefly studied composition with Vittorio Giannini in 1960.</p>
+<h3>musical career and collaborations</h3>
+<p>Hancock started his career with Donald Byrd&#x27;s group and recorded his first solo album, Takin&#x27; Off, in 1962. In May 1963, he joined Miles Davis&#x27;s Second Great Quintet, where he worked alongside bassist Ron Carter and drummer Tony Williams. This ensemble is often regarded as one of the finest jazz ensembles ever. While with Davis, Hancock recorded dozens of sessions for Blue Note Records, both as a leader and leaderless sideman. He also composed film soundtracks, including the score to Michelangelo Antonioni&#x27;s Blowup (1966). Additionally, he recorded musical themes for American television commercials for products such as Virginia Slims cigarettes and Tab diet cola.</p>
+<h3>evolution of sound and commercial success</h3>
+<p>Hancock&#x27;s music evolved through various styles, including jazz fusion, funk, and electro styles using synthesizers and electronics. In the 1970s, he released the influential R&amp;B-oriented jazz album Head Hunters (1973), which became the first jazz album to win a RIAA Platinum Award in 1986. and was highly influential in jazz, funk, soul and hip-hop music. In 1983, he released Future Shock, an early example of instrumental hip hop and his first release from his electro-funk era. This album spawned the hit single &quot;Rockit&quot;, a collaboration with bassist/producer Bill Laswell and featuring Grand Mixer DXT&#x27;s turntablism.</p>
+<h3>accolades and academic work</h3>
+<p>Hancock has won 14 Grammy Awards, including Album of the Year for his 2007 tribute to Joni Mitchell, River: The Joni Letters. He also won an Academy Award for Best Original Score for the Round Midnight soundtrack (1986). He has received the the Polar Music Prize in 2025 and was ranked as the greatest keyboard player of all time by Neil McCormick of The Daily Telegraph in 2024. Since 2012, he has served as a professor at the UCLA Herb Alpert School of Music and is the chairman of the Herbie Hancock Institute of Jazz.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Born:</strong> April 12, 1940</li>
+<li><strong>Birthplace:</strong> Chicago, Illinois</li>
+<li><strong>C지s:</strong> Piano, synthesizer, Fairlight CMI, keyboards</li>
+<li><strong>Notable Compositions:</strong> &quot;Cantaloupe Island&quot;, &quot;Watermelon Man&quot;, &quot;Watermelon Man&quot;, &quot;Maiden Voyage&quot;, and &quot;Chameleon&quot;</li>
+<li><strong>Grammy Awards:</strong> 14</li>
+<li><strong>label: Academy Award:</strong> // a single award for Round Midnight soundtrack</li>
+<li><strong>Academy Award:</strong> One</li>
+<li><strong>Notable Albums:</strong> Takin&#x27; Off, Head Hunters, Future Shock, River: The Joni Letters</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Future_Shock_(Herbie_Hancock_album" rel="noopener">https://en.wikipedia.org/wiki/Future_Shock_(Herbie_Hancock_album</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Herbie_Hancock" rel="noopener">https://en.wikipedia.org/wiki/Herbie_Hancock</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Herbie_Hancock_discography" rel="noopener">https://en.wikipedia.org/wiki/Herbie_Hancock_discography</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Herbie Hancock">
+        <input type="hidden" name="slug" value="herbie-hancock">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Herbie Hancock</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
