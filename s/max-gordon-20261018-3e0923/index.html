@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Max Gordon — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:2.2rem; font-weight:700; letter-spacing:-.02em; color:var(--porcelain); line-height:1.05; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Max Gordon</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-10-18</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">747</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="nFSbMDfA_kI" type="button"><img src="https://i.ytimg.com/vi/nFSbMDfA_kI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Baja 400 2026 || Robby Gordon and Max Gordon 5th</span></button>
+<button class="vtile" data-yt="7L0OIrLvlgA" type="button"><img src="https://i.ytimg.com/vi/7L0OIrLvlgA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Max Gordon || Vegas to Reno 2026|| AWD Twin Engine Trophy Truck</span></button>
+<button class="vtile" data-yt="DtT3Mhb8bj4" type="button"><img src="https://i.ytimg.com/vi/DtT3Mhb8bj4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Max Gordon at Speed Factory Compound</span></button>
+<button class="vtile" data-yt="3tZ0Tx_Bl-4" type="button"><img src="https://i.ytimg.com/vi/3tZ0Tx_Bl-4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">2025 Baja 1000 Robby &amp; Max Gordon</span></button>
+<button class="vtile" data-yt="F3ujYMgtOuQ" type="button"><img src="https://i.ytimg.com/vi/F3ujYMgtOuQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Max Gordon || AWD Twin Engine Trophy Truck || Baja 500 2026 Qualifying</span></button>
+<button class="vtile" data-yt="KktaA407zCc" type="button"><img src="https://i.ytimg.com/vi/KktaA407zCc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">MAX GORDON rips with Dad Robby Gordon</span></button>
+<button class="vtile" data-yt="V9qk3vb9E1o" type="button"><img src="https://i.ytimg.com/vi/V9qk3vb9E1o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">2026 Parker 400 Max Gordon</span></button>
+<button class="vtile" data-yt="MwGOH99WzWM" type="button"><img src="https://i.ytimg.com/vi/MwGOH99WzWM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">2026 Baja 500 Max Gordon &amp; Robby Gordon On-Board</span></button>
+<button class="vtile" data-yt="I_W3VnUBoso" type="button"><img src="https://i.ytimg.com/vi/I_W3VnUBoso/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Max Gordon On-Board 2026 Long Beach Race #1 - Full Race</span></button>
+<button class="vtile" data-yt="jZEwjWpIpl8" type="button"><img src="https://i.ytimg.com/vi/jZEwjWpIpl8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">15-Year-Old Racer Max Gordon Does It All</span></button>
+<button class="vtile" data-yt="VKtLer21B4c" type="button"><img src="https://i.ytimg.com/vi/VKtLer21B4c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">SCORE Baja 400 2026 / Robby Gordon / Max Gordon &amp; G ForceDynamics</span></button>
+<button class="vtile" data-yt="is2qOL69j0E" type="button"><img src="https://i.ytimg.com/vi/is2qOL69j0E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Robby Gordon and Max Gordon Baja 250 2026</span></button>
+<button class="vtile" data-yt="S_tQ3_CA0qc" type="button"><img src="https://i.ytimg.com/vi/S_tQ3_CA0qc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Max Gordon</span></button>
+<button class="vtile" data-yt="mqsusoNErWw" type="button"><img src="https://i.ytimg.com/vi/mqsusoNErWw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Eduardo Montes Bradley | by Maximilian Gordon</span></button>
+<button class="vtile" data-yt="V-md8Ap3nYU" type="button"><img src="https://i.ytimg.com/vi/V-md8Ap3nYU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Max Gordon - Reincarnation Consultant</span></button>
+<button class="vtile" data-yt="Wh6eW_OnMrU" type="button"><img src="https://i.ytimg.com/vi/Wh6eW_OnMrU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Trapped in Recife with Max Gordon</span></button>
+<button class="vtile" data-yt="2mVv-2DqtXA" type="button"><img src="https://i.ytimg.com/vi/2mVv-2DqtXA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Max Gordon</span></button>
+<button class="vtile" data-yt="5BFPLxfwqrs" type="button"><img src="https://i.ytimg.com/vi/5BFPLxfwqrs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">For Johnny</span></button>
+<button class="vtile" data-yt="ZbCZDIHuZh0" type="button"><img src="https://i.ytimg.com/vi/ZbCZDIHuZh0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Gordon Max Presentation Film</span></button>
+<button class="vtile" data-yt="3xg2UfJw9aw" type="button"><img src="https://i.ytimg.com/vi/3xg2UfJw9aw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Black Panther: Come Get Your Life, Come Get Your Death by Max S. Gordon</span></button>
+<button class="vtile" data-yt="TkGl4qS6XQQ" type="button"><img src="https://i.ytimg.com/vi/TkGl4qS6XQQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Baja 1000 RM 1050 &quot;The worst drone pilot ever films&quot; Max Gordon</span></button>
+<button class="vtile" data-yt="z97J9A8DsRY" type="button"><img src="https://i.ytimg.com/vi/z97J9A8DsRY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Gordon Max Difference - Brilliance</span></button>
+<button class="vtile" data-yt="gZ0v2yTmT6c" type="button"><img src="https://i.ytimg.com/vi/gZ0v2yTmT6c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Flash Gordon Movie 1980</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Max Gordon is a name shared by several individuals, including an American theater and film producer, a professional racing driver, and founders of jazz clubs or trade union leadership. Other notable figures with this name include a Lithuanian nihilist and anarchist, and a South A</p>
+<p>Max Gordon is a name shared by several individuals, including an American theater and film producer, a professional racing driver, and founders of jazz clubs or trade union leadership. Other notable figures with this name include a Lithuanian nihilist and anarchist, and a South African Trotskyist activist.</p>
+<h3>american theater and film producer</h3>
+<p>Max Gordon (1892–1978) was born Mechel Salpeter and adopted the stage name of his brother, Cliff. After forming a vaudeville agency with Albert Lewis, he became one of New York&#x27;s most successful producers from the Roaring Twenties through the Eisenhower years. His notable productions include The Jazz Singer (1925–1926), Born Yesterday (1946), and My Sister Eileen. Several of his works were adapted into popular films, such as The Solid Gold Cadillac (1956) and Born Yesterday (1950). He is also mentioned in Cole Porter&#x27;s 1934 musical song &#x27;Anything Goes&#x27;.</p>
+<h3>professional racing driver</h3>
+<p>Max Gordon (born 2008) is an American professional racing driver nicknamed &#x27;Mad Max&#x27;. The son of Robby Gordon, he began driving at age three and started karting in 2014. He competes primarily in off-road racing, including the Baja 1000, the Mint 400, and Stadium Super Trucks (SST). In 2017, he became the youngest person to compete in the Baja 1000 at age nine, though his finish was officially classified as a retirement due to age restrictions. He has achieved wins in the SST series, including victories at Long Beach and Mid-Ohio Sports Car Course.</p>
+<h3>title</h3>
+<p>Other Max Gordons</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Born:</strong> June 28, 1892 (Producer)</li>
+<li><strong>Birth date of Racing Driver:</strong> June 10, 2008</li>
+<li><strong>Death date of Producer producer:</strong> November 2, 1978</li>
+<li><strong>// own section for for the racing driver&#x27;s nickname:</strong> Mad Max</li>
+<li><strong>Label: Nickname:</strong> -</li>
+<li><strong>Nickname of Racing Driver:</strong> Mad Max</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Max_Gordon" rel="noopener">https://en.wikipedia.org/wiki/Max_Gordon</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Max_Gordon_(producer" rel="noopener">https://en.wikipedia.org/wiki/Max_Gordon_(producer</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Max_Gordon_(racing_driver" rel="noopener">https://en.wikipedia.org/wiki/Max_Gordon_(racing_driver</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Max Gordon">
+        <input type="hidden" name="slug" value="max-gordon">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Max Gordon</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
