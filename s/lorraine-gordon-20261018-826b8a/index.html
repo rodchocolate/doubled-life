@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Lorraine Gordon — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:2.2rem; font-weight:700; letter-spacing:-.02em; color:var(--porcelain); line-height:1.05; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Lorraine Gordon</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-10-18</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">797</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="34-KUmNFdUk" type="button"><img src="https://i.ytimg.com/vi/34-KUmNFdUk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Lorraine Gordon - Owner of Village Vanguard - Sharing Barbra Streisand Stories - 2009</span></button>
+<button class="vtile" data-yt="kQZ1akOwalo" type="button"><img src="https://i.ytimg.com/vi/kQZ1akOwalo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">NEA Jazz Masters: Lorraine Gordon (2013)</span></button>
+<button class="vtile" data-yt="wPdb6Dgb1ao" type="button"><img src="https://i.ytimg.com/vi/wPdb6Dgb1ao/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Lorraine Gordon&#x27;s Phone Message to CADENCE</span></button>
+<button class="vtile" data-yt="GdL3vZCOg3Q" type="button"><img src="https://i.ytimg.com/vi/GdL3vZCOg3Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Village Vanguard - Lorraine Gordon (2000) CNN Report</span></button>
+<button class="vtile" data-yt="sMwr0iaESNE" type="button"><img src="https://i.ytimg.com/vi/sMwr0iaESNE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Lorraine Gordon</span></button>
+<button class="vtile" data-yt="kRaAagxBPS4" type="button"><img src="https://i.ytimg.com/vi/kRaAagxBPS4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">089 | Dr. Lorraine Gordon: Redefining Advocacy in Mental Health</span></button>
+<button class="vtile" data-yt="CHXtV5_ylDw" type="button"><img src="https://i.ytimg.com/vi/CHXtV5_ylDw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Three Voice Messages: Lorraine Gordon; Roswell Rudd; Annie Ross</span></button>
+<button class="vtile" data-yt="rhm_d6NSgV0" type="button"><img src="https://i.ytimg.com/vi/rhm_d6NSgV0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Lorraine Gordon - The Regenerative Alliance</span></button>
+<button class="vtile" data-yt="UjGORdVFces" type="button"><img src="https://i.ytimg.com/vi/UjGORdVFces/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">STOP-TIME SERIES with Frank Williams: Lorraine Gordon</span></button>
+<button class="vtile" data-yt="BqObO3Pqx_U" type="button"><img src="https://i.ytimg.com/vi/BqObO3Pqx_U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">2013 NEA Jazz Masters Ceremony -- The Vault at JAZZ</span></button>
+<button class="vtile" data-yt="YwX6DHJHX3E" type="button"><img src="https://i.ytimg.com/vi/YwX6DHJHX3E/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Lorraine Gordon Introduces the Regenerative Agriculture Alliance</span></button>
+<button class="vtile" data-yt="u6GaDogUQRs" type="button"><img src="https://i.ytimg.com/vi/u6GaDogUQRs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Session 1 - Lorraine Gordon</span></button>
+<button class="vtile" data-yt="cw4KtURnfSY" type="button"><img src="https://i.ytimg.com/vi/cw4KtURnfSY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Village Vanguard - Jazz Profiles</span></button>
+<button class="vtile" data-yt="0_6cPCNaj0I" type="button"><img src="https://i.ytimg.com/vi/0_6cPCNaj0I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Two of Me</span></button>
+<button class="vtile" data-yt="Ls4TBZKej6U" type="button"><img src="https://i.ytimg.com/vi/Ls4TBZKej6U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Aeolus Quartet performs Ricky Ian Gordon - Lorraine</span></button>
+<button class="vtile" data-yt="-DuYr1i6OAg" type="button"><img src="https://i.ytimg.com/vi/-DuYr1i6OAg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Maid Of Lorraine (a documentary for French class)</span></button>
+<button class="vtile" data-yt="3FL9TD6xyos" type="button"><img src="https://i.ytimg.com/vi/3FL9TD6xyos/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Moving</span></button>
+<button class="vtile" data-yt="ZNbig3D8UTs" type="button"><img src="https://i.ytimg.com/vi/ZNbig3D8UTs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Village Vanguard -- The Very Early Years</span></button>
+<button class="vtile" data-yt="c1uCHZ0mKaQ" type="button"><img src="https://i.ytimg.com/vi/c1uCHZ0mKaQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">For My Sister Lorraine</span></button>
+<button class="vtile" data-yt="JqhOCznxSOc" type="button"><img src="https://i.ytimg.com/vi/JqhOCznxSOc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Whale</span></button>
+<button class="vtile" data-yt="uQeGjLp_IVY" type="button"><img src="https://i.ytimg.com/vi/uQeGjLp_IVY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Thinking Out Loud | with Special Guest Lorane Gordon FINAL</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Lorraine Gordon (1922–2018) was an American jazz music advocate and author of a memoir on jazz music. She owned and managed the Village Vanguard jazz club in New York City.</p>
+<p>Lorraine Gordon (1922–2018) was an American jazz music advocate and author of a memoir on jazz music. She owned and managed the Village Vanguard jazz club in New York City.</p>
+<h3>early life and career</h3>
+<p>Gordon grew up in Newark, New Jersey, in a Jewish family and attended Newark Arts High School before graduating from Weequahic High School in 1940. As a teenager, she was an ardent fan of jazz music. In 1942, she married Alfred Lion, co-founder of Blue Note Records. During the 1940s, Gordon and Lion recorded works by artists such as pianist Thelonious Monk and clarinetist Sidney Bechet. In 1949, she married Max Gordon, owner of the owner of the Village Vanguard club in New York City.</p>
+<h3>jazz advocacy and thelonious monk</h3>
+<p>Gordon became a public mouthpiece for Thelonious Monk, passionately advocating for his genius to the jazz world. She secured Monk&#x27;s first gig at the the Village Vanguard in September 1948, though it was not successful as no one attended. She also wrote to Ralph Ingersoll, editor of the newspaper PM, to describe Monk as a &#x27;genius living here in the heart of New York, whom nobody knows&#x27;. In her autobiography, she recounted how she fought against record store owners in Harlem who claimed Monk could not play.</p>
+<h3>village vanguard management</h3>
+<p>The Village Vanguard, established in 1935 by Max Gordon, was originally a venue for folk music and beat poetry. Under the influence of Lorraine Gordon&#x27;s artistic direction, it became primarily a jazz music venue in 1957. After Max Gordon&#x27;s death in 1989, Lorraine assumed ownership and management of the club, maintaining its reputation as a premier jazz club until late 2012. For her contributions to jazz advocacy, she received the NEA Jazz Master Award from the U.S. National Endowment for the Arts in 2013.</p>
+<h3>memoir and later life</h3>
+<p>In 2006, Gordon published her autobiographical memoir, Alive at the Village Vanguard: My Life In and Out of Jazz Time, which received the ASCAP Deems Taylor Award for excellence in music print publishing. She died on June 9, 2018, at age 95.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Born:</strong> October 15, 1922</li>
+<li><strong>Died:</strong> June 9, 2018</li>
+<li><strong>Memoir:</strong> Alive at the Village Vanguard: My Life In and Out of Jazz Time</li>
+<li><strong>Award:</strong> NEA Jazz Master Award for jazz advocacy</li>
+<li><strong>Thelonious Monk:</strong> -</li>
+<li><strong>Associated Club:</strong> Village Vanguard</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Lorraine_Gordon" rel="noopener">https://en.wikipedia.org/wiki/Lorraine_Gordon</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Thelonious_Monk" rel="noopener">https://en.wikipedia.org/wiki/Thelonious_Monk</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Village_Vanguard" rel="noopener">https://en.wikipedia.org/wiki/Village_Vanguard</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Lorraine Gordon">
+        <input type="hidden" name="slug" value="lorraine-gordon">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Lorraine Gordon</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
