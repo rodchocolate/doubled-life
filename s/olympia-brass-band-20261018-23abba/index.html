@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Olympia Brass Band — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:2.2rem; font-weight:700; letter-spacing:-.02em; color:var(--porcelain); line-height:1.05; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>Olympia Brass Band</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-10-18</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">823</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="ZdhLVsDAtz4" type="button"><img src="https://i.ytimg.com/vi/ZdhLVsDAtz4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">New Orleans Music - Olympia Brass Band - Lord, Lord, Lord</span></button>
+<button class="vtile" data-yt="u99csKZOPoI" type="button"><img src="https://i.ytimg.com/vi/u99csKZOPoI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dejan&#x27;s Original Olympia Brass Band – New Orleans Street Parade</span></button>
+<button class="vtile" data-yt="N1oQDLE2lW8" type="button"><img src="https://i.ytimg.com/vi/N1oQDLE2lW8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mardi Gras in New Orleans</span></button>
+<button class="vtile" data-yt="AeVGAhPrLdw" type="button"><img src="https://i.ytimg.com/vi/AeVGAhPrLdw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">New Orleans. The Olympia Brass Band 1982</span></button>
+<button class="vtile" data-yt="0jkhEX0AZWw" type="button"><img src="https://i.ytimg.com/vi/0jkhEX0AZWw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Olympia Brass Band - A Jazz Funeral (Full Album)</span></button>
+<button class="vtile" data-yt="JgFQd-sal2A" type="button"><img src="https://i.ytimg.com/vi/JgFQd-sal2A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Olympia Brass Band, Ascona, July 1989</span></button>
+<button class="vtile" data-yt="BIHoqFkEiG4" type="button"><img src="https://i.ytimg.com/vi/BIHoqFkEiG4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dejan’s Olympia Brass Band</span></button>
+<button class="vtile" data-yt="IjalEFx6mXs" type="button"><img src="https://i.ytimg.com/vi/IjalEFx6mXs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">It Ain&#x27;t My Fault</span></button>
+<button class="vtile" data-yt="FuiAqBOoG5o" type="button"><img src="https://i.ytimg.com/vi/FuiAqBOoG5o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mardi Gras In New Orleans</span></button>
+<button class="vtile" data-yt="NwvukaxGNV0" type="button"><img src="https://i.ytimg.com/vi/NwvukaxGNV0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">It Ain&#x27;t My Fault</span></button>
+<button class="vtile" data-yt="bwEfzIVAHaw" type="button"><img src="https://i.ytimg.com/vi/bwEfzIVAHaw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Shake It and Break It</span></button>
+<button class="vtile" data-yt="we8rJo0i0g0" type="button"><img src="https://i.ytimg.com/vi/we8rJo0i0g0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dejan&#x27;s Original Olympia Brass Band - Shake It And Break It</span></button>
+<button class="vtile" data-yt="sE2T9b1cZxA" type="button"><img src="https://i.ytimg.com/vi/sE2T9b1cZxA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Should I Olympia Brassband of New Orleans</span></button>
+<button class="vtile" data-yt="T2mWoAAUGuk" type="button"><img src="https://i.ytimg.com/vi/T2mWoAAUGuk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Song of the Streets -- Brass Band Documentary</span></button>
+<button class="vtile" data-yt="mG1xarZ-Uwo" type="button"><img src="https://i.ytimg.com/vi/mG1xarZ-Uwo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">PARADE of the New Orleans Parades volume 1 (Olympia, Tremé, Liberty, etc) 1990-96</span></button>
+<button class="vtile" data-yt="vHYdNSxOMCQ" type="button"><img src="https://i.ytimg.com/vi/vHYdNSxOMCQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">EUREKA BRASS BAND (1) -NEW ORLEANS SERIES, Archives Michel Laplace</span></button>
+<button class="vtile" data-yt="oA655nLbFvs" type="button"><img src="https://i.ytimg.com/vi/oA655nLbFvs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dr Frank Minyard plays and sings with the Olympia Brass Band</span></button>
+<button class="vtile" data-yt="xUb43Ne75p4" type="button"><img src="https://i.ytimg.com/vi/xUb43Ne75p4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dejan&#x27;s Olympia Brass Band - Marie Laveau</span></button>
+<button class="vtile" data-yt="jnz5T1fIH_8" type="button"><img src="https://i.ytimg.com/vi/jnz5T1fIH_8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Just a Closer Walk with Thee / New Second Line - Live and Let Die - Diegetic James Bond</span></button>
+<button class="vtile" data-yt="Fmo0eQqIrTI" type="button"><img src="https://i.ytimg.com/vi/Fmo0eQqIrTI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">New Orleans Brass Bands (circa 1994)</span></button>
+<button class="vtile" data-yt="-bcJkCy_VpA" type="button"><img src="https://i.ytimg.com/vi/-bcJkCy_VpA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Mobile Olympia Brass Band</span></button>
+<button class="vtile" data-yt="DaFXcdqustw" type="button"><img src="https://i.ytimg.com/vi/DaFXcdqustw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">DeJan&#x27;s Olympia Brass Band</span></button>
+<button class="vtile" data-yt="sE834ZiRDYE" type="button"><img src="https://i.ytimg.com/vi/sE834ZiRDYE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Dreamland - A documentary about Lady B.J. Clayton and Henry Butler - 1979</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The Olympia Brass Band is an American jazz brass band from New Orleans. It has existed in multiple iterations, with a first version active from the late 19th century to around 1914.</p>
+<p>The Olympia Brass Band is an American jazz brass band from New Orleans. It has existed in multiple iterations, with a first version active from the late 19th century to around 1914.</p>
+<h3>history and evolution</h3>
+<p>The original Olympia Brass Band, known as &#x27;The Olympia&#x27;, was active from the late 19th century to approximately 1914. In 1958, saxophonist Harold Dejan formed a new version of the band. reorganized as the Olympia Brass Band. The group became a staple at Preservation Hall, where they performed weekly Sunday night gigs for many years and influenced future Preservation Hall musicians. They were also featured in the 1977 dance musical &#x27;Fat Tuesday and All That Jazz!&#x27;</p>
+<h3>performances and media</h3>
+<p>The band has toured Europe and Africa (for the U.S. State Department), and performed for Pope John Paul II and conducted a BBC Radio broadcast for Queen Elizabeth&#x27;s 25th wedding anniversary in 1972. The group appeared in the 1973 James Bond movie &#x27;Live and Let Die&#x27;, where they play a band leading a funeral march; trumpeter Alvin Alcorn plays the &#x27;baby-faced killer&#x27;.</p>
+<h3>personnel and legacy</h3>
+<p>The band served as a training ground for musicians such as Joseph Torregano, Byron &quot;Flea&quot; Bernard, Tanio Hingle, Kerry Hunter, Kenneth Terry, and &quot;Kid&quot; Mervin Campbell. Notable members over the years included leader Harold &quot;Duke&quot; Dejan, Milton Batiste, Emanuel Paul, and Tuba Fats (Anthony Lacen). The band&#x27;s history is considered to have ended with the death of grand marshal Richard &quot;King&quot; Matthews in 2010.</p>
+<h3>discography</h3>
+<p>The band has left numerous recordings, including &#x27;The Westlawn Funeral Dirge&#x27; featuring Emanuel Paul. Their discography includes the recording &#x27;New Orleans Street Parade (1968)&#x27; and &#x27;Dejan&#x27;s Olympia Brass Band of New Orleans&#x27; (1974).</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Origin:</strong> New Orleans, USA</li>
+<li><strong>// own version of the Olympia Brass Band:</strong> Harold Dejan</li>
+<li><strong>// own version of the Olympia Brass Band:</strong> enacted by Harold Dejan in 1958</li>
+<li><strong>The band&#x27;s history is considered toenacted by Harold Dejan in 1958:</strong> 1958</li>
+<li><strong>Notable Recording:</strong> The Westlawn Funeral Dirge</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/James_Andrews_(musician" rel="noopener">https://en.wikipedia.org/wiki/James_Andrews_(musician</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Olympia_Brass_Band" rel="noopener">https://en.wikipedia.org/wiki/Olympia_Brass_Band</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Preservation_Hall_Jazz_Band" rel="noopener">https://en.wikipedia.org/wiki/Preservation_Hall_Jazz_Band</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Olympia Brass Band">
+        <input type="hidden" name="slug" value="olympia-brass-band">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Olympia Brass Band</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
