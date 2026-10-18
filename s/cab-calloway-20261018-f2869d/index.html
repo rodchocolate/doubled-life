@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Cab Calloway — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:2.2rem; font-weight:700; letter-spacing:-.02em; color:var(--porcelain); line-height:1.05; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Cab Calloway</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-10-18</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">895</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="8mq4UT4VnbE" type="button"><img src="https://i.ytimg.com/vi/8mq4UT4VnbE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cab Calloway - Minnie the Moocher</span></button>
+<button class="vtile" data-yt="UXInk1PCsc8" type="button"><img src="https://i.ytimg.com/vi/UXInk1PCsc8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cab Calloway 1933 Cartoon of St. James Infirmary Blues</span></button>
+<button class="vtile" data-yt="_8yGGtVKrD8" type="button"><img src="https://i.ytimg.com/vi/_8yGGtVKrD8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jumpin Jive - Cab Calloway and the Nicholas Brothers</span></button>
+<button class="vtile" data-yt="IoMbeDhG9fU" type="button"><img src="https://i.ytimg.com/vi/IoMbeDhG9fU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Stormy Weather in color - The Nicholas Brothers and Cab Calloway | Colorized with DeOldify</span></button>
+<button class="vtile" data-yt="250MMq0fTrU" type="button"><img src="https://i.ytimg.com/vi/250MMq0fTrU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cab Calloway - Minnie The Moocher (feat. The Blues Brothers) - 1080p Full HD</span></button>
+<button class="vtile" data-yt="RlE-Zv4Pyhk" type="button"><img src="https://i.ytimg.com/vi/RlE-Zv4Pyhk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cab Calloway &amp; his Band - Geechy Joe - Stormy Weather (1943)</span></button>
+<button class="vtile" data-yt="WtSLYrTKrEw" type="button"><img src="https://i.ytimg.com/vi/WtSLYrTKrEw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cab Calloway - Minnie the Moocher ( Remastered 720p )</span></button>
+<button class="vtile" data-yt="mMQVZYoNWIw" type="button"><img src="https://i.ytimg.com/vi/mMQVZYoNWIw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cab Calloway&#x27;s Jitterbug Party (1935)</span></button>
+<button class="vtile" data-yt="oyHMrgOhyAU" type="button"><img src="https://i.ytimg.com/vi/oyHMrgOhyAU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cab Calloway &quot;It Ain&#x27;t Necessarily So&quot; on The Ed Sullivan Show</span></button>
+<button class="vtile" data-yt="wFhexPsuNtw" type="button"><img src="https://i.ytimg.com/vi/wFhexPsuNtw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cab Calloway &amp; The Nicholas Brothers - Jumpin Jive</span></button>
+<button class="vtile" data-yt="fEyEcHX8WLo" type="button"><img src="https://i.ytimg.com/vi/fEyEcHX8WLo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cab Calloway &quot;St. James Infirmary Blues&quot; on The Ed Sullivan Show</span></button>
+<button class="vtile" data-yt="Gnt6zCDO73M" type="button"><img src="https://i.ytimg.com/vi/Gnt6zCDO73M/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cab Calloway - Kickin&#x27; The Gong Around</span></button>
+<button class="vtile" data-yt="aetcQ15iWvU" type="button"><img src="https://i.ytimg.com/vi/aetcQ15iWvU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Minnie The Moocher and Many, Many More (Cab Calloway) Documentary 1981</span></button>
+<button class="vtile" data-yt="e6BQQtE4BmM" type="button"><img src="https://i.ytimg.com/vi/e6BQQtE4BmM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cab Calloway - Jazz Profiles</span></button>
+<button class="vtile" data-yt="rsXsBDx2moU" type="button"><img src="https://i.ytimg.com/vi/rsXsBDx2moU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cab Calloway: The Original Frontman</span></button>
+<button class="vtile" data-yt="L5H7m9gnuM0" type="button"><img src="https://i.ytimg.com/vi/L5H7m9gnuM0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cab Calloway Documentary - Biography of the life of Cab Calloway</span></button>
+<button class="vtile" data-yt="DZXUDUH-3PE" type="button"><img src="https://i.ytimg.com/vi/DZXUDUH-3PE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cab Calloway’s Last Interview (February 23, 1993)</span></button>
+<button class="vtile" data-yt="DRRr1YaNsQA" type="button"><img src="https://i.ytimg.com/vi/DRRr1YaNsQA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cab Calloway narrates &quot;Minnie the Moocher &amp; Many Many More&quot; 1983 documentary</span></button>
+<button class="vtile" data-yt="Xc1Vuq2gZrA" type="button"><img src="https://i.ytimg.com/vi/Xc1Vuq2gZrA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cab Calloway does a lot of Jive Talk, 1977: CBC Archives | CBC</span></button>
+<button class="vtile" data-yt="umgE1eh8_3k" type="button"><img src="https://i.ytimg.com/vi/umgE1eh8_3k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cab Calloway Orchestra | Hi De Ho (1947) by Josh Binney | Colorized Movie</span></button>
+<button class="vtile" data-yt="uU--hYPdYpg" type="button"><img src="https://i.ytimg.com/vi/uU--hYPdYpg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Cab Calloway Finally Reveals the Dark Truth About Black Hollywood’s Oldest Devil Legend</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Cab Calloway was an American jazz singer, songwriter, bandleader, and actor whose career spanned over 65 years. He became a popular vocalist of the swing era and was a regular performer at Harlem&#x27;s Cotton Club.</p>
+<p>Cab Calloway was an American jazz singer, songwriter, bandleader, and actor whose career spanned over 65 years. He became a popular vocalist of the swing era and was a regular performer at Harlem&#x27;s Cotton Club.</p>
+<h3>early life and education</h3>
+<p>Cabell Calloway III was born in December 1907 in Rochester, New York. He grew up in West Baltimore neighborhood of Druid Hill, where he often skipped school to earn money by selling newspapers and shining shoes. After being caught playing dice on church steps, his mother sent him to Downingtown Industrial and Agricultural School, a reform school in Pennsylvania. Calloway began private vocal lessons in 1922 and performed in nightclubs in Baltimore, mentored by pianist Johnny Jones and drummer Chick Webb. He graduated from Frederick Douglass High School in 1925 and briefly attended law school in Chicago before leaving to pursue performing.</p>
+<h3>music career</h3>
+<p>Calloway&#x27;s music career began in earnest when he joined his sister Blanche Calloway on tour for the musical revue Plantation Days in 1927. He later performed at Chicago&#x27;s Dreamland Café, Sunset Cafe, and Club Berlin, while also studying scat singing with Louis Armstrong. He relocated to New York in 1929 with the Alabamians band. After the Alabamians broke up, he fronted the Missourians, who became known as Cab Calloway and His Orchestra. In 1931, he was hired as a substitute for the Duke Ellington Orchestra at the Cotton Club in Harlem, which led to a permanent position. He was the first African American musician to sell one million copies of a record with his most famous song, &#x27;Minnie the Moocher&#x27;, recorded in 1931.</p>
+<h3>achievements and recognition</h3>
+<p>Calloway reached the Billboard charts in five consecutive decades from the 1930s to the 1970s. He was the first African American to have a nationally syndicated radio program. He received the National Medal of Arts from the United States Congress in 1993 and posthumously received the Grammy Lifetime Achievement Award in 2008. His song &#x27;Minnie the Moocher&#x27; was inducted into the the Grammy Hall of Fame in 1999 and selected for preservation in the Library of Congress&#x27; National Recording Registry in 2019.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Born:</strong> December 25, 1907</li>
+<li><strong>Died:</strong> November 18, 1994</li>
+<li><strong>Nickname:</strong> The &#x27;Hi-de-ho&#x27; man of jazz</li>
+<li><strong>Most famous song:</strong> value own the world</li>
+<li><strong>Education:</strong> Frederick Douglass High School</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Cab_Calloway" rel="noopener">https://en.wikipedia.org/wiki/Cab_Calloway</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Cab_Calloway_School_of_the_Arts" rel="noopener">https://en.wikipedia.org/wiki/Cab_Calloway_School_of_the_Arts</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/The_Cab_Calloway_Orchestra" rel="noopener">https://en.wikipedia.org/wiki/The_Cab_Calloway_Orchestra</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Cab Calloway">
+        <input type="hidden" name="slug" value="cab-calloway">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Cab Calloway</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
