@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Jack DeJohnette — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:2.2rem; font-weight:700; letter-spacing:-.02em; color:var(--porcelain); line-height:1.05; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Jack DeJohnette</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-10-18</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">843</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="7k6VtcAJn4k" type="button"><img src="https://i.ytimg.com/vi/7k6VtcAJn4k/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jack DeJohnette with Pat Metheny and Christian McBride &quot;Solar&quot; at MJF55, 2012</span></button>
+<button class="vtile" data-yt="a3CZHr5uiNM" type="button"><img src="https://i.ytimg.com/vi/a3CZHr5uiNM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jack DeJohnette, Pat Metheny, Herbie Hancock and Dave Holland - Shadow Dance (live)</span></button>
+<button class="vtile" data-yt="jkOXswBHkyk" type="button"><img src="https://i.ytimg.com/vi/jkOXswBHkyk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jack DeJohnette - Music in the Key of Om</span></button>
+<button class="vtile" data-yt="TnFeIoFcjjU" type="button"><img src="https://i.ytimg.com/vi/TnFeIoFcjjU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Hudson : John Scofield John Medeski Larry Grenadier Jack DeJohnette - TVJazz.tv</span></button>
+<button class="vtile" data-yt="wjCguSiMXUI" type="button"><img src="https://i.ytimg.com/vi/wjCguSiMXUI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jack Dejohnette drums solo</span></button>
+<button class="vtile" data-yt="b0DCLU_6Abs" type="button"><img src="https://i.ytimg.com/vi/b0DCLU_6Abs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Betty Carter/Geri Allen/Dave Holland/Jack DeJohnette - Hamburg 1993</span></button>
+<button class="vtile" data-yt="mlFby79harc" type="button"><img src="https://i.ytimg.com/vi/mlFby79harc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jack DeJohnette Drum Solo (with Savion Glover) – Live at SFJAZZ!</span></button>
+<button class="vtile" data-yt="JTKu0fjjwMM" type="button"><img src="https://i.ytimg.com/vi/JTKu0fjjwMM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Charles Lloyd Quartet 1966 w/ Keith Jarrett, Cecil McBee &amp; Jack DeJohnette RTB TV Studio, Belgium</span></button>
+<button class="vtile" data-yt="XYaVbTVMZtA" type="button"><img src="https://i.ytimg.com/vi/XYaVbTVMZtA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Standards I (Keith Jarret, Gary Peacock, Jack Dejohnette)</span></button>
+<button class="vtile" data-yt="ZaDuyFcL9Cc" type="button"><img src="https://i.ytimg.com/vi/ZaDuyFcL9Cc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jack Dejohnette&#x27;s Single Stroke Roll</span></button>
+<button class="vtile" data-yt="JPl3uA3xr3U" type="button"><img src="https://i.ytimg.com/vi/JPl3uA3xr3U/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jack DeJohnette - Burghausen 1993</span></button>
+<button class="vtile" data-yt="KPTt4y2BXms" type="button"><img src="https://i.ytimg.com/vi/KPTt4y2BXms/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Working with Miles Davis - Jack DeJohnette</span></button>
+<button class="vtile" data-yt="lK8RImNCbQ4" type="button"><img src="https://i.ytimg.com/vi/lK8RImNCbQ4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">JACK DeJOHNETTE - Drummer, Pianist, Composer - Miles Davis, Bill Evans, Keith Jarrett, John Coltrane</span></button>
+<button class="vtile" data-yt="y48mpm7jwuA" type="button"><img src="https://i.ytimg.com/vi/y48mpm7jwuA/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jack DeJohnette - Interview - 7/6/2007 - Newport Jazz Festival (Official)</span></button>
+<button class="vtile" data-yt="WZgv7h0Iy88" type="button"><img src="https://i.ytimg.com/vi/WZgv7h0Iy88/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">History of Jazz: Oxygen for the Ears | Music Documentary | Full Movie | Ravi Coltrane</span></button>
+<button class="vtile" data-yt="MVl04jshXU8" type="button"><img src="https://i.ytimg.com/vi/MVl04jshXU8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jack DeJohnette&#x27;s Directions - 1978-02-17, Berklee Performance Center, Boston, MA</span></button>
+<button class="vtile" data-yt="Fa8sNtu2oBs" type="button"><img src="https://i.ytimg.com/vi/Fa8sNtu2oBs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jack DeJohnette&#x27;s Directions (feat. Abercrombie) Bremen (1976)</span></button>
+<button class="vtile" data-yt="NXPyKTUUKQc" type="button"><img src="https://i.ytimg.com/vi/NXPyKTUUKQc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jack DeJohnette&#x27;s New Directions - 1985-03-30, City College Of New York, New York, NY</span></button>
+<button class="vtile" data-yt="mgUjCLt4n0g" type="button"><img src="https://i.ytimg.com/vi/mgUjCLt4n0g/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Legends of Jazz Drumming Part Two</span></button>
+<button class="vtile" data-yt="MQzhvNn-5sk" type="button"><img src="https://i.ytimg.com/vi/MQzhvNn-5sk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jack DeJohnette &amp; New Directions (Abercrombie, Bowie &amp; Gomez), Porland (1978)</span></button>
+<button class="vtile" data-yt="fF98tn5w5Bc" type="button"><img src="https://i.ytimg.com/vi/fF98tn5w5Bc/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">The Keith Jarrett Trio - documentary from 1969</span></button>
+<button class="vtile" data-yt="YNRRsWI1Oyg" type="button"><img src="https://i.ytimg.com/vi/YNRRsWI1Oyg/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jack DeJohnette &amp; New Directions (feat. John Abercrombie), Minneapolis (1977)</span></button>
+<button class="vtile" data-yt="_zK0aw7_6xo" type="button"><img src="https://i.ytimg.com/vi/_zK0aw7_6xo/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">In Memoriam: Steve Smith recalls Jack DeJohnette&#x27;s influence to play Sonor drums.</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Jack DeJohnette (1942–2025) was an American jazz drummer, pianist and composer who recorded more than 35 albums as a band leader. He was inducted into the Modern Drummer Hall of Fame in 2007, won two Grammy Awards, and received six other nominations.</p>
+<p>Jack DeJohnette (1942–2025) was an American jazz drummer, pianist and composer who recorded more than 35 albums as a band leader. He was inducted into the Modern Drummer Hall of Fame in 2007, won two Grammy Awards, and received six other nominations.</p>
+<h3>early life and musical beginnings</h3>
+<p>Born in Chicago, Illinois, DeJohnette was raised by his grandmother Rosalie Ann Wood. He possessed perfect pitch and began studying piano at age four with Antoinette Rich. At 13, he switched to drums, though he piano remained his first instrument. He was taught drumming techniques by Bobby Miller Jr and was inspired by his uncle, Roy Wood Sr., a Chicago jazz disc jockey. In Chicago, DeJohnette played R&amp;B, hard bop, and avant-garde music, leading his own groups and playing with Richard Abrams and Roscoe Mitchell. He also occasionally played drums for the Sun Ra Arkestra. Before moving to New York City in 1966, he was well-known in Chicago&#x27;s jazz clubs; notably, he once sat in for Elvin Jones during a residency by John Coltrane&#x27;s quintet.</p>
+<h3>career development and collaborations</h3>
+<p>After moving to New York City in 1966, DeJohnette joined the Charles Lloyd Quartet, where he first met Keith Jarrett. He later worked with musicians such as Jackie McLean, Abbey Lincoln, Betty Carter, and Bill Evans&#x27; trio in 1968. In 1969, he replaced Tony Williams in Miles Davis&#x27;s live band, recognized by Davis for his ability to combine rock and roll grooves with jazz improvisation. DeJohnette was the primary drummer on the album Bitches Brew, which he and other musicians viewed as innovative yet unstructured and fragmentary. He remained with Davis until mid-1971, contributing to albums such as Live-Evil, Jack Johnson, and On the Corner.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Born:</strong> August 9, 1942</li>
+<li><strong>Instruments:</strong> Drums, piano, melodica</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Jack_DeJohnette" rel="noopener">https://en.wikipedia.org/wiki/Jack_DeJohnette</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Jack_DeJohnette_discography" rel="noopener">https://en.wikipedia.org/wiki/Jack_DeJohnette_discography</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/The_DeJohnette_Complex" rel="noopener">https://en.wikipedia.org/wiki/The_DeJohnette_Complex</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Jack DeJohnette">
+        <input type="hidden" name="slug" value="jack-dejohnette">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Jack DeJohnette</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
