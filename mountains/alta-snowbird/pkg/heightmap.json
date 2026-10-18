@@ -1,0 +1,36 @@
+{
+ "resort": "Alta + Snowbird",
+ "slug": "alta-snowbird",
+ "landscape_px": [
+  2017,
+  1972
+ ],
+ "metres_per_px": [
+  4.764,
+  4.765
+ ],
+ "elev_min_m": 2134.3,
+ "elev_max_m": 3501.8,
+ "unreal": {
+  "import": "Landscape \u2192 Import from File \u2192 heightmap.png",
+  "scale_x_cm": 476.4,
+  "scale_y_cm": 476.5,
+  "scale_z_pct": 26708.3,
+  "note": "Set X/Y scale to scale_x_cm/scale_y_cm (1 Unreal unit = 1 cm). Z scale as given puts the terrain at true elevation span. Landscape origin = SW corner at (0,0); add elev_min_m*100 to Z location to place sea level at 0."
+ },
+ "bbox": {
+  "lat0": 40.539124574999995,
+  "lat1": 40.623493125,
+  "lon0": -111.69487267500001,
+  "lon1": -111.58127422499999
+ },
+ "origin_sw": {
+  "lat": 40.539124574999995,
+  "lon": -111.69487267500001
+ },
+ "source_zoom": 15,
+ "native_m_per_px": 3.63,
+ "dem": "USGS 3DEP (public domain), 1-10 m lidar/NED via National Map ImageServer",
+ "crs": "WGS84 lat/lon \u2192 local equirectangular metres at mean latitude; adequate at \u226410 km extents",
+ "made": "2026-10-18 13:53"
+}

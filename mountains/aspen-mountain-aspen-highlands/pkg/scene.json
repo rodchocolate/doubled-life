@@ -1,0 +1,26 @@
+{
+ "resort": "Aspen Mountain+Aspen Highlands",
+ "trees": 1720388,
+ "rocks": 45263,
+ "woods_polys": 563,
+ "rock_polys": 23,
+ "roads": 1066,
+ "paths": 1316,
+ "buildings": 3911,
+ "treeline_m": 3600.0,
+ "density_per_m2": 0.035,
+ "seed": 7,
+ "forest_model": "complement",
+ "clearing_cells_pct": 8.8,
+ "tree_kinds": {
+  "0": "bristlecone/limber pine (>2750 m)",
+  "1": "ponderosa/white fir"
+ },
+ "bin_layout": {
+  "trees.bin": "f32 x,y,z,scale,kind",
+  "rocks.bin": "f32 x,y,z,scale,yaw"
+ },
+ "frame": "landscape-local metres, origin SW corner, x east, y north, z elevation m",
+ "made": "2026-10-18 13:53",
+ "attribution": "Land cover, roads, buildings \u00a9 OpenStreetMap contributors (ODbL). Placement derived from SRTM slope/curvature (public domain)."
+}

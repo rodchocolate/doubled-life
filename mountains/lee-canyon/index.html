@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Lee Canyon — walk — doubled.life</title>
+<style>
+html,body{margin:0;height:100%;background:#0b0d10;color:#eee8da;font:13px/1.4 -apple-system,system-ui,sans-serif;overflow:hidden;touch-action:none}
+canvas{display:block}
+#hud{position:fixed;left:12px;top:10px;pointer-events:none;text-shadow:0 1px 2px #000}
+#hud b{font-weight:600;font-size:15px}#hud small{opacity:.75}
+#pad{position:fixed;left:18px;bottom:18px;width:120px;height:120px;border-radius:60px;background:rgba(238,232,218,.08);border:1px solid rgba(238,232,218,.25)}
+#pad i{position:absolute;left:40px;top:40px;width:40px;height:40px;border-radius:20px;background:rgba(238,232,218,.35)}
+#look{position:fixed;right:0;top:0;width:55%;height:100%}
+#date{position:fixed;right:12px;top:10px;background:rgba(0,0,0,.35);padding:6px 8px;border-radius:8px}
+#date input,#date select{width:170px;margin:2px 0;font:12px system-ui}
+#credit{position:fixed;left:12px;bottom:10px;opacity:.5;font-size:11px;text-align:right;pointer-events:none}
+.desk #pad,.desk #look{display:none}
+#mini{position:fixed;right:12px;bottom:34px;width:15vh;height:15vh;min-width:120px;min-height:120px;border-radius:6px;overflow:hidden;background:rgba(0,0,0,.45);border:1px solid rgba(238,232,218,.35);box-shadow:0 2px 10px #0008;transition:width .25s,height .25s;cursor:crosshair;touch-action:none}
+#mini.big{width:min(80vh,80vw);height:min(80vh,80vw);right:50%;bottom:50%;transform:translate(50%,50%)}
+#mini canvas{width:100%;height:100%;display:block}
+#minibtn{position:fixed;right:12px;bottom:12px;font-size:11px;opacity:.6;cursor:pointer;background:none;border:0;color:#eee8da}
+</style></head><body>
+<a class="back" href="../" style="position:fixed;left:12px;top:70px;z-index:9;font:12px system-ui;background:rgba(0,0,0,.45);padding:.3rem .6rem;border-radius:6px;color:#fffcf9;text-decoration:none">← mountains · <a href="swatch/" style="color:#ffd166">swatch</a> · <a href="research/" style="color:#ffd166">research</a></a><div id="hud"><b id="ttl">—</b><br><small id="pos">—</small><br><small id="run"></small></div>
+<div id="date"><select id="jump"><option value="">jump to…</option></select><br><input type="date" id="dt"><div id="dayl">—</div></div>
+<div id="pad"><i id="knob"></i></div><div id="look"></div>
+<div id="mini"><canvas id="minic"></canvas></div><button id="minibtn">map ⤢</button>
+<div id="credit">terrain SRTM (public domain) · pistes/lifts © OpenStreetMap contributors (ODbL) · snow SNOTEL</div>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.170.0/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+const SLUG = 'lee-canyon'; const B = './pkg/'; const H = await (await fetch(B+'heightmap.json')).json(); const P = await (await fetch(B+'pistes.json')).json(); const L = await (await fetch(B+'lifts.json')).json();
+const S = await (await fetch(B+'season.json')).json();
+// --- heightmap → float grid (16-bit PNG decoded via canvas: the browser gives 8-bit, so we read the raw 16-bit via fetch+PNG decode fallback: use heightmap16.bin if present)
+document.getElementById('ttl').textContent = H.resort; document.title = H.resort + ' — walk'; const zmin = H.elev_min_m, zmax = H.elev_max_m;
+let grid; const PHONE = matchMedia('(pointer:coarse)').matches; const TIER = new URLSearchParams(location.search).get('tier') || (PHONE ? 'phone' : 'full');
+let [nx, ny] = H.landscape_px; let [mx, my] = H.metres_per_px;
+try { const half = TIER === 'phone'; const ab = await (await fetch(B + (half ? 'heightmap16_half.bin' : 'heightmap16.bin'))).arrayBuffer(); const u = new Uint16Array(ab);
+  if (half){ const nyh = Math.ceil(ny/2), nxh = Math.ceil(nx/2); if (u.length === nyh*nxh){ mx *= (nx-1)/(nxh-1); my *= (ny-1)/(nyh-1); nx = nxh; ny = nyh; } }
+  grid = new Float32Array(u.length); for (let i=0;i<u.length;i++) grid[i] = zmin + u[i]/65535*(zmax-zmin); }
+catch(e){ const img = new Image(); img.src = B+'heightmap.png'; await img.decode(); const c = document.createElement('canvas'); c.width=nx; c.height=ny; const g=c.getContext('2d'); g.drawImage(img,0,0); const d=g.getImageData(0,0,nx,ny).data; grid=new Float32Array(nx*ny); for(let i=0;i<nx*ny;i++) grid[i]=zmin+d[i*4]/255*(zmax-zmin); }
+const W = (nx-1)*mx, D = (ny-1)*my;                      // metres east, metres north
+function hAt(x, y){ // x east 0..W, y north 0..D → elevation (bilinear). row 0 = north.
+  const fx = Math.min(nx-1.001, Math.max(0, x/mx)), fy = Math.min(ny-1.001, Math.max(0, (D-y)/my)); const i=Math.floor(fx), j=Math.floor(fy), tx=fx-i, ty=fy-j;
+  const a=grid[j*nx+i], b=grid[j*nx+i+1], c=grid[(j+1)*nx+i], d=grid[(j+1)*nx+i+1]; return (a*(1-tx)+b*tx)*(1-ty)+(c*(1-tx)+d*tx)*ty; }
+// --- scene: metres = units; x east, y UP, z SOUTH (three.js right-handed), so world z = D - north
+const scene = new THREE.Scene(); const EXT = Math.max((H.landscape_px[0]-1)*H.metres_per_px[0], (H.landscape_px[1]-1)*H.metres_per_px[1]); scene.fog = new THREE.Fog(0xd9d2c4, Math.min(EXT*0.5, 1100), Math.min(EXT*2.2, 3000));
+const skyGeo = new THREE.SphereGeometry(EXT*2.6, 32, 16); const skyMat = new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, uniforms: { top: { value: new THREE.Color(0x6f93c0) }, hor: { value: new THREE.Color(0xd9d2c4) }, sunDir: { value: new THREE.Vector3(0,1,0) } },
+  vertexShader: `varying vec3 vP; void main(){ vP = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+  fragmentShader: `uniform vec3 top, hor, sunDir; varying vec3 vP; void main(){ float h = clamp(vP.y, 0.0, 1.0); vec3 c = mix(hor, top, pow(h, 0.55)); float d = max(dot(vP, normalize(sunDir)), 0.0); c += vec3(1.0,0.93,0.80) * (pow(d, 600.0) * 1.6 + pow(d, 8.0) * 0.18); gl_FragColor = vec4(c, 1.0); }` });
+const sky = new THREE.Mesh(skyGeo, skyMat); scene.add(sky);
+const cam = new THREE.PerspectiveCamera(62, innerWidth/innerHeight, 0.5, EXT*3);
+const ren = new THREE.WebGLRenderer({antialias:true, powerPreference:'high-performance'}); ren.setPixelRatio(Math.min(devicePixelRatio, TIER==='phone' ? 1 : 1.5)); ren.setSize(innerWidth, innerHeight); document.body.appendChild(ren.domElement);
+const geo = new THREE.PlaneGeometry(W, D, nx-1, ny-1); geo.rotateX(-Math.PI/2);  // plane in xz, +x east, -z north
+const pos = geo.attributes.position; const col = new Float32Array(pos.count*3);
+for (let j=0;j<ny;j++) for (let i=0;i<nx;i++){ const k=j*nx+i; const x=i*mx, north=D-j*my; const z=grid[k]; pos.setXYZ(k, x, z, D-north);
+  // colour by elevation + slope: snow above ~2750, rock on steep, forest below — chiral palette, muted
+  const t=(z-zmin)/(zmax-zmin); let r,g,b; if (t>0.55){ r=0.90;g=0.89;b=0.86 } else if (t>0.3){ r=0.42;g=0.40;b=0.36 } else { r=0.26;g=0.31;b=0.25 } col[k*3]=r;col[k*3+1]=g;col[k*3+2]=b; }
+const SLOPE = new Float32Array(nx*ny); for (let j=0;j<ny;j++) for (let i=0;i<nx;i++){ const k=j*nx+i; const zl=grid[j*nx+Math.max(0,i-1)], zr=grid[j*nx+Math.min(nx-1,i+1)], zu=grid[Math.max(0,j-1)*nx+i], zd=grid[Math.min(ny-1,j+1)*nx+i]; const dx=(zr-zl)/(2*mx), dy=(zd-zu)/(2*my); const g=Math.hypot(dx,dy); SLOPE[k]=g/Math.hypot(1,g); }
+geo.setAttribute('color', new THREE.BufferAttribute(col, 3)); geo.computeVertexNormals();
+const terrMat = new THREE.MeshLambertMaterial({vertexColors:true});
+terrMat.onBeforeCompile = (sh) => {
+  sh.uniforms.uTime = { value: 0 }; terrMat.userData.sh = sh;
+  sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vW; varying vec3 vN;').replace('#include <worldpos_vertex>', '#include <worldpos_vertex>\nvW = (modelMatrix * vec4(transformed,1.0)).xyz; vN = normalize(mat3(modelMatrix) * objectNormal);');
+  sh.fragmentShader = sh.fragmentShader.replace('#include <common>', `#include <common>
+varying vec3 vW; varying vec3 vN; uniform float uTime;
+float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453); }
+float noise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f*f*(3.0-2.0*f); return mix(mix(hash(i), hash(i+vec2(1,0)), f.x), mix(hash(i+vec2(0,1)), hash(i+vec2(1,1)), f.x), f.y); }
+float fbm(vec2 p){ float v = 0.0, a = 0.5; for (int k=0;k<4;k++){ v += a*noise(p); p *= 2.1; a *= 0.5; } return v; }`)
+  .replace('#include <color_fragment>', `#include <color_fragment>
+  float lum = dot(diffuseColor.rgb, vec3(0.33));
+  float snow = smoothstep(0.62, 0.80, lum);                 // the vertex colour already says snow/rock/forest; shader adds surface
+  float steep = 1.0 - clamp(vN.y, 0.0, 1.0);
+  // snow: soft wind texture + sparkle
+  float sn = fbm(vW.xz * 0.35) * 0.10 + fbm(vW.xz * 2.5) * 0.05; float spark = step(0.985, hash(floor(vW.xz * 6.0))) * 0.25;
+  // rock: strata along elevation + grain
+  float strata = smoothstep(0.35, 0.65, fract(vW.y * 0.08 + fbm(vW.xz * 0.05) * 1.5)) * 0.12; float grain = fbm(vW.xz * 1.2) * 0.12;
+  // forest floor: mottled dark
+  float floorm = fbm(vW.xz * 0.8) * 0.18;
+  vec3 c = diffuseColor.rgb;
+  c = mix(c * (0.88 + floorm), c * (1.0 - strata - grain * steep), steep * (1.0 - snow));
+  c = mix(c, c * (0.94 + sn) + spark, snow);
+  diffuseColor.rgb = c;`);
+};
+const terr = new THREE.Mesh(geo, terrMat); scene.add(terr);
+// contour lines on the ground: every 25 m, thin, the chiral line colour — the map you already know, under your feet
+const cmat = new THREE.LineBasicMaterial({color:0x2a221b, transparent:true, opacity:0.35});
+(function contours(){ const step=25, segs=[]; for(let j=0;j<ny-1;j++) for(let i=0;i<nx-1;i++){ const z00=grid[j*nx+i],z10=grid[j*nx+i+1],z01=grid[(j+1)*nx+i]; for(let lv=Math.ceil(Math.min(z00,z10,z01)/step)*step; lv<=Math.max(z00,z10,z01); lv+=step){
+  const pts=[]; const edge=(za,zb,xa,ya,xb,yb)=>{ if((za-lv)*(zb-lv)<0){ const t=(lv-za)/(zb-za); pts.push(new THREE.Vector3(xa+(xb-xa)*t, lv+0.3, ya+(yb-ya)*t)); } };
+  const x0=i*mx, z0=j*my, x1=(i+1)*mx, z1=(j+1)*my; edge(z00,z10,x0,z0,x1,z0); edge(z00,z01,x0,z0,x0,z1); edge(z10,z01,x1,z0,x0,z1); if(pts.length===2) segs.push(pts[0],pts[1]); } }
+  const g=new THREE.BufferGeometry().setFromPoints(segs); scene.add(new THREE.LineSegments(g, cmat)); })();
+// piste ZONES: each run as a draped ribbon of its real width, surface = groomed snow (when depth > 10 cm) with a difficulty-coloured edge,
+// and chevrons scrolling slowly downhill along the ribbon. Width by difficulty matches dress.py's clearing (half-widths).
+const HALF = {novice:18, easy:16, intermediate:13, advanced:10, expert:8, freeride:5};
+const chevTex = (()=>{ const c=document.createElement('canvas'); c.width=64; c.height=128; const g=c.getContext('2d'); g.clearRect(0,0,64,128);
+  g.fillStyle='#f2f1ec'; g.fillRect(0,0,64,128); g.strokeStyle='rgba(30,30,30,0.9)'; g.lineWidth=9; g.lineCap='round'; g.beginPath(); g.moveTo(10,40); g.lineTo(32,18); g.lineTo(54,40); g.stroke();   // chevron pointing +v, on snow white
+  const t=new THREE.CanvasTexture(c); t.wrapS=t.wrapT=THREE.RepeatWrapping; return t; })();
+const pisteMats = []; const PISTE_MESHES = [];
+for (const p of P){
+  const pts = p.points; if (pts.length < 2) continue; const hw = HALF[p.difficulty] || 12;
+  // orient downhill: first point should be the TOP. OSM pistes are usually drawn top→bottom but not always.
+  const seq = pts[0][2] >= pts[pts.length-1][2] ? pts : [...pts].reverse();
+  // resample along length every ~6 m so the ribbon follows the ground
+  const line = []; for (let i=0;i<seq.length-1;i++){ const [x0,y0]=seq[i], [x1,y1]=seq[i+1]; const L=Math.hypot(x1-x0,y1-y0), n=Math.max(1,Math.ceil(L/6)); for (let k=0;k<n;k++){ line.push([x0+(x1-x0)*k/n, y0+(y1-y0)*k/n]); } } line.push([seq[seq.length-1][0], seq[seq.length-1][1]]);
+  const vpos = [], vuv = [], idx = []; let along = 0;
+  // v = metres from the TOP, increasing downhill, for BOTH sides of every quad — the chevron texture is authored apex-toward-larger-v,
+  // so it points downhill regardless of how the strip's winding comes out. u is the side (0 left, 1 right) with a stable normal.
+  let pn = null;
+  for (let i=0;i<line.length;i++){ const [x,y]=line[i]; const [xa,ya]=line[Math.max(0,i-1)], [xb,yb]=line[Math.min(line.length-1,i+1)]; let dx=xb-xa, dy=yb-ya; const L=Math.hypot(dx,dy)||1; dx/=L; dy/=L; let nx_=-dy, ny_=dx;
+    if (pn && (nx_*pn[0]+ny_*pn[1]) < 0){ nx_=-nx_; ny_=-ny_; }   // keep the normal on the same side through hairpins (no twist)
+    pn=[nx_,ny_];
+    if (i>0) along += Math.hypot(x-line[i-1][0], y-line[i-1][1]);
+    const total = line.length; const capM = 14; const fromEnd = Math.min(along, Math.max(0, (line.length-1-i)*6)); const taper = Math.min(1, fromEnd / capM); const hwT = hw * (0.15 + 0.85 * Math.sin(taper * Math.PI/2));
+    for (const side of [-1,1]){ const sx=x+nx_*hwT*side, sy=y+ny_*hwT*side; vpos.push(sx, hAt(sx,sy)+0.6, D-sy); vuv.push(side<0?0:1, along/(hw*2.2)); }
+    if (i>0){ const a=(i-1)*2; idx.push(a, a+1, a+2, a+1, a+3, a+2); } }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(vpos,3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(vuv,2)); g.setIndex(idx); g.computeVertexNormals();
+  const edge = {1:0x3a7d3a,2:0x1f4e8c,3:0x1a1a1a,4:0xb32c09}[p.grade] || 0x888888;
+  const mat = new THREE.MeshLambertMaterial({ color: 0xffffff, map: chevTex, polygonOffset: true, polygonOffsetFactor: -4, polygonOffsetUnits: -4 });
+  mat.onBeforeCompile = (sh) => { sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vW2;').replace('#include <worldpos_vertex>', '#include <worldpos_vertex>\nvW2 = (modelMatrix * vec4(transformed,1.0)).xyz;');
+    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying vec3 vW2; float h2(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453); } float n2(vec2 p){ vec2 i=floor(p), f=fract(p); f=f*f*(3.0-2.0*f); return mix(mix(h2(i),h2(i+vec2(1,0)),f.x),mix(h2(i+vec2(0,1)),h2(i+vec2(1,1)),f.x),f.y); }')
+      .replace('#include <color_fragment>', '#include <color_fragment>\n float g1 = n2(vW2.xz*1.8)*0.06 + n2(vW2.xz*9.0)*0.04; float corduroy = 0.03*sin(vW2.x*6.0 + vW2.z*2.0); float sp = step(0.988, h2(floor(vW2.xz*7.0)))*0.2; float ink = 1.0 - dot(diffuseColor.rgb, vec3(0.333)); diffuseColor.rgb = diffuseColor.rgb*(0.95+g1+corduroy) + sp; diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.12), ink*0.85);'); };
+  mat.userData = { edge }; pisteMats.push(mat);
+  const mesh = new THREE.Mesh(g, mat); mesh.renderOrder = 2; mesh.userData = { piste: p }; scene.add(mesh); PISTE_MESHES.push(mesh);
+  // edge lines in difficulty colour, both sides
+  for (const side of [-1,1]){ const e=[]; for (let i=0;i<line.length;i++){ const [x,y]=line[i]; const [xa,ya]=line[Math.max(0,i-1)], [xb,yb]=line[Math.min(line.length-1,i+1)]; let dx=xb-xa, dy=yb-ya; const L=Math.hypot(dx,dy)||1; const sx=x+(-dy/L)*hw*side, sy=y+(dx/L)*hw*side; e.push(new THREE.Vector3(sx, hAt(sx,sy)+0.5, D-sy)); }
+    scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(e), new THREE.LineBasicMaterial({ color: edge }))); }
+}
+// a 3D arrow at the top of each run pointing downhill (visible from far); HUD text shows the run name when you are on it
+for (const p of P){ const pts = p.points; if (pts.length < 2) continue; const seq = pts[0][2] >= pts[pts.length-1][2] ? pts : [...pts].reverse();
+  const [x0,y0] = seq[0], [x1,y1] = seq[Math.min(3, seq.length-1)]; const ang = Math.atan2(x1-x0, y1-y0);  // bearing of the run's start
+  const col = {1:0x3a7d3a,2:0x1f4e8c,3:0x1a1a1a,4:0xb32c09}[p.grade] || 0x888888;
+  const shaft = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.3, 7), new THREE.MeshLambertMaterial({ color: col })); const head = new THREE.Mesh(new THREE.ConeGeometry(2.0, 3.5, 4), new THREE.MeshLambertMaterial({ color: col }));
+  head.rotation.x = Math.PI/2; head.rotation.y = Math.PI/4; head.position.z = -5.2; const grp = new THREE.Group(); grp.add(shaft); grp.add(head);
+  grp.position.set(x0, hAt(x0,y0) + 2.2, D - y0); grp.rotation.y = -ang + Math.PI;  // -Z is north in our frame; bearing → rotation about Y
+  scene.add(grp); }
+// pistes as lines on the ground, difficulty colour; lifts as cables
+const dcol={1:0x3a7d3a,2:0x1f4e8c,3:0x1a1a1a,4:0xb32c09,0:0x888888};
+for (const l of L){ const pts=l.points.map(([x,y,z])=>new THREE.Vector3(x, hAt(x,y)+12, D-y)); scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({color:0xb32c09}))); 
+  const tm = new THREE.MeshLambertMaterial({color:0x9a9a95});
+  for(const v of pts){ const m=new THREE.Mesh(new THREE.CylinderGeometry(0.35,0.5,12,8), tm); m.position.set(v.x, v.y-6, v.z); scene.add(m); const arm=new THREE.Mesh(new THREE.BoxGeometry(5,0.4,0.6), tm); arm.position.set(v.x, v.y-0.3, v.z); arm.lookAt(pts[pts.length-1].x, v.y-0.3, pts[pts.length-1].z); arm.rotateY(Math.PI/2); scene.add(arm);} }
+// forest + rock from dress.py (deterministic; OSM clearings + SRTM slope). InstancedMesh: 36k trees is fine on a phone GPU.
+async function loadBin(name, stride){ try { const ab = await (await fetch(B+name)).arrayBuffer(); const f = new Float32Array(ab); return f.length % stride === 0 ? f : null; } catch(e){ return null; } }
+let TREES = null; try { const ab = await (await fetch(B+'trees16.bin')).arrayBuffer(); const u = new Uint16Array(ab); const n16 = u.length/4; TREES = new Float32Array(n16*5); const Wq = (H.landscape_px[0]-1)*H.metres_per_px[0], Dq = (H.landscape_px[1]-1)*H.metres_per_px[1];
+  for (let i=0;i<n16;i++){ TREES[i*5] = u[i*4]/65535*Wq; TREES[i*5+1] = u[i*4+1]/65535*Dq; TREES[i*5+2] = zmin + u[i*4+2]/65535*(zmax-zmin); TREES[i*5+3] = (u[i*4+3] & 255)/100; TREES[i*5+4] = u[i*4+3] >> 8; } } catch(e){ TREES = await loadBin('trees.bin', 5); }
+const ROCKS = await loadBin('rocks.bin', 5);
+if (TREES){
+  const n = TREES.length/5; const CH = 160;
+  const NEAR = TIER==='phone' ? 100 : 150, MID = TIER==='phone' ? 300 : 400, FAR = TIER==='phone' ? 1000 : 1500;   // LOD1 / LOD2 / billboard / nothing
+  const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), v = new THREE.Vector3(), sc = new THREE.Vector3(), cc = new THREE.Color();
+  // ---- species geometry from ez-tree bake (_lib/species.json + .bin); fall back to the procedural cones if missing
+  let SP = null; try { SP = await (await fetch('../_lib/species.json')).json(); SP.buf = await (await fetch('../_lib/species.bin')).arrayBuffer(); } catch(e){ SP = null; }
+  const TRUE_H = { ponderosa: 22, bristlecone: 9, aspen: 14 };                       // metres, mature; scale per instance applied on top
+  const texL = new THREE.TextureLoader(); const leafPine = texL.load('../_lib/textures/leaves/pine.png'), leafAspen = texL.load('../_lib/textures/leaves/aspen.png'); leafPine.colorSpace = leafAspen.colorSpace = THREE.SRGBColorSpace;
+  function geoFrom(rec, scale){ const g = new THREE.BufferGeometry(); const f = (o, n) => new Float32Array(SP.buf, o, n/4);
+    const pos = f(rec.pos[0], rec.pos[1]); const ps = new Float32Array(pos.length); for (let i=0;i<pos.length;i++) ps[i] = pos[i]*scale; g.setAttribute('position', new THREE.BufferAttribute(ps,3));
+    if (rec.nor) g.setAttribute('normal', new THREE.BufferAttribute(f(rec.nor[0], rec.nor[1]),3)); else g.computeVertexNormals();
+    if (rec.uv) g.setAttribute('uv', new THREE.BufferAttribute(f(rec.uv[0], rec.uv[1]),2));
+    if (rec.idx) g.setIndex(new THREE.BufferAttribute(new Uint32Array(SP.buf, rec.idx[0], rec.idx[1]/4),1)); return g; }
+  const barkMat = new THREE.MeshLambertMaterial({ color: 0x5a4636 }); const needleMat = new THREE.MeshLambertMaterial({ map: leafPine, alphaTest: 0.35, side: THREE.DoubleSide, color: 0xc8d6c0 }); const aspenMat = new THREE.MeshLambertMaterial({ map: leafAspen, alphaTest: 0.35, side: THREE.DoubleSide, color: 0xe8e2a0 });
+  // kind from dress.py: 0 bristlecone/limber (high), 1 ponderosa/fir (low). Colorado lower slopes: aspen mixed in below 2900 m by hash.
+  const KIND_SPECIES = { 0: 'bristlecone', 1: 'ponderosa' };
+  const built = {};   // species → [ {branches: geo, leaves: geo}, ×3 ]
+  if (SP) for (const name of Object.keys(SP.species)){ const sp = SP.species[name]; const scale = TRUE_H[name] / sp.lods[0].height_m; built[name] = [1,2].map(k => ({ b: sp.lods[k].branches ? geoFrom(sp.lods[k].branches, scale) : null, l: sp.lods[k].leaves ? geoFrom(sp.lods[k].leaves, scale) : null })); }
+  const bbGeo = (()=>{ const a = new THREE.PlaneGeometry(1, 1); a.translate(0, 0.5, 0); const b = a.clone(); b.rotateY(Math.PI/2); const A=a.toNonIndexed(), Bq=b.toNonIndexed(); const n_=A.attributes.position.count+Bq.attributes.position.count; const pos=new Float32Array(n_*3), uv=new Float32Array(n_*2), nor=new Float32Array(n_*3); pos.set(A.attributes.position.array); pos.set(Bq.attributes.position.array, A.attributes.position.count*3); uv.set(A.attributes.uv.array); uv.set(Bq.attributes.uv.array, A.attributes.position.count*2); nor.set(A.attributes.normal.array); nor.set(Bq.attributes.normal.array, A.attributes.position.count*3); const g=new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos,3)); g.setAttribute('uv', new THREE.BufferAttribute(uv,2)); g.setAttribute('normal', new THREE.BufferAttribute(nor,3)); return g; })();
+  const bbTex = (()=>{ const c=document.createElement('canvas'); c.width=64; c.height=128; const g=c.getContext('2d'); g.clearRect(0,0,64,128); g.fillStyle='#22382a'; for (let t=0;t<4;t++){ const y0=14+t*26, w=12+t*9; g.beginPath(); g.moveTo(32,y0-14); g.lineTo(32+w,y0+18); g.lineTo(32-w,y0+18); g.closePath(); g.fill(); } g.fillStyle='#4a3a2c'; g.fillRect(29,100,6,28); const t=new THREE.CanvasTexture(c); return t; })();
+  const bbTexA = (()=>{ const c=document.createElement('canvas'); c.width=64; c.height=128; const g=c.getContext('2d'); g.clearRect(0,0,64,128); g.fillStyle='#c9c06a'; g.beginPath(); g.ellipse(32,50,22,42,0,0,6.283); g.fill(); g.fillStyle='#e8e4dc'; g.fillRect(30,80,4,48); const t=new THREE.CanvasTexture(c); return t; })();
+  const bbMat = new THREE.MeshLambertMaterial({ map: bbTex, alphaTest: 0.5, side: THREE.DoubleSide }); const bbMatA = new THREE.MeshLambertMaterial({ map: bbTexA, alphaTest: 0.5, side: THREE.DoubleSide });  // crossed quads need both faces
+  const chunks = new Map(); for (let i=0;i<n;i++){ const cx = Math.floor(TREES[i*5]/CH), cy = Math.floor(TREES[i*5+1]/CH); const k = cx + ',' + cy; (chunks.get(k) || chunks.set(k, []).get(k)).push(i); }
+  const useAspen = (i, z) => (H.resort||'').toLowerCase().includes('aspen') && z < 2900 && ((i*7919)%10) < 6;   // 60% aspen below 2900 m at Aspen
+  window.TREE_CHUNKS = [];
+  for (const [k, idx] of chunks){ const [cx, cy] = k.split(',').map(Number); const centre = new THREE.Vector3((cx+0.5)*CH, 0, D-(cy+0.5)*CH);
+    const bySpecies = {}; for (const i of idx){ const z = TREES[i*5+2]; const spn = useAspen(i, z) ? 'aspen' : KIND_SPECIES[TREES[i*5+4]|0]; (bySpecies[spn] ||= []).push(i); }
+    const lods = [[],[],[]];
+    for (const [spn, list] of Object.entries(bySpecies)){ const B = built[spn]; if (!B) continue;
+      for (let L_=0; L_<3; L_++){ const parts = []; if (L_ < 2){ if (B[L_].b) parts.push(new THREE.InstancedMesh(B[L_].b, barkMat, list.length)); if (B[L_].l) parts.push(new THREE.InstancedMesh(B[L_].l, spn==='aspen' ? aspenMat : needleMat, list.length)); } else { parts.push(new THREE.InstancedMesh(bbGeo, spn==='aspen' ? bbMatA : bbMat, list.length)); }
+        list.forEach((i, j) => { const x=TREES[i*5], y=TREES[i*5+1], z=TREES[i*5+2], s_=TREES[i*5+3]; v.set(x, z-0.2, D-y); q.setFromAxisAngle(new THREE.Vector3(0,1,0), (i*2.399)%6.283); const sy = s_*(0.85+((i*7919)%100)/400); if (L_ < 2){ sc.set(s_, sy, s_); } else { const hgt = TRUE_H[spn]*sy; sc.set(hgt*0.45, hgt, hgt*0.45); q.identity(); } m4.compose(v, q, sc); for (const im of parts) im.setMatrixAt(j, m4); });
+        for (const im of parts){ im.instanceMatrix.needsUpdate = true; im.frustumCulled = false; im.visible = false; scene.add(im); lods[L_].push(im); } } }
+    // canopy patch for the far tier: draped 4x4 grid over the chunk, alpha from tree density, tint from species mix
+    { const sub = 4; const dens = Math.min(1, idx.length / (CH*CH*0.015)); const nA = (bySpecies.aspen||[]).length, nT = idx.length; const aspenFrac = nT ? nA/nT : 0;
+      const col = new THREE.Color(0.14, 0.24, 0.16).lerp(new THREE.Color(0.62, 0.58, 0.32), aspenFrac);
+      const g = new THREE.PlaneGeometry(CH, CH, sub, sub); g.rotateX(-Math.PI/2); const pa = g.attributes.position;
+      for (let k=0;k<pa.count;k++){ const wx = cx*CH + pa.getX(k) + CH/2, wz = D - (cy*CH) - CH/2 + pa.getZ(k); const north = D - wz; pa.setXYZ(k, wx, hAt(Math.max(1,Math.min(W-1,wx)), Math.max(1,Math.min(D-1,north))) + 8, wz); }
+      g.computeVertexNormals();
+      col.lerp(new THREE.Color(0.40, 0.42, 0.36), 1 - dens);   // sparse chunk → fades toward ground tone instead of alpha
+      const canopy = new THREE.Mesh(g, new THREE.MeshLambertMaterial({ color: col })); canopy.visible = false; scene.add(canopy); lods.push([canopy]); }
+    window.TREE_CHUNKS.push({ centre, lods }); }
+  const CANOPY_FAR = TIER==='phone' ? 2200 : 2800;
+  window.updateTrees = (camPos) => { for (const c of window.TREE_CHUNKS){ const d = Math.hypot(camPos.x - c.centre.x, camPos.z - c.centre.z) - CH*0.7; const lvl = d < NEAR ? 0 : d < MID ? 1 : d < FAR ? 2 : d < CANOPY_FAR ? 3 : -1; for (let L_=0; L_<4; L_++) for (const m of (c.lods[L_]||[])) m.visible = (L_ === lvl); } };
+  if (!SP) console.warn('species bake missing; trees disabled');
+}
+if (ROCKS){
+  const n = ROCKS.length/5; const g = new THREE.IcosahedronGeometry(1.2, 1); { const pa = g.attributes.position; for (let i=0;i<pa.count;i++){ const f = 0.8 + 0.4*Math.abs(Math.sin(i*7.3)*Math.cos(i*3.1)); pa.setXYZ(i, pa.getX(i)*f, pa.getY(i)*f*0.75, pa.getZ(i)*f); } g.computeVertexNormals(); }
+  const rockMat = new THREE.MeshLambertMaterial({ color: 0x7a736a }); rockMat.onBeforeCompile = terrMat.onBeforeCompile;   // same strata/grain shader
+  const im = new THREE.InstancedMesh(g, rockMat, n); im.frustumCulled = false; window.ROCK_MESH = im;
+  const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), v = new THREE.Vector3(), sc = new THREE.Vector3();
+  for (let i=0;i<n;i++){ const x=ROCKS[i*5], y=ROCKS[i*5+1], z=ROCKS[i*5+2], s=ROCKS[i*5+3], yaw=ROCKS[i*5+4]; v.set(x, z-0.2*s, D-y); q.setFromEuler(new THREE.Euler(0.2*((i*31)%7)/7, yaw, 0.15*((i*17)%5)/5)); sc.set(s, s*0.8, s*1.2); m4.compose(v, q, sc); im.setMatrixAt(i, m4); }
+  im.instanceMatrix.needsUpdate = true; scene.add(im);
+}
+// light: the sun at the chosen day (season.json daylight → we use declination for elevation; azimuth swept by hour=13:00)
+const sun = new THREE.DirectionalLight(0xfff2e0, 2.2); scene.add(sun); scene.add(new THREE.HemisphereLight(0xcfd8e6, 0x3a3a30, 0.9));
+const lat = (H.bbox.lat0+H.bbox.lat1)/2;
+function setDay(doy){ const dayOfYear = doy + 273; // slider 0 = Oct 1 (season start) → day 273
+  const decl = -23.44*Math.cos(2*Math.PI*((dayOfYear%365)+10)/365); const elev = (90-lat+decl)*Math.PI/180; // noon elevation
+  const az = 220*Math.PI/180, el2 = Math.max(0.12, elev*0.75); sun.position.set(Math.sin(az)*Math.cos(el2)*1000, Math.sin(el2)*1000, -Math.cos(az)*Math.cos(el2)*1000); sun.intensity = 1.4+Math.sin(el2)*1.2; skyMat.uniforms.sunDir.value.copy(sun.position).normalize();
+  const snowKey = Object.keys(S).find(k=>k.startsWith('snow--')); let depth = null;
+  if (snowKey && S[snowKey].depth_cm_by_day){ depth = S[snowKey].depth_cm_by_day[doy]; }
+  document.getElementById('dayl').textContent = `day ${doy} of season · sun ${Math.round(elev*180/Math.PI)}°` + (depth!=null?` · snow ${depth} cm`:''); 
+  const snowline = zmin + (zmax-zmin)*(depth!=null ? Math.max(0.15, 0.7 - depth/400) : 0.55); // more snow → lower snowline
+  const groomed = depth == null || depth > 10; for (const m of pisteMats){ m.color.setHex(groomed ? 0xffffff : 0x9a8f7a); }
+  for (let k=0;k<pos.count;k++){ const z=pos.getY(k); const sl=SLOPE[k]; // 0..1 (sin of slope angle)
+    let r,g,b; if (sl>0.75){ r=0.40;g=0.37;b=0.34 } else if (z>snowline && sl<0.7){ const w=Math.min(1,(z-snowline)/40); r=0.55+0.35*w;g=0.55+0.33*w;b=0.55+0.30*w } else if (z>zmin+(zmax-zmin)*0.35){ r=0.46;g=0.43;b=0.38 } else { r=0.27;g=0.33;b=0.26 }
+    const nz = 0.96 + 0.04*Math.sin(k*12.9898)*Math.cos(k*78.233);        // deterministic speckle so flat colour reads as ground
+    const shade = (0.75+0.25*(1-sl))*nz; col[k*3]=r*shade; col[k*3+1]=g*shade; col[k*3+2]=b*shade; } geo.attributes.color.needsUpdate=true; }
+const snowKey0 = Object.keys(S).find(k=>k.startsWith('snow--')); const DATES = snowKey0 && S[snowKey0].dates ? S[snowKey0].dates : [];
+const dt = document.getElementById('dt'); if (DATES.length){ dt.min = DATES[0]; dt.max = DATES[DATES.length-1]; const DEPTHS = S[snowKey0].depth_cm_by_day||[]; const PEAK = DEPTHS.length? DEPTHS.indexOf(Math.max(...DEPTHS)) : 100; dt.value = DATES[PEAK]; }
+dt.oninput = () => { const i = DATES.indexOf(dt.value); setDay(i >= 0 ? i : 100); }; setDay(DATES.length ? (S[snowKey0].depth_cm_by_day||[]).indexOf(Math.max(...(S[snowKey0].depth_cm_by_day||[0]))) : 100);
+// jump-to: lift tops / bottoms and the top of every named trail
+const jump = document.getElementById('jump'); const spots = [];
+for (const l of L){ if (!l.points.length) continue; const top = l.points.reduce((a,b)=>a[2]>b[2]?a:b), bot = l.points.reduce((a,b)=>a[2]<b[2]?a:b); const rp = (new Set(L.map(x=>x.resort)).size > 1 && l.resort) ? l.resort + ' · ' : ''; spots.push([`${rp}lift ▲ ${l.name||l.type} top (${Math.round(top[2])} m)`, top, bot]); spots.push([`${rp}lift ▼ ${l.name||l.type} base (${Math.round(bot[2])} m)`, bot, top]); }
+for (const p of P){ if (!p.name || !p.points.length) continue; const top = p.points.reduce((a,b)=>a[2]>b[2]?a:b), bot = p.points.reduce((a,b)=>a[2]<b[2]?a:b); const rp = (new Set(P.map(x=>x.resort)).size > 1 && p.resort) ? p.resort + ' · ' : ''; spots.push([`${rp}run ${p.name} (${p.difficulty||'?'}) top`, top, bot]); }
+spots.sort((a,b)=>a[0].localeCompare(b[0])); for (const [n] of spots){ const o=document.createElement('option'); o.value=n; o.textContent=n; jump.appendChild(o); }
+window.__spots = spots;
+// --- minimap: the mountain as a map (same data as the maps), north up, player arrow + field of view, click/tap to travel
+const MINI = document.getElementById('mini'), MINIC = document.getElementById('minic'); const MR = 1024; const sq = Math.max(W, D);   // square frame in metres, mountain centred
+const mx0 = (W - sq) / 2, my0 = (D - sq) / 2;                                    // offset so the extent sits centred in the square
+const m2px = (x, y) => [ (x - mx0) / sq * MR, (sq - (y - my0)) / sq * MR ];    // metres (east, north) → map px (north up)
+const mapBase = document.createElement('canvas'); mapBase.width = mapBase.height = MR; { const g = mapBase.getContext('2d');
+  // hillshade from the grid, 1 px per cell, NW light
+  const img = g.createImageData(MR, MR); const d8 = img.data;
+  for (let py = 0; py < MR; py++) for (let px_ = 0; px_ < MR; px_++){ const x = mx0 + px_ / MR * sq, y = my0 + (1 - py / MR) * sq; let r=24,gg=26,b=30;
+    if (x >= 0 && x <= W && y >= 0 && y <= D){ const i = Math.min(nx-2, Math.max(1, Math.round(x / mx))), j = Math.min(ny-2, Math.max(1, Math.round((D - y) / my)));
+      const dzx = grid[j*nx+i+1] - grid[j*nx+i-1], dzy = grid[(j+1)*nx+i] - grid[(j-1)*nx+i]; const sh = 0.55 + 0.45 * Math.max(0, Math.min(1, 0.5 - (dzx - dzy) / (6 * mx)));
+      const t = (grid[j*nx+i] - zmin) / (zmax - zmin); r = (120 + 90*t) * sh; gg = (112 + 80*t) * sh; b = (100 + 70*t) * sh; }
+    const k = (py * MR + px_) * 4; d8[k]=r; d8[k+1]=gg; d8[k+2]=b; d8[k+3]=255; }
+  g.putImageData(img, 0, 0);
+  // contours every 50 m (thin) from the same marching-edge pass, in map space
+  g.strokeStyle = 'rgba(40,30,22,0.35)'; g.lineWidth = 0.6; g.beginPath(); const step = 50;
+  for (let j=0;j<ny-1;j+=2) for (let i=0;i<nx-1;i+=2){ const z00=grid[j*nx+i], z10=grid[j*nx+i+2<nx?j*nx+i+2:j*nx+i+1], z01=grid[(j+2<ny?j+2:j+1)*nx+i];
+    for (let lv=Math.ceil(Math.min(z00,z10,z01)/step)*step; lv<=Math.max(z00,z10,z01); lv+=step){ const pts=[];
+      const e=(za,zb,xa,ya,xb,yb)=>{ if((za-lv)*(zb-lv)<0){ const t=(lv-za)/(zb-za); pts.push(m2px(xa+(xb-xa)*t, ya+(yb-ya)*t)); } };
+      const x0=i*mx, y0=D-j*my, x1=(i+2)*mx, y1=D-(j+2)*my; e(z00,z10,x0,y0,x1,y0); e(z00,z01,x0,y0,x0,y1); e(z10,z01,x1,y0,x0,y1);
+      if (pts.length===2){ g.moveTo(pts[0][0],pts[0][1]); g.lineTo(pts[1][0],pts[1][1]); } } }
+  g.stroke();
+  // boundary, pistes by difficulty, lifts red
+  let BND = []; try { BND = await (await fetch(B+'boundary.json')).json(); } catch(e) {}
+  g.lineWidth = 1.2; for (const bd of (Array.isArray(BND)?BND:[])){ if (!bd.points?.length) continue; g.strokeStyle='rgba(238,232,218,0.5)'; g.beginPath(); bd.points.forEach(([x,y],k)=>{ const [a,b]=m2px(x,y); k?g.lineTo(a,b):g.moveTo(a,b); }); g.closePath(); g.stroke(); }
+  const dc = {1:'#5db35d',2:'#4d86d6',3:'#e8e4da',4:'#ff6a3d'};
+  for (const p of P){ g.strokeStyle = dc[p.grade] || '#aaa'; g.lineWidth = 1.6; g.beginPath(); p.points.forEach(([x,y],k)=>{ const [a,b]=m2px(x,y); k?g.lineTo(a,b):g.moveTo(a,b); }); g.stroke(); }
+  for (const l of L){ g.strokeStyle = '#ff2d1a'; g.lineWidth = 2; g.setLineDash([6,4]); g.beginPath(); l.points.forEach(([x,y],k)=>{ const [a,b]=m2px(x,y); k?g.lineTo(a,b):g.moveTo(a,b); }); g.stroke(); g.setLineDash([]); }
+  // lift names at the top station, small
+  g.font = '13px system-ui'; g.fillStyle = 'rgba(238,232,218,0.9)'; g.strokeStyle = 'rgba(0,0,0,0.7)'; g.lineWidth = 3;
+  for (const l of L){ if (!l.name || !l.points.length) continue; const top = l.points.reduce((a,b)=>a[2]>b[2]?a:b); const [a,b] = m2px(top[0], top[1]); g.strokeText(l.name, a+4, b-4); g.fillText(l.name, a+4, b-4); }
+}
+MINIC.width = MINIC.height = MR; const mg = MINIC.getContext('2d');
+function drawMini(){ mg.drawImage(mapBase, 0, 0); const [a,b] = m2px(px, py); const big = MINI.classList.contains('big'); const sc = big ? 1 : 2.2;
+  // field of view wedge + player arrow, yaw is a compass bearing (0 = north = up)
+  mg.save(); mg.translate(a, b); mg.rotate(yaw); mg.fillStyle = 'rgba(255,230,160,0.18)'; mg.beginPath(); mg.moveTo(0,0); mg.arc(0,0, 70*sc, -Math.PI/2-0.54, -Math.PI/2+0.54); mg.closePath(); mg.fill();
+  mg.fillStyle = '#fff'; mg.strokeStyle = '#000'; mg.lineWidth = 2*sc; mg.beginPath(); mg.moveTo(0,-9*sc); mg.lineTo(6*sc,7*sc); mg.lineTo(0,4*sc); mg.lineTo(-6*sc,7*sc); mg.closePath(); mg.fill(); mg.stroke(); mg.restore();
+  // north mark
+  mg.font = `${big?16:28}px system-ui`; mg.fillStyle = 'rgba(238,232,218,0.85)'; mg.fillText('N', 10, big?22:36); }
+// click/tap to travel: map px → metres; keep the current bearing
+function miniTravel(ev){ const r = MINI.getBoundingClientRect(); const u = (ev.clientX - r.left) / r.width, v = (ev.clientY - r.top) / r.height; const x = mx0 + u * sq, y = my0 + (1 - v) * sq;
+  if (x < 1 || y < 1 || x > W-1 || y > D-1) return; px = x; py = y; }
+let miniDown = null;
+MINI.addEventListener('pointerdown', e => { miniDown = [e.clientX, e.clientY, performance.now()]; e.stopPropagation(); });
+MINI.addEventListener('pointerup', e => { if (!miniDown) return; const moved = Math.hypot(e.clientX-miniDown[0], e.clientY-miniDown[1]); if (moved < 8) miniTravel(e); miniDown = null; e.stopPropagation(); });
+MINI.addEventListener('pointermove', e => e.stopPropagation());
+document.getElementById('minibtn').onclick = () => { MINI.classList.toggle('big'); document.getElementById('minibtn').textContent = MINI.classList.contains('big') ? 'map ⤡' : 'map ⤢'; };
+addEventListener('keydown', e => { if (e.code === 'KeyM') document.getElementById('minibtn').onclick(); });
+// --- the walker: start at the bottom of the first chair lift
+const base = L.find(l=>l.type==='chair_lift') || L[0]; const b0 = base.points.reduce((a,b)=>a[2]<b[2]?a:b); let px=b0[0], py=b0[1];
+let yaw = Math.atan2(base.points[base.points.length-1][0]-b0[0], base.points[base.points.length-1][1]-b0[1]), pitch = -0.05;
+const EYE=1.7, SPEED=28; const keys={};
+jump.onchange = () => { const sp = window.__spots.find(x=>x[0]===jump.value); if (!sp) return; const [, at, toward] = sp; px = at[0]; py = at[1]; yaw = Math.atan2(toward[0]-at[0], toward[1]-at[1]); pitch = -0.1; jump.value=''; };
+addEventListener('keydown',e=>keys[e.code]=1); addEventListener('keyup',e=>keys[e.code]=0);
+let drag=null; const lookEl=document.getElementById('look'); const isTouch = matchMedia('(pointer:coarse)').matches; if(!isTouch) document.body.classList.add('desk');
+(isTouch?lookEl:ren.domElement).addEventListener('pointerdown',e=>{drag=[e.clientX,e.clientY];}); ren.domElement.addEventListener('dblclick',()=>ren.domElement.requestPointerLock?.());
+addEventListener('pointermove',e=>{ if(document.pointerLockElement){ yaw+=e.movementX*0.0025; pitch=Math.max(-1.2,Math.min(1.2,pitch-e.movementY*0.0025)); } else if(drag){ yaw+=(e.clientX-drag[0])*0.004; pitch=Math.max(-1.2,Math.min(1.2,pitch-(e.clientY-drag[1])*0.004)); drag=[e.clientX,e.clientY]; } });
+addEventListener('pointerup',()=>drag=null);
+let padv=[0,0]; const pad=document.getElementById('pad'), knob=document.getElementById('knob'); let padId=null;
+pad.addEventListener('pointerdown',e=>{padId=e.pointerId}); addEventListener('pointermove',e=>{ if(e.pointerId!==padId) return; const r=pad.getBoundingClientRect(); let dx=(e.clientX-(r.left+60))/60, dy=(e.clientY-(r.top+60))/60; const m=Math.hypot(dx,dy); if(m>1){dx/=m;dy/=m;} padv=[dx,-dy]; knob.style.left=(40+dx*40)+'px'; knob.style.top=(40-(-dy)*40*-1)+'px'; });
+addEventListener('pointerup',e=>{ if(e.pointerId===padId){padId=null;padv=[0,0];knob.style.left='40px';knob.style.top='40px';} });
+function nearestRun(x,y){ let best=null,bd=1e9; for(const p of P) for(const [qx,qy] of p.points){ const d=(qx-x)**2+(qy-y)**2; if(d<bd){bd=d;best=p;} } return bd<40*40?best:null; }
+let last=performance.now(); let lean=0, speedNow=0;
+function frame(now){ const dt=Math.min(0.05,(now-last)/1000); last=now;
+  let f=(keys.KeyW||keys.ArrowUp?1:0)-(keys.KeyS||keys.ArrowDown?1:0)+padv[1], s=(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0)+padv[0];
+  const fx=Math.sin(yaw), fy=Math.cos(yaw);           // forward in (east, north)
+  const sp = SPEED*((keys.ShiftLeft||keys.ShiftRight)?3:1); let nxp=px+(fx*f+fy*s)*sp*dt, nyp=py+(fy*f-fx*s)*sp*dt; nxp=Math.max(1,Math.min(W-1,nxp)); nyp=Math.max(1,Math.min(D-1,nyp));
+  // slope rule: walking speed falls on steep ground; this is where "slide when steep" goes later
+  const h0=hAt(px,py), h1=hAt(nxp,nyp); const grade=(h1-h0)/Math.max(0.01,Math.hypot(nxp-px,nyp-py)); if(grade>0.7){ /* too steep to climb */ } else { px=nxp; py=nyp; }
+  const h=hAt(px,py)+(nearestRun(px,py)?0.6:0); cam.position.set(px, h+EYE, D-py); sky.position.copy(cam.position);
+  // slope ahead along the view bearing (metres rise per metre), as an angle; lean fraction 0.5 → 0.75 with speed
+  const ahead = hAt(Math.max(1,Math.min(W-1,px+fx*12)), Math.max(1,Math.min(D-1,py+fy*12))) - hAt(px,py); const slopeAng = Math.atan2(ahead, 12);
+  const moving = Math.hypot(f, s) > 0.05; speedNow += ((moving ? sp : 0) - speedNow) * Math.min(1, dt*3);
+  const frac = 0.5 + 0.25 * Math.min(1, speedNow / (SPEED*3)); const target = slopeAng * frac;
+  lean += (target - lean) * Math.min(1, dt*4);
+  cam.rotation.set(0,0,0); cam.rotateY(-yaw); cam.rotateX(pitch + lean);
+  const r=nearestRun(px,py); document.getElementById('pos').textContent=`${Math.round(h)} m · ${Math.round(px)} E ${Math.round(py)} N`; document.getElementById('run').textContent=(r?`on: ${r.name||'unnamed'} (${r.difficulty||'?'})${r.resort&&new Set(P.map(x=>x.resort)).size>1?' · '+r.resort:''}`:'')+` · ${PISTE_MESHES.length} runs`;
+  if (window.updateTrees && (now|0) % 4 === 0) window.updateTrees(cam.position); if (terrMat.userData.sh) terrMat.userData.sh.uniforms.uTime.value = now/1000;
+  if ((now|0) % 100 < 17) drawMini();
+  chevTex.offset.y = 1 - (now/1000*0.08) % 1;   // decreasing offset → features drift toward larger v = downhill
+  ren.render(scene,cam); requestAnimationFrame(frame); }
+addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();ren.setSize(innerWidth,innerHeight)});
+requestAnimationFrame(frame);
+</script></body></html>
