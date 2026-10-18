@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Immanuel Wilkins Quartet — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:2.2rem; font-weight:700; letter-spacing:-.02em; color:var(--porcelain); line-height:1.05; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">organization</div>
+      <h1>Immanuel Wilkins Quartet</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-10-18</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">672</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="KcOweHh_DMI" type="button"><img src="https://i.ytimg.com/vi/KcOweHh_DMI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Immanuel Wilkins: Tiny Desk Concert</span></button>
+<button class="vtile" data-yt="x5j2EiQCEKY" type="button"><img src="https://i.ytimg.com/vi/x5j2EiQCEKY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Immanuel Wilkins Quartet Live Studio 104, Paris, 2025 10 11</span></button>
+<button class="vtile" data-yt="-1fvy7L822A" type="button"><img src="https://i.ytimg.com/vi/-1fvy7L822A/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Immanuel Wilkins Quartet – Full Performance Live at MONTCLAIR JAZZ FESTIVAL 2022 (Full Set)</span></button>
+<button class="vtile" data-yt="BB2r2pLVWsY" type="button"><img src="https://i.ytimg.com/vi/BB2r2pLVWsY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Immanuel Wilkins Quartet - Live At Jazz Cafe (Camden), London [July 18th 2026]</span></button>
+<button class="vtile" data-yt="BGKE1hPY2M8" type="button"><img src="https://i.ytimg.com/vi/BGKE1hPY2M8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">BIMHUIS TV Present: IMMANUEL WILKINS QUARTET</span></button>
+<button class="vtile" data-yt="fM6JsIH4lVQ" type="button"><img src="https://i.ytimg.com/vi/fM6JsIH4lVQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Immanuel Wilkins Quartet - Live at the Village Vanguard Vol. 1</span></button>
+<button class="vtile" data-yt="bmfU40uE7rQ" type="button"><img src="https://i.ytimg.com/vi/bmfU40uE7rQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">IMMANUEL WILKINS QUARTET - Motion - BLUE NOTE TOKYO Live 2024</span></button>
+<button class="vtile" data-yt="rqlgIM3FJzU" type="button"><img src="https://i.ytimg.com/vi/rqlgIM3FJzU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jazz Takes - Immanuel Wilkins on favorite clubs, vintage saxophones, jazz fashion, + more</span></button>
+<button class="vtile" data-yt="F8M-tKz9veY" type="button"><img src="https://i.ytimg.com/vi/F8M-tKz9veY/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Immanuel Wilkins Montreal Jazz Fest June 27, 2026</span></button>
+<button class="vtile" data-yt="2QQrFwExjXU" type="button"><img src="https://i.ytimg.com/vi/2QQrFwExjXU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Immanuel Wilkins Quartet “Go ‘Head Get Down”, “On The Radar” Freestyle &amp; “Warriors” Performance</span></button>
+<button class="vtile" data-yt="_jL7M09PsT0" type="button"><img src="https://i.ytimg.com/vi/_jL7M09PsT0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">IMMANUEL WILKINS QUARTET - Sneak Peek | Umbria Jazz 2026</span></button>
+<button class="vtile" data-yt="0aU3cb7i3_I" type="button"><img src="https://i.ytimg.com/vi/0aU3cb7i3_I/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">CHARANAM (Live)</span></button>
+<button class="vtile" data-yt="UW1QPd76Nps" type="button"><img src="https://i.ytimg.com/vi/UW1QPd76Nps/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">How He Got a Golden Saxophone Tone - Immanuel Wilkins</span></button>
+<button class="vtile" data-yt="bXXrvHwgF1Q" type="button"><img src="https://i.ytimg.com/vi/bXXrvHwgF1Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Immanuel Wilkins live at PhilaMOCA | JAZZ NIGHT IN AMERICA</span></button>
+<button class="vtile" data-yt="CHpa_reHmYw" type="button"><img src="https://i.ytimg.com/vi/CHpa_reHmYw/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Immanuel Wilkins Quartet - Live At The Village Vanguard Vol. 3</span></button>
+<button class="vtile" data-yt="toyyTHsyHJs" type="button"><img src="https://i.ytimg.com/vi/toyyTHsyHJs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">SCFB 159: Immanuel Wilkins - &quot;Omega&quot; and Cheese Steaks!</span></button>
+<button class="vtile" data-yt="mE1sdDnuTGk" type="button"><img src="https://i.ytimg.com/vi/mE1sdDnuTGk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Odean Pope: The Saxophone Choir at 40 (a mini-documentary)</span></button>
+<button class="vtile" data-yt="6Xc9Dnk77Z4" type="button"><img src="https://i.ytimg.com/vi/6Xc9Dnk77Z4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">COMPOSITION IX (Live)</span></button>
+<button class="vtile" data-yt="ex21lttoG6Q" type="button"><img src="https://i.ytimg.com/vi/ex21lttoG6Q/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">TIGRAN HAMASYAN + IMMANUEL WILKINS, live at Olympia (Charlie Parker), Paris, France, 5th July 2022</span></button>
+<button class="vtile" data-yt="0THxTIlOxN4" type="button"><img src="https://i.ytimg.com/vi/0THxTIlOxN4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Rhythm-A-Ning by Thelonious Monk - Immanuel Wilkins Quartet</span></button>
+<button class="vtile" data-yt="2omkHaNuf-o" type="button"><img src="https://i.ytimg.com/vi/2omkHaNuf-o/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tigran Hamasyan &amp; Immanuel Wilkins Live @ North Sea Jazz 2022 (3/4)</span></button>
+<button class="vtile" data-yt="DpJkk5YtSl0" type="button"><img src="https://i.ytimg.com/vi/DpJkk5YtSl0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Odean Pope, Immanuel Wilkins, and Kresten Osgood | Live at the RUBA Club</span></button>
+<button class="vtile" data-yt="hIeIkuP6s3w" type="button"><img src="https://i.ytimg.com/vi/hIeIkuP6s3w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tigran Hamasyan &amp; Immanuel Wilkins @ Olympia (Paris live 2022)</span></button>
+<button class="vtile" data-yt="Wl7XgTw1iSE" type="button"><img src="https://i.ytimg.com/vi/Wl7XgTw1iSE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Tigran Hamasyan (feat. Immanuel Wilkins) - Ardmore, PA - 11/16/22</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">The Immanuel Wilkins Quartet is a jazz ensemble led by American saxophonist Immanuel Wilkins. The group&#x27;s recordings are released through Blue Note Records.</p>
+<p>The Immanuel Wilkins Quartet is a jazz ensemble led by American saxophonist Immanuel Wilkins. The group&#x27;s recordings are released through Blue Note Records.</p>
+<h3>discography</h3>
+<p>The quartet has released three volumes of live recordings from the Village Vanguard, all published in 2026 by Blue Note Records: Immanuel Wilkins Quartet: Live at the Village Vanguard Vol. 1, Vol. 2, and Vol. 3.</p>
+<h3>overview</h3>
+<p>The ensemble is led by by American jazz saxophonist Immanuel Wilkins, who was born on August 7, 1997, and grew up in the Upper Darby neighborhood of Delaware County, Pennsylvania. Wilkins has studied at the Juilliard School under Bruce Williams, Steve Wilson, and Joe Temperley.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Leader:</strong> Immanuel Wilkins</li>
+<li><strong>Record Label:</strong> Blue Note Records</li>
+<li><strong>Crossover Venue:</strong> Village Vanguard</li>
+<li><strong>Crossover Recording Date/Year:</strong> 2026</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/2026_in_jazz" rel="noopener">https://en.wikipedia.org/wiki/2026_in_jazz</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Immanuel_Wilkins" rel="noopener">https://en.wikipedia.org/wiki/Immanuel_Wilkins</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Live_at_the_Village_Vanguard" rel="noopener">https://en.wikipedia.org/wiki/Live_at_the_Village_Vanguard</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Immanuel Wilkins Quartet">
+        <input type="hidden" name="slug" value="immanuel-wilkins-quartet">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Immanuel Wilkins Quartet</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
