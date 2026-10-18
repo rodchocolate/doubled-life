@@ -1,0 +1,225 @@
+{
+ "snow--alta--2024-25--depth": {
+  "attribution": "Snow depth: USDA NRCS SNOTEL (public domain).",
+  "resort": "Alta",
+  "geo": {
+   "lat": 40.59,
+   "lon": -111.64,
+   "name": "Alta ski area"
+  },
+  "station": {
+   "name": "Atwater",
+   "triplet": "1308:UT:SNTL",
+   "elevation_ft": 8750.0,
+   "km_from_resort": 0.2,
+   "lat": 40.59124,
+   "lon": -111.63775
+  },
+  "season": "2024-25",
+  "days": 273,
+  "max_depth_cm": 368,
+  "peak_date": "2025-03-18",
+  "biggest_storms": [
+   [
+    "2025-01-04",
+    43
+   ],
+   [
+    "2025-01-11",
+    36
+   ],
+   [
+    "2025-02-07",
+    38
+   ],
+   [
+    "2025-03-13",
+    36
+   ],
+   [
+    "2025-03-18",
+    51
+   ]
+  ],
+  "layout": "depth",
+  "style": "warm",
+  "file": "/Volumes/melody/hermes/renders/skimap/snow--alta--2024-25--depth.png",
+  "provenance": {
+   "file": "/Volumes/melody/hermes/renders/skimap/snow--alta--2024-25--depth.png",
+   "url": "http://jasons-mac-studio.tail95f902.ts.net:8799/skimap/snow--alta--2024-25--depth.png",
+   "dir": "/Volumes/melody/hermes/renders/skimap",
+   "basename": "snow--alta--2024-25--depth.png",
+   "bytes": 7458,
+   "sha256_12": "7443cd2e27a3",
+   "made": "2026-10-17 11:57:06 EDT",
+   "made_epoch": 1792252626.4,
+   "host": "JasonsMacStudio",
+   "cwd": "/Volumes/melody/tools/swatch",
+   "command": "components.py run ski-alta --ski",
+   "argv": [
+    "/Volumes/melody/tools/swatch/components.py",
+    "run",
+    "ski-alta",
+    "--ski"
+   ],
+   "python": "/Users/melodiclabs/.pyenv/versions/3.12.13/bin/python3",
+   "note": "snow Alta 2024-25 \u00b7 Atwater 0.2 km \u00b7 depth",
+   "tool": "/Volumes/melody/tools/swatch/components.py",
+   "tool_sha256_12": "51e1f4f04703",
+   "tool_mtime": "2026-10-17 10:50",
+   "size": [
+    1600,
+    900
+   ],
+   "mode": "RGB"
+  },
+  "url": "http://jasons-mac-studio.tail95f902.ts.net:8799/skimap/snow--alta--2024-25--depth.png"
+ },
+ "snow--alta--2024-25--both": {
+  "attribution": "Snow depth: USDA NRCS SNOTEL (public domain).",
+  "resort": "Alta",
+  "geo": {
+   "lat": 40.5882366,
+   "lon": -111.638401,
+   "name": "Alta Ski Area, Peruvian Acre Road, Alta, Salt Lake County, Utah, 85092, United States"
+  },
+  "station": {
+   "name": "Atwater",
+   "triplet": "1308:UT:SNTL",
+   "elevation_ft": 8750.0,
+   "km_from_resort": 0.3,
+   "lat": 40.59124,
+   "lon": -111.63775
+  },
+  "season": "2024-25",
+  "days": 273,
+  "max_depth_cm": 370,
+  "peak_date": "2025-03-18",
+  "biggest_storms": [
+   [
+    "2025-01-04",
+    43
+   ],
+   [
+    "2025-01-11",
+    36
+   ],
+   [
+    "2025-02-07",
+    38
+   ],
+   [
+    "2025-03-13",
+    36
+   ],
+   [
+    "2025-03-18",
+    51
+   ]
+  ],
+  "layout": "both",
+  "style": "warm",
+  "file": "/Volumes/melody/hermes/renders/skimap/snow--alta--2024-25--both.png",
+  "url": "http://jasons-mac-studio.tail95f902.ts.net:8799/skimap/snow--alta--2024-25--both.png",
+  "dir": "/Volumes/melody/hermes/renders/skimap",
+  "provenance": {
+   "file": "/Volumes/melody/hermes/renders/skimap/snow--alta--2024-25--both.png",
+   "url": "http://jasons-mac-studio.tail95f902.ts.net:8799/skimap/snow--alta--2024-25--both.png",
+   "backfilled": "2026-10-17 10:23",
+   "command": "(unknown \u2014 rendered before provenance was recorded on 2026-10-17; re-run the tool named in the slug to regenerate)",
+   "made": "2026-10-16 23:44",
+   "bytes": 8134
+  }
+ },
+ "temp--alta--2025": {
+  "attribution": "Daily temperatures: NOAA NCEI GHCN-Daily (public domain).",
+  "place": "Alta",
+  "station": "USC00420072",
+  "year": 2025,
+  "unit": "C",
+  "min": -23.9,
+  "max": 27.2,
+  "days_low_below_freezing": 171,
+  "coldest": "2025-02-12",
+  "hottest": "2025-08-20",
+  "style": "warm",
+  "file": "/Volumes/melody/hermes/renders/skimap/temp--alta--2025.png",
+  "provenance": {
+   "file": "/Volumes/melody/hermes/renders/skimap/temp--alta--2025.png",
+   "url": "http://jasons-mac-studio.tail95f902.ts.net:8799/skimap/temp--alta--2025.png",
+   "dir": "/Volumes/melody/hermes/renders/skimap",
+   "basename": "temp--alta--2025.png",
+   "bytes": 10939,
+   "sha256_12": "0545aac73975",
+   "made": "2026-10-17 11:57:07 EDT",
+   "made_epoch": 1792252627.3,
+   "host": "JasonsMacStudio",
+   "cwd": "/Volumes/melody/tools/swatch",
+   "command": "components.py run ski-alta --ski",
+   "argv": [
+    "/Volumes/melody/tools/swatch/components.py",
+    "run",
+    "ski-alta",
+    "--ski"
+   ],
+   "python": "/Users/melodiclabs/.pyenv/versions/3.12.13/bin/python3",
+   "note": "temp Alta 2025 \u00b7 USC00420072 \u00b7 171 days below freezing \u00b7 -24..27 \u00b0C",
+   "tool": "/Volumes/melody/tools/swatch/components.py",
+   "tool_sha256_12": "51e1f4f04703",
+   "tool_mtime": "2026-10-17 10:50",
+   "size": [
+    1600,
+    900
+   ],
+   "mode": "RGB"
+  },
+  "url": "http://jasons-mac-studio.tail95f902.ts.net:8799/skimap/temp--alta--2025.png"
+ },
+ "daylight--alta--2026--band": {
+  "attribution": "Computed (NOAA sunrise equation); no external data.",
+  "place": "Alta",
+  "geo": {
+   "lat": 40.59,
+   "lon": -111.64,
+   "name": "Alta ski area"
+  },
+  "year": 2026,
+  "layout": "band",
+  "style": "warm",
+  "daylight_h": [
+   9.27,
+   15.08
+  ],
+  "file": "/Volumes/melody/hermes/renders/skimap/daylight--alta--2026--band.png",
+  "provenance": {
+   "file": "/Volumes/melody/hermes/renders/skimap/daylight--alta--2026--band.png",
+   "url": "http://jasons-mac-studio.tail95f902.ts.net:8799/skimap/daylight--alta--2026--band.png",
+   "dir": "/Volumes/melody/hermes/renders/skimap",
+   "basename": "daylight--alta--2026--band.png",
+   "bytes": 8968,
+   "sha256_12": "5d3801853fa8",
+   "made": "2026-10-17 11:57:06 EDT",
+   "made_epoch": 1792252626.4,
+   "host": "JasonsMacStudio",
+   "cwd": "/Volumes/melody/tools/swatch",
+   "command": "components.py run ski-alta --ski",
+   "argv": [
+    "/Volumes/melody/tools/swatch/components.py",
+    "run",
+    "ski-alta",
+    "--ski"
+   ],
+   "python": "/Users/melodiclabs/.pyenv/versions/3.12.13/bin/python3",
+   "note": "daylight Alta 2026 \u00b7 band \u00b7 warm",
+   "tool": "/Volumes/melody/tools/swatch/components.py",
+   "tool_sha256_12": "51e1f4f04703",
+   "tool_mtime": "2026-10-17 10:50",
+   "size": [
+    1600,
+    900
+   ],
+   "mode": "RGB"
+  },
+  "url": "http://jasons-mac-studio.tail95f902.ts.net:8799/skimap/daylight--alta--2026--band.png"
+ }
+}

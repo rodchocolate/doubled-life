@@ -257,20 +257,39 @@ function drawMini(){ mg.drawImage(mapBase, 0, 0); const [a,b] = m2px(px, py); co
   mg.font = `${big?16:28}px system-ui`; mg.fillStyle = 'rgba(238,232,218,0.85)'; mg.fillText('N', 10, big?22:36); }
 // click/tap to travel: map px → metres; keep the current bearing
 function miniTravel(ev){ const r = MINI.getBoundingClientRect(); const u = (ev.clientX - r.left) / r.width, v = (ev.clientY - r.top) / r.height; const x = mx0 + u * sq, y = my0 + (1 - v) * sq;
-  if (x < 1 || y < 1 || x > W-1 || y > D-1) return; px = x; py = y; }
+  if (x < 1 || y < 1 || x > W-1 || y > D-1) return;
+  if (!BOUND || walkable(x,y)){ px = x; py = y; return; }
+  let best=null, bd=60*60; for (let dy=-15;dy<=15;dy++) for (let dx=-15;dx<=15;dx++){ const X=Math.round(x/BC)+dx, Y=Math.round(y/BC)+dy; if (X<0||Y<0||X>=BW||Y>=BH||WALK[Y*BW+X]!==1) continue; const d=(dx*BC)**2+(dy*BC)**2; if (d<bd){ bd=d; best=[X*BC, Y*BC]; } }
+  if (best){ px = best[0]; py = best[1]; } }
 let miniDown = null;
 MINI.addEventListener('pointerdown', e => { miniDown = [e.clientX, e.clientY, performance.now()]; e.stopPropagation(); });
 MINI.addEventListener('pointerup', e => { if (!miniDown) return; const moved = Math.hypot(e.clientX-miniDown[0], e.clientY-miniDown[1]); if (moved < 8) miniTravel(e); miniDown = null; e.stopPropagation(); });
 MINI.addEventListener('pointermove', e => e.stopPropagation());
 document.getElementById('minibtn').onclick = () => { MINI.classList.toggle('big'); document.getElementById('minibtn').textContent = MINI.classList.contains('big') ? 'map ⤡' : 'map ⤢'; };
 addEventListener('keydown', e => { if (e.code === 'KeyM') document.getElementById('minibtn').onclick(); });
+// --- trail bounding: rasterise the piste corridors (half-widths as dress.py) + station pads into a walkable grid at 4 m cells
+const BC = 4; const BW = Math.ceil(W/BC)+1, BH = Math.ceil(D/BC)+1; const WALK = new Uint8Array(BW*BH);
+(function buildWalk(){ const HALFW = {novice:18, easy:16, intermediate:13, advanced:10, expert:8, freeride:5};
+  function stamp(pts, hw){ const r = Math.ceil(hw/BC); for (let i=0;i<pts.length-1;i++){ const [x0,y0]=pts[i], [x1,y1]=pts[i+1]; const n = Math.max(1, Math.ceil(Math.hypot(x1-x0,y1-y0)/BC));
+    for (let k=0;k<=n;k++){ const x=x0+(x1-x0)*k/n, y=y0+(y1-y0)*k/n; const cx=Math.round(x/BC), cy=Math.round(y/BC); for (let dy=-r;dy<=r;dy++) for (let dx=-r;dx<=r;dx++){ if (dx*dx+dy*dy>r*r) continue; const X=cx+dx, Y=cy+dy; if (X>=0&&Y>=0&&X<BW&&Y<BH) WALK[Y*BW+X]=1; } } } }
+  for (const p of P) stamp(p.points, (HALFW[p.difficulty]||12) + 2);
+  for (const l of L){ if (!l.points?.length) continue; const top = l.points.reduce((a,b)=>a[2]>b[2]?a:b), bot = l.points.reduce((a,b)=>a[2]<b[2]?a:b); stamp([top, top], 14); stamp([bot, bot], 14); } })();
+const walkable = (x, y) => { const X=Math.round(x/BC), Y=Math.round(y/BC); return X>=0&&Y>=0&&X<BW&&Y<BH && WALK[Y*BW+X]===1; };
+let BOUND = !(new URLSearchParams(location.search).get('free'));   // ?free=1 lifts the bounding (debug / later off-piste mode)
 // --- the walker: start at the TOP station of the highest lift (by elevation), facing back down its line
 const liftsWithPts = L.filter(l => l.points && l.points.length >= 2);
 const topLift = liftsWithPts.reduce((best, l) => { const t = l.points.reduce((a,b)=>a[2]>b[2]?a:b); return (!best || t[2] > best.top[2]) ? { l, top: t } : best; }, null);
 let px, py, yaw, pitch = -0.08;
 if (topLift){ const bot = topLift.l.points.reduce((a,b)=>a[2]<b[2]?a:b); px = topLift.top[0]; py = topLift.top[1]; yaw = Math.atan2(bot[0]-topLift.top[0], bot[1]-topLift.top[1]); }
 else { const p0 = P[0].points[0]; px = p0[0]; py = p0[1]; yaw = 0; }
-const EYE=1.7, SPEED=28; const keys={};
+const EYE=1.7, SPEED=28;
+let RIDE = null;   // {l, t0, dur, pts, len}
+const stations = L.filter(l=>l.points?.length>=2).map(l=>{ const top=l.points.reduce((a,b)=>a[2]>b[2]?a:b), bot=l.points.reduce((a,b)=>a[2]<b[2]?a:b); const seq = l.points[0][2] <= l.points[l.points.length-1][2] ? l.points : [...l.points].reverse(); let len=0; for (let i=1;i<seq.length;i++) len += Math.hypot(seq[i][0]-seq[i-1][0], seq[i][1]-seq[i-1][1]); return {l, top, bot, seq, len}; });
+const prompt = document.createElement('div'); prompt.id='lift'; prompt.style.cssText='position:fixed;left:50%;bottom:22%;transform:translateX(-50%);background:rgba(0,0,0,.6);color:#fffcf9;padding:.55rem 1rem;border-radius:10px;font:14px system-ui;display:none;cursor:pointer;border:1px solid rgba(255,252,249,.35);z-index:9'; document.body.appendChild(prompt);
+function nearStation(){ let best=null, bd=25*25; for (const s of stations){ const d=(s.bot[0]-px)**2+(s.bot[1]-py)**2; if (d<bd){ bd=d; best=s; } } return best; }
+function boardLift(s){ RIDE = { s, t0: performance.now(), dur: Math.max(6000, s.len/1000*20000) }; prompt.style.display='none'; }
+prompt.onclick = () => { const s = nearStation(); if (s) boardLift(s); };
+addEventListener('keydown', e => { if (e.code==='KeyE'){ const s = nearStation(); if (s && !RIDE) boardLift(s); } }); const keys={};
 jump.onchange = () => { const sp = window.__spots.find(x=>x[0]===jump.value); if (!sp) return; const [, at, toward] = sp; px = at[0]; py = at[1]; yaw = Math.atan2(toward[0]-at[0], toward[1]-at[1]); pitch = -0.1; jump.value=''; };
 addEventListener('keydown',e=>keys[e.code]=1); addEventListener('keyup',e=>keys[e.code]=0);
 let drag=null; const lookEl=document.getElementById('look'); const isTouch = matchMedia('(pointer:coarse)').matches; if(!isTouch) document.body.classList.add('desk');
@@ -281,13 +300,23 @@ let padv=[0,0]; const pad=document.getElementById('pad'), knob=document.getEleme
 pad.addEventListener('pointerdown',e=>{padId=e.pointerId}); addEventListener('pointermove',e=>{ if(e.pointerId!==padId) return; const r=pad.getBoundingClientRect(); let dx=(e.clientX-(r.left+60))/60, dy=(e.clientY-(r.top+60))/60; const m=Math.hypot(dx,dy); if(m>1){dx/=m;dy/=m;} padv=[dx,-dy]; knob.style.left=(40+dx*40)+'px'; knob.style.top=(40-(-dy)*40*-1)+'px'; });
 addEventListener('pointerup',e=>{ if(e.pointerId===padId){padId=null;padv=[0,0];knob.style.left='40px';knob.style.top='40px';} });
 function nearestRun(x,y){ let best=null,bd=1e9; for(const p of P) for(const [qx,qy] of p.points){ const d=(qx-x)**2+(qy-y)**2; if(d<bd){bd=d;best=p;} } return bd<40*40?best:null; }
-let last=performance.now(); let lean=0, speedNow=0;
+let last=performance.now(); let lean=0, speedNow=0, edgeHit=0;
 function frame(now){ const dt=Math.min(0.05,(now-last)/1000); last=now;
+  if (RIDE){ const u = Math.min(1, (now-RIDE.t0)/RIDE.dur); const seq = RIDE.s.seq; let target = u*RIDE.s.len, acc=0, i=1; while (i<seq.length-1 && acc+Math.hypot(seq[i][0]-seq[i-1][0], seq[i][1]-seq[i-1][1]) < target){ acc += Math.hypot(seq[i][0]-seq[i-1][0], seq[i][1]-seq[i-1][1]); i++; }
+    const segL = Math.hypot(seq[i][0]-seq[i-1][0], seq[i][1]-seq[i-1][1]) || 1; const f = Math.min(1, (target-acc)/segL); const x = seq[i-1][0]+(seq[i][0]-seq[i-1][0])*f, y = seq[i-1][1]+(seq[i][1]-seq[i-1][1])*f;
+    px = x; py = y; const cableZ = hAt(x,y) + 12 - 3.5;  // chair hangs ~3.5 m under the cable
+    yaw = Math.atan2(seq[seq.length-1][0]-x, seq[seq.length-1][1]-y); if (u >= 1){ px = RIDE.s.top[0]; py = RIDE.s.top[1]; yaw = Math.atan2(RIDE.s.bot[0]-px, RIDE.s.bot[1]-py); RIDE = null; }
+    else { cam.position.set(px, cableZ, D-py); sky.position.copy(cam.position); cam.rotation.set(0,0,0); cam.rotateY(-yaw); cam.rotateX(pitch*0.5 - 0.05); if (window.updateTrees && (now|0)%4===0) window.updateTrees(cam.position); if ((now|0)%100<17) drawMini(); chevTex.offset.y = 1-(now/1000*0.08)%1; ren.render(scene,cam); requestAnimationFrame(frame); return; } }
   let f=(keys.KeyW||keys.ArrowUp?1:0)-(keys.KeyS||keys.ArrowDown?1:0)+padv[1], s=(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0)+padv[0];
   const fx=Math.sin(yaw), fy=Math.cos(yaw);           // forward in (east, north)
   const sp = SPEED*((keys.ShiftLeft||keys.ShiftRight)?3:1); let nxp=px+(fx*f+fy*s)*sp*dt, nyp=py+(fy*f-fx*s)*sp*dt; nxp=Math.max(1,Math.min(W-1,nxp)); nyp=Math.max(1,Math.min(D-1,nyp));
   // slope rule: walking speed falls on steep ground; this is where "slide when steep" goes later
-  const h0=hAt(px,py), h1=hAt(nxp,nyp); const grade=(h1-h0)/Math.max(0.01,Math.hypot(nxp-px,nyp-py)); if(grade>0.7){ /* too steep to climb */ } else { px=nxp; py=nyp; }
+  const h0=hAt(px,py), h1=hAt(nxp,nyp); const grade=(h1-h0)/Math.max(0.01,Math.hypot(nxp-px,nyp-py));
+  if (grade>0.7){ /* too steep to climb */ }
+  else if (!BOUND || walkable(nxp,nyp)){ px=nxp; py=nyp; }
+  else if (walkable(nxp,py)){ px=nxp; }            // slide along the corridor edge
+  else if (walkable(px,nyp)){ py=nyp; }
+  else { edgeHit = now; }
   const h=hAt(px,py)+(nearestRun(px,py)?0.6:0); cam.position.set(px, h+EYE, D-py); sky.position.copy(cam.position);
   // slope ahead along the view bearing (metres rise per metre), as an angle; lean fraction 0.5 → 0.75 with speed
   const ahead = hAt(Math.max(1,Math.min(W-1,px+fx*12)), Math.max(1,Math.min(D-1,py+fy*12))) - hAt(px,py); const slopeAng = Math.atan2(ahead, 12);
@@ -295,7 +324,8 @@ function frame(now){ const dt=Math.min(0.05,(now-last)/1000); last=now;
   const frac = 0.5 + 0.25 * Math.min(1, speedNow / (SPEED*3)); const target = slopeAng * frac;
   lean += (target - lean) * Math.min(1, dt*4);
   cam.rotation.set(0,0,0); cam.rotateY(-yaw); cam.rotateX(pitch + lean);
-  const r=nearestRun(px,py); document.getElementById('pos').textContent=`${Math.round(h)} m · ${Math.round(px)} E ${Math.round(py)} N`; document.getElementById('run').textContent=(r?`on: ${r.name||'unnamed'} (${r.difficulty||'?'})${r.resort&&new Set(P.map(x=>x.resort)).size>1?' · '+r.resort:''}`:'')+` · ${PISTE_MESHES.length} runs`;
+  const st = nearStation(); if (st && !RIDE){ prompt.textContent = `ride ${st.l.name||st.l.type} ▲ ${Math.round(st.top[2])} m — E / tap`; prompt.style.display='block'; } else prompt.style.display='none';
+  const r=nearestRun(px,py); document.getElementById('pos').textContent=`${Math.round(h)} m · ${Math.round(px)} E ${Math.round(py)} N`; document.getElementById('run').textContent=(r?`on: ${r.name||'unnamed'} (${r.difficulty||'?'})${r.resort&&new Set(P.map(x=>x.resort)).size>1?' · '+r.resort:''}`:'')+` · ${PISTE_MESHES.length} runs`+((now-edgeHit)<400?' · trail edge':'');
   if (window.updateTrees && (now|0) % 4 === 0) window.updateTrees(cam.position); if (terrMat.userData.sh) terrMat.userData.sh.uniforms.uTime.value = now/1000;
   if ((now|0) % 100 < 17) drawMini();
   chevTex.offset.y = 1 - (now/1000*0.08) % 1;   // decreasing offset → features drift toward larger v = downhill
