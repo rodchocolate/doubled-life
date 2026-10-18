@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>research_out index — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:2.2rem; font-weight:700; letter-spacing:-.02em; color:var(--porcelain); line-height:1.05; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">note</div>
+      <h1>research_out index</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">—</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">0</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">3483</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos"><div class="vslot"><div class="vframe"><img src="data:image/svg+xml;utf8,&lt;svg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; width=&#x27;400&#x27; height=&#x27;400&#x27;&gt;&lt;rect width=&#x27;400&#x27; height=&#x27;400&#x27; fill=&#x27;hsl(258,45%25,22%25)&#x27;/&gt;&lt;text x=&#x27;200&#x27; y=&#x27;245&#x27; font-family=&#x27;Helvetica&#x27; font-size=&#x27;160&#x27; fill=&#x27;hsl(258,60%25,70%25)&#x27; text-anchor=&#x27;middle&#x27;&gt;R&lt;/text&gt;&lt;/svg&gt;" alt="research_out index"></div></div></div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">&gt; 470 notes by type. Rebuilt by `rwiki.py index`. 2026-10-17</p>
+<p>&gt; 470 notes by type. Rebuilt by `rwiki.py index`. 2026-10-17</p>
+<h3>person (211)</h3>
+<ul>
+<li>[[20260806-013136-person-21-savage]] — 21 Savage · 20260806</li>
+<li>[[20260809-043018-person-2pac]] — 2Pac · 20260809</li>
+<li>[[20260801-141700-person-ac-entertainment]] — AC Entertainment · 20260801</li>
+<li>[[20260806-080449-person-acid-pauli]] — Acid Pauli · 20260806</li>
+<li>[[20260806-020935-person-adam-beyer]] — Adam Beyer · 20260806</li>
+<li>[[20260806-043235-person-adriano-trolio]] — Adriano Trolio · 20260806</li>
+<li>[[20260806-015214-person-adriatique]] — Adriatique · 20260806</li>
+<li>[[20260808-135850-person-alfredo-fiorito]] — Alfredo Fiorito · 20260808</li>
+<li>[[20260806-053504-person-ali-dubfire-shirazinia]] — Ali &quot;Dubfire&quot; Shirazinia · 20260806</li>
+<li>[[20260808-204344-person-alice-coltrane]] — Alice Coltrane · 20260808</li>
+<li>[[20260808-094144-person-alice-cooper]] — Alice Cooper · 20260808</li>
+<li>[[20260806-034950-person-alicia-keys]] — Alicia Keys · 20260806</li>
+<li>[[20260806-050400-person-amedeo-giovanelli]] — Amedeo Giovanelli · 20260806</li>
+<li>[[20260806-041017-person-amy-winehouse]] — Amy Winehouse · 20260806</li>
+<li>[[20260808-183158-person-andré-cymone]] — André Cymone · 20260808</li>
+<li>[[20260806-023254-person-anotr]] — ANOTR · 20260806</li>
+<li>[[20260806-015336-person-anyma]] — Anyma · 20260806</li>
+<li>[[20260808-032920-person-aretha-franklin]] — Aretha Franklin · 20260808</li>
+<li>[[20260806-021335-person-argy]] — Argy · 20260806</li>
+<li>[[20260809-000049-person-armand-van-helden]] — Armand van Helden · 20260809</li>
+<li>[[20260806-032018-person-armin-van-buuren]] — Armin van Buuren · 20260806</li>
+<li>[[20260808-201413-person-art-blakey-and-the-jazz-messengers]] — Art Blakey and The Jazz Messengers · 20260808</li>
+<li>[[20260801-141851-person-ashley-capps]] — Ashley Capps · 20260801</li>
+<li>[[20260806-055837-person-avicii-spencer-brown]] — Avicii / Spencer Brown · 20260806</li>
+<li>[[20260808-044210-person-b-b-king]] — B.B. King · 20260808</li>
+<li>[[20260806-005737-person-babyface]] — Babyface · 20260806</li>
+<li>[[20260806-025347-person-bakke]] — Bakke · 20260806</li>
+<li>[[20260806-021136-person-bedouin-music-producer-dj]] — Bedouin (music producer / DJ) · 20260806</li>
+<li>[[20260806-080013-person-ben-böhmer]] — Ben Böhmer · 20260806</li>
+<li>[[20260808-142105-person-bill-anderson]] — Bill Anderson · 20260808</li>
+<li>[[20260808-084804-person-bill-graham]] — Bill Graham · 20260808</li>
+<li>[[20260806-031227-person-blond-ish]] — BLOND:ISH · 20260806</li>
+<li>[[20260808-115613-person-bob-dylan]] — Bob Dylan · 20260808</li>
+<li>[[20260809-022311-person-bob-marley]] — Bob Marley · 20260809</li>
+<li>[[20260808-040739-person-bob-marley-and-the-wailers]] — Bob Marley and the Wailers · 20260808</li>
+<li>[[20260927-002615-person-bob-sabiston]] — Bob Sabiston · 20260927</li>
+<li>[[20260808-112504-person-brandi-carlile]] — Brandi Carlile · 20260808</li>
+<li>[[20260806-004804-person-brian-eno]] — Brian Eno · 20260806</li>
+<li>[[20260808-024417-person-bruce-springsteen]] — Bruce Springsteen · 20260808</li>
+<li>[[20260806-041424-person-bruno-mars]] — Bruno Mars · 20260806</li>
+<li>[[20260808-191402-person-bumps-blackwell]] — Bumps Blackwell · 20260808</li>
+<li>[[20260808-155322-person-béla-fleck]] — Béla Fleck · 20260808</li>
+<li>[[20260806-032827-person-calvin-harris]] — Calvin Harris · 20260806</li>
+<li>[[20260806-065401-person-carlos-sánchez]] — Carlos Sánchez · 20260806</li>
+<li>[[20260806-025038-person-cassian]] — Cassian · 20260806</li>
+<li>[[20260806-035431-person-cassidy]] — Cassidy · 20260806</li>
+<li>[[20260809-034642-person-celia-cruz]] — Celia Cruz · 20260809</li>
+<li>[[20260806-011555-person-chad-hugo]] — Chad Hugo · 20260806</li>
+<li>[[20260808-201948-person-charles-lloyd]] — Charles Lloyd · 20260808</li>
+<li>[[20260808-185013-person-charlie-parker]] — Charlie Parker · 20260808</li>
+<li>[[20260806-020645-person-charlotte-de-witte]] — Charlotte de Witte · 20260806</li>
+<li>[[20260806-022628-person-chris-lake]] — Chris Lake · 20260806</li>
+<li>[[20260808-182557-person-chris-moon]] — Chris Moon · 20260808</li>
+<li>[[20260806-011411-person-christina-aguilera-and-dj-premier-collaboration]] — Christina Aguilera and DJ Premier collaboration · 20260806</li>
+<li>[[20260806-012608-person-cl-smooth]] — CL Smooth · 20260806</li>
+<li>[[20260806-020446-person-colyn]] — Colyn · 20260806</li>
+<li>[[20260808-045637-person-daft-punk]] — Daft Punk · 20260808</li>
+<li>[[20260806-005637-person-daniel-lanois]] — Daniel Lanois · 20260806</li>
+<li>[[20260806-022037-person-danny-daze]] — Danny Daze · 20260806</li>
+<li>[[20260806-014420-person-david-bowie]] — David Bowie · 20260806</li>
+<li>[[20260806-014637-person-david-byrne]] — David Byrne · 20260806</li>
+<li>[[20260806-060636-person-deadmau5]] — deadmau5 · 20260806</li>
+<li>[[20260806-023903-person-deep-dish]] — Deep Dish · 20260806</li>
+<li>[[20260808-230638-person-derrick-may]] — Derrick May · 20260808</li>
+<li>[[20260806-032357-person-detlef]] — Detlef · 20260806</li>
+<li>[[20260806-072904-person-detlef-roth]] — Detlef Roth · 20260806</li>
+<li>[[20260808-151444-person-dizzy-gillespie]] — Dizzy Gillespie · 20260808</li>
+<li>[[20260808-234319-person-dj-ez]] — DJ EZ · 20260808</li>
+<li>[[20260806-003852-person-dj-premier]] — DJ Premier · 20260806</li>
+<li>[[20260806-033601-person-dmx]] — DMX · 20260806</li>
+<li>[[20260809-013523-person-donna-summer]] — Donna Summer · 20260809</li>
+<li>[[20260728-072531-person-dr-dre]] — Dr. Dre · 20260728</li>
+<li>[[20260809-040524-person-elvis-costello]] — Elvis Costello · 20260809</li>
+<li>[[20260808-163928-person-elvis-presley]] — Elvis Presley · 20260808</li>
+<li>[[20260808-212718-person-eric-clapton]] — Eric Clapton · 20260808</li>
+<li>[[20260808-035748-person-fela-kuti]] — Fela Kuti · 20260808</li>
+<li>[[20260808-222646-person-frankie-knuckles]] — Frankie Knuckles · 20260808</li>
+<li>[[20260806-013015-person-future]] — Future · 20260806</li>
+<li>[[20260808-233659-person-general-levy]] — General Levy · 20260808</li>
+<li>[[20260808-171036-person-george-harrison]] — George Harrison · 20260808</li>
+<li>[[20260806-005214-person-george-martin]] — George Martin · 20260806</li>
+<li>[[20260929-035346-person-georges-polti]] — Georges Polti · 20260929</li>
+<li>[[20260806-053051-person-gigamesh]] — Gigamesh · 20260806</li>
+<li>[[20260806-010256-person-giorgio-moroder]] — Giorgio Moroder · 20260806</li>
+<li>[[20260806-022247-person-green-velvet]] — Green Velvet · 20260806</li>
+<li>[[20260808-111852-person-griz]] — GRiZ · 20260808</li>
+<li>[[20260806-025955-person-grum]] — Grum · 20260806</li>
+<li>[[20260806-010736-person-guru]] — Guru · 20260806</li>
+<li>[[20260806-014746-person-hernan-cattaneo]] — Hernan Cattaneo · 20260806</li>
+<li>[[20260806-015936-person-innellea]] — Innellea · 20260806</li>
+<li>[[20260806-043535-person-inéz]] — Inéz · 20260806</li>
+<li>[[20260728-072102-person-j-dilla]] — J Dilla · 20260728</li>
+<li>[[20260806-005938-person-jack-antonoff]] — Jack Antonoff · 20260806</li>
+<li>[[20260808-210225-person-jake-holmes]] — Jake Holmes · 20260808</li>
+<li>[[20260809-011051-person-james-blake]] — James Blake · 20260809</li>
+<li>[[20260808-032339-person-james-brown]] — James Brown · 20260808</li>
+<li>[[20260806-021539-person-jamie-jones]] — Jamie Jones · 20260806</li>
+<li>[[20260808-210842-person-jason-bonham]] — Jason Bonham · 20260808</li>
+<li>[[20260808-101728-person-jason-isbell]] — Jason Isbell · 20260808</li>
+<li>[[20260808-141153-person-jean-michel-jarre]] — Jean-Michel Jarre · 20260808</li>
+<li>[[20260808-050726-person-jeff-buckley]] — Jeff Buckley · 20260808</li>
+<li>[[20260808-083609-person-jimi-hendrix]] — Jimi Hendrix · 20260808</li>
+<li>[[20260731-164101-person-jimmy-buffett]] — Jimmy Buffett · 20260731</li>
+<li>[[20260806-010042-person-jimmy-jam-terry-lewis]] — Jimmy Jam &amp; Terry Lewis · 20260806</li>
+<li>[[20260808-041321-person-john-coltrane]] — John Coltrane · 20260808</li>
+<li>[[20260806-060319-person-john-digweed]] — John Digweed · 20260806</li>
+<li>[[20260808-044708-person-johnny-cash]] — Johnny Cash · 20260808</li>
+<li>[[20260808-111317-person-joni-mitchell]] — Joni Mitchell · 20260808</li>
+<li>[[20260808-224834-person-juan-atkins]] — Juan Atkins · 20260808</li>
+<li>[[20260806-061437-person-jubilee]] — Jubilee · 20260806</li>
+<li>[[20260806-024801-person-jubilee-music-producer-dj]] — Jubilee (music producer/DJ) · 20260806</li>
+<li>[[20260806-005348-person-just-blaze]] — Just Blaze · 20260806</li>
+<li>[[20260728-072424-person-kanye-west]] — Kanye West · 20260728</li>
+<li>[[20260808-040320-person-keith-jarrett]] — Keith Jarrett · 20260808</li>
+<li>[[20260806-011936-person-kelis]] — Kelis · 20260806</li>
+<li>[[20260801-142333-person-kesha]] — Kesha · 20260801</li>
+<li>[[20260808-230103-person-kevin-saunderson]] — Kevin Saunderson · 20260808</li>
+<li>[[20260806-020245-person-kolsch]] — Kolsch · 20260806</li>
+<li>[[20260808-233037-person-lennie-de-ice]] — Lennie De Ice · 20260808</li>
+<li>[[20260808-193144-person-little-richard]] — Little Richard · 20260808</li>
+<li>[[20260808-124243-person-lou-adler]] — Lou Adler · 20260808</li>
+<li>[[20260808-190222-person-lou-rawls]] — Lou Rawls · 20260808</li>
+<li>[[20260808-103255-person-luke-combs]] — Luke Combs · 20260808</li>
+<li>[[20260808-231841-person-m-beat]] — M-Beat · 20260808</li>
+<li>[[20260806-073437-person-mark-gillespie]] — Mark Gillespie · 20260806</li>
+<li>[[20260806-010516-person-mark-ronson]] — Mark Ronson · 20260806</li>
+<li>[[20260806-012751-person-marley-marl]] — Marley Marl · 20260806</li>
+<li>[[20260806-015740-person-massano]] — Massano · 20260806</li>
+<li>[[20260806-015554-person-mathame]] — Mathame · 20260806</li>
+<li>[[20260806-045248-person-matteo-giovanelli]] — Matteo Giovanelli · 20260806</li>
+<li>[[20260806-021750-person-mau-p]] — Mau P · 20260806</li>
+<li>[[20260806-005836-person-max-martin]] — Max Martin · 20260806</li>
+<li>[[20260806-004628-person-metro-boomin]] — Metro Boomin · 20260806</li>
+<li>[[20260806-023046-person-michael-bibi]] — Michael Bibi · 20260806</li>
+<li>[[20260808-033408-person-miles-davis]] — Miles Davis · 20260808</li>
+<li>[[20260806-033153-person-monolink]] — Monolink · 20260806</li>
+<li>[[20260806-005537-person-mutt-lange]] — Mutt Lange · 20260806</li>
+<li>[[20260806-010837-person-nas]] — Nas · 20260806</li>
+<li>[[20260808-133947-person-neal-francis]] — Neal Francis · 20260808</li>
+<li>[[20260808-124908-person-neil-young]] — Neil Young · 20260808</li>
+<li>[[20260806-022841-person-nick-leon]] — Nick Leon · 20260806</li>
+<li>[[20260806-031608-person-nicola-cruz]] — Nicola Cruz · 20260806</li>
+<li>[[20260806-025636-person-niko-maxen]] — Niko Maxen · 20260806</li>
+<li>[[20260728-072329-person-nile-rodgers]] — Nile Rodgers · 20260728</li>
+<li>[[20260806-030242-person-nima-gorji]] — Nima Gorji · 20260806</li>
+<li>[[20260808-034858-person-nina-simone]] — Nina Simone · 20260808</li>
+<li>[[20260808-034421-person-otis-redding]] — Otis Redding · 20260808</li>
+<li>[[20260806-042942-person-paul-oakenfold]] — Paul Oakenfold · 20260806</li>
+<li>[[20260809-004010-person-paul-van-dyk]] — Paul van Dyk · 20260809</li>
+<li>[[20260808-121904-person-pete-king]] — Pete King · 20260808</li>
+<li>[[20260806-004428-person-pete-rock]] — Pete Rock · 20260806</li>
+<li>[[20260728-071841-person-pharrell-williams]] — Pharrell Williams · 20260728</li>
+<li>[[20260808-095405-person-phil-ochs]] — Phil Ochs · 20260808</li>
+<li>[[20260806-005437-person-phil-spector]] — Phil Spector · 20260806</li>
+<li>[[20260808-042247-person-pink-floyd]] — Pink Floyd · 20260808</li>
+<li>[[20260808-031929-person-prince]] — Prince · 20260808</li>
+<li>[[20260806-012148-person-prince-rakeem]] — Prince Rakeem · 20260806</li>
+<li>[[20260728-072000-person-quincy-jones]] — Quincy Jones · 20260728</li>
+<li>[[20260806-030817-person-ray-okpara]] — Ray Okpara · 20260806</li>
+<li>[[20260927-001946-person-richard-linklater]] — Richard Linklater · 20260927</li>
+<li>[[20260729-024332-person-rick-rubin]] — Rick Rubin · 20260729</li>
+<li>[[20260808-133412-person-riff-wood]] — Riff Wood · 20260808</li>
+<li>[[20260806-075154-person-rihanna]] — Rihanna · 20260806</li>
+<li>[[20260808-212050-person-ringo-starr]] — Ringo Starr · 20260808</li>
+<li>[[20260806-014216-person-robert-fripp]] — Robert Fripp · 20260806</li>
+<li>[[20260808-211514-person-robert-plant]] — Robert Plant · 20260808</li>
+<li>[[20260808-215052-person-robert-smith]] — Robert Smith · 20260808</li>
+<li>[[20260808-223320-person-ron-hardy]] — Ron Hardy · 20260808</li>
+<li>[[20260808-170349-person-ronnie-hawkins]] — Ronnie Hawkins · 20260808</li>
+<li>[[20260808-220242-person-ross-robinson]] — Ross Robinson · 20260808</li>
+<li>[[20260806-011205-person-royce-da-5-9]] — Royce da 5&#x27;9&quot; · 20260806</li>
+<li>[[20260806-004210-person-rza]] — RZA · 20260806</li>
+<li>[[20260808-033924-person-sam-cooke]] — Sam Cooke · 20260808</li>
+<li>[[20260808-114946-person-santana]] — Santana · 20260808</li>
+<li>[[20260809-024156-person-sean-paul]] — Sean Paul · 20260809</li>
+<li>[[20260809-023529-person-shaggy]] — Shaggy · 20260809</li>
+<li>[[20260806-054719-person-sharam-tayebi]] — Sharam Tayebi · 20260806</li>
+<li>[[20260806-070411-person-sharon-den-adel]] — Sharon den Adel · 20260806</li>
+<li>[[20260731-001114-person-shpongle]] — Shpongle · 20260731</li>
+<li>[[20260806-030506-person-simos-tagias]] — Simos Tagias · 20260806</li>
+<li>[[20260809-010341-person-skrillex]] — Skrillex · 20260809</li>
+<li>[[20260809-042357-person-snoop-dogg]] — Snoop Dogg · 20260809</li>
+<li>[[20260806-015002-person-solomun]] — Solomun · 20260806</li>
+<li>[[20260806-024206-person-spencer-brown]] — Spencer Brown · 20260806</li>
+<li>[[20260809-025353-person-spice]] — Spice · 20260809</li>
+<li>[[20260806-010146-person-steve-albini]] — Steve Albini · 20260806</li>
+<li>[[20260801-141337-person-superfly]] — Superfly · 20260801</li>
+<li>[[20260808-135315-person-sven-väth]] — Sven Väth · 20260808</li>
+<li>[[20260806-005012-person-swizz-beatz]] — Swizz Beatz · 20260806</li>
+<li>[[20260806-011816-person-teddy-riley]] — Teddy Riley · 20260806</li>
+<li>[[20260808-104359-person-the-castellows]] — The Castellows · 20260808</li>
+<li>[[20260806-004016-person-the-neptunes]] — The Neptunes · 20260806</li>
+<li>[[20260808-203200-person-thelonious-monk]] — Thelonious Monk · 20260808</li>
+<li>[[20260808-103823-person-thomas-rhett]] — Thomas Rhett · 20260808</li>
+<li>[[20260808-160508-person-tim-reynolds]] — Tim Reynolds · 20260808</li>
+<li>[[20260729-024237-person-timbaland]] — Timbaland · 20260729</li>
+<li>[[20260808-120719-person-tinashe]] — Tinashe · 20260808</li>
+<li>[[20260806-071412-person-tiësto]] — Tiësto · 20260806</li>
+<li>[[20260808-234854-person-todd-edwards]] — Todd Edwards · 20260808</li>
+<li>[[20260808-195609-person-tony-allen]] — Tony Allen · 20260808</li>
+<li>[[20260806-071856-person-trevor-guthrie]] — Trevor Guthrie · 20260806</li>
+<li>[[20260808-104923-person-ty-myers]] — Ty Myers · 20260808</li>
+<li>[[20260808-200144-person-victor-olaiya-and-his-all-stars]] — Victor Olaiya and his All-Stars · 20260808</li>
+<li>[[20260808-143830-person-vince-gill]] — Vince Gill · 20260808</li>
+<li>[[20260809-024818-person-vybz-kartel]] — Vybz Kartel · 20260809</li>
+<li>[[20260809-043553-person-warren-g]] — Warren G · 20260809</li>
+<li>[[20260801-142536-person-weird-al-yankovic]] — Weird Al Yankovic · 20260801</li>
+<li>[[20260927-004056-person-wiley-wiggins]] — Wiley Wiggins · 20260927</li>
+<li>[[20260808-143301-person-wyatt-flores]] — Wyatt Flores · 20260808</li>
+<li>[[20260731-001158-person-younger-brother]] — younger brother · 20260731</li>
+<li>[[20260809-025900-person-églisest]] — églisest · 20260809</li>
+</ul>
+<h3>organization (131)</h3>
+<ul>
+<li>[[20260808-100623-organization-10cc]] — 10cc · 20260808</li>
+<li>[[20260808-010852-organization-9-30-club]] — 9:30 Club · 20260808</li>
+<li>[[20260806-061117-organization-above-beyond]] — Above &amp; Beyond · 20260806</li>
+<li>[[20260806-062749-organization-anjunabeats]] — Anjunabeats · 20260806</li>
+<li>[[20260808-182022-organization-arista-records]] — Arista Records · 20260808</li>
+<li>[[20260809-000719-organization-artful-dodger]] — Artful Dodger · 20260809</li>
+<li>[[20260806-045653-organization-astralwerks]] — Astralwerks · 20260806</li>
+<li>[[20260808-183806-organization-atlantic-records-recording-of-aretha-franklin-hits]] — Atlantic Records&#x27; recording of Aretha Franklin hits · 20260808</li>
+<li>[[20260808-102330-organization-bbc-concert-orchestra]] — BBC Concert Orchestra · 20260808</li>
+<li>[[20260808-012437-organization-berghain]] — Berghain · 20260808</li>
+<li>[[20260731-163649-organization-berkshire-hathaway]] — Berkshire Hathaway · 20260731</li>
+<li>[[20260808-113743-organization-blondie]] — Blondie · 20260808</li>
+<li>[[20260808-005137-organization-blue-note-music-venue]] — Blue Note (music venue) · 20260808</li>
+<li>[[20260808-193818-organization-booker-t-the-m-g-s]] — Booker T. &amp; the M.G.&#x27;s · 20260808</li>
+<li>[[20260808-161044-organization-béla-fleck-and-the-flecktones]] — Béla Fleck and the Flecktones · 20260808</li>
+<li>[[20260808-001037-organization-capitol-theatre]] — Capitol Theatre · 20260808</li>
+<li>[[20260808-165814-organization-capricorn-records]] — Capricorn Records · 20260808</li>
+<li>[[20260808-001826-organization-cbgb]] — CBGB · 20260808</li>
+<li>[[20260808-132439-organization-cheap-trick]] — Cheap Trick · 20260808</li>
+<li>[[20260808-123708-organization-coldplay]] — Coldplay · 20260808</li>
+<li>[[20260808-165154-organization-columbia-records]] — Columbia Records · 20260808</li>
+<li>[[20260808-134625-organization-cream]] — Cream · 20260808</li>
+<li>[[20260807-232615-organization-cream-club-brand]] — Cream (Club/Brand) · 20260807</li>
+<li>[[20260808-023413-organization-dave-matthews-band]] — Dave Matthews Band · 20260808</li>
+<li>[[20260808-150909-organization-debut-records]] — Debut Records · 20260808</li>
+<li>[[20260806-043840-organization-diynamic-record-label]] — Diynamic record label · 20260806</li>
+<li>[[20260806-070904-organization-dj-mag]] — DJ Mag · 20260806</li>
+<li>[[20260808-162943-organization-e-street-band]] — E Street Band · 20260808</li>
+<li>[[20260808-202554-organization-ecm-records]] — ECM Records · 20260808</li>
+<li>[[20260808-161726-organization-elektra-records]] — Elektra Records · 20260808</li>
+<li>[[20260808-090606-organization-elvis-costello-the-attractions]] — Elvis Costello &amp; The Attractions · 20260808</li>
+<li>[[20260808-101157-organization-elvis-costello-the-imposters]] — Elvis Costello &amp; The Imposters · 20260808</li>
+<li>[[20260806-040155-organization-emi-electric-and-musical-industries]] — EMI (Electric and Musical Industries) · 20260806</li>
+<li>[[20260808-180823-organization-epic-records]] — Epic Records · 20260808</li>
+<li>[[20260809-044218-organization-epic-records-label]] — Epic Records (label) · 20260809</li>
+<li>[[20260809-034107-organization-fania-all-stars]] — Fania All-Stars · 20260809</li>
+<li>[[20260801-142736-organization-fcukers]] — Fcukers · 20260801</li>
+<li>[[20260808-004241-organization-first-avenue]] — First Avenue · 20260808</li>
+<li>[[20260927-003155-organization-flat-black-films]] — Flat Black Films · 20260927</li>
+<li>[[20260806-034321-organization-full-surface-records]] — Full Surface Records · 20260806</li>
+<li>[[20260806-010956-organization-gang-starr-foundation]] — Gang Starr Foundation · 20260806</li>
+<li>[[20260808-022922-organization-grateful-dead]] — Grateful Dead · 20260808</li>
+<li>[[20260806-012408-organization-gravediggaz]] — Gravediggaz · 20260806</li>
+<li>[[20260808-175603-organization-green-river]] — Green River · 20260808</li>
+<li>[[20260808-093551-organization-grootna]] — Grootna · 20260808</li>
+<li>[[20260809-001858-organization-guerilla-records]] — Guerilla Records · 20260809</li>
+<li>[[20260809-005143-organization-harthouse-record-label]] — Harthouse record label · 20260809</li>
+<li>[[20260728-071317-organization-iamtoxico-com]] — iamtoxico.com · 20260728</li>
+<li>[[20260808-203809-organization-impulse-records]] — Impulse! Records · 20260808</li>
+<li>[[20260808-221453-organization-junior-boy-s-own]] — Junior Boy&#x27;s Own · 20260808</li>
+<li>[[20260808-025934-organization-king-gizzard-and-the-lizard-wizard]] — King Gizzard and the Lizard Wizard · 20260808</li>
+<li>[[20260808-231306-organization-kool-fm]] — Kool FM · 20260808</li>
+<li>[[20260808-194955-organization-koola-lobitos]] — Koola Lobitos · 20260808</li>
+<li>[[20260808-205013-organization-led-zeppelin]] — Led Zeppelin · 20260808</li>
+<li>[[20260801-141518-organization-live-nation]] — Live Nation · 20260801</li>
+<li>[[20260808-131300-organization-low-cut-connie]] — Low Cut Connie · 20260808</li>
+<li>[[20260807-234526-organization-madison-square-garden]] — Madison Square Garden · 20260807</li>
+<li>[[20260728-071152-organization-melodiclabs-com]] — melodiclabs.com · 20260728</li>
+<li>[[20260728-130653-organization-menemshain-inn]] — Menemshain Inn · 20260728</li>
+<li>[[20260809-005807-organization-mfs-records]] — MFS Records · 20260809</li>
+<li>[[20260808-014437-organization-ministry-of-sound]] — Ministry of Sound · 20260808</li>
+<li>[[20260808-120148-organization-modest-mouse]] — Modest Mouse · 20260808</li>
+<li>[[20260808-180139-organization-mother-love-bone]] — Mother Love Bone · 20260808</li>
+<li>[[20260809-011716-organization-mount-kimbie]] — Mount Kimbie · 20260809</li>
+<li>[[20260808-232502-organization-moving-shadow-record-label]] — Moving Shadow record label · 20260808</li>
+<li>[[20260808-105458-organization-my-chemical-romance]] — My Chemical Romance · 20260808</li>
+<li>[[20260806-074659-organization-name-la-label]] — name la label · 20260806</li>
+<li>[[20260809-003347-organization-name-la-own-record-label]] — name la own record label · 20260809</li>
+<li>[[20260808-200750-organization-nigeria-70]] — Nigeria 70 · 20260808</li>
+<li>[[20260808-214517-organization-nine-inch-nails]] — Nine Inch Nails · 20260808</li>
+<li>[[20260809-041058-organization-oasis]] — Oasis · 20260809</li>
+<li>[[20260808-020232-organization-output-music-venue-brooklyn-club]] — Output — music venue (Brooklyn club) · 20260808</li>
+<li>[[20260809-014058-organization-parliament-funkadelic]] — Parliament-Funkadelic · 20260809</li>
+<li>[[20260806-040609-organization-parlophone]] — Parlophone · 20260806</li>
+<li>[[20260808-114412-organization-patti-smith-group]] — Patti Smith Group · 20260808</li>
+<li>[[20260809-012833-organization-plastic-people]] — Plastic People · 20260809</li>
+<li>[[20260808-003854-organization-preservation-hall]] — Preservation Hall · 20260808</li>
+<li>[[20260809-031713-organization-public-image-ltd]] — Public Image Ltd. · 20260809</li>
+<li>[[20260808-041738-organization-queen-band]] — Queen band · 20260808</li>
+<li>[[20260808-085952-organization-ramones]] — Ramones — concerts and setlists · 20260808</li>
+<li>[[20260808-154700-organization-rca-records]] — RCA Records · 20260808</li>
+<li>[[20260808-191937-organization-rca-victor]] — RCA Victor · 20260808</li>
+<li>[[20260808-154029-organization-rhino-records]] — Rhino Records · 20260808</li>
+<li>[[20260809-012251-organization-rinse-fm]] — Rinse FM · 20260809</li>
+<li>[[20260808-003511-organization-ronnie-scott-s]] — Ronnie Scott&#x27;s · 20260808</li>
+<li>[[20260808-123040-organization-ronnie-scott-s-jazz-house]] — Ronnie Scott&#x27;s Jazz House · 20260808</li>
+<li>[[20260806-013508-organization-roxy-music]] — Roxy Music · 20260806</li>
+<li>[[20260806-034638-organization-ruff-ryders-entertainment]] — Ruff Ryders Entertainment · 20260806</li>
+<li>[[20260806-044902-organization-siamese]] — Siamese · 20260806</li>
+<li>[[20260808-174403-organization-sire-records]] — Sire Records · 20260808</li>
+<li>[[20260809-002812-organization-soma-records]] — Soma Records · 20260809</li>
+<li>[[20260808-190757-organization-specialty-records]] — Specialty Records · 20260808</li>
+<li>[[20260808-192609-organization-stax-records]] — Stax Records · 20260808</li>
+<li>[[20260808-140532-organization-sugababes]] — Sugababes · 20260808</li>
+<li>[[20260808-144504-organization-switchfoot]] — Switchfoot · 20260808</li>
+<li>[[20260806-044149-organization-tale-of-us]] — Tale Of Us · 20260806</li>
+<li>[[20260808-030918-organization-talking-heads]] — Talking Heads · 20260808</li>
+<li>[[20260808-024914-organization-the-allman-brothers-band]] — The Allman Brothers Band · 20260808</li>
+<li>[[20260808-025417-organization-the-band]] — The Band · 20260808</li>
+<li>[[20260808-091808-organization-the-beach-boys]] — The Beach Boys · 20260808</li>
+<li>[[20260806-035749-organization-the-beatles]] — The Beatles · 20260806</li>
+<li>[[20260808-094732-organization-the-doors]] — The Doors · 20260808</li>
+<li>[[20260807-233046-organization-the-fillmore]] — The Fillmore · 20260807</li>
+<li>[[20260808-121254-organization-the-flaming-lips]] — The Flaming Lips · 20260808</li>
+<li>[[20260808-015356-organization-the-fox-theatre]] — The Fox Theatre · 20260808</li>
+<li>[[20260808-012837-organization-the-hacienda]] — The Hacienda · 20260808</li>
+<li>[[20260808-092343-organization-the-j-geils-band]] — The J. Geils Band · 20260808</li>
+<li>[[20260801-142435-organization-the-neighbourhood]] — The Neighbourhood · 20260801</li>
+<li>[[20260808-164618-organization-the-ramones]] — The Ramones · 20260808</li>
+<li>[[20260808-181358-organization-the-revolution]] — The Revolution · 20260808</li>
+<li>[[20260808-185548-organization-the-soul-stirrers]] — The Soul Stirrers · 20260808</li>
+<li>[[20260808-213901-organization-the-tennessee-three]] — The Tennessee Three · 20260808</li>
+<li>[[20260808-085339-organization-the-tubes]] — The Tubes · 20260808</li>
+<li>[[20260808-153331-organization-the-velvet-underground]] — The Velvet Underground · 20260808</li>
+<li>[[20260808-205548-organization-the-yardbirds]] — The Yardbirds · 20260808</li>
+<li>[[20260809-022846-organization-third-world-band]] — Third World band · 20260809</li>
+<li>[[20260808-004726-organization-tipitina-s]] — Tipitina&#x27;s · 20260808</li>
+<li>[[20260808-091141-organization-tom-petty-and-the-heartbreakers]] — Tom Petty and the Heartbreakers · 20260808</li>
+<li>[[20260809-021639-organization-toots-and-the-maytals]] — Toots and the Maytals · 20260809</li>
+<li>[[20260808-150247-organization-toronto-mendelssohn-choir]] — Toronto Mendelssohn Choir · 20260808</li>
+<li>[[20260808-145039-organization-toronto-symphony-orchestra]] — Toronto Symphony Orchestra · 20260808</li>
+<li>[[20260927-004657-organization-tosca-tango-orchestra]] — Tosca Tango Orchestra · 20260927</li>
+<li>[[20260808-155857-organization-trax-nightclub]] — Trax Nightclub · 20260808</li>
+<li>[[20260808-013237-organization-tresor-music-venue]] — Tresor (music venue) · 20260808</li>
+<li>[[20260808-220917-organization-virgin-records]] — Virgin Records · 20260808</li>
+<li>[[20260809-031101-organization-vp-records]] — VP Records · 20260809</li>
+<li>[[20260808-152108-organization-warner-bros-records]] — Warner Bros. Records · 20260808</li>
+<li>[[20260808-131902-organization-we-are-scientists]] — We Are Scientists · 20260808</li>
+<li>[[20260808-010456-organization-whisky-a-go-go]] — Whisky a Go Go · 20260808</li>
+<li>[[20260809-032249-organization-wire-band]] — Wire (band) · 20260809</li>
+<li>[[20260806-012040-organization-wu-tang-clan]] — Wu-Tang Clan · 20260806</li>
+</ul>
+<h3>concept (66)</h3>
+<ul>
+<li>[[20260809-050035-concept-a-flood-of-circle]] — a flood of circle · 20260809</li>
+<li>[[20260808-054052-concept-acid-house]] — Acid House · 20260808</li>
+<li>[[20260808-074443-concept-afrobeat]] — Afrobeat · 20260808</li>
+<li>[[20260808-062538-concept-ambient-music-genre]] — Ambient music genre · 20260808</li>
+<li>[[20260808-064502-concept-bebop]] — Bebop · 20260808</li>
+<li>[[20260808-073248-concept-bossa-nova]] — Bossa Nova · 20260808</li>
+<li>[[20260808-080319-concept-britpop]] — Britpop · 20260808</li>
+<li>[[20260809-041737-concept-britpop-bands-blur-suede-pulp]] — Britpop bands (Blur, Suede, Pulp) · 20260809</li>
+<li>[[20260809-050628-concept-candy-tune]] — CANDY TUNE · 20260809</li>
+<li>[[20260728-071236-concept-canonical-hip-hop-producers]] — Canonical hip-hop producers · 20260728</li>
+<li>[[20260728-071411-concept-canonical-jazz]] — Canonical jazz · 20260728</li>
+<li>[[20260728-072702-concept-cercle]] — Cercle · 20260728</li>
+<li>[[20260808-052616-concept-chicago-house-music]] — Chicago House Music · 20260808</li>
+<li>[[20260808-071520-concept-dancehall]] — Dancehall · 20260808</li>
+<li>[[20260808-053038-concept-deep-house]] — Deep House · 20260808</li>
+<li>[[20260808-042657-concept-deep-purple-s-career-and-signature-sound]] — Deep Purple&#x27;s career and signature sound · 20260808</li>
+<li>[[20260808-053617-concept-detroit-techno]] — Detroit techno · 20260808</li>
+<li>[[20260808-062031-concept-disco]] — Disco · 20260808</li>
+<li>[[20260808-055037-concept-drum-and-bass-d-b]] — Drum and bass (D&amp;B) · 20260808</li>
+<li>[[20260808-072055-concept-dub]] — Dub · 20260808</li>
+<li>[[20260808-061410-concept-dubstep]] — Dubstep · 20260808</li>
+<li>[[20260808-063210-concept-funk-music-genre]] — Funk music genre · 20260808</li>
+<li>[[20260808-081517-concept-g-funk]] — G-funk · 20260808</li>
+<li>[[20260808-080854-concept-grunge-music-genre]] — Grunge (music genre) · 20260808</li>
+<li>[[20260808-172001-concept-influence-of-the-band-s-music-on-elton-john]] — Influence of The Band&#x27;s music on Elton John · 20260808</li>
+<li>[[20260809-020424-concept-jazz]] — jazz · 20260809</li>
+<li>[[20260728-071111-concept-jazz-canon]] — jazz canon · 20260728</li>
+<li>[[20260808-070849-concept-jazz-fusion]] — Jazz fusion · 20260808</li>
+<li>[[20260808-054606-concept-jungle-music-genre]] — Jungle (music genre) · 20260808</li>
+<li>[[20260809-015240-concept-l-funk-derivatives]] — L-Funk derivatives · 20260809</li>
+<li>[[20260808-043224-concept-led-zeppelin-s-career-and-signature-sound]] — Led Zeppelin&#x27;s career and signature sound · 20260808</li>
+<li>[[20260808-065038-concept-modal-jazz]] — Modal jazz · 20260808</li>
+<li>[[20260808-065655-concept-motown-sound]] — Motown sound · 20260808</li>
+<li>[[20260808-093001-concept-mountain]] — Mountain · 20260808</li>
+<li>[[20260808-213254-concept-music-entities-related-to-b-b-king]] — Music Entities related to B.B. King · 20260808</li>
+<li>[[20260728-070810-concept-music-in-film-on-screen]] — Music in film on screen · 20260728</li>
+<li>[[20260809-015855-concept-name]] — name · 20260809</li>
+<li>[[20260808-075116-concept-new-wave-music-genre]] — New Wave (music genre) · 20260808</li>
+<li>[[20260808-222110-concept-nirvana-the-band]] — Nirvana (the band) · 20260808</li>
+<li>[[20260808-051645-concept-nirvana-s-career-and-signature-sound]] — Nirvana&#x27;s career and signature sound · 20260808</li>
+<li>[[20260809-021104-concept-nonsense-syllables-rebop-in-r-b-music]] — Nonsense Syllables (Rebop) in R&amp;B Music · 20260809</li>
+<li>[[20260808-072712-concept-post-punk]] — Post-punk · 20260808</li>
+<li>[[20260808-060222-concept-progressive-house]] — Progressive House · 20260808</li>
+<li>[[20260808-030338-concept-radiohead-s-career-and-signature-sound]] — Radiohead&#x27;s career and signature sound · 20260808</li>
+<li>[[20260808-070313-concept-reggae-music-genre]] — Reggae music genre · 20260808</li>
+<li>[[20260808-073908-concept-salsa-music-genre]] — Salsa (music genre) · 20260808</li>
+<li>[[20260814-143205-concept-signified-and-signifiers]] — Signified and Signifiers · 20260814</li>
+<li>[[20260808-162408-concept-sited]] — sited · 20260808</li>
+<li>[[20260809-014705-concept-sly-and-the-family-stone-s-contribution-to-funk-music]] — Sly and the Family Stone&#x27;s contribution to funk music · 20260809</li>
+<li>[[20260808-063758-concept-southern-soul]] — Southern Soul · 20260808</li>
+<li>[[20260808-110645-concept-space-laces]] — Space Laces · 20260808</li>
+<li>[[20260806-044500-concept-swedish-house-mafia-s-collaborations-and-remixes-involving-t]] — Swedish House Mafia&#x27;s collaborations and remixes involving The Weeknd and Adriatique in 2022 · 20260806</li>
+<li>[[20260808-223855-concept-techno]] — techno · 20260808</li>
+<li>[[20260808-225450-concept-the-belleville-three-juan-atkins-derrick-may-kevin-saunderso]] — The Belleville Three (Juan Atkins, Derrick May, Kevin Saunderson) · 20260808</li>
+<li>[[20260808-130643-concept-the-coverups]] — The Coverups · 20260808</li>
+<li>[[20260929-034721-concept-the-thirty-six-dramatic-situations]] — The Thirty-Six Dramatic Situations · 20260929</li>
+<li>[[20260808-084144-concept-the-velvet-underground-and-nico]] — The Velvet Underground and Nico · 20260808</li>
+<li>[[20260809-033447-concept-the-white-stripes-role-and-connection-to-post-punk]] — The White Stripes&#x27; role and connection to Post-punk · 20260809</li>
+<li>[[20260808-043638-concept-thin-lizzy-s-career-and-signature-sound]] — Thin Lizzy&#x27;s career and signature sound · 20260808</li>
+<li>[[20260808-060818-concept-trance-music-genre]] — Trance music genre · 20260808</li>
+<li>[[20260808-075651-concept-trip-hop]] — Trip Hop · 20260808</li>
+<li>[[20260808-055621-concept-uk-garage]] — UK garage · 20260808</li>
+<li>[[20260808-235514-concept-uk-garage-genre]] — UK garage genre · 20260808</li>
+<li>[[20260806-041801-concept-uma]] — uma · 20260806</li>
+<li>[[20260808-095940-concept-what-the-world-needs-now]] — What the World Needs Now · 20260808</li>
+<li>[[20260809-004545-concept-나머지-eye-q]] — 나머지 (Eye Q) · 20260809</li>
+</ul>
+<h3>place (27)</h3>
+<ul>
+<li>[[20260808-014912-place-amnesia-ibiza]] — Amnesia (Ibiza) · 20260808</li>
+<li>[[20260808-002655-place-apollo-theater]] — Apollo Theater · 20260808</li>
+<li>[[20260808-002313-place-barton-hall]] — Barton Hall · 20260808</li>
+<li>[[20260728-071627-place-boiler-room]] — Boiler Room · 20260728</li>
+<li>[[20260808-082531-place-budokan]] — Budokan · 20260808</li>
+<li>[[20260808-013637-place-fabric-music-venue]] — Fabric (music venue) · 20260808</li>
+<li>[[20260807-234010-place-fillmore-east]] — Fillmore East · 20260807</li>
+<li>[[20260808-021206-place-grand-ole-opry-house]] — Grand Ole Opry House · 20260808</li>
+<li>[[20260728-071546-place-great-woods]] — Great Woods · 20260728</li>
+<li>[[20260808-000658-place-hollywood-bowl]] — Hollywood Bowl · 20260808</li>
+<li>[[20260808-021728-place-massey-hall]] — Massey Hall · 20260808</li>
+<li>[[20260808-011640-place-paradise-garage]] — Paradise Garage · 20260808</li>
+<li>[[20260808-014040-place-paradiso]] — Paradiso · 20260808</li>
+<li>[[20260807-235341-place-red-rocks-amphitheatre]] — Red Rocks Amphitheatre · 20260807</li>
+<li>[[20260808-145711-place-roy-thomson-hall-massey-hall]] — Roy Thomson Hall / Massey Hall · 20260808</li>
+<li>[[20260807-234954-place-royal-albert-hall]] — Royal Albert Hall · 20260807</li>
+<li>[[20260808-020642-place-ryman-auditorium]] — Ryman Auditorium · 20260808</li>
+<li>[[20260808-015751-place-space-ibiza]] — Space Ibiza · 20260808</li>
+<li>[[20260808-012042-place-studio-54]] — Studio 54 · 20260808</li>
+<li>[[20260808-000315-place-the-gorge-amphitheatre]] — The Gorge Amphitheatre · 20260808</li>
+<li>[[20260808-005625-place-the-roxy-theatre]] — The Roxy Theatre · 20260808</li>
+<li>[[20260808-010104-place-the-troubadour]] — The Troubadour · 20260808</li>
+<li>[[20260808-011242-place-the-warehouse-music-venue]] — The Warehouse (music venue) · 20260808</li>
+<li>[[20260808-003039-place-village-vanguard]] — Village Vanguard · 20260808</li>
+<li>[[20261018-033352-place-village-vanguard]] — Village Vanguard · 20261018</li>
+<li>[[20260807-235826-place-wembley-stadium]] — Wembley Stadium · 20260807</li>
+<li>[[20260807-233520-place-winterland-ballroom]] — Winterland Ballroom · 20260807</li>
+</ul>
+<h3>artist (10)</h3>
+<ul>
+<li>[[20260809-035852-artist-kraftwerk]] — Kraftwerk · 20260809</li>
+<li>[[20260808-052038-artist-lcd-soundsystem]] — LCD Soundsystem · 20260808</li>
+<li>[[20260809-001254-artist-leftfield]] — Leftfield · 20260809</li>
+<li>[[20260808-031412-artist-pearl-jam]] — Pearl Jam · 20260808</li>
+<li>[[20260808-023907-artist-phish]] — Phish · 20260808</li>
+<li>[[20260801-142635-artist-rüfüs-du-sol]] — RÜFÜS DU SOL · 20260801</li>
+<li>[[20260809-044753-artist-sky-hi]] — SKY-HI · 20260809</li>
+<li>[[20260808-050209-artist-the-chemical-brothers]] — The Chemical Brothers · 20260808</li>
+<li>[[20260808-045218-artist-the-cure]] — The Cure · 20260808</li>
+<li>[[20260808-051136-artist-underworld]] — Underworld · 20260808</li>
+</ul>
+<h3>event (8)</h3>
+<ul>
+<li>[[20260728-071018-event-30-for-30]] — 30 for 30 · 20260728</li>
+<li>[[20260808-194353-event-africa-70]] — Africa &#x27;70 · 20260808</li>
+<li>[[20260808-110101-event-beyond-wonderland]] — Beyond Wonderland · 20260808</li>
+<li>[[20260801-142105-event-bonnaroo]] — Bonnaroo · 20260801</li>
+<li>[[20260731-134318-event-dunk-fest]] — Dunk Fest · 20260731</li>
+<li>[[20260808-173744-event-gizzfest]] — Gizzfest · 20260808</li>
+<li>[[20260806-074250-event-l-e-d-festival]] — L.E.D. Festival · 20260806</li>
+<li>[[20260809-030445-event-sting-festival]] — Sting festival · 20260809</li>
+</ul>
+<h3>band (6)</h3>
+<ul>
+<li>[[20260808-172537-band-flightless]] — Flightless · 20260808</li>
+<li>[[20260808-152643-band-jefferson-airplane]] — Jefferson Airplane · 20260808</li>
+<li>[[20260808-173157-band-mild-high-club]] — Mild High Club · 20260808</li>
+<li>[[20260808-215707-band-siouxsie-and-the-banshees]] — Siouxsie and the Banshees · 20260808</li>
+<li>[[20260808-113039-band-television]] — Television · 20260808</li>
+<li>[[20260808-125444-band-the-black-crowes]] — The Black Crowes · 20260808</li>
+</ul>
+<h3>product (5)</h3>
+<ul>
+<li>[[20260728-071505-product-hermes-capabilities]] — Hermes capabilities · 20260728</li>
+<li>[[20260806-073837-product-love-regenerator]] — Love Regenerator · 20260806</li>
+<li>[[20260728-072223-product-madlib]] — Madlib · 20260728</li>
+<li>[[20260907-113357-product-nous-portal-subscription]] — Nous Portal Subscription · 20260907</li>
+<li>[[20260728-070914-product-toyota-4runner]] — Toyota 4Runner · 20260728</li>
+</ul>
+<h3>act (3)</h3>
+<ul>
+<li>[[20260809-045444-act-abba]] — ABBA · 20260809</li>
+<li>[[20260809-035317-act-devo]] — Devo · 20260809</li>
+<li>[[20260809-032912-act-the-strokes]] — The Strokes · 20260809</li>
+</ul>
+<h3>media (2)</h3>
+<ul>
+<li>[[20260806-065921-media-a-state-of-trance]] — A State of Trance · 20260806</li>
+<li>[[20260927-001405-media-waking-life-2001-film]] — Waking Life (2001 film) · 20260927</li>
+</ul>
+<h3>group (1)</h3>
+<ul>
+<li>[[20260808-142640-group-the-oak-ridge-boys]] — The Oak Ridge Boys · 20260808</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li>none captured yet</li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="research_out index">
+        <input type="hidden" name="slug" value="research-out-index">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — research_out index</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>research_out — the unrun backlog — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:2.2rem; font-weight:700; letter-spacing:-.02em; color:var(--porcelain); line-height:1.05; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">note</div>
+      <h1>research_out — the unrun backlog</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">—</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">0</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">1273</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos"><div class="vslot"><div class="vframe"><img src="data:image/svg+xml;utf8,&lt;svg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; width=&#x27;400&#x27; height=&#x27;400&#x27;&gt;&lt;rect width=&#x27;400&#x27; height=&#x27;400&#x27; fill=&#x27;hsl(227,45%25,22%25)&#x27;/&gt;&lt;text x=&#x27;200&#x27; y=&#x27;245&#x27; font-family=&#x27;Helvetica&#x27; font-size=&#x27;160&#x27; fill=&#x27;hsl(227,60%25,70%25)&#x27; text-anchor=&#x27;middle&#x27;&gt;R&lt;/text&gt;&lt;/svg&gt;" alt="research_out — the unrun backlog"></div></div></div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">&gt; 162 research PLANS never executed (no sources/facts). 308 notes are full. `rwiki.py` 2026-10-17.</p>
+<p>&gt; 162 research PLANS never executed (no sources/facts). 308 notes are full. `rwiki.py` 2026-10-17.</p>
+<p>&gt; Run one by enqueuing its subject on the doubled research queue (music-stack-ops skill); the runner overwrites the stub.</p>
+<h3>person (66)</h3>
+<ul>
+<li>[[20260806-013136-person-21-savage]] — 21 Savage · 20260806</li>
+<li>[[20260806-043235-person-adriano-trolio]] — Adriano Trolio · 20260806</li>
+<li>[[20260808-135850-person-alfredo-fiorito]] — Alfredo Fiorito · 20260808</li>
+<li>[[20260808-204344-person-alice-coltrane]] — Alice Coltrane · 20260808</li>
+<li>[[20260806-034950-person-alicia-keys]] — Alicia Keys · 20260806</li>
+<li>[[20260806-023254-person-anotr]] — ANOTR · 20260806</li>
+<li>[[20260806-015336-person-anyma]] — Anyma · 20260806</li>
+<li>[[20260806-021335-person-argy]] — Argy · 20260806</li>
+<li>[[20260809-000049-person-armand-van-helden]] — Armand van Helden · 20260809</li>
+<li>[[20260806-055837-person-avicii-spencer-brown]] — Avicii / Spencer Brown · 20260806</li>
+<li>[[20260806-005737-person-babyface]] — Babyface · 20260806</li>
+<li>[[20260806-021136-person-bedouin-music-producer-dj]] — Bedouin (music producer / DJ) · 20260806</li>
+<li>[[20260808-040739-person-bob-marley-and-the-wailers]] — Bob Marley and the Wailers · 20260808</li>
+<li>[[20260806-025038-person-cassian]] — Cassian · 20260806</li>
+<li>[[20260809-034642-person-celia-cruz]] — Celia Cruz · 20260809</li>
+<li>[[20260808-201948-person-charles-lloyd]] — Charles Lloyd · 20260808</li>
+<li>[[20260806-020645-person-charlotte-de-witte]] — Charlotte de Witte · 20260806</li>
+<li>[[20260808-182557-person-chris-moon]] — Chris Moon · 20260808</li>
+<li>[[20260808-045637-person-daft-punk]] — Daft Punk · 20260808</li>
+<li>[[20260806-005637-person-daniel-lanois]] — Daniel Lanois · 20260806</li>
+<li>[[20260806-060636-person-deadmau5]] — deadmau5 · 20260806</li>
+<li>[[20260808-230638-person-derrick-may]] — Derrick May · 20260808</li>
+<li>[[20260808-151444-person-dizzy-gillespie]] — Dizzy Gillespie · 20260808</li>
+<li>[[20260808-222646-person-frankie-knuckles]] — Frankie Knuckles · 20260808</li>
+<li>[[20260806-010256-person-giorgio-moroder]] — Giorgio Moroder · 20260806</li>
+<li>[[20260806-022247-person-green-velvet]] — Green Velvet · 20260806</li>
+<li>[[20260808-111852-person-griz]] — GRiZ · 20260808</li>
+<li>[[20260806-043535-person-inéz]] — Inéz · 20260806</li>
+<li>[[20260806-005938-person-jack-antonoff]] — Jack Antonoff · 20260806</li>
+<li>[[20260808-032339-person-james-brown]] — James Brown · 20260808</li>
+<li>[[20260806-021539-person-jamie-jones]] — Jamie Jones · 20260806</li>
+<li>[[20260806-010042-person-jimmy-jam-terry-lewis]] — Jimmy Jam &amp; Terry Lewis · 20260806</li>
+<li>[[20260806-061437-person-jubilee]] — Jubilee · 20260806</li>
+<li>[[20260806-011936-person-kelis]] — Kelis · 20260806</li>
+<li>[[20260808-233037-person-lennie-de-ice]] — Lennie De Ice · 20260808</li>
+<li>[[20260808-193144-person-little-richard]] — Little Richard · 20260808</li>
+<li>[[20260808-124243-person-lou-adler]] — Lou Adler · 20260808</li>
+<li>[[20260808-231841-person-m-beat]] — M-Beat · 20260808</li>
+<li>[[20260806-021750-person-mau-p]] — Mau P · 20260806</li>
+<li>[[20260806-005836-person-max-martin]] — Max Martin · 20260806</li>
+<li>[[20260806-023046-person-michael-bibi]] — Michael Bibi · 20260806</li>
+<li>[[20260806-005537-person-mutt-lange]] — Mutt Lange · 20260806</li>
+<li>[[20260806-010837-person-nas]] — Nas · 20260806</li>
+<li>[[20260808-133947-person-neal-francis]] — Neal Francis · 20260808</li>
+<li>[[20260806-022841-person-nick-leon]] — Nick Leon · 20260806</li>
+<li>[[20260806-030242-person-nima-gorji]] — Nima Gorji · 20260806</li>
+<li>[[20260806-042942-person-paul-oakenfold]] — Paul Oakenfold · 20260806</li>
+<li>[[20260806-005437-person-phil-spector]] — Phil Spector · 20260806</li>
+<li>[[20260806-012148-person-prince-rakeem]] — Prince Rakeem · 20260806</li>
+<li>[[20260927-001946-person-richard-linklater]] — Richard Linklater · 20260927</li>
+<li>[[20260808-212050-person-ringo-starr]] — Ringo Starr · 20260808</li>
+<li>[[20260808-215052-person-robert-smith]] — Robert Smith · 20260808</li>
+<li>[[20260808-170349-person-ronnie-hawkins]] — Ronnie Hawkins · 20260808</li>
+<li>[[20260808-220242-person-ross-robinson]] — Ross Robinson · 20260808</li>
+<li>[[20260808-114946-person-santana]] — Santana · 20260808</li>
+<li>[[20260806-030506-person-simos-tagias]] — Simos Tagias · 20260806</li>
+<li>[[20260809-010341-person-skrillex]] — Skrillex · 20260809</li>
+<li>[[20260809-025353-person-spice]] — Spice · 20260809</li>
+<li>[[20260806-010146-person-steve-albini]] — Steve Albini · 20260806</li>
+<li>[[20260808-104359-person-the-castellows]] — The Castellows · 20260808</li>
+<li>[[20260808-234854-person-todd-edwards]] — Todd Edwards · 20260808</li>
+<li>[[20260808-200144-person-victor-olaiya-and-his-all-stars]] — Victor Olaiya and his All-Stars · 20260808</li>
+<li>[[20260809-043553-person-warren-g]] — Warren G · 20260809</li>
+<li>[[20260801-142536-person-weird-al-yankovic]] — Weird Al Yankovic · 20260801</li>
+<li>[[20260731-001158-person-younger-brother]] — younger brother · 20260731</li>
+<li>[[20260809-025900-person-églisest]] — églisest · 20260809</li>
+</ul>
+<h3>organization (48)</h3>
+<ul>
+<li>[[20260808-010852-organization-9-30-club]] — 9:30 Club · 20260808</li>
+<li>[[20260806-062749-organization-anjunabeats]] — Anjunabeats · 20260806</li>
+<li>[[20260808-012437-organization-berghain]] — Berghain · 20260808</li>
+<li>[[20260808-161044-organization-béla-fleck-and-the-flecktones]] — Béla Fleck and the Flecktones · 20260808</li>
+<li>[[20260808-001037-organization-capitol-theatre]] — Capitol Theatre · 20260808</li>
+<li>[[20260808-132439-organization-cheap-trick]] — Cheap Trick · 20260808</li>
+<li>[[20260808-165154-organization-columbia-records]] — Columbia Records · 20260808</li>
+<li>[[20260806-043840-organization-diynamic-record-label]] — Diynamic record label · 20260806</li>
+<li>[[20260808-162943-organization-e-street-band]] — E Street Band · 20260808</li>
+<li>[[20260808-101157-organization-elvis-costello-the-imposters]] — Elvis Costello &amp; The Imposters · 20260808</li>
+<li>[[20260801-142736-organization-fcukers]] — Fcukers · 20260801</li>
+<li>[[20260808-004241-organization-first-avenue]] — First Avenue · 20260808</li>
+<li>[[20260927-003155-organization-flat-black-films]] — Flat Black Films · 20260927</li>
+<li>[[20260806-010956-organization-gang-starr-foundation]] — Gang Starr Foundation · 20260806</li>
+<li>[[20260808-221453-organization-junior-boy-s-own]] — Junior Boy&#x27;s Own · 20260808</li>
+<li>[[20260808-014437-organization-ministry-of-sound]] — Ministry of Sound · 20260808</li>
+<li>[[20260808-120148-organization-modest-mouse]] — Modest Mouse · 20260808</li>
+<li>[[20260808-180139-organization-mother-love-bone]] — Mother Love Bone · 20260808</li>
+<li>[[20260808-105458-organization-my-chemical-romance]] — My Chemical Romance · 20260808</li>
+<li>[[20260806-074659-organization-name-la-label]] — name la label · 20260806</li>
+<li>[[20260809-003347-organization-name-la-own-record-label]] — name la own record label · 20260809</li>
+<li>[[20260809-041058-organization-oasis]] — Oasis · 20260809</li>
+<li>[[20260809-014058-organization-parliament-funkadelic]] — Parliament-Funkadelic · 20260809</li>
+<li>[[20260808-003854-organization-preservation-hall]] — Preservation Hall · 20260808</li>
+<li>[[20260808-041738-organization-queen-band]] — Queen band · 20260808</li>
+<li>[[20260808-191937-organization-rca-victor]] — RCA Victor · 20260808</li>
+<li>[[20260809-012251-organization-rinse-fm]] — Rinse FM · 20260809</li>
+<li>[[20260806-034638-organization-ruff-ryders-entertainment]] — Ruff Ryders Entertainment · 20260806</li>
+<li>[[20260808-190757-organization-specialty-records]] — Specialty Records · 20260808</li>
+<li>[[20260806-044149-organization-tale-of-us]] — Tale Of Us · 20260806</li>
+<li>[[20260808-121254-organization-the-flaming-lips]] — The Flaming Lips · 20260808</li>
+<li>[[20260808-012837-organization-the-hacienda]] — The Hacienda · 20260808</li>
+<li>[[20260808-092343-organization-the-j-geils-band]] — The J. Geils Band · 20260808</li>
+<li>[[20260801-142435-organization-the-neighbourhood]] — The Neighbourhood · 20260801</li>
+<li>[[20260808-181358-organization-the-revolution]] — The Revolution · 20260808</li>
+<li>[[20260808-185548-organization-the-soul-stirrers]] — The Soul Stirrers · 20260808</li>
+<li>[[20260808-085339-organization-the-tubes]] — The Tubes · 20260808</li>
+<li>[[20260808-205548-organization-the-yardbirds]] — The Yardbirds · 20260808</li>
+<li>[[20260809-022846-organization-third-world-band]] — Third World band · 20260809</li>
+<li>[[20260808-091141-organization-tom-petty-and-the-heartbreakers]] — Tom Petty and the Heartbreakers · 20260808</li>
+<li>[[20260809-021639-organization-toots-and-the-maytals]] — Toots and the Maytals · 20260809</li>
+<li>[[20260808-150247-organization-toronto-mendelssohn-choir]] — Toronto Mendelssohn Choir · 20260808</li>
+<li>[[20260808-145039-organization-toronto-symphony-orchestra]] — Toronto Symphony Orchestra · 20260808</li>
+<li>[[20260808-155857-organization-trax-nightclub]] — Trax Nightclub · 20260808</li>
+<li>[[20260808-013237-organization-tresor-music-venue]] — Tresor (music venue) · 20260808</li>
+<li>[[20260808-010456-organization-whisky-a-go-go]] — Whisky a Go Go · 20260808</li>
+<li>[[20260809-032249-organization-wire-band]] — Wire (band) · 20260809</li>
+<li>[[20260806-012040-organization-wu-tang-clan]] — Wu-Tang Clan · 20260806</li>
+</ul>
+<h3>concept (23)</h3>
+<ul>
+<li>[[20260808-054052-concept-acid-house]] — Acid House · 20260808</li>
+<li>[[20260808-074443-concept-afrobeat]] — Afrobeat · 20260808</li>
+<li>[[20260808-062538-concept-ambient-music-genre]] — Ambient music genre · 20260808</li>
+<li>[[20260808-073248-concept-bossa-nova]] — Bossa Nova · 20260808</li>
+<li>[[20260808-053038-concept-deep-house]] — Deep House · 20260808</li>
+<li>[[20260808-042657-concept-deep-purple-s-career-and-signature-sound]] — Deep Purple&#x27;s career and signature sound · 20260808</li>
+<li>[[20260808-055037-concept-drum-and-bass-d-b]] — Drum and bass (D&amp;B) · 20260808</li>
+<li>[[20260808-072055-concept-dub]] — Dub · 20260808</li>
+<li>[[20260808-080854-concept-grunge-music-genre]] — Grunge (music genre) · 20260808</li>
+<li>[[20260808-070849-concept-jazz-fusion]] — Jazz fusion · 20260808</li>
+<li>[[20260809-015240-concept-l-funk-derivatives]] — L-Funk derivatives · 20260809</li>
+<li>[[20260808-065038-concept-modal-jazz]] — Modal jazz · 20260808</li>
+<li>[[20260808-213254-concept-music-entities-related-to-b-b-king]] — Music Entities related to B.B. King · 20260808</li>
+<li>[[20260808-030338-concept-radiohead-s-career-and-signature-sound]] — Radiohead&#x27;s career and signature sound · 20260808</li>
+<li>[[20260806-044500-concept-swedish-house-mafia-s-collaborations-and-remixes-involving-t]] — Swedish House Mafia&#x27;s collaborations and remixes involving The Weeknd and Adriatique in 2022 · 20260806</li>
+<li>[[20260808-223855-concept-techno]] — techno · 20260808</li>
+<li>[[20260808-130643-concept-the-coverups]] — The Coverups · 20260808</li>
+<li>[[20260808-084144-concept-the-velvet-underground-and-nico]] — The Velvet Underground and Nico · 20260808</li>
+<li>[[20260809-033447-concept-the-white-stripes-role-and-connection-to-post-punk]] — The White Stripes&#x27; role and connection to Post-punk · 20260809</li>
+<li>[[20260808-043638-concept-thin-lizzy-s-career-and-signature-sound]] — Thin Lizzy&#x27;s career and signature sound · 20260808</li>
+<li>[[20260808-075651-concept-trip-hop]] — Trip Hop · 20260808</li>
+<li>[[20260808-095940-concept-what-the-world-needs-now]] — What the World Needs Now · 20260808</li>
+<li>[[20260809-004545-concept-나머지-eye-q]] — 나머지 (Eye Q) · 20260809</li>
+</ul>
+<h3>place (11)</h3>
+<ul>
+<li>[[20260808-002655-place-apollo-theater]] — Apollo Theater · 20260808</li>
+<li>[[20260808-013637-place-fabric-music-venue]] — Fabric (music venue) · 20260808</li>
+<li>[[20260808-000658-place-hollywood-bowl]] — Hollywood Bowl · 20260808</li>
+<li>[[20260808-011640-place-paradise-garage]] — Paradise Garage · 20260808</li>
+<li>[[20260808-014040-place-paradiso]] — Paradiso · 20260808</li>
+<li>[[20260807-235341-place-red-rocks-amphitheatre]] — Red Rocks Amphitheatre · 20260807</li>
+<li>[[20260808-020642-place-ryman-auditorium]] — Ryman Auditorium · 20260808</li>
+<li>[[20260808-015751-place-space-ibiza]] — Space Ibiza · 20260808</li>
+<li>[[20260808-012042-place-studio-54]] — Studio 54 · 20260808</li>
+<li>[[20260808-011242-place-the-warehouse-music-venue]] — The Warehouse (music venue) · 20260808</li>
+<li>[[20260808-003039-place-village-vanguard]] — Village Vanguard · 20260808</li>
+</ul>
+<h3>artist (6)</h3>
+<ul>
+<li>[[20260809-035852-artist-kraftwerk]] — Kraftwerk · 20260809</li>
+<li>[[20260808-052038-artist-lcd-soundsystem]] — LCD Soundsystem · 20260808</li>
+<li>[[20260809-001254-artist-leftfield]] — Leftfield · 20260809</li>
+<li>[[20260801-142635-artist-rüfüs-du-sol]] — RÜFÜS DU SOL · 20260801</li>
+<li>[[20260809-044753-artist-sky-hi]] — SKY-HI · 20260809</li>
+<li>[[20260808-051136-artist-underworld]] — Underworld · 20260808</li>
+</ul>
+<h3>band (4)</h3>
+<ul>
+<li>[[20260808-172537-band-flightless]] — Flightless · 20260808</li>
+<li>[[20260808-152643-band-jefferson-airplane]] — Jefferson Airplane · 20260808</li>
+<li>[[20260808-113039-band-television]] — Television · 20260808</li>
+<li>[[20260808-125444-band-the-black-crowes]] — The Black Crowes · 20260808</li>
+</ul>
+<h3>event (2)</h3>
+<ul>
+<li>[[20260808-194353-event-africa-70]] — Africa &#x27;70 · 20260808</li>
+<li>[[20260806-074250-event-l-e-d-festival]] — L.E.D. Festival · 20260806</li>
+</ul>
+<h3>product (1)</h3>
+<ul>
+<li>[[20260806-073837-product-love-regenerator]] — Love Regenerator · 20260806</li>
+</ul>
+<h3>group (1)</h3>
+<ul>
+<li>[[20260808-142640-group-the-oak-ridge-boys]] — The Oak Ridge Boys · 20260808</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li>none captured yet</li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="research_out — the unrun backlog">
+        <input type="hidden" name="slug" value="research-out-the-unrun-backlog">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — research_out — the unrun backlog</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
