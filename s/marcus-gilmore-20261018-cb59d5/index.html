@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Marcus Gilmore — doubled.life</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  :root {
+    --bg:#26547c; --bg-deep:#1e415f; --bg-slot:#16324b;
+    --text:#06d6a0; --porcelain:#fffcf9;
+    --line:rgba(255,252,249,.20); --line-soft:rgba(255,252,249,.10); --panel:rgba(255,252,249,.06);
+    --link:#ef476f; --visited:#ffd166;
+    --font:'Space Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { font-family:var(--font); background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+  a { color:var(--link); text-decoration:none; } a:hover { color:var(--porcelain); text-decoration:underline; }
+  ::selection { background:var(--link); color:var(--porcelain); }
+  :focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+
+  .app { height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* masthead */
+  .masthead { flex:none; display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1rem 1.4rem; border-bottom:1px solid var(--line); background:var(--bg-deep); }
+  .masthead .kind { font-size:.64rem; text-transform:uppercase; letter-spacing:.18em; color:var(--link); font-weight:600; }
+  .masthead h1 { font-size:2.2rem; font-weight:700; letter-spacing:-.02em; color:var(--porcelain); line-height:1.05; }
+  .stats { margin-left:auto; display:flex; gap:.5rem; }
+  .stat { background:var(--panel); border:1px solid var(--line-soft); padding:.35rem .65rem; }
+  .stat .v { font-size:.9rem; font-weight:600; color:var(--porcelain); line-height:1; font-variant-numeric:tabular-nums; }
+  .stat .k { font-size:.54rem; text-transform:uppercase; letter-spacing:.12em; opacity:.55; margin-top:.3rem; }
+
+  /* three columns: 100 / 160 / 100 */
+  .cols { flex:1; min-height:0; display:grid; grid-template-columns:100fr 160fr 100fr; }
+  .col { min-height:0; overflow-y:auto; padding:1.15rem; }
+  .col + .col { border-left:1px solid var(--line); }
+  .coltag { font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; opacity:.5; margin-bottom:.85rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .coltag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+
+  /* LEFT: primary visual (real embed/image) + role placeholders + more visuals */
+  .videos { display:flex; flex-direction:column; gap:.9rem; }
+  .vslot { display:block; background:var(--bg-slot); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  a.vslot:hover { border-color:var(--link); }
+  .vframe { position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(255,252,249,.06), transparent 60%), var(--bg-slot); }
+  .vframe iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }  /* real embed drops in here */
+  .vframe img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .vrole { position:absolute; top:.5rem; left:.5rem; font-size:.58rem; text-transform:uppercase; letter-spacing:.14em;
+    font-weight:600; color:var(--porcelain); background:rgba(0,0,0,.45); border:1px solid var(--line-soft); padding:.24em .55em; z-index:2; }
+  .vstate { position:absolute; top:.5rem; right:.5rem; font-size:.54rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--visited); background:rgba(0,0,0,.4); padding:.22em .5em; z-index:2; }
+  .play { width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .play::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vcap { padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vcap .src { display:block; font-size:.64rem; opacity:.55; margin-top:.2rem; }
+
+  .subtag { font-size:.58rem; text-transform:uppercase; letter-spacing:.15em; opacity:.45; margin:1.3rem 0 .7rem;
+    display:flex; align-items:center; gap:.5rem; }
+  .subtag::after { content:""; flex:1; height:1px; background:var(--line-soft); }
+  .vmore { display:flex; flex-direction:column; gap:.4rem; }
+  .vmrow { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center; padding:.3rem; text-decoration:none; color:inherit; }
+  .vmthumb { position:relative; aspect-ratio:16/9; background:var(--bg-slot); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; }
+  .vmthumb .play { width:24px; height:24px; } .vmthumb .play::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vmtitle { font-size:.79rem; color:var(--porcelain); line-height:1.3; min-width:0; opacity:.55; }
+  .vmtitle .src { display:block; font-size:.62rem; opacity:.5; margin-top:.14rem; }
+
+  /* click-to-embed video tile — thumbnail + play button; JS swaps in an
+     iframe on click (see the <script> before </body>) */
+  .vtile { display:block; width:100%; background:var(--bg-slot); border:1px solid var(--line);
+    position:relative; padding:0; cursor:pointer; text-align:left; font:inherit; color:inherit; }
+  a.vtile:hover, button.vtile:hover { border-color:var(--link); }
+  .vtile img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .vtile .vplay { position:absolute; top:calc(50% - 22px); left:calc(50% - 22px);
+    width:44px; height:44px; background:var(--link); display:flex; align-items:center; justify-content:center; }
+  .vtile .vplay::after { content:""; border-style:solid; border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--porcelain); margin-left:3px; }
+  .vtile .vcap { display:block; padding:.55rem .7rem .65rem; font-size:.8rem; line-height:1.3; color:var(--porcelain); }
+  .vtile.vtile-sm { display:grid; grid-template-columns:84px 1fr; gap:.6rem; align-items:center;
+    padding:.3rem; background:transparent; border:0; }
+  .vtile.vtile-sm img { aspect-ratio:16/9; border:1px solid var(--line-soft); }
+  .vtile.vtile-sm .vplay { width:24px; height:24px; top:calc(50% - 12px); left:calc(42px - 12px); }
+  .vtile.vtile-sm .vplay::after { border-width:5px 0 5px 8px; margin-left:2px; }
+  .vtile.vtile-sm .vcap { font-size:.79rem; opacity:.7; padding:0; }
+  iframe.vframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .videos-strip { display:flex; flex-direction:column; gap:.6rem; }
+
+  /* MIDDLE: deliverable */
+  .article { max-width:60ch; }
+  .lede { font-size:1.08rem; line-height:1.55; color:var(--porcelain); opacity:.94; font-weight:500; margin-bottom:1.4rem; }
+  .article h3 { font-size:.74rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; margin:1.8rem 0 .55rem; }
+  .article h4 { font-size:.9rem; color:var(--porcelain); font-weight:600; margin:1.2rem 0 .4rem; }
+  .article p, .article li { font-size:.92rem; line-height:1.7; opacity:.88; margin-bottom:.7rem; }
+  .article ul { margin:.2rem 0 1rem 1.15rem; } .article li { margin-bottom:.4rem; }
+  .article em { font-style:italic; color:var(--porcelain); opacity:.95; }
+  .article strong { color:var(--porcelain); font-weight:600; }
+  .article a { color:var(--link); word-break:break-all; }
+
+  /* RIGHT: resources 60 / rebuild 40 */
+  .col-side { display:grid; grid-template-rows:60fr 40fr; overflow:hidden; padding:0; }
+  .resources { min-height:0; overflow-y:auto; padding:1.15rem; border-bottom:1px solid var(--line); }
+  .rawrefs { list-style:decimal; margin-left:1.2rem; display:flex; flex-direction:column; gap:.15rem; }
+  .rawrefs li { font-size:.8rem; line-height:1.5; opacity:.85; padding:.25rem 0; word-break:break-all; }
+  .rawrefs li a { color:var(--porcelain); } .rawrefs li a:hover { color:var(--link); }
+  .rnote { font-size:.64rem; opacity:.45; margin-top:.85rem; font-style:italic; line-height:1.4; }
+
+  .rebuild { padding:1rem 1.15rem 1.15rem; background:var(--bg-deep); display:flex; flex-direction:column; gap:.65rem; min-height:0; overflow-y:auto; }
+  .rb-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+  .rb-title { font-size:.66rem; text-transform:uppercase; letter-spacing:.15em; color:var(--link); font-weight:600; }
+  .rb-note { font-size:.58rem; opacity:.5; }
+  .rb-subject { font-size:.72rem; color:var(--porcelain); opacity:.8; }
+  .rebuild select { width:100%; background:var(--bg); color:var(--porcelain); border:1px solid var(--line);
+    padding:.5rem .65rem; font-family:inherit; font-size:.82rem; }
+  .rebuild textarea { width:100%; min-height:4.2rem; resize:vertical; background:var(--bg); color:var(--porcelain);
+    border:1px solid var(--line); padding:.65rem .75rem; font-family:inherit; font-size:.84rem; line-height:1.45; }
+  .rebuild textarea::placeholder { color:var(--text); opacity:.45; }
+  .rb-actions { display:flex; align-items:center; justify-content:flex-end; gap:.7rem; }
+  .rebuild button { font-family:inherit; font-size:.85rem; font-weight:600; color:var(--porcelain); background:var(--link);
+    border:0; padding:.5rem 1.05rem; cursor:pointer; }
+  .rebuild button:hover { filter:brightness(1.1); }
+
+  @media (max-width:900px) {
+    .app { height:auto; overflow:visible; }
+    .cols { grid-template-columns:1fr; }
+    .col { overflow:visible; } .col + .col { border-left:0; border-top:1px solid var(--line); }
+    .col-text { order:-1; } .col-side { grid-template-rows:none; } .resources { overflow:visible; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <div>
+      <div class="kind">person</div>
+      <h1>Marcus Gilmore</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v">2026-10-18</div><div class="k">researched</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">sources</div></div>
+      <div class="stat"><div class="v">999</div><div class="k">words</div></div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- LEFT -->
+    <section class="col" id="visuals">
+      <div class="coltag">visuals — long-form</div>
+<div class="videos videos-strip">
+<button class="vtile" data-yt="U33YkWySr4w" type="button"><img src="https://i.ytimg.com/vi/U33YkWySr4w/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Zildjian LIVE! - Marcus Gilmore</span></button>
+<button class="vtile" data-yt="PcQWLYfi0eM" type="button"><img src="https://i.ytimg.com/vi/PcQWLYfi0eM/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Marcus Gilmore Presents: A Centennial Tribute To Roy Haynes - 2025 Newport Jazz Festival (1/1)</span></button>
+<button class="vtile" data-yt="UjkXkBXuwO4" type="button"><img src="https://i.ytimg.com/vi/UjkXkBXuwO4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jason Moran - BlankFor.ms - Marcus Gilmore</span></button>
+<button class="vtile" data-yt="0YsVMfIMG9c" type="button"><img src="https://i.ytimg.com/vi/0YsVMfIMG9c/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Brad Mehldau, Christian McBride, Marcus Gilmore In Concert at The Gilmore</span></button>
+<button class="vtile" data-yt="SftYtWZlOLI" type="button"><img src="https://i.ytimg.com/vi/SftYtWZlOLI/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Marcus Gilmore - &quot;Journey to the New&quot; (Sam First Performance)</span></button>
+<button class="vtile" data-yt="C2FFwFsIPo0" type="button"><img src="https://i.ytimg.com/vi/C2FFwFsIPo0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Marcus Gilmore w/ Joe Martin quartet NYC</span></button>
+<button class="vtile" data-yt="QrIAQSyENPs" type="button"><img src="https://i.ytimg.com/vi/QrIAQSyENPs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Terrace Martin &amp; Marcus Gilmore - Upper Westside Swing (Official Video)</span></button>
+<button class="vtile" data-yt="XvaCf4wcBC4" type="button"><img src="https://i.ytimg.com/vi/XvaCf4wcBC4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Marcus Gilmore TRANSCRIPTION - &quot;Parisian Thoroughfare&quot; - Gilad Hekselman</span></button>
+<button class="vtile" data-yt="aX7o-8QtPFE" type="button"><img src="https://i.ytimg.com/vi/aX7o-8QtPFE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Zildjian 400th Concert | Marcus Gilmore</span></button>
+<button class="vtile" data-yt="uN6K983d7As" type="button"><img src="https://i.ytimg.com/vi/uN6K983d7As/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Jason Moran, BlankFor.ms, and Marcus Gilmore // Caroline Davis, Qasim Naqvi, and Grey Mcmurray</span></button>
+<button class="vtile" data-yt="xoeYhJESAp0" type="button"><img src="https://i.ytimg.com/vi/xoeYhJESAp0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Roy Haynes &amp; Marcus Gilmore (Lincoln Center Performance)</span></button>
+<button class="vtile" data-yt="dp858k4rIUk" type="button"><img src="https://i.ytimg.com/vi/dp858k4rIUk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Marcus Gilmore - End of Casey Benjamin Solo on &quot;Diana&quot; (Jamaica Performing Arts Center)</span></button>
+<button class="vtile" data-yt="xTbteCZHuUs" type="button"><img src="https://i.ytimg.com/vi/xTbteCZHuUs/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Behind the Scenes with Marcus Gilmore</span></button>
+<button class="vtile" data-yt="6RsuVUB44rU" type="button"><img src="https://i.ytimg.com/vi/6RsuVUB44rU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Zakir Hussain and Marcus Gilmore, Rolex Mentor and Protégé in Music, 2018–2019</span></button>
+<button class="vtile" data-yt="Wy4bJTjay_4" type="button"><img src="https://i.ytimg.com/vi/Wy4bJTjay_4/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">J Dilla/Marcus Gilmore Inspired Thing</span></button>
+<button class="vtile" data-yt="FdfOkJvQBBk" type="button"><img src="https://i.ytimg.com/vi/FdfOkJvQBBk/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Marcus Gilmore interviewed by Phillip Washington #InfluencerSeries</span></button>
+<button class="vtile" data-yt="lqbT0T5RNzU" type="button"><img src="https://i.ytimg.com/vi/lqbT0T5RNzU/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Marcus Gilmore talks about how reading out loud has helped his career &amp; some of his favorite books</span></button>
+<button class="vtile" data-yt="zJhxc3iFKZ8" type="button"><img src="https://i.ytimg.com/vi/zJhxc3iFKZ8/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Preparing for Cannes Lions Festival of Creativity, Coachella, and the future of events | EOE 2|02</span></button>
+<button class="vtile" data-yt="9-YZ2t0IZV0" type="button"><img src="https://i.ytimg.com/vi/9-YZ2t0IZV0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Behind the Scenes: What Chick Learned from Coltrane</span></button>
+<button class="vtile" data-yt="L-lJwK_KRX0" type="button"><img src="https://i.ytimg.com/vi/L-lJwK_KRX0/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Marcus Gilmore</span></button>
+<button class="vtile" data-yt="P__kHucUdAE" type="button"><img src="https://i.ytimg.com/vi/P__kHucUdAE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Gonzalo Rubalcaba- &quot;The Making of XXI Century&quot; -Trailer- Full Feature DVD/BR Available April 2012</span></button>
+<button class="vtile" data-yt="eyRsq5_UCeQ" type="button"><img src="https://i.ytimg.com/vi/eyRsq5_UCeQ/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">Waking up as Picasso (A Short Film)</span></button>
+<button class="vtile" data-yt="bXH7dmtEOuE" type="button"><img src="https://i.ytimg.com/vi/bXH7dmtEOuE/hqdefault.jpg" loading="lazy" alt=""><span class="vplay"></span><span class="vcap">MARQUE GILMORE PROMO-MOVIE</span></button>
+</div>
+    </section>
+
+    <!-- MIDDLE -->
+    <section class="col col-text">
+      <div class="coltag">deliverable</div>
+      <article class="article">
+        <p class="lede">Marcus Gilmore is an American jazz drummer born on October 10, 1986. He has toured professionally since age sixteen and is the grandson of Roy Haynes.</p>
+<p>Marcus Gilmore is an American jazz drummer born on October 10, 1986. He has toured professionally since age sixteen and is the grandson of Roy Haynes.</p>
+<h3>education and career</h3>
+<p>Gilmore graduated from the Fiorello H. LaGuardia High School of Music &amp; Art and Performing Arts and received full ride scholarships to the Manhattan School of Music and the Juilliard School of Music. He was a protégé of the 2018 Rolex Mentors And Protégé project. In 2019, he appeared on the cover of Modern Drummer Magazine for their June issue. He contributed as a primary artist to the Original Motion Picture Soundtrack for the 2020 Disney-Pixar film Soul. Additionally, he was commissioned by the American Composers Orchestra to write his first orchestral work, which debuted in 2020 with members of the Cape Town Philharmonic and premiered its full composition in New York City in June 2023.</p>
+<h3>musical style and influences</h3>
+<p>Gilmore&#x27;s style is influenced by a wide variety of sources, including Tony Williams&#x27; Lifetime and Elvin Jones on the album Speak No Evil. He also draws upon influences from free jazz drummer Milford Graves, whom he has described as having melodic, lyrical, and linguistic drumming that sounds like a language and is non-metric in its approach to rhythm. Like his grandfather Roy Haynes, Gilmore draws upon these diverse influences.</p>
+<h3>awards and recognition</h3>
+<p>Gilmore won a Grammy Award for Best Latin Jazz Album for Antidote as part of Chick Corea&#x27;s band. He was named one of the &quot;25 for the Future&quot; by DownBeat magazine in 2016. His debut album as a bandleader, Journey to the New: Live at the Village Vanguard, reached the number one position on The New York Times Best Jazz Albums of 2025 list. At the 2026 Grammy Awards, he won a Grammy for his performance on Sullivan Fortner&#x27;s album Southern Nights in the Best Jazz Instrumental Album category.</p>
+<h3>collaborations and discography</h3>
+<p>Gilmore has performed or recorded with numerous artists including Chick Corea, Pat Metheny, Pharoah Sanders, Mulatu Astatke, Norah Jones, Robert Glasper, Thundercat, Vijay Iyer, and Taylor McFerrin. As a leader or co-leader, he has released albums such as For Loved Ones (2023), Refract (2023), Journey to the New: Live at the New York Times Best Jazz Albums of 2025 list (2025), Trio of Bloom (2025), Purpose (2026), and Shards (2026). As a sideman, he has recorded with artists such as Vijay Iyer, Steve Coleman, Chick Corea, Sullivan Fortner, Graham Haynes, Gilad Hekselman, Ambrose Akinmusire, Chris Potter, Mark Turner, Lionel Loueke, Gonzalo Rubalcaba, and Joe Martin. He was part of the band Side-Eye in 2019 for a live album recorded in New York City on September 11 and 12, 2019, released as Side-Eye NYC (V1.IV) by Pat Metheny.</p>
+<h3>facts</h3>
+<ul>
+<li><strong>Born:</strong> October 10, 1986</li>
+<li><strong>Instrument:</strong> Jazz drummer</li>
+<li><strong>Grammy Awards:</strong> Two (Best Latin Jazz Album for Antidote; Best Jazz Instrumental Album for Southern Nights)</li>
+<li><strong>Grandfather:</strong> Roy Haynes</li>
+<li><strong>Featured in:</strong> Modern Drummer Magazine (June 2019)</li>
+</ul>
+      </article>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="col col-side">
+      <div class="resources">
+        <div class="coltag">resources — raw</div>
+        <ol class="rawrefs">
+          <li><a href="https://en.wikipedia.org/wiki/Marcus_Gilmore" rel="noopener">https://en.wikipedia.org/wiki/Marcus_Gilmore</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Side-Eye_NYC_(V1.IV" rel="noopener">https://en.wikipedia.org/wiki/Side-Eye_NYC_(V1.IV</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Taylor_McFerrin" rel="noopener">https://en.wikipedia.org/wiki/Taylor_McFerrin</a></li>
+        </ol>
+        <p class="rnote">Sources the pipeline read during research. Typed / de-duplicated resource cards land here as the pipeline enriches them.</p>
+      </div>
+
+      <form class="rebuild" method="post" action="/rebuild.php">
+        <input type="hidden" name="subject" value="Marcus Gilmore">
+        <input type="hidden" name="slug" value="marcus-gilmore">
+        <div class="rb-head"><span class="rb-title">rebuild this page</span><span class="rb-note">↳ notifies you on build</span></div>
+        <div class="rb-subject">subject — Marcus Gilmore</div>
+        <select name="lens">
+          <option value="auto" selected>auto</option>
+          <option value="collection">collection</option>
+          <option value="craft">craft</option>
+          <option value="encyclopedia">encyclopedia</option>
+        </select>
+        <textarea name="instructions" placeholder="instructions for the rebuild — e.g. 'go deeper here; read: [paste links/materials]'"></textarea>
+        <div class="rb-actions">
+          <button type="submit">rebuild page</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+<script>
+(function () {
+  var col = document.getElementById('visuals');
+  if (!col) return;
+  col.addEventListener('click', function (e) {
+    var tile = e.target.closest('.vtile');
+    if (!tile || !col.contains(tile)) return;
+    var id = tile.getAttribute('data-yt');
+    if (!id) return;
+    var frame = document.createElement('iframe');
+    frame.className = 'vframe';
+    frame.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    frame.setAttribute('allow', 'autoplay; encrypted-media');
+    frame.setAttribute('allowfullscreen', '');
+    tile.replaceWith(frame);
+  });
+})();
+</script>
+</body>
+</html>
