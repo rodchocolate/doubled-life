@@ -279,7 +279,8 @@ let BOUND = !(new URLSearchParams(location.search).get('free'));   // ?free=1 li
 // --- the walker: start at the BASE of the lift whose top is highest (surface lifts excluded), facing up its line; ride it to arrive
 const SURFACE = new Set(['magic_carpet','rope_tow','platter','t-bar','j-bar','zip_line','goods']);
 const liftsWithPts = L.filter(l => l.points && l.points.length >= 2 && !SURFACE.has(l.type));
-const START_OVERRIDE = (H.start_lift || null);   // optional per-package override by lift name (heightmap.json "start_lift")
+const STARTS = H.starts || []; const urlStart = new URLSearchParams(location.search).get('start');
+const START_OVERRIDE = urlStart || H.start_lift || (STARTS.length === 1 ? STARTS[0].lift : null);
 const topLift = liftsWithPts.reduce((best, l) => { if (START_OVERRIDE) return (l.name === START_OVERRIDE) ? { l, top: l.points.reduce((a,b)=>a[2]>b[2]?a:b) } : best; const t = l.points.reduce((a,b)=>a[2]>b[2]?a:b); return (!best || t[2] > best.top[2]) ? { l, top: t } : best; }, null);
 let px, py, yaw, pitch = -0.02;
 if (topLift){ const bot = topLift.l.points.reduce((a,b)=>a[2]<b[2]?a:b); px = bot[0]; py = bot[1]; yaw = Math.atan2(topLift.top[0]-bot[0], topLift.top[1]-bot[1]); }
@@ -292,6 +293,11 @@ function nearStation(){ let best=null, bd=25*25; for (const s of stations){ cons
 function boardLift(s){ RIDE = { s, t0: performance.now(), dur: Math.max(6000, s.len/1000*20000) }; prompt.style.display='none'; }
 prompt.onclick = () => { const s = nearStation(); if (s) boardLift(s); };
 let AUTO_BOARD = performance.now() + 2500, userMoved = false;   // on load: ride up unless the user takes control first
+if (STARTS.length > 1 && !urlStart && !H.start_lift){ AUTO_BOARD = 0;   // several base areas: ask first
+  const ch = document.createElement('div'); ch.style.cssText='position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(11,13,16,.72);z-index:20;font:15px system-ui;color:#eee8da';
+  ch.innerHTML = `<div style="background:rgba(0,0,0,.6);border:1px solid rgba(238,232,218,.3);border-radius:12px;padding:1.2rem 1.4rem;min-width:280px"><div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.7;margin-bottom:.6rem">${H.resort} — where are you starting?</div>` + STARTS.map(st => `<button data-lift="${st.lift}" style="display:block;width:100%;text-align:left;margin:.3rem 0;padding:.55rem .8rem;border-radius:8px;border:1px solid rgba(238,232,218,.3);background:rgba(238,232,218,.08);color:#eee8da;font:14px system-ui;cursor:pointer">${st.label}<span style="opacity:.6;font-size:12px"> · ${st.lifts_from_base} lifts from this base</span></button>`).join('') + `</div>`;
+  document.body.appendChild(ch);
+  ch.querySelectorAll('button').forEach(b => b.onclick = () => { const name = b.dataset.lift; const l = liftsWithPts.find(x => x.name === name); if (l){ const top = l.points.reduce((a,c)=>a[2]>c[2]?a:c), bot = l.points.reduce((a,c)=>a[2]<c[2]?a:c); px = bot[0]; py = bot[1]; yaw = Math.atan2(top[0]-bot[0], top[1]-bot[1]); } ch.remove(); userMoved = false; AUTO_BOARD = performance.now() + 2000; }); }
 addEventListener('keydown', () => userMoved = true, { once: true }); addEventListener('pointerdown', () => userMoved = true, { once: true });
 addEventListener('keydown', e => { if (e.code==='KeyE'){ const s = nearStation(); if (s && !RIDE) boardLift(s); } }); const keys={};
 jump.onchange = () => { const sp = window.__spots.find(x=>x[0]===jump.value); if (!sp) return; const [, at, toward] = sp; px = at[0]; py = at[1]; yaw = Math.atan2(toward[0]-at[0], toward[1]-at[1]); pitch = -0.1; jump.value=''; };

@@ -1,0 +1,254 @@
+{
+ "resort": "Vail",
+ "slug": "vail",
+ "landscape_px": [
+  3968,
+  4033
+ ],
+ "starts": [
+  {
+   "label": "Cascade Village \u2014 Cascade Village Lift \u25b2 2834 m",
+   "lift": "Cascade Village Lift",
+   "zone": "z8",
+   "base_m": 2445,
+   "top_m": 2834,
+   "lifts_from_base": 1
+  },
+  {
+   "label": "Lionshead \u2014 Pride Express Lift \u25b2 3147 m",
+   "lift": "Pride Express Lift",
+   "zone": "z1",
+   "base_m": 2472,
+   "top_m": 3147,
+   "lifts_from_base": 3
+  },
+  {
+   "label": "Vail Village \u2014 Mountain Top Express Lift \u25b2 3428 m",
+   "lift": "Mountain Top Express Lift",
+   "zone": "z0",
+   "base_m": 2502,
+   "top_m": 3428,
+   "lifts_from_base": 4
+  },
+  {
+   "label": "Northwoods \u2014 Northwoods Express Lift \u25b2 3429 m",
+   "lift": "Northwoods Express Lift",
+   "zone": "z3",
+   "base_m": 2826,
+   "top_m": 3429,
+   "lifts_from_base": 3
+  },
+  {
+   "label": "Back Bowls \u2014 Sun Up Express Lift \u25b2 3431 m",
+   "lift": "Sun Up Express Lift",
+   "zone": "z4",
+   "base_m": 2844,
+   "top_m": 3431,
+   "lifts_from_base": 3
+  },
+  {
+   "label": "Blue Sky Basin \u2014 Pete's Express Lift \u25b2 3522 m",
+   "lift": "Pete's Express Lift",
+   "zone": "z7",
+   "base_m": 2914,
+   "top_m": 3522,
+   "lifts_from_base": 3
+  }
+ ],
+ "zones": [
+  {
+   "id": "z8",
+   "label": "Cascade Village",
+   "lifts": [
+    "Cascade Village Lift"
+   ],
+   "summit_lift": "Cascade Village Lift",
+   "base_lift": "Cascade Village Lift",
+   "base_m": 2445,
+   "top_m": 2834,
+   "resort": "Vail",
+   "centre": [
+    2516,
+    10185
+   ],
+   "n": 1,
+   "arrival": true
+  },
+  {
+   "id": "z1",
+   "label": "Lionshead",
+   "lifts": [
+    "Pride Express Lift",
+    "Eagle Bahn Gondola",
+    "Born Free Express Lift"
+   ],
+   "summit_lift": "Pride Express Lift",
+   "base_lift": "Eagle Bahn Gondola",
+   "base_m": 2472,
+   "top_m": 3147,
+   "resort": "Vail",
+   "centre": [
+    3317,
+    9603
+   ],
+   "n": 3
+  },
+  {
+   "id": "z0",
+   "label": "Vail Village",
+   "lifts": [
+    "Mountain Top Express Lift",
+    "Wildwood Express Lift",
+    "Avanti Express Lift",
+    "Gondola One"
+   ],
+   "summit_lift": "Mountain Top Express Lift",
+   "base_lift": "Gondola One",
+   "base_m": 2502,
+   "top_m": 3428,
+   "resort": "Vail",
+   "centre": [
+    5266,
+    7939
+   ],
+   "n": 4
+  },
+  {
+   "id": "z2",
+   "label": "Golden Peak",
+   "lifts": [
+    "Riva Bahn Express Lift"
+   ],
+   "summit_lift": "Riva Bahn Express Lift",
+   "base_lift": "Riva Bahn Express Lift",
+   "base_m": 2512,
+   "top_m": 2974,
+   "resort": "Vail",
+   "centre": [
+    5846,
+    9572
+   ],
+   "n": 1
+  },
+  {
+   "id": "z3",
+   "label": "Northwoods",
+   "lifts": [
+    "Northwoods Express Lift",
+    "Sourdough Express Lift",
+    "Highline Express Lift"
+   ],
+   "summit_lift": "Northwoods Express Lift",
+   "base_lift": "Highline Express Lift",
+   "base_m": 2826,
+   "top_m": 3429,
+   "resort": "Vail",
+   "centre": [
+    7250,
+    7473
+   ],
+   "n": 3
+  },
+  {
+   "id": "z4",
+   "label": "Back Bowls",
+   "lifts": [
+    "Sun Up Express Lift",
+    "High Noon Express Lift",
+    "Sun Down Express"
+   ],
+   "summit_lift": "Sun Up Express Lift",
+   "base_lift": "High Noon Express Lift",
+   "base_m": 2844,
+   "top_m": 3431,
+   "resort": "Vail",
+   "centre": [
+    6704,
+    6068
+   ],
+   "n": 3
+  },
+  {
+   "id": "z7",
+   "label": "Blue Sky Basin",
+   "lifts": [
+    "Pete's Express Lift",
+    "Earl's Express Lift",
+    "Skyline Express Lift"
+   ],
+   "summit_lift": "Pete's Express Lift",
+   "base_lift": "Skyline Express Lift",
+   "base_m": 2914,
+   "top_m": 3522,
+   "resort": "Vail",
+   "centre": [
+    8750,
+    3193
+   ],
+   "n": 3
+  },
+  {
+   "id": "z6",
+   "label": "China Bowl",
+   "lifts": [
+    "Orient Express Lift",
+    "Tea Cup Express Lift"
+   ],
+   "summit_lift": "Orient Express Lift",
+   "base_lift": "Tea Cup Express Lift",
+   "base_m": 2915,
+   "top_m": 3469,
+   "resort": "Vail",
+   "centre": [
+    8256,
+    5764
+   ],
+   "n": 2
+  },
+  {
+   "id": "z5",
+   "label": "Game Creek Bowl",
+   "lifts": [
+    "Game Creek Express Lift"
+   ],
+   "summit_lift": "Game Creek Express Lift",
+   "base_lift": "Game Creek Express Lift",
+   "base_m": 2975,
+   "top_m": 3345,
+   "resort": "Vail",
+   "centre": [
+    4201,
+    7087
+   ],
+   "n": 1
+  }
+ ],
+ "metres_per_px": [
+  3.305,
+  3.305
+ ],
+ "elev_min_m": 2386.6,
+ "elev_max_m": 3602.7,
+ "unreal": {
+  "import": "Landscape \u2192 Import from File \u2192 heightmap.png",
+  "scale_x_cm": 330.47,
+  "scale_y_cm": 330.49,
+  "scale_z_pct": 23751.12,
+  "note": "Set X/Y scale to scale_x_cm/scale_y_cm (1 Unreal unit = 1 cm). Z scale as given puts the terrain at true elevation span. Landscape origin = SW corner at (0,0); add elev_min_m*100 to Z location to place sea level at 0."
+ },
+ "bbox": {
+  "lat0": 39.543117949999996,
+  "lat1": 39.66282065,
+  "lon0": -106.427166325,
+  "lon1": -106.274316175
+ },
+ "origin_sw": {
+  "lat": 39.543117949999996,
+  "lon": -106.427166325
+ },
+ "source_zoom": 15,
+ "native_m_per_px": 3.68,
+ "dem": "USGS 3DEP (public domain), 1-10 m lidar/NED via National Map ImageServer",
+ "crs": "WGS84 lat/lon \u2192 local equirectangular metres at mean latitude; adequate at \u226410 km extents",
+ "made": "2026-10-18 18:23"
+}

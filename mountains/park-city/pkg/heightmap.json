@@ -1,0 +1,295 @@
+{
+ "resort": "Park City",
+ "slug": "park-city",
+ "landscape_px": [
+  4033,
+  3420
+ ],
+ "starts": [
+  {
+   "label": "Silver \u2014 Empire Express \u25b2 2912 m",
+   "lift": "Empire Express",
+   "zone": "z7",
+   "base_m": 1970,
+   "top_m": 2912,
+   "lifts_from_base": 24
+  },
+  {
+   "label": "Park City Base \u2014 Crescent Hi-Speed Quad \u25b2 2662 m",
+   "lift": "Crescent Hi-Speed Quad",
+   "zone": "z0",
+   "base_m": 2103,
+   "top_m": 2662,
+   "lifts_from_base": 6
+  },
+  {
+   "label": "Tombstone \u2014 Tombstone Express \u25b2 2720 m",
+   "lift": "Tombstone Express",
+   "zone": "z3",
+   "base_m": 2204,
+   "top_m": 2720,
+   "lifts_from_base": 2
+  },
+  {
+   "label": "Silverlode \u2014 Pioneer Lift \u25b2 2867 m",
+   "lift": "Pioneer Lift",
+   "zone": "z2",
+   "base_m": 2219,
+   "top_m": 2867,
+   "lifts_from_base": 6
+  },
+  {
+   "label": "Ninety-Nine 90 \u2014 Dreamscape \u25b2 2830 m",
+   "lift": "Dreamscape",
+   "zone": "z1",
+   "base_m": 2366,
+   "top_m": 2830,
+   "lifts_from_base": 2
+  },
+  {
+   "label": "Jupiter \u2014 Jupiter Lift \u25b2 3042 m",
+   "lift": "Jupiter Lift",
+   "zone": "z4",
+   "base_m": 2590,
+   "top_m": 3042,
+   "lifts_from_base": 2
+  }
+ ],
+ "zones": [
+  {
+   "id": "z7",
+   "label": "Silver",
+   "lifts": [
+    "Empire Express",
+    "Pinyon Express",
+    "Wasatch Express",
+    "Sultan Express",
+    "Sterling Express",
+    "Silver Strike Express",
+    "Northside Express",
+    "Ruby Express",
+    "Lady Morgan Express",
+    "Quincy Express",
+    "Mayflower",
+    "Red Cloud",
+    "Crown Point",
+    "Carpenter Express",
+    "Silver Lake Express",
+    "Homestake Express",
+    "Mountaineer Express",
+    "Jordanelle Express Gondola",
+    "Keetley Express",
+    "Galena Express",
+    "Pioche Express",
+    "Neptune Express",
+    "Silver Star Lift",
+    "3 Kings Lift"
+   ],
+   "summit_lift": "Empire Express",
+   "base_lift": "Neptune Express",
+   "base_m": 1970,
+   "top_m": 2912,
+   "resort": "Park City",
+   "centre": [
+    11273,
+    4964
+   ],
+   "n": 24,
+   "arrival": true
+  },
+  {
+   "id": "z0",
+   "label": "Park City Base",
+   "lifts": [
+    "Crescent Hi-Speed Quad",
+    "Eaglet Lift",
+    "Payday Hi-Speed Six-Pack",
+    "Town Lift",
+    "Eagle Lift",
+    "First Time Lift"
+   ],
+   "summit_lift": "Crescent Hi-Speed Quad",
+   "base_lift": "First Time Lift",
+   "base_m": 2103,
+   "top_m": 2662,
+   "resort": "Park City",
+   "centre": [
+    8840,
+    7944
+   ],
+   "n": 6
+  },
+  {
+   "id": "z6",
+   "label": "Canyons Village",
+   "lifts": [
+    "Sunrise Gondola"
+   ],
+   "summit_lift": "Sunrise Gondola",
+   "base_lift": "Sunrise Gondola",
+   "base_m": 2125,
+   "top_m": 2444,
+   "resort": "Park City",
+   "centre": [
+    4360,
+    11536
+   ],
+   "n": 1
+  },
+  {
+   "id": "z9",
+   "label": "Raptor",
+   "lifts": [
+    "Over and Out"
+   ],
+   "summit_lift": "Over and Out",
+   "base_lift": "Over and Out",
+   "base_m": 2196,
+   "top_m": 2288,
+   "resort": "Park City",
+   "centre": [
+    4688,
+    11428
+   ],
+   "n": 1
+  },
+  {
+   "id": "z3",
+   "label": "Tombstone",
+   "lifts": [
+    "Tombstone Express",
+    "Iron Mountain Express"
+   ],
+   "summit_lift": "Tombstone Express",
+   "base_lift": "Iron Mountain Express",
+   "base_m": 2204,
+   "top_m": 2720,
+   "resort": "Park City",
+   "centre": [
+    5455,
+    10338
+   ],
+   "n": 2
+  },
+  {
+   "id": "z2",
+   "label": "Silverlode",
+   "lifts": [
+    "Pioneer Lift",
+    "Thaynes Lift",
+    "Bonanza Hi-Speed Six-Pack",
+    "Silverlode Hi-Speed Six-Pack",
+    "Motherlode Express",
+    "King Con Express"
+   ],
+   "summit_lift": "Pioneer Lift",
+   "base_lift": "King Con Express",
+   "base_m": 2219,
+   "top_m": 2867,
+   "resort": "Park City",
+   "centre": [
+    7442,
+    6181
+   ],
+   "n": 6
+  },
+  {
+   "id": "z1",
+   "label": "Ninety-Nine 90",
+   "lifts": [
+    "Dreamscape",
+    "Dreamcatcher"
+   ],
+   "summit_lift": "Dreamscape",
+   "base_lift": "Dreamcatcher",
+   "base_m": 2366,
+   "top_m": 2830,
+   "resort": "Park City",
+   "centre": [
+    4326,
+    8483
+   ],
+   "n": 2
+  },
+  {
+   "id": "z5",
+   "label": "Quicksilver",
+   "lifts": [
+    "Quicksilver Gondola"
+   ],
+   "summit_lift": "Quicksilver Gondola",
+   "base_lift": "Quicksilver Gondola",
+   "base_m": 2426,
+   "top_m": 2744,
+   "resort": "Park City",
+   "centre": [
+    6965,
+    7460
+   ],
+   "n": 1
+  },
+  {
+   "id": "z10",
+   "label": "Elk",
+   "lifts": [
+    "Day Break"
+   ],
+   "summit_lift": "Day Break",
+   "base_lift": "Day Break",
+   "base_m": 2566,
+   "top_m": 2806,
+   "resort": "Park City",
+   "centre": [
+    3818,
+    8397
+   ],
+   "n": 1
+  },
+  {
+   "id": "z4",
+   "label": "Jupiter",
+   "lifts": [
+    "Jupiter Lift",
+    "McConkey's Hi-Speed Six-Pack"
+   ],
+   "summit_lift": "Jupiter Lift",
+   "base_lift": "McConkey's Hi-Speed Six-Pack",
+   "base_m": 2590,
+   "top_m": 3042,
+   "resort": "Park City",
+   "centre": [
+    6539,
+    4296
+   ],
+   "n": 2
+  }
+ ],
+ "metres_per_px": [
+  4.407,
+  4.408
+ ],
+ "elev_min_m": 1763.5,
+ "elev_max_m": 3286.8,
+ "unreal": {
+  "import": "Landscape \u2192 Import from File \u2192 heightmap.png",
+  "scale_x_cm": 440.72,
+  "scale_y_cm": 440.78,
+  "scale_z_pct": 29751.7,
+  "note": "Set X/Y scale to scale_x_cm/scale_y_cm (1 Unreal unit = 1 cm). Z scale as given puts the terrain at true elevation span. Landscape origin = SW corner at (0,0); add elev_min_m*100 to Z location to place sea level at 0."
+ },
+ "bbox": {
+  "lat0": 40.5765354,
+  "lat1": 40.711914,
+  "lon0": -111.618476725,
+  "lon1": -111.408098575
+ },
+ "origin_sw": {
+  "lat": 40.5765354,
+  "lon": -111.618476725
+ },
+ "source_zoom": 15,
+ "native_m_per_px": 3.62,
+ "dem": "USGS 3DEP (public domain), 1-10 m lidar/NED via National Map ImageServer",
+ "crs": "WGS84 lat/lon \u2192 local equirectangular metres at mean latitude; adequate at \u226410 km extents",
+ "made": "2026-10-18 21:00"
+}

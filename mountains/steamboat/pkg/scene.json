@@ -1,0 +1,26 @@
+{
+ "resort": "Steamboat",
+ "trees": 2756545,
+ "rocks": 31689,
+ "woods_polys": 237,
+ "rock_polys": 1,
+ "roads": 1821,
+ "paths": 988,
+ "buildings": 5652,
+ "treeline_m": 3500.0,
+ "density_per_m2": 0.035,
+ "seed": 7,
+ "forest_model": "complement",
+ "clearing_cells_pct": 7.1,
+ "tree_kinds": {
+  "0": "bristlecone/limber pine (>2750 m)",
+  "1": "ponderosa/white fir"
+ },
+ "bin_layout": {
+  "trees.bin": "f32 x,y,z,scale,kind",
+  "rocks.bin": "f32 x,y,z,scale,yaw"
+ },
+ "frame": "landscape-local metres, origin SW corner, x east, y north, z elevation m",
+ "made": "2026-10-18 20:57",
+ "attribution": "Land cover, roads, buildings \u00a9 OpenStreetMap contributors (ODbL). Placement derived from SRTM slope/curvature (public domain)."
+}

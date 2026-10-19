@@ -5,6 +5,38 @@
   461,
   505
  ],
+ "starts": [
+  {
+   "label": "Rabbit Peak \u2014 Bluebird \u25b2 2875 m",
+   "lift": "Bluebird",
+   "zone": "z0",
+   "base_m": 2613,
+   "top_m": 2875,
+   "lifts_from_base": 3
+  }
+ ],
+ "zones": [
+  {
+   "id": "z0",
+   "label": "Rabbit Peak",
+   "lifts": [
+    "Bluebird",
+    "Sherwood",
+    "Ponderosa"
+   ],
+   "summit_lift": "Bluebird",
+   "base_lift": "Ponderosa",
+   "base_m": 2613,
+   "top_m": 2875,
+   "resort": "Lee Canyon",
+   "centre": [
+    859,
+    934
+   ],
+   "n": 3,
+   "arrival": true
+  }
+ ],
  "metres_per_px": [
   2.969,
   2.968
@@ -32,5 +64,5 @@
  "native_m_per_px": 3.85,
  "dem": "USGS 3DEP (public domain), 1-10 m lidar/NED via National Map ImageServer",
  "crs": "WGS84 lat/lon \u2192 local equirectangular metres at mean latitude; adequate at \u226410 km extents",
- "made": "2026-10-18 13:51"
+ "made": "2026-10-18 21:00"
 }

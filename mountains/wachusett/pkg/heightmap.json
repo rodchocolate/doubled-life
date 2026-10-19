@@ -5,6 +5,39 @@
   334,
   505
  ],
+ "starts": [
+  {
+   "label": "Mountain \u2014 Polar Express \u25b2 611 m",
+   "lift": "Polar Express",
+   "zone": "z0",
+   "base_m": 303,
+   "top_m": 611,
+   "lifts_from_base": 4
+  }
+ ],
+ "zones": [
+  {
+   "id": "z0",
+   "label": "Mountain",
+   "lifts": [
+    "Polar Express",
+    "Minuteman Express Quad",
+    "Vickery Bowl Triple",
+    "Monadnock Express Quad"
+   ],
+   "summit_lift": "Polar Express",
+   "base_lift": "Monadnock Express Quad",
+   "base_m": 303,
+   "top_m": 611,
+   "resort": "Wachusett",
+   "centre": [
+    1080,
+    1363
+   ],
+   "n": 4,
+   "arrival": true
+  }
+ ],
  "metres_per_px": [
   4.725,
   4.719
@@ -32,5 +65,5 @@
  "native_m_per_px": 3.52,
  "dem": "USGS 3DEP (public domain), 1-10 m lidar/NED via National Map ImageServer",
  "crs": "WGS84 lat/lon \u2192 local equirectangular metres at mean latitude; adequate at \u226410 km extents",
- "made": "2026-10-18 13:52"
+ "made": "2026-10-18 21:00"
 }

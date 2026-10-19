@@ -1,0 +1,231 @@
+{
+ "resort": "Killington",
+ "slug": "killington",
+ "landscape_px": [
+  4033,
+  3920
+ ],
+ "starts": [
+  {
+   "label": "Gold \u2014 Outpost Double \u25b2 850 m",
+   "lift": "Outpost Double",
+   "zone": "z4",
+   "base_m": 322,
+   "top_m": 850,
+   "lifts_from_base": 2
+  },
+  {
+   "label": "Bear Mountain \u2014 South Ridge Quad \u25b2 1184 m",
+   "lift": "South Ridge Quad",
+   "zone": "z1",
+   "base_m": 354,
+   "top_m": 1184,
+   "lifts_from_base": 5
+  },
+  {
+   "label": "Pico \u2014 Summit Express Quad \u25b2 1194 m",
+   "lift": "Summit Express Quad",
+   "zone": "z3",
+   "base_m": 615,
+   "top_m": 1194,
+   "lifts_from_base": 2
+  },
+  {
+   "label": "Killington Base \u2014 K-1 Express Gondola \u25b2 1275 m",
+   "lift": "K-1 Express Gondola",
+   "zone": "z2",
+   "base_m": 636,
+   "top_m": 1275,
+   "lifts_from_base": 8
+  },
+  {
+   "label": "Great \u2014 North Ridge Quad \u25b2 1213 m",
+   "lift": "North Ridge Quad",
+   "zone": "z8",
+   "base_m": 858,
+   "top_m": 1213,
+   "lifts_from_base": 2
+  }
+ ],
+ "zones": [
+  {
+   "id": "z4",
+   "label": "Gold",
+   "lifts": [
+    "Northeast Passage",
+    "Outpost Double"
+   ],
+   "summit_lift": "Outpost Double",
+   "base_lift": "Northeast Passage",
+   "base_m": 322,
+   "top_m": 850,
+   "resort": "Killington",
+   "centre": [
+    9015,
+    2562
+   ],
+   "n": 2,
+   "arrival": true
+  },
+  {
+   "id": "z1",
+   "label": "Bear Mountain",
+   "lifts": [
+    "South Ridge Quad",
+    "Skyeship Express Gondola Stage 2",
+    "Needle's Eye Express Quad",
+    "Bear Mountain Quad",
+    "Skyeship Express Gondola Stage 1"
+   ],
+   "summit_lift": "South Ridge Quad",
+   "base_lift": "Skyeship Express Gondola Stage 1",
+   "base_m": 354,
+   "top_m": 1184,
+   "resort": "Killington",
+   "centre": [
+    6469,
+    3729
+   ],
+   "n": 5
+  },
+  {
+   "id": "z3",
+   "label": "Pico",
+   "lifts": [
+    "Summit Express Quad",
+    "Golden Express Quad"
+   ],
+   "summit_lift": "Summit Express Quad",
+   "base_lift": "Golden Express Quad",
+   "base_m": 615,
+   "top_m": 1194,
+   "resort": "Killington",
+   "centre": [
+    2748,
+    8662
+   ],
+   "n": 2
+  },
+  {
+   "id": "z0",
+   "label": "Sunrise",
+   "lifts": [
+    "Sunrise Village Triple"
+   ],
+   "summit_lift": "Sunrise Village Triple",
+   "base_lift": "Sunrise Village Triple",
+   "base_m": 620,
+   "top_m": 743,
+   "resort": "Killington",
+   "centre": [
+    7685,
+    2381
+   ],
+   "n": 1
+  },
+  {
+   "id": "z2",
+   "label": "Killington Base",
+   "lifts": [
+    "K-1 Express Gondola",
+    "Superstar Express Six",
+    "Skye Peak Express Quad",
+    "Snowdon Triple",
+    "Snowdon Six",
+    "Ramshead Express Quad",
+    "Snowshed Express Quad",
+    "Snowshed Double"
+   ],
+   "summit_lift": "K-1 Express Gondola",
+   "base_lift": "Skye Peak Express Quad",
+   "base_m": 636,
+   "top_m": 1275,
+   "resort": "Killington",
+   "centre": [
+    5953,
+    4414
+   ],
+   "n": 8
+  },
+  {
+   "id": "z5",
+   "label": "Bear",
+   "lifts": [
+    "Devil's Fiddle"
+   ],
+   "summit_lift": "Devil's Fiddle",
+   "base_lift": "Devil's Fiddle",
+   "base_m": 652,
+   "top_m": 994,
+   "resort": "Killington",
+   "centre": [
+    6819,
+    2876
+   ],
+   "n": 1
+  },
+  {
+   "id": "z7",
+   "label": "Northbrook",
+   "lifts": [
+    "Northbrook Quad"
+   ],
+   "summit_lift": "Northbrook Quad",
+   "base_lift": "Northbrook Quad",
+   "base_m": 726,
+   "top_m": 842,
+   "resort": "Killington",
+   "centre": [
+    6664,
+    4568
+   ],
+   "n": 1
+  },
+  {
+   "id": "z8",
+   "label": "Great",
+   "lifts": [
+    "North Ridge Quad",
+    "Canyon Quad"
+   ],
+   "summit_lift": "North Ridge Quad",
+   "base_lift": "Canyon Quad",
+   "base_m": 858,
+   "top_m": 1213,
+   "resort": "Killington",
+   "centre": [
+    4445,
+    3871
+   ],
+   "n": 2
+  }
+ ],
+ "metres_per_px": [
+  2.942,
+  2.942
+ ],
+ "elev_min_m": 304.3,
+ "elev_max_m": 1289.7,
+ "unreal": {
+  "import": "Landscape \u2192 Import from File \u2192 heightmap.png",
+  "scale_x_cm": 294.17,
+  "scale_y_cm": 294.17,
+  "scale_z_pct": 19246.28,
+  "note": "Set X/Y scale to scale_x_cm/scale_y_cm (1 Unreal unit = 1 cm). Z scale as given puts the terrain at true elevation span. Landscape origin = SW corner at (0,0); add elev_min_m*100 to Z location to place sea level at 0."
+ },
+ "bbox": {
+  "lat0": 43.574438074999996,
+  "lat1": 43.677999425,
+  "lon0": -72.873795,
+  "lon1": -72.7265982
+ },
+ "origin_sw": {
+  "lat": 43.574438074999996,
+  "lon": -72.873795
+ },
+ "source_zoom": 15,
+ "native_m_per_px": 3.46,
+ "dem": "USGS 3DEP (public domain), 1-10 m lidar/NED via National Map ImageServer",
+ "crs": "WGS84 lat/lon \u2192 local equirectangular metres at mean latitude; adequate at \u226410 km extents",
+ "made": "2026-10-18 20:43"
+}

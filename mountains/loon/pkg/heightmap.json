@@ -1,0 +1,120 @@
+{
+ "resort": "Loon",
+ "slug": "loon",
+ "landscape_px": [
+  2017,
+  1364
+ ],
+ "starts": [
+  {
+   "label": "Chipper \u2014 Timbertown Quad \u25b2 427 m",
+   "lift": "Timbertown Quad",
+   "zone": "z1",
+   "base_m": 267,
+   "top_m": 427,
+   "lifts_from_base": 1
+  },
+  {
+   "label": "Loon Peak \u2014 North Peak Express Quad \u25b2 915 m",
+   "lift": "North Peak Express Quad",
+   "zone": "z0",
+   "base_m": 285,
+   "top_m": 915,
+   "lifts_from_base": 4
+  },
+  {
+   "label": "Bear \u2014 East Basin Double \u25b2 827 m",
+   "lift": "East Basin Double",
+   "zone": "z2",
+   "base_m": 302,
+   "top_m": 827,
+   "lifts_from_base": 2
+  }
+ ],
+ "zones": [
+  {
+   "id": "z1",
+   "label": "Chipper",
+   "lifts": [
+    "Timbertown Quad"
+   ],
+   "summit_lift": "Timbertown Quad",
+   "base_lift": "Timbertown Quad",
+   "base_m": 267,
+   "top_m": 427,
+   "resort": "Loon",
+   "centre": [
+    1533,
+    1432
+   ],
+   "n": 1,
+   "arrival": true
+  },
+  {
+   "id": "z0",
+   "label": "Loon Peak",
+   "lifts": [
+    "North Peak Express Quad",
+    "Lincoln Express Quad",
+    "Kancamagus 8",
+    "Seven Brothers Express Quad"
+   ],
+   "summit_lift": "North Peak Express Quad",
+   "base_lift": "Kancamagus 8",
+   "base_m": 285,
+   "top_m": 915,
+   "resort": "Loon",
+   "centre": [
+    3177,
+    1991
+   ],
+   "n": 4
+  },
+  {
+   "id": "z2",
+   "label": "Bear",
+   "lifts": [
+    "White Mountain Express",
+    "East Basin Double"
+   ],
+   "summit_lift": "East Basin Double",
+   "base_lift": "White Mountain Express",
+   "base_m": 302,
+   "top_m": 827,
+   "resort": "Loon",
+   "centre": [
+    3781,
+    1953
+   ],
+   "n": 2
+  }
+ ],
+ "metres_per_px": [
+  2.797,
+  2.798
+ ],
+ "elev_min_m": 224.3,
+ "elev_max_m": 1042.6,
+ "unreal": {
+  "import": "Landscape \u2192 Import from File \u2192 heightmap.png",
+  "scale_x_cm": 279.73,
+  "scale_y_cm": 279.75,
+  "scale_z_pct": 15983.65,
+  "note": "Set X/Y scale to scale_x_cm/scale_y_cm (1 Unreal unit = 1 cm). Z scale as given puts the terrain at true elevation span. Landscape origin = SW corner at (0,0); add elev_min_m*100 to Z location to place sea level at 0."
+ },
+ "bbox": {
+  "lat0": 44.0291878,
+  "lat1": 44.0634406,
+  "lon0": -71.675715225,
+  "lon1": -71.605235475
+ },
+ "origin_sw": {
+  "lat": 44.0291878,
+  "lon": -71.675715225
+ },
+ "source_zoom": 15,
+ "native_m_per_px": 3.43,
+ "dem": "USGS 3DEP (public domain), 1-10 m lidar/NED via National Map ImageServer",
+ "crs": "WGS84 lat/lon \u2192 local equirectangular metres at mean latitude; adequate at \u226410 km extents",
+ "made": "2026-10-18 20:47"
+}

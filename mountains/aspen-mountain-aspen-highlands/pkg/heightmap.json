@@ -5,6 +5,159 @@
   2017,
   1891
  ],
+ "starts": [
+  {
+   "label": "Aspen Highlands \u00b7 Spruce \u2014 Summit Express \u25b2 2924 m",
+   "lift": "Summit Express",
+   "zone": "z2",
+   "base_m": 2385,
+   "top_m": 2924,
+   "lifts_from_base": 1
+  },
+  {
+   "label": "Aspen Mountain \u00b7 Ajax Base \u2014 Silver Queen \u25b2 3411 m",
+   "lift": "Silver Queen",
+   "zone": "z0",
+   "base_m": 2413,
+   "top_m": 3411,
+   "lifts_from_base": 3
+  },
+  {
+   "label": "Aspen Mountain \u00b7 Bell \u2014 F.I.S. \u25b2 3255 m",
+   "lift": "F.I.S.",
+   "zone": "z3",
+   "base_m": 2414,
+   "top_m": 3255,
+   "lifts_from_base": 2
+  },
+  {
+   "label": "Aspen Highlands \u00b7 Jerome \u2014 Tiehack Express \u25b2 2927 m",
+   "lift": "Tiehack Express",
+   "zone": "z4",
+   "base_m": 2441,
+   "top_m": 2927,
+   "lifts_from_base": 2
+  },
+  {
+   "label": "Aspen Highlands \u00b7 Highlands Base \u2014 Cloud Nine \u25b2 3400 m",
+   "lift": "Cloud Nine",
+   "zone": "z1",
+   "base_m": 2462,
+   "top_m": 3400,
+   "lifts_from_base": 3
+  }
+ ],
+ "zones": [
+  {
+   "id": "z2",
+   "label": "Spruce",
+   "lifts": [
+    "Summit Express"
+   ],
+   "summit_lift": "Summit Express",
+   "base_lift": "Summit Express",
+   "base_m": 2385,
+   "top_m": 2924,
+   "resort": "Aspen Highlands",
+   "centre": [
+    3119,
+    6341
+   ],
+   "n": 1,
+   "arrival": true
+  },
+  {
+   "id": "z0",
+   "label": "Ajax Base",
+   "lifts": [
+    "Silver Queen",
+    "Ajax Express",
+    "Ruthie's"
+   ],
+   "summit_lift": "Silver Queen",
+   "base_lift": "Silver Queen",
+   "base_m": 2413,
+   "top_m": 3411,
+   "resort": "Aspen Mountain",
+   "centre": [
+    7032,
+    3072
+   ],
+   "n": 3
+  },
+  {
+   "id": "z3",
+   "label": "Bell",
+   "lifts": [
+    "Nell Bell",
+    "F.I.S."
+   ],
+   "summit_lift": "F.I.S.",
+   "base_lift": "Nell Bell",
+   "base_m": 2414,
+   "top_m": 3255,
+   "resort": "Aspen Mountain",
+   "centre": [
+    7390,
+    4311
+   ],
+   "n": 2
+  },
+  {
+   "id": "z4",
+   "label": "Jerome",
+   "lifts": [
+    "Tiehack Express",
+    "Five Trees"
+   ],
+   "summit_lift": "Tiehack Express",
+   "base_lift": "Five Trees",
+   "base_m": 2441,
+   "top_m": 2927,
+   "resort": "Aspen Highlands",
+   "centre": [
+    4426,
+    5440
+   ],
+   "n": 2
+  },
+  {
+   "id": "z1",
+   "label": "Highlands Base",
+   "lifts": [
+    "Cloud Nine",
+    "Exhibition",
+    "Thunderbowl"
+   ],
+   "summit_lift": "Cloud Nine",
+   "base_lift": "Exhibition",
+   "base_m": 2462,
+   "top_m": 3400,
+   "resort": "Aspen Highlands",
+   "centre": [
+    3683,
+    3351
+   ],
+   "n": 3
+  },
+  {
+   "id": "z5",
+   "label": "Camp",
+   "lifts": [
+    "West Buttermilk Express"
+   ],
+   "summit_lift": "West Buttermilk Express",
+   "base_lift": "West Buttermilk Express",
+   "base_m": 2639,
+   "top_m": 3002,
+   "resort": "Aspen Highlands",
+   "centre": [
+    2043,
+    5517
+   ],
+   "n": 1
+  }
+ ],
  "metres_per_px": [
   4.931,
   4.932
@@ -32,5 +185,5 @@
  "native_m_per_px": 3.7,
  "dem": "USGS 3DEP (public domain), 1-10 m lidar/NED via National Map ImageServer",
  "crs": "WGS84 lat/lon \u2192 local equirectangular metres at mean latitude; adequate at \u226410 km extents",
- "made": "2026-10-18 13:53"
+ "made": "2026-10-18 21:01"
 }

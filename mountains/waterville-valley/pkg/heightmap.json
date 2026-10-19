@@ -1,0 +1,111 @@
+{
+ "resort": "Waterville Valley",
+ "slug": "waterville-valley",
+ "landscape_px": [
+  2017,
+  628
+ ],
+ "starts": [
+  {
+   "label": "Snow's Mountain \u2014 Snow's Mountain Chairlift \u25b2 637 m",
+   "lift": "Snow's Mountain Chairlift",
+   "zone": "z1",
+   "base_m": 463,
+   "top_m": 637,
+   "lifts_from_base": 1
+  },
+  {
+   "label": "Waterville Valley \u2014 Northside Double \u25b2 1050 m",
+   "lift": "Northside Double",
+   "zone": "z0",
+   "base_m": 571,
+   "top_m": 1050,
+   "lifts_from_base": 4
+  }
+ ],
+ "zones": [
+  {
+   "id": "z1",
+   "label": "Snow's Mountain",
+   "lifts": [
+    "Snow's Mountain Chairlift"
+   ],
+   "summit_lift": "Snow's Mountain Chairlift",
+   "base_lift": "Snow's Mountain Chairlift",
+   "base_m": 463,
+   "top_m": 637,
+   "resort": "Waterville Valley",
+   "centre": [
+    5373,
+    1069
+   ],
+   "n": 1,
+   "arrival": true
+  },
+  {
+   "id": "z0",
+   "label": "Waterville Valley",
+   "lifts": [
+    "Northside Double",
+    "Sunnyside Triple",
+    "Green Peak Triple",
+    "Valley Run High Speed Quad"
+   ],
+   "summit_lift": "Northside Double",
+   "base_lift": "Green Peak Triple",
+   "base_m": 571,
+   "top_m": 1050,
+   "resort": "Waterville Valley",
+   "centre": [
+    2485,
+    966
+   ],
+   "n": 4
+  },
+  {
+   "id": "z2",
+   "label": "Grit",
+   "lifts": [
+    "Tecumseh Express"
+   ],
+   "summit_lift": "Tecumseh Express",
+   "base_lift": "Tecumseh Express",
+   "base_m": 584,
+   "top_m": 1050,
+   "resort": "Waterville Valley",
+   "centre": [
+    2542,
+    1326
+   ],
+   "n": 1
+  }
+ ],
+ "metres_per_px": [
+  3.438,
+  3.437
+ ],
+ "elev_min_m": 433.0,
+ "elev_max_m": 1217.8,
+ "unreal": {
+  "import": "Landscape \u2192 Import from File \u2192 heightmap.png",
+  "scale_x_cm": 343.78,
+  "scale_y_cm": 343.75,
+  "scale_z_pct": 15327.49,
+  "note": "Set X/Y scale to scale_x_cm/scale_y_cm (1 Unreal unit = 1 cm). Z scale as given puts the terrain at true elevation span. Landscape origin = SW corner at (0,0); add elev_min_m*100 to Z location to place sea level at 0."
+ },
+ "bbox": {
+  "lat0": 43.9507668,
+  "lat1": 43.970128200000005,
+  "lon0": -71.570190175,
+  "lon1": -71.483697925
+ },
+ "origin_sw": {
+  "lat": 43.9507668,
+  "lon": -71.570190175
+ },
+ "source_zoom": 15,
+ "native_m_per_px": 3.44,
+ "dem": "USGS 3DEP (public domain), 1-10 m lidar/NED via National Map ImageServer",
+ "crs": "WGS84 lat/lon \u2192 local equirectangular metres at mean latitude; adequate at \u226410 km extents",
+ "made": "2026-10-18 20:50"
+}

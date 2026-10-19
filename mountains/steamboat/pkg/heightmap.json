@@ -1,0 +1,220 @@
+{
+ "resort": "Steamboat",
+ "slug": "steamboat",
+ "landscape_px": [
+  4033,
+  2602
+ ],
+ "starts": [
+  {
+   "label": "East Side \u2014 Barrows Chair Lift \u25b2 2183 m",
+   "lift": "Barrows Chair Lift",
+   "zone": "z4",
+   "base_m": 2049,
+   "top_m": 2183,
+   "lifts_from_base": 1
+  },
+  {
+   "label": "Steamboat Base \u2014 Wild Blue Gondola II \u25b2 3159 m",
+   "lift": "Wild Blue Gondola II",
+   "zone": "z1",
+   "base_m": 2104,
+   "top_m": 3159,
+   "lifts_from_base": 6
+  },
+  {
+   "label": "Pony / Morningside \u2014 Morningside Lift \u25b2 3207 m",
+   "lift": "Morningside Lift",
+   "zone": "z2",
+   "base_m": 2457,
+   "top_m": 3207,
+   "lifts_from_base": 2
+  },
+  {
+   "label": "Sunshine \u2014 Sunshine Express \u25b2 3163 m",
+   "lift": "Sunshine Express",
+   "zone": "z0",
+   "base_m": 2501,
+   "top_m": 3163,
+   "lifts_from_base": 6
+  }
+ ],
+ "zones": [
+  {
+   "id": "z4",
+   "label": "East Side",
+   "lifts": [
+    "Barrows Chair Lift"
+   ],
+   "summit_lift": "Barrows Chair Lift",
+   "base_lift": "Barrows Chair Lift",
+   "base_m": 2049,
+   "top_m": 2183,
+   "resort": "Steamboat",
+   "centre": [
+    2563,
+    6697
+   ],
+   "n": 1,
+   "arrival": true
+  },
+  {
+   "id": "z1",
+   "label": "Steamboat Base",
+   "lifts": [
+    "Wild Blue Gondola II",
+    "Steamboat Gondola",
+    "Thunderhead Express",
+    "Christie Peak Express",
+    "Bashor",
+    "Wild Blue Gondola I"
+   ],
+   "summit_lift": "Wild Blue Gondola II",
+   "base_lift": "Steamboat Gondola",
+   "base_m": 2104,
+   "top_m": 3159,
+   "resort": "Steamboat",
+   "centre": [
+    7881,
+    4306
+   ],
+   "n": 6
+  },
+  {
+   "id": "z5",
+   "label": "Cut",
+   "lifts": [
+    "Greenhorn Ranch Express"
+   ],
+   "summit_lift": "Greenhorn Ranch Express",
+   "base_lift": "Greenhorn Ranch Express",
+   "base_m": 2279,
+   "top_m": 2342,
+   "resort": "Steamboat",
+   "centre": [
+    7147,
+    4605
+   ],
+   "n": 1
+  },
+  {
+   "id": "z3",
+   "label": "Mahogany Ridge",
+   "lifts": [
+    "Mahogany Ridge Express"
+   ],
+   "summit_lift": "Mahogany Ridge Express",
+   "base_lift": "Mahogany Ridge Express",
+   "base_m": 2411,
+   "top_m": 2988,
+   "resort": "Steamboat",
+   "centre": [
+    8979,
+    5488
+   ],
+   "n": 1
+  },
+  {
+   "id": "z2",
+   "label": "Pony / Morningside",
+   "lifts": [
+    "Morningside Lift",
+    "Pony Express"
+   ],
+   "summit_lift": "Morningside Lift",
+   "base_lift": "Pony Express",
+   "base_m": 2457,
+   "top_m": 3207,
+   "resort": "Steamboat",
+   "centre": [
+    9425,
+    3989
+   ],
+   "n": 2
+  },
+  {
+   "id": "z0",
+   "label": "Sunshine",
+   "lifts": [
+    "Sunshine Express",
+    "Sundown Express",
+    "Storm Peak Express",
+    "Four Points",
+    "Elkhead Express",
+    "Burgess Creek"
+   ],
+   "summit_lift": "Sunshine Express",
+   "base_lift": "Storm Peak Express",
+   "base_m": 2501,
+   "top_m": 3163,
+   "resort": "Steamboat",
+   "centre": [
+    9303,
+    2657
+   ],
+   "n": 6
+  },
+  {
+   "id": "z6",
+   "label": "Storm Peak",
+   "lifts": [
+    "Bar UE"
+   ],
+   "summit_lift": "Bar UE",
+   "base_lift": "Bar UE",
+   "base_m": 2748,
+   "top_m": 3160,
+   "resort": "Steamboat",
+   "centre": [
+    9637,
+    3990
+   ],
+   "n": 1
+  },
+  {
+   "id": "z7",
+   "label": "South Peak",
+   "lifts": [
+    "South Peak"
+   ],
+   "summit_lift": "South Peak",
+   "base_lift": "South Peak",
+   "base_m": 2763,
+   "top_m": 2856,
+   "resort": "Steamboat",
+   "centre": [
+    9353,
+    1628
+   ],
+   "n": 1
+  }
+ ],
+ "metres_per_px": [
+  3.304,
+  3.304
+ ],
+ "elev_min_m": 2026.4,
+ "elev_max_m": 3221.5,
+ "unreal": {
+  "import": "Landscape \u2192 Import from File \u2192 heightmap.png",
+  "scale_x_cm": 330.4,
+  "scale_y_cm": 330.39,
+  "scale_z_pct": 23340.29,
+  "note": "Set X/Y scale to scale_x_cm/scale_y_cm (1 Unreal unit = 1 cm). Z scale as given puts the terrain at true elevation span. Landscape origin = SW corner at (0,0); add elev_min_m*100 to Z location to place sea level at 0."
+ },
+ "bbox": {
+  "lat0": 40.420951575000004,
+  "lat1": 40.498146524999996,
+  "lon0": -106.868951125,
+  "lon1": -106.711670575
+ },
+ "origin_sw": {
+  "lat": 40.420951575000004,
+  "lon": -106.868951125
+ },
+ "source_zoom": 15,
+ "native_m_per_px": 3.63,
+ "dem": "USGS 3DEP (public domain), 1-10 m lidar/NED via National Map ImageServer",
+ "crs": "WGS84 lat/lon \u2192 local equirectangular metres at mean latitude; adequate at \u226410 km extents",
+ "made": "2026-10-18 20:54"
+}

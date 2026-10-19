@@ -5,6 +5,179 @@
   2017,
   1972
  ],
+ "starts": [
+  {
+   "label": "Snowbird \u00b7 Front side \u2014 Baby Thunder \u25b2 2717 m",
+   "lift": "Baby Thunder",
+   "zone": "z5",
+   "base_m": 2398,
+   "top_m": 2717,
+   "lifts_from_base": 1
+  },
+  {
+   "label": "Snowbird \u00b7 Snowbird Center \u2014 Peruvian \u25b2 3332 m",
+   "lift": "Peruvian",
+   "zone": "z0",
+   "base_m": 2418,
+   "top_m": 3332,
+   "lifts_from_base": 6
+  },
+  {
+   "label": "Alta \u00b7 Wildcat / Collins \u2014 Collins \u25b2 3171 m",
+   "lift": "Collins",
+   "zone": "z1",
+   "base_m": 2601,
+   "top_m": 3171,
+   "lifts_from_base": 2
+  },
+  {
+   "label": "Alta \u00b7 Albion / Supreme \u2014 Sugarloaf \u25b2 3290 m",
+   "lift": "Sugarloaf",
+   "zone": "z2",
+   "base_m": 2662,
+   "top_m": 3290,
+   "lifts_from_base": 3
+  },
+  {
+   "label": "Snowbird \u00b7 Mineral Basin \u2014 Mineral Basin \u25b2 3146 m",
+   "lift": "Mineral Basin",
+   "zone": "z3",
+   "base_m": 2866,
+   "top_m": 3146,
+   "lifts_from_base": 2
+  }
+ ],
+ "zones": [
+  {
+   "id": "z5",
+   "label": "Front side",
+   "lifts": [
+    "Baby Thunder"
+   ],
+   "summit_lift": "Baby Thunder",
+   "base_lift": "Baby Thunder",
+   "base_m": 2398,
+   "top_m": 2717,
+   "resort": "Snowbird",
+   "centre": [
+    1909,
+    3976
+   ],
+   "n": 1,
+   "arrival": true
+  },
+  {
+   "id": "z0",
+   "label": "Snowbird Center",
+   "lifts": [
+    "Peruvian",
+    "Aerial Tram",
+    "Gad 2",
+    "Gadzoom",
+    "Mid-Gad Lift",
+    "Wilbere"
+   ],
+   "summit_lift": "Peruvian",
+   "base_lift": "Wilbere",
+   "base_m": 2418,
+   "top_m": 3332,
+   "resort": "Snowbird",
+   "centre": [
+    3279,
+    3769
+   ],
+   "n": 6
+  },
+  {
+   "id": "z1",
+   "label": "Wildcat / Collins",
+   "lifts": [
+    "Collins",
+    "Wildcat"
+   ],
+   "summit_lift": "Collins",
+   "base_lift": "Wildcat",
+   "base_m": 2601,
+   "top_m": 3171,
+   "resort": "Alta",
+   "centre": [
+    5016,
+    4783
+   ],
+   "n": 2
+  },
+  {
+   "id": "z2",
+   "label": "Albion / Supreme",
+   "lifts": [
+    "Sugarloaf",
+    "Supreme",
+    "Sunnyside"
+   ],
+   "summit_lift": "Sugarloaf",
+   "base_lift": "Sunnyside",
+   "base_m": 2662,
+   "top_m": 3290,
+   "resort": "Alta",
+   "centre": [
+    6762,
+    4615
+   ],
+   "n": 3
+  },
+  {
+   "id": "z6",
+   "label": "Rustler",
+   "lifts": [
+    "Snowpine Lift"
+   ],
+   "summit_lift": "Snowpine Lift",
+   "base_lift": "Snowpine Lift",
+   "base_m": 2682,
+   "top_m": 2747,
+   "resort": "Alta",
+   "centre": [
+    5342,
+    5728
+   ],
+   "n": 1
+  },
+  {
+   "id": "z3",
+   "label": "Mineral Basin",
+   "lifts": [
+    "Mineral Basin",
+    "Baldy"
+   ],
+   "summit_lift": "Mineral Basin",
+   "base_lift": "Baldy",
+   "base_m": 2866,
+   "top_m": 3146,
+   "resort": "Snowbird",
+   "centre": [
+    5025,
+    2186
+   ],
+   "n": 2
+  },
+  {
+   "id": "z4",
+   "label": "Little Cloud",
+   "lifts": [
+    "Little Cloud"
+   ],
+   "summit_lift": "Little Cloud",
+   "base_lift": "Little Cloud",
+   "base_m": 3159,
+   "top_m": 3303,
+   "resort": "Snowbird",
+   "centre": [
+    3524,
+    2452
+   ],
+   "n": 1
+  }
+ ],
  "metres_per_px": [
   4.764,
   4.765
@@ -32,5 +205,5 @@
  "native_m_per_px": 3.63,
  "dem": "USGS 3DEP (public domain), 1-10 m lidar/NED via National Map ImageServer",
  "crs": "WGS84 lat/lon \u2192 local equirectangular metres at mean latitude; adequate at \u226410 km extents",
- "made": "2026-10-18 13:53"
+ "made": "2026-10-18 21:00"
 }
